@@ -101,6 +101,10 @@
             opacity: 0;
         }
 
+        #product-visual {
+            transition: background-color 0.4s ease;
+        }
+
         /* Selector de color de producto */
         .color-swatch {
             width: 2.25rem;
@@ -116,7 +120,8 @@
             transform: translateY(-3px);
         }
 
-        .reveal { opacity: 0; transform: translateY(28px); }
+        /* Los elementos .reveal son visibles por defecto; el JS los anima
+           solo si Three.js/GSAP cargan correctamente (ver <script> al final). */
     </style>
 </head>
 
@@ -328,15 +333,57 @@
     </div>
 
     <script>
-        gsap.registerPlugin(ScrollTrigger);
+        const overlay = document.getElementById('intro-overlay');
+        const site = document.getElementById('site');
+        const skipBtn = document.getElementById('intro-skip');
+
+        /* Revelado sin dependencias: funciona aunque Three.js/GSAP nunca hayan
+           cargado (CDN caído, red lenta, bloqueo de firewall, etc). El sitio
+           NUNCA debe quedar atrapado detrás de la intro. */
+        let revealed = false;
+        function showSiteNow() {
+            if (revealed) return;
+            revealed = true;
+            try { sessionStorage.setItem('vdt-intro-seen', 'true'); } catch (e) {}
+            overlay.style.transition = 'opacity 0.6s ease';
+            overlay.style.opacity = '0';
+            setTimeout(() => { overlay.style.display = 'none'; }, 650);
+            site.style.transition = 'opacity 0.8s ease';
+            site.style.opacity = '1';
+            document.querySelectorAll('.reveal').forEach((el) => {
+                el.style.opacity = '1';
+                el.style.transform = 'none';
+            });
+        }
+
+        skipBtn.addEventListener('click', showSiteNow);
+
+        // Red de seguridad: si nada más funciona, el sitio se muestra igual.
+        const safetyTimer = setTimeout(showSiteNow, 7000);
+
+        let alreadySeen = false;
+        try { alreadySeen = sessionStorage.getItem('vdt-intro-seen') === 'true'; } catch (e) {}
+
+        if (alreadySeen) {
+            clearTimeout(safetyTimer);
+            overlay.style.display = 'none';
+            site.style.opacity = '1';
+            document.querySelectorAll('.reveal').forEach((el) => { el.style.opacity = '1'; el.style.transform = 'none'; });
+        } else if (typeof THREE === 'undefined' || typeof gsap === 'undefined') {
+            clearTimeout(safetyTimer);
+            showSiteNow();
+        } else {
+            try {
+                runIntroAnimation();
+            } catch (err) {
+                console.error('Intro 3D falló, se muestra el sitio directamente.', err);
+                clearTimeout(safetyTimer);
+                showSiteNow();
+            }
+        }
 
         /* ===================== INTRO 3D: planeta + logo ===================== */
-        (function initIntro() {
-            const skipBtn = document.getElementById('intro-skip');
-            const overlay = document.getElementById('intro-overlay');
-            const site = document.getElementById('site');
-            const alreadySeen = sessionStorage.getItem('vdt-intro-seen') === 'true';
-
+        function runIntroAnimation() {
             const canvas = document.getElementById('intro-canvas');
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
@@ -402,28 +449,9 @@
             tick();
 
             function finishIntro() {
-                sessionStorage.setItem('vdt-intro-seen', 'true');
-                gsap.to(overlay, {
-                    autoAlpha: 0,
-                    duration: 1,
-                    ease: 'power2.inOut',
-                    onComplete: () => {
-                        overlay.style.display = 'none';
-                        cancelAnimationFrame(rafId);
-                    }
-                });
-                gsap.to(site, { autoAlpha: 1, duration: 1.1, ease: 'power2.out' });
-                playHeroReveal();
-            }
-
-            skipBtn.addEventListener('click', finishIntro);
-
-            if (alreadySeen) {
-                overlay.style.display = 'none';
-                gsap.set(site, { autoAlpha: 1 });
+                clearTimeout(safetyTimer);
+                showSiteNow();
                 cancelAnimationFrame(rafId);
-                playHeroReveal();
-                return;
             }
 
             const tl = gsap.timeline({ delay: 0.3 });
@@ -432,25 +460,23 @@
               .to('#intro-tagline', { opacity: 1, duration: 1, ease: 'power2.out' }, '-=0.6')
               .to({}, { duration: 1.4 }) // hold
               .add(finishIntro);
-        })();
-
-        /* ===================== Reveal al hacer scroll ===================== */
-        function playHeroReveal() {
-            gsap.to(['#hero-copy', '#hero-visual'], {
-                opacity: 1, y: 0, duration: 1, stagger: 0.15, ease: 'power3.out'
-            });
         }
 
-        gsap.utils.toArray('.reveal').forEach((el) => {
-            if (el.id === 'hero-copy' || el.id === 'hero-visual') return;
-            gsap.to(el, {
-                opacity: 1,
-                y: 0,
-                duration: 0.9,
-                ease: 'power3.out',
-                scrollTrigger: { trigger: el, start: 'top 85%' }
+        /* ===================== Reveal al hacer scroll ===================== */
+        try {
+            gsap.registerPlugin(ScrollTrigger);
+            gsap.utils.toArray('.reveal').forEach((el) => {
+                gsap.fromTo(el,
+                    { opacity: 0, y: 28 },
+                    {
+                        opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+                        scrollTrigger: { trigger: el, start: 'top 85%' }
+                    }
+                );
             });
-        });
+        } catch (err) {
+            console.error('Animaciones de scroll no disponibles, el contenido queda visible sin animar.', err);
+        }
 
         /* ===================== Selector de color de producto ===================== */
         const visual = document.getElementById('product-visual');
@@ -460,7 +486,7 @@
                 document.querySelectorAll('.color-swatch').forEach((b) => b.removeAttribute('data-active'));
                 btn.setAttribute('data-active', 'true');
                 label.textContent = btn.dataset.name;
-                gsap.to(visual, { backgroundColor: btn.dataset.color, duration: 0.5, ease: 'power2.out' });
+                visual.style.backgroundColor = btn.dataset.color;
             });
         });
 
