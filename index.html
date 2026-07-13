@@ -120,6 +120,17 @@
             transform: translateY(-3px);
         }
 
+        .size-option {
+            cursor: pointer;
+            background: transparent;
+            transition: all 0.25s ease;
+        }
+        .size-option[data-active="true"] {
+            background: var(--brown-900);
+            color: var(--cream) !important;
+            border-color: var(--brown-900);
+        }
+
         /* Los elementos .reveal son visibles por defecto; el JS los anima
            solo si Three.js/GSAP cargan correctamente (ver <script> al final). */
     </style>
@@ -225,35 +236,47 @@
 
                 <div class="reveal md:sticky md:top-28">
                     <div id="product-visual" class="w-full aspect-square rounded-sm flex items-center justify-center transition-colors duration-500" style="background: #1a1a1a;">
-                        <svg width="45%" viewBox="0 0 120 160" fill="none">
-                            <rect x="10" y="20" width="100" height="130" rx="8" fill="rgba(250,247,242,0.12)" stroke="rgba(250,247,242,0.5)" stroke-width="1.5"/>
-                            <rect x="30" y="5" width="60" height="25" rx="6" fill="rgba(250,247,242,0.18)" stroke="rgba(250,247,242,0.5)" stroke-width="1.5"/>
+                        <svg width="40%" viewBox="0 0 120 170" fill="none">
+                            <path d="M35 45 L30 155 Q30 165 42 165 L78 165 Q90 165 90 155 L85 45 Z" fill="rgba(250,247,242,0.14)" stroke="rgba(250,247,242,0.55)" stroke-width="1.5"/>
+                            <ellipse cx="60" cy="45" rx="25" ry="7" fill="rgba(250,247,242,0.2)" stroke="rgba(250,247,242,0.55)" stroke-width="1.5"/>
+                            <rect x="38" y="18" width="44" height="24" rx="10" fill="rgba(250,247,242,0.22)" stroke="rgba(250,247,242,0.55)" stroke-width="1.5"/>
+                            <rect x="52" y="8" width="18" height="14" rx="4" fill="rgba(250,247,242,0.28)" stroke="rgba(250,247,242,0.55)" stroke-width="1.5"/>
+                            <text x="60" y="115" text-anchor="middle" font-family="Inter, sans-serif" font-size="8" letter-spacing="2" fill="rgba(250,247,242,0.6)">COFFEE</text>
                         </svg>
                     </div>
-                    <p class="text-xs text-[var(--brown-500)] mt-3 tracking-wide">* Imagen ilustrativa — se reemplaza por las fotos reales del producto.</p>
+                    <p class="text-xs text-[var(--brown-500)] mt-3 tracking-wide">* Imagen ilustrativa — se reemplaza por las fotos reales cuando estén cargadas en el proyecto.</p>
                 </div>
 
                 <div class="reveal">
                     <span class="text-xs tracking-[0.3em] uppercase text-[var(--brown-500)]">Producto Signature</span>
-                    <h2 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] mt-3 mb-6">Nombre del producto</h2>
+                    <h2 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] mt-3 mb-6">Vaso Térmico COFFEE</h2>
                     <p class="text-[var(--brown-700)] leading-relaxed mb-8">
-                        Descripción breve y potente del producto: qué es, a quién está dirigido y qué lo hace especial dentro de la colección VDT.
+                        Vaso térmico de acero inoxidable con doble pared aislante y tapa abatible antiderrames. Pensado para acompañar tu rutina de café con estilo, dentro y fuera de casa.
                     </p>
+
+                    <div class="mb-6">
+                        <span class="text-sm font-medium text-[var(--brown-900)] block mb-3">Tamaño: <span id="size-label">Grande</span></span>
+                        <div class="flex gap-3" id="size-selector">
+                            <button class="size-option px-5 py-2 text-sm border border-[var(--brown-500)]/40 text-[var(--brown-900)]" data-size="Grande" data-active="true">Grande</button>
+                            <button class="size-option px-5 py-2 text-sm border border-[var(--brown-500)]/40 text-[var(--brown-900)]" data-size="Pequeño">Pequeño</button>
+                        </div>
+                    </div>
 
                     <div class="mb-8">
                         <span class="text-sm font-medium text-[var(--brown-900)] block mb-3">Color: <span id="color-label">Negro</span></span>
                         <div class="flex gap-3" id="color-selector">
                             <button class="color-swatch" data-color="#1a1a1a" data-name="Negro" data-active="true" style="background:#1a1a1a" aria-label="Color negro"></button>
-                            <button class="color-swatch" data-color="#2c4a7c" data-name="Azul" style="background:#2c4a7c" aria-label="Color azul"></button>
-                            <button class="color-swatch" data-color="#2f5233" data-name="Verde" style="background:#2f5233" aria-label="Color verde"></button>
-                            <button class="color-swatch" data-color="#d98ba0" data-name="Rosa" style="background:#d98ba0" aria-label="Color rosa"></button>
+                            <button class="color-swatch" data-color="#2a323c" data-name="Azul marino" style="background:#2a323c" aria-label="Color azul marino"></button>
+                            <button class="color-swatch" data-color="#4b5842" data-name="Verde militar" style="background:#4b5842" aria-label="Color verde militar"></button>
+                            <button class="color-swatch" data-color="#efb3c4" data-name="Rosa" style="background:#efb3c4" aria-label="Color rosa"></button>
+                            <button class="color-swatch" data-color="#f2efe9" data-name="Blanco" style="background:#f2efe9; border:1px solid rgba(43,28,18,0.15)" aria-label="Color blanco"></button>
                         </div>
                     </div>
 
                     <ul class="space-y-3 mb-10 text-[var(--brown-700)]">
-                        <li class="flex gap-3"><span class="text-[var(--gold)]">—</span> Materiales seleccionados</li>
-                        <li class="flex gap-3"><span class="text-[var(--gold)]">—</span> Acabado premium cuidado al detalle</li>
-                        <li class="flex gap-3"><span class="text-[var(--gold)]">—</span> Disponible en 4 colores</li>
+                        <li class="flex gap-3"><span class="text-[var(--gold)]">—</span> Acero inoxidable de doble pared, aislamiento térmico</li>
+                        <li class="flex gap-3"><span class="text-[var(--gold)]">—</span> Tapa abatible antiderrames</li>
+                        <li class="flex gap-3"><span class="text-[var(--gold)]">—</span> Disponible en 5 colores y 2 tamaños</li>
                     </ul>
 
                     <button class="bg-[var(--brown-900)] text-[var(--cream)] px-10 py-4 text-sm tracking-wide hover:bg-[var(--brown-700)] transition-colors">
@@ -487,6 +510,16 @@
                 btn.setAttribute('data-active', 'true');
                 label.textContent = btn.dataset.name;
                 visual.style.backgroundColor = btn.dataset.color;
+            });
+        });
+
+        /* ===================== Selector de tamaño de producto ===================== */
+        const sizeLabel = document.getElementById('size-label');
+        document.querySelectorAll('.size-option').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.size-option').forEach((b) => b.removeAttribute('data-active'));
+                btn.setAttribute('data-active', 'true');
+                sizeLabel.textContent = btn.dataset.size;
             });
         });
 
