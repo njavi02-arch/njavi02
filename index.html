@@ -4,276 +4,475 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber-Minimalism | Digital Realities</title>
+    <title>VDT | Diseño atemporal, calidad premium</title>
+    <meta name="description" content="VDT — Diseño atemporal y calidad premium. Descubrí nuestra colección.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
     <style>
-        /* Estilos personalizados y variables de diseño */
+        :root {
+            --cream: #faf7f2;
+            --cream-deep: #f1ebe1;
+            --brown-900: #2b1c12;
+            --brown-800: #3d2a1c;
+            --brown-700: #5a4028;
+            --brown-500: #8a6238;
+            --gold: #c9a86a;
+        }
+
         body {
-            background: linear-gradient(135deg, #0a0a0c 0%, #151518 100%);
+            background: var(--cream);
+            color: var(--brown-900);
+            font-family: 'Inter', sans-serif;
             overflow-x: hidden;
         }
 
-        /* Efecto Glassmorphism Avanzado */
-        .glass-panel {
-            background: rgba(25, 25, 30, 0.45);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        h1, h2, h3, .font-display {
+            font-family: 'Playfair Display', serif;
         }
 
-        .glass-button {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--cream); }
+        ::-webkit-scrollbar-thumb { background: var(--brown-500); border-radius: 4px; }
+
+        /* --- Intro cinematográfica --- */
+        #intro-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: radial-gradient(circle at 50% 40%, #241207 0%, #0d0704 70%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
 
-        .glass-button:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(0, 229, 255, 0.5);
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
-            transform: translateY(-2px);
+        #intro-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
         }
 
-        /* Ocultar barra de scroll pero mantener funcionalidad */
-        ::-webkit-scrollbar {
-            width: 6px;
+        #intro-logo {
+            position: relative;
+            z-index: 2;
+            opacity: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.25rem;
+            filter: drop-shadow(0 0 40px rgba(201, 168, 106, 0.35));
         }
-        ::-webkit-scrollbar-track {
-            background: #0a0a0c;
+
+        #intro-tagline {
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.35em;
+            font-size: 0.7rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            opacity: 0;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #252529;
-            border-radius: 3px;
+
+        #intro-skip {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 3;
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(250, 247, 242, 0.6);
+            background: transparent;
+            border: 1px solid rgba(250, 247, 242, 0.25);
+            padding: 0.6rem 1.1rem;
+            transition: all 0.3s ease;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #00e5ff;
+        #intro-skip:hover { color: var(--cream); border-color: var(--gold); }
+
+        #site {
+            opacity: 0;
         }
+
+        /* Selector de color de producto */
+        .color-swatch {
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 9999px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: transform 0.25s ease, border-color 0.25s ease;
+        }
+        .color-swatch:hover { transform: translateY(-3px); }
+        .color-swatch[data-active="true"] {
+            border-color: var(--brown-900);
+            transform: translateY(-3px);
+        }
+
+        .reveal { opacity: 0; transform: translateY(28px); }
     </style>
 </head>
 
-<body class="text-zinc-100 font-sans antialiased">
+<body class="antialiased">
 
-    <canvas id="webgl-canvas" class="fixed top-0 left-0 w-full h-full z-0 pointer-events-none"></canvas>
+    <!-- ===================== INTRO 3D ===================== -->
+    <div id="intro-overlay">
+        <canvas id="intro-canvas"></canvas>
+        <button id="intro-skip">Saltar intro</button>
+        <div id="intro-logo">
+            <svg width="150" height="130" viewBox="0 0 220 190" fmt="svg" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="roofGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#e8c98a" />
+                        <stop offset="50%" stop-color="#c9a86a" />
+                        <stop offset="100%" stop-color="#8a6238" />
+                    </linearGradient>
+                </defs>
+                <polygon points="15,95 110,15 205,95 170,95 110,48 50,95" fill="url(#roofGradient)" />
+                <rect x="150" y="15" width="24" height="45" fill="url(#roofGradient)" />
+                <text x="110" y="150" text-anchor="middle" font-family="Playfair Display, serif" font-weight="700" font-size="78" fill="#faf7f2">VD</text>
+                <rect x="150" y="95" width="10" height="65" fill="#faf7f2" />
+                <rect x="60" y="155" width="100" height="8" fill="#faf7f2" />
+            </svg>
+            <span id="intro-tagline">Diseño atemporal · Calidad premium</span>
+        </div>
+    </div>
 
-    <main class="relative z-10 w-full">
+    <!-- ===================== SITIO ===================== -->
+    <div id="site">
 
-        <section class="min-h-screen w-full flex flex-col justify-between px-6 py-8 md:px-24 md:py-12 justify-center items-start">
+        <!-- NAV -->
+        <header class="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-[var(--cream)]/80 border-b border-[var(--brown-500)]/15">
+            <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 md:px-10 py-4">
+                <a href="#" class="font-display text-2xl font-semibold tracking-wide text-[var(--brown-900)]">VDT</a>
 
-            <header class="w-full flex justify-between items-center fixed top-0 left-0 px-6 py-6 md:px-24 z-50 mix-blend-difference">
-                <span class="text-sm font-mono tracking-widest text-zinc-400">N V R . LAB</span>
-                <span class="text-xs font-mono text-zinc-500">©2026</span>
-            </header>
+                <div class="hidden md:flex items-center gap-10 text-sm tracking-wide text-[var(--brown-700)]">
+                    <a href="#hero" class="hover:text-[var(--brown-900)] transition-colors">Inicio</a>
+                    <a href="#producto" class="hover:text-[var(--brown-900)] transition-colors">Producto</a>
+                    <a href="#nosotros" class="hover:text-[var(--brown-900)] transition-colors">Nosotros</a>
+                    <a href="#contacto" class="hover:text-[var(--brown-900)] transition-colors">Contacto</a>
+                </div>
 
-            <div class="max-w-4xl mt-32 md:mt-48">
-                <h1 class="text-5xl md:text-8xl font-black tracking-tighter leading-none mb-6 uppercase text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-500">
-                    We Build<br><span class="text-white">Digital Realities</span>
-                </h1>
-                <p class="text-zinc-400 max-w-md text-base md:text-lg mb-8 font-light leading-relaxed">
-                    Ecosistemas tridimensionales e interfaces inmersivas diseñadas bajo una estética minimalista y tecnología de vanguardia.
-                </p>
-                <button class="glass-button text-xs font-mono tracking-widest uppercase px-8 py-4 rounded-none text-cyan-400">
-                    Explorar Universo
+                <a href="#producto" class="hidden md:inline-block bg-[var(--brown-900)] text-[var(--cream)] text-sm px-6 py-2.5 tracking-wide hover:bg-[var(--brown-700)] transition-colors">
+                    Descubrir
+                </a>
+
+                <button id="menu-toggle" class="md:hidden text-[var(--brown-900)]" aria-label="Abrir menú" aria-expanded="false">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg>
                 </button>
+            </nav>
+
+            <div id="mobile-menu" class="hidden md:hidden flex-col gap-1 px-6 pb-6 text-[var(--brown-700)] bg-[var(--cream)]">
+                <a href="#hero" class="py-3 border-b border-[var(--brown-500)]/10">Inicio</a>
+                <a href="#producto" class="py-3 border-b border-[var(--brown-500)]/10">Producto</a>
+                <a href="#nosotros" class="py-3 border-b border-[var(--brown-500)]/10">Nosotros</a>
+                <a href="#contacto" class="py-3">Contacto</a>
+            </div>
+        </header>
+
+        <!-- HERO -->
+        <section id="hero" class="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-b from-[var(--cream)] to-[var(--cream-deep)]">
+            <div class="absolute -right-40 top-1/4 w-[36rem] h-[36rem] rounded-full bg-gradient-to-br from-[var(--gold)]/25 to-[var(--brown-700)]/10 blur-3xl"></div>
+
+            <div class="max-w-7xl mx-auto w-full px-6 md:px-10 pt-32 pb-20 grid md:grid-cols-2 gap-12 items-center relative z-10">
+                <div class="reveal" id="hero-copy">
+                    <span class="inline-block text-xs tracking-[0.3em] uppercase text-[var(--brown-500)] mb-6">Colección Signature</span>
+                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.05] text-[var(--brown-900)] mb-6">
+                        Elegancia que <span class="italic text-[var(--brown-500)]">perdura</span>
+                    </h1>
+                    <p class="text-lg text-[var(--brown-700)] max-w-md mb-10 leading-relaxed">
+                        Piezas diseñadas con precisión y materiales seleccionados. Una experiencia premium pensada para quienes valoran el detalle.
+                    </p>
+                    <div class="flex items-center gap-6">
+                        <a href="#producto" class="bg-[var(--brown-900)] text-[var(--cream)] px-8 py-4 text-sm tracking-wide hover:bg-[var(--brown-700)] transition-colors">
+                            Ver producto
+                        </a>
+                        <a href="#nosotros" class="text-sm tracking-wide text-[var(--brown-900)] border-b border-[var(--brown-900)] pb-1 hover:text-[var(--brown-500)] hover:border-[var(--brown-500)] transition-colors">
+                            Nuestra historia
+                        </a>
+                    </div>
+                </div>
+
+                <div class="reveal flex justify-center" id="hero-visual">
+                    <div class="relative w-72 h-72 md:w-96 md:h-96 rounded-full bg-gradient-to-br from-[var(--brown-700)] to-[var(--brown-900)] flex items-center justify-center shadow-2xl">
+                        <div class="absolute inset-4 rounded-full border border-[var(--gold)]/40"></div>
+                        <span class="font-display text-6xl text-[var(--cream)] tracking-wide">VDT</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="w-full flex justify-between items-end mt-12 md:mt-0">
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-                    <span class="text-xs font-mono tracking-wider text-zinc-500 uppercase">Scroll para descender</span>
+            <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--brown-500)]">
+                <span class="text-[0.65rem] tracking-[0.25em] uppercase">Scroll</span>
+                <div class="w-px h-10 bg-[var(--brown-500)]/40"></div>
+            </div>
+        </section>
+
+        <!-- PRODUCTO -->
+        <section id="producto" class="py-28 px-6 md:px-10 bg-[var(--cream)]">
+            <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-start">
+
+                <div class="reveal md:sticky md:top-28">
+                    <div id="product-visual" class="w-full aspect-square rounded-sm flex items-center justify-center transition-colors duration-500" style="background: #1a1a1a;">
+                        <svg width="45%" viewBox="0 0 120 160" fill="none">
+                            <rect x="10" y="20" width="100" height="130" rx="8" fill="rgba(250,247,242,0.12)" stroke="rgba(250,247,242,0.5)" stroke-width="1.5"/>
+                            <rect x="30" y="5" width="60" height="25" rx="6" fill="rgba(250,247,242,0.18)" stroke="rgba(250,247,242,0.5)" stroke-width="1.5"/>
+                        </svg>
+                    </div>
+                    <p class="text-xs text-[var(--brown-500)] mt-3 tracking-wide">* Imagen ilustrativa — se reemplaza por las fotos reales del producto.</p>
+                </div>
+
+                <div class="reveal">
+                    <span class="text-xs tracking-[0.3em] uppercase text-[var(--brown-500)]">Producto Signature</span>
+                    <h2 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] mt-3 mb-6">Nombre del producto</h2>
+                    <p class="text-[var(--brown-700)] leading-relaxed mb-8">
+                        Descripción breve y potente del producto: qué es, a quién está dirigido y qué lo hace especial dentro de la colección VDT.
+                    </p>
+
+                    <div class="mb-8">
+                        <span class="text-sm font-medium text-[var(--brown-900)] block mb-3">Color: <span id="color-label">Negro</span></span>
+                        <div class="flex gap-3" id="color-selector">
+                            <button class="color-swatch" data-color="#1a1a1a" data-name="Negro" data-active="true" style="background:#1a1a1a" aria-label="Color negro"></button>
+                            <button class="color-swatch" data-color="#2c4a7c" data-name="Azul" style="background:#2c4a7c" aria-label="Color azul"></button>
+                            <button class="color-swatch" data-color="#2f5233" data-name="Verde" style="background:#2f5233" aria-label="Color verde"></button>
+                            <button class="color-swatch" data-color="#d98ba0" data-name="Rosa" style="background:#d98ba0" aria-label="Color rosa"></button>
+                        </div>
+                    </div>
+
+                    <ul class="space-y-3 mb-10 text-[var(--brown-700)]">
+                        <li class="flex gap-3"><span class="text-[var(--gold)]">—</span> Materiales seleccionados</li>
+                        <li class="flex gap-3"><span class="text-[var(--gold)]">—</span> Acabado premium cuidado al detalle</li>
+                        <li class="flex gap-3"><span class="text-[var(--gold)]">—</span> Disponible en 4 colores</li>
+                    </ul>
+
+                    <button class="bg-[var(--brown-900)] text-[var(--cream)] px-10 py-4 text-sm tracking-wide hover:bg-[var(--brown-700)] transition-colors">
+                        Consultar disponibilidad
+                    </button>
                 </div>
             </div>
         </section>
 
-        <section class="min-h-screen w-full flex flex-col justify-center px-6 py-24 md:px-24 gap-12 max-w-7xl mx-auto">
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-
-                <div class="glass-panel p-8 md:p-10 flex flex-col justify-between min-h-[320px] rounded-none">
-                    <div>
-                        <span class="text-xs font-mono text-cyan-400 tracking-widest block mb-6">01 // CONCEPT</span>
-                        <h3 class="text-2xl font-bold tracking-tight mb-4">Digital Strategy</h3>
-                        <p class="text-zinc-400 text-sm font-light leading-relaxed">
-                            Definimos la arquitectura conceptual de productos interactivos de alto impacto, fusionando objetivos comerciales con estéticas disruptivas.
-                        </p>
-                    </div>
-                    <span class="text-xs font-mono text-zinc-600 mt-6">[ Phase_Alpha ]</span>
+        <!-- CARACTERÍSTICAS -->
+        <section class="py-28 px-6 md:px-10 bg-[var(--cream-deep)]">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16 reveal">
+                    <span class="text-xs tracking-[0.3em] uppercase text-[var(--brown-500)]">Por qué VDT</span>
+                    <h2 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] mt-3">Detalles que marcan la diferencia</h2>
                 </div>
 
-                <div class="glass-panel p-8 md:p-10 flex flex-col justify-between min-h-[320px] rounded-none">
-                    <div>
-                        <span class="text-xs font-mono text-purple-400 tracking-widest block mb-6">02 // ENGINE</span>
-                        <h3 class="text-2xl font-bold tracking-tight mb-4">3D Web Experience</h3>
-                        <p class="text-zinc-400 text-sm font-light leading-relaxed">
-                            Rompemos la bidimensionalidad clásica. Diseñamos entornos web inmersivos renderizados en tiempo real con optimización de hardware fluida.
-                        </p>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="reveal bg-[var(--cream)] p-10 border border-[var(--brown-500)]/15">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--brown-700)" stroke-width="1.3" class="mb-6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                        <h3 class="font-display text-xl text-[var(--brown-900)] mb-3">Calidad duradera</h3>
+                        <p class="text-[var(--brown-700)] text-sm leading-relaxed">Materiales y procesos elegidos para que cada pieza perdure en el tiempo.</p>
                     </div>
-                    <span class="text-xs font-mono text-zinc-600 mt-6">[ Phase_Beta ]</span>
-                </div>
-
-                <div class="glass-panel p-8 md:p-10 flex flex-col justify-between min-h-[320px] rounded-none">
-                    <div>
-                        <span class="text-xs font-mono text-zinc-400 tracking-widest block mb-6">03 // INTEL</span>
-                        <h3 class="text-2xl font-bold tracking-tight mb-4">AI Integration</h3>
-                        <p class="text-zinc-400 text-sm font-light leading-relaxed">
-                            Potenciamos la interacción mediante agentes inteligentes y modelos generativos embebidos directamente en la experiencia de usuario.
-                        </p>
+                    <div class="reveal bg-[var(--cream)] p-10 border border-[var(--brown-500)]/15">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--brown-700)" stroke-width="1.3" class="mb-6"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+                        <h3 class="font-display text-xl text-[var(--brown-900)] mb-3">Diseño exclusivo</h3>
+                        <p class="text-[var(--brown-700)] text-sm leading-relaxed">Una identidad visual propia, pensada al detalle en cada línea y proporción.</p>
                     </div>
-                    <span class="text-xs font-mono text-zinc-600 mt-6">[ Phase_Gamma ]</span>
+                    <div class="reveal bg-[var(--cream)] p-10 border border-[var(--brown-500)]/15">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--brown-700)" stroke-width="1.3" class="mb-6"><path d="M20 12a8 8 0 10-8 8"/><path d="M12 4a8 8 0 018 8"/></svg>
+                        <h3 class="font-display text-xl text-[var(--brown-900)] mb-3">Experiencia premium</h3>
+                        <p class="text-[var(--brown-700)] text-sm leading-relaxed">Desde la web hasta el producto: cada punto de contacto cuidado al máximo detalle.</p>
+                    </div>
                 </div>
-
             </div>
         </section>
 
-        <footer class="w-full px-6 py-8 md:px-24 border-t border-zinc-900/50 glass-panel border-x-0 border-b-0">
-            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-mono text-zinc-500">
-                <div>CORE ENGINE: THREE.JS & GSAP</div>
-                <div class="flex gap-6">
-                    <a href="#" class="hover:text-cyan-400 transition-colors">INSTAGRAM</a>
-                    <a href="#" class="hover:text-cyan-400 transition-colors">LINKEDIN</a>
-                    <a href="#" class="hover:text-cyan-400 transition-colors">GITHUB</a>
+        <!-- MARCA -->
+        <section id="nosotros" class="py-28 px-6 md:px-10 bg-[var(--brown-900)] text-[var(--cream)]">
+            <div class="max-w-5xl mx-auto text-center reveal">
+                <span class="text-xs tracking-[0.3em] uppercase text-[var(--gold)]">Nuestra filosofía</span>
+                <h2 class="font-display text-4xl md:text-5xl mt-4 mb-8 leading-tight">
+                    Creemos en el diseño honesto,<br class="hidden md:block"> hecho para durar.
+                </h2>
+                <p class="text-[var(--cream)]/75 max-w-2xl mx-auto leading-relaxed">
+                    VDT nace de la búsqueda de un equilibrio entre elegancia y funcionalidad. Cada decisión, desde el material hasta el color, responde a una misma idea: calidad que se siente y se nota.
+                </p>
+            </div>
+        </section>
+
+        <!-- FOOTER / CONTACTO -->
+        <footer id="contacto" class="py-16 px-6 md:px-10 bg-[var(--cream)] border-t border-[var(--brown-500)]/15">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-10">
+                <div>
+                    <span class="font-display text-2xl text-[var(--brown-900)]">VDT</span>
+                    <p class="text-sm text-[var(--brown-700)] mt-3 max-w-xs">Diseño atemporal y calidad premium.</p>
                 </div>
+                <div class="flex gap-16 text-sm text-[var(--brown-700)]">
+                    <div class="flex flex-col gap-2">
+                        <span class="text-[var(--brown-900)] font-medium mb-1">Sitio</span>
+                        <a href="#hero" class="hover:text-[var(--brown-900)] transition-colors">Inicio</a>
+                        <a href="#producto" class="hover:text-[var(--brown-900)] transition-colors">Producto</a>
+                        <a href="#nosotros" class="hover:text-[var(--brown-900)] transition-colors">Nosotros</a>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <span class="text-[var(--brown-900)] font-medium mb-1">Social</span>
+                        <a href="#" class="hover:text-[var(--brown-900)] transition-colors">Instagram</a>
+                        <a href="#" class="hover:text-[var(--brown-900)] transition-colors">LinkedIn</a>
+                    </div>
+                </div>
+            </div>
+            <div class="max-w-7xl mx-auto mt-12 pt-6 border-t border-[var(--brown-500)]/10 text-xs text-[var(--brown-500)]">
+                © 2026 VDT. Todos los derechos reservados.
             </div>
         </footer>
 
-    </main>
+    </div>
 
     <script>
-        // Registrar ScrollTrigger en GSAP
         gsap.registerPlugin(ScrollTrigger);
 
-        // --- CONFIGURACIÓN ESCENA THREE.JS ---
-        const canvas = document.querySelector('#webgl-canvas');
-        const scene = new THREE.Scene();
+        /* ===================== INTRO 3D: planeta + logo ===================== */
+        (function initIntro() {
+            const skipBtn = document.getElementById('intro-skip');
+            const overlay = document.getElementById('intro-overlay');
+            const site = document.getElementById('site');
+            const alreadySeen = sessionStorage.getItem('vdt-intro-seen') === 'true';
 
-        // Dimensiones iniciales
-        const sizes = {
-            width: window.innerWidth,
-            height: window.innerHeight
-        };
+            const canvas = document.getElementById('intro-canvas');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+            camera.position.set(0, 0.4, 9);
 
-        // Cámara
-        const camera = new THREE.PerspectiveCamera(60, sizes.width / sizes.height, 0.1, 100);
-        camera.position.x = 0;
-        camera.position.y = 0;
-        camera.position.z = 5;
-        scene.add(camera);
-
-        // Renderer con Antialiasing y Pixel Ratio optimizado
-        const renderer = new THREE.WebGLRenderer({
-            canvas: canvas,
-            antialias: true,
-            alpha: true
-        });
-        renderer.setSize(sizes.width, sizes.height);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-        // --- GEOMETRÍA Y MATERIAL (Torus Knot Cyber-Glass) ---
-        const geometry = new THREE.TorusKnotGeometry(1.2, 0.38, 200, 32, 3, 4);
-
-        // MeshPhysicalMaterial con propiedades de vidrio esmerilado y metal premium
-        const material = new THREE.MeshPhysicalMaterial({
-            color: 0x111115,
-            metalness: 0.9,
-            roughness: 0.25,
-            transmission: 0.6,          // Alta transmisión para el efecto vidrio
-            ior: 1.5,                    // Índice de refracción
-            thickness: 1.5,              // Grosor del vidrio
-            iridescence: 0.8,            // Ligera iridiscencia cibernética
-            iridescenceIOR: 1.7,
-            side: THREE.DoubleSide,
-            flatShading: false
-        });
-
-        const mesh = new THREE.Mesh(geometry, material);
-        scene.add(mesh);
-
-        // --- ILUMINACIÓN ESTRICTA DE 3 PUNTOS ---
-
-        // 1. Luz direccional azul neón fuerte
-        const blueDirectionalLight = new THREE.DirectionalLight(0x00e5ff, 6);
-        blueDirectionalLight.position.set(-3, 3, 2);
-        scene.add(blueDirectionalLight);
-
-        // 2. Luz puntual púrpura profunda para rellenar sombras
-        const purplePointLight = new THREE.PointLight(0x9d00ff, 8, 15);
-        purplePointLight.position.set(3, -2, 1);
-        scene.add(purplePointLight);
-
-        // 3. Luz de contorno sutil (Rim Light) posterior
-        const rimLight = new THREE.DirectionalLight(0xffffff, 1.5);
-        rimLight.position.set(0, 0, -5);
-        scene.add(rimLight);
-
-        // --- GESTIÓN DE RESIZE ---
-        window.addEventListener('resize', () => {
-            // Actualizar dimensiones
-            sizes.width = window.innerWidth;
-            sizes.height = window.innerHeight;
-
-            // Actualizar cámara
-            camera.aspect = sizes.width / sizes.height;
-            camera.updateProjectionMatrix();
-
-            // Actualizar renderer
-            renderer.setSize(sizes.width, sizes.height);
+            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Planeta
+            const planetGeo = new THREE.SphereGeometry(2.2, 64, 64);
+            const planetMat = new THREE.MeshStandardMaterial({
+                color: 0x3d2a1c,
+                metalness: 0.4,
+                roughness: 0.55,
+                emissive: 0x1a0f08,
+                emissiveIntensity: 0.4
+            });
+            const planet = new THREE.Mesh(planetGeo, planetMat);
+            scene.add(planet);
+
+            // Halo/atmósfera dorada
+            const haloGeo = new THREE.SphereGeometry(2.35, 64, 64);
+            const haloMat = new THREE.MeshBasicMaterial({ color: 0xc9a86a, transparent: true, opacity: 0.12, side: THREE.BackSide });
+            const halo = new THREE.Mesh(haloGeo, haloMat);
+            halo.scale.setScalar(1.15);
+            scene.add(halo);
+
+            // Estrellas
+            const starGeo = new THREE.BufferGeometry();
+            const starCount = 1200;
+            const starPositions = new Float32Array(starCount * 3);
+            for (let i = 0; i < starCount * 3; i++) starPositions[i] = (Math.random() - 0.5) * 60;
+            starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+            const starMat = new THREE.PointsMaterial({ color: 0xfaf7f2, size: 0.045 });
+            const stars = new THREE.Points(starGeo, starMat);
+            scene.add(stars);
+
+            // Luces
+            const keyLight = new THREE.DirectionalLight(0xc9a86a, 3);
+            keyLight.position.set(-4, 3, 4);
+            scene.add(keyLight);
+            const rim = new THREE.DirectionalLight(0xfaf7f2, 1.2);
+            rim.position.set(3, -2, -3);
+            scene.add(rim);
+            scene.add(new THREE.AmbientLight(0x3d2a1c, 0.6));
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            const clock = new THREE.Clock();
+            let rafId;
+            function tick() {
+                const t = clock.getElapsedTime();
+                planet.rotation.y = t * 0.08;
+                stars.rotation.y = t * 0.01;
+                renderer.render(scene, camera);
+                rafId = requestAnimationFrame(tick);
+            }
+            tick();
+
+            function finishIntro() {
+                sessionStorage.setItem('vdt-intro-seen', 'true');
+                gsap.to(overlay, {
+                    autoAlpha: 0,
+                    duration: 1,
+                    ease: 'power2.inOut',
+                    onComplete: () => {
+                        overlay.style.display = 'none';
+                        cancelAnimationFrame(rafId);
+                    }
+                });
+                gsap.to(site, { autoAlpha: 1, duration: 1.1, ease: 'power2.out' });
+                playHeroReveal();
+            }
+
+            skipBtn.addEventListener('click', finishIntro);
+
+            if (alreadySeen) {
+                overlay.style.display = 'none';
+                gsap.set(site, { autoAlpha: 1 });
+                cancelAnimationFrame(rafId);
+                playHeroReveal();
+                return;
+            }
+
+            const tl = gsap.timeline({ delay: 0.3 });
+            tl.to(camera.position, { z: 5.5, duration: 3.2, ease: 'power2.inOut' })
+              .to('#intro-logo', { opacity: 1, duration: 1.2, ease: 'power2.out' }, '-=1.8')
+              .to('#intro-tagline', { opacity: 1, duration: 1, ease: 'power2.out' }, '-=0.6')
+              .to({}, { duration: 1.4 }) // hold
+              .add(finishIntro);
+        })();
+
+        /* ===================== Reveal al hacer scroll ===================== */
+        function playHeroReveal() {
+            gsap.to(['#hero-copy', '#hero-visual'], {
+                opacity: 1, y: 0, duration: 1, stagger: 0.15, ease: 'power3.out'
+            });
+        }
+
+        gsap.utils.toArray('.reveal').forEach((el) => {
+            if (el.id === 'hero-copy' || el.id === 'hero-visual') return;
+            gsap.to(el, {
+                opacity: 1,
+                y: 0,
+                duration: 0.9,
+                ease: 'power3.out',
+                scrollTrigger: { trigger: el, start: 'top 85%' }
+            });
         });
 
-        // --- ANIMACIÓN FLOTANTE CONTINUA (Efecto Respiración) ---
-        const clock = new THREE.Clock();
+        /* ===================== Selector de color de producto ===================== */
+        const visual = document.getElementById('product-visual');
+        const label = document.getElementById('color-label');
+        document.querySelectorAll('.color-swatch').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.color-swatch').forEach((b) => b.removeAttribute('data-active'));
+                btn.setAttribute('data-active', 'true');
+                label.textContent = btn.dataset.name;
+                gsap.to(visual, { backgroundColor: btn.dataset.color, duration: 0.5, ease: 'power2.out' });
+            });
+        });
 
-        // Variables para suavizar la animación de mano alzada
-        let targetX = 0;
-        let targetY = 0;
-
-        // --- ANIMACIÓN GSAP VINCULADA AL SCROLL ---
-        // Animación de la cámara y rotación del objeto basada en el scroll global
-        gsap.timeline({
-            scrollTrigger: {
-                trigger: "body",
-                start: "top top",
-                end: "bottom bottom",
-                scrub: 1.5, // Scroll suave
-            }
-        })
-        .to(camera.position, {
-            z: 2.8,        // Empuja visualmente al usuario más cerca del objeto
-            y: -0.5,
-            ease: "none"
-        }, 0)
-        .to(mesh.rotation, {
-            x: Math.PI * 1.5,
-            y: Math.PI * 2,
-            ease: "none"
-        }, 0);
-
-        // --- BUCLE DE RENDERIZADO (TICK) ---
-        const tick = () => {
-            const elapsedTime = clock.getElapsedTime();
-
-            // Rotación constante lenta del objeto
-            mesh.rotation.x = elapsedTime * 0.05 + (mesh.rotation.x * 0.02);
-            mesh.rotation.y = elapsedTime * 0.08;
-
-            // Simulación de efecto flotante continuo (respiración / mano) en la cámara
-            camera.position.x += (Math.sin(elapsedTime * 0.8) * 0.002 - camera.position.x * 0.01);
-            camera.position.y += (Math.cos(elapsedTime * 0.6) * 0.002 - camera.position.y * 0.01);
-
-            // Renderizar
-            renderer.render(scene, camera);
-
-            // Llamar de nuevo en el siguiente frame
-            window.requestAnimationFrame(tick);
-        };
-
-        tick();
+        /* ===================== Menú móvil ===================== */
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuToggle.addEventListener('click', () => {
+            const isOpen = !mobileMenu.classList.contains('hidden');
+            mobileMenu.classList.toggle('hidden');
+            mobileMenu.classList.toggle('flex');
+            menuToggle.setAttribute('aria-expanded', String(!isOpen));
+        });
     </script>
 </body>
 
