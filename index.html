@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber-Minimalism | Digital Realities</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+        /* Estilos personalizados y variables de diseño */
+        body {
+            background: linear-gradient(135deg, #0a0a0c 0%, #151518 100%);
+            overflow-x: hidden;
+        }
+
+        /* Efecto Glassmorphism Avanzado */
+        .glass-panel {
+            background: rgba(25, 25, 30, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-button {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(0, 229, 255, 0.5);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Ocultar barra de scroll pero mantener funcionalidad */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #252529;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00e5ff;
+        }
+    </style>
+</head>
+
+<body class="text-zinc-100 font-sans antialiased">
+
+    <canvas id="webgl-canvas" class="fixed top-0 left-0 w-full h-full z-0 pointer-events-none"></canvas>
+
+    <main class="relative z-10 w-full">
+
+        <section class="min-h-screen w-full flex flex-col justify-between px-6 py-8 md:px-24 md:py-12 justify-center items-start">
+
+            <header class="w-full flex justify-between items-center fixed top-0 left-0 px-6 py-6 md:px-24 z-50 mix-blend-difference">
+                <span class="text-sm font-mono tracking-widest text-zinc-400">N V R . LAB</span>
+                <span class="text-xs font-mono text-zinc-500">©2026</span>
+            </header>
+
+            <div class="max-w-4xl mt-32 md:mt-48">
+                <h1 class="text-5xl md:text-8xl font-black tracking-tighter leading-none mb-6 uppercase text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-500">
+                    We Build<br><span class="text-white">Digital Realities</span>
+                </h1>
+                <p class="text-zinc-400 max-w-md text-base md:text-lg mb-8 font-light leading-relaxed">
+                    Ecosistemas tridimensionales e interfaces inmersivas diseñadas bajo una estética minimalista y tecnología de vanguardia.
+                </p>
+                <button class="glass-button text-xs font-mono tracking-widest uppercase px-8 py-4 rounded-none text-cyan-400">
+                    Explorar Universo
+                </button>
+            </div>
+
+            <div class="w-full flex justify-between items-end mt-12 md:mt-0">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                    <span class="text-xs font-mono tracking-wider text-zinc-500 uppercase">Scroll para descender</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="min-h-screen w-full flex flex-col justify-center px-6 py-24 md:px-24 gap-12 max-w-7xl mx-auto">
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+
+                <div class="glass-panel p-8 md:p-10 flex flex-col justify-between min-h-[320px] rounded-none">
+                    <div>
+                        <span class="text-xs font-mono text-cyan-400 tracking-widest block mb-6">01 // CONCEPT</span>
+                        <h3 class="text-2xl font-bold tracking-tight mb-4">Digital Strategy</h3>
+                        <p class="text-zinc-400 text-sm font-light leading-relaxed">
+                            Definimos la arquitectura conceptual de productos interactivos de alto impacto, fusionando objetivos comerciales con estéticas disruptivas.
+                        </p>
+                    </div>
+                    <span class="text-xs font-mono text-zinc-600 mt-6">[ Phase_Alpha ]</span>
+                </div>
+
+                <div class="glass-panel p-8 md:p-10 flex flex-col justify-between min-h-[320px] rounded-none">
+                    <div>
+                        <span class="text-xs font-mono text-purple-400 tracking-widest block mb-6">02 // ENGINE</span>
+                        <h3 class="text-2xl font-bold tracking-tight mb-4">3D Web Experience</h3>
+                        <p class="text-zinc-400 text-sm font-light leading-relaxed">
+                            Rompemos la bidimensionalidad clásica. Diseñamos entornos web inmersivos renderizados en tiempo real con optimización de hardware fluida.
+                        </p>
+                    </div>
+                    <span class="text-xs font-mono text-zinc-600 mt-6">[ Phase_Beta ]</span>
+                </div>
+
+                <div class="glass-panel p-8 md:p-10 flex flex-col justify-between min-h-[320px] rounded-none">
+                    <div>
+                        <span class="text-xs font-mono text-zinc-400 tracking-widest block mb-6">03 // INTEL</span>
+                        <h3 class="text-2xl font-bold tracking-tight mb-4">AI Integration</h3>
+                        <p class="text-zinc-400 text-sm font-light leading-relaxed">
+                            Potenciamos la interacción mediante agentes inteligentes y modelos generativos embebidos directamente en la experiencia de usuario.
+                        </p>
+                    </div>
+                    <span class="text-xs font-mono text-zinc-600 mt-6">[ Phase_Gamma ]</span>
+                </div>
+
+            </div>
+        </section>
+
+        <footer class="w-full px-6 py-8 md:px-24 border-t border-zinc-900/50 glass-panel border-x-0 border-b-0">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-mono text-zinc-500">
+                <div>CORE ENGINE: THREE.JS & GSAP</div>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-cyan-400 transition-colors">INSTAGRAM</a>
+                    <a href="#" class="hover:text-cyan-400 transition-colors">LINKEDIN</a>
+                    <a href="#" class="hover:text-cyan-400 transition-colors">GITHUB</a>
+                </div>
+            </div>
+        </footer>
+
+    </main>
+
+    <script>
+        // Registrar ScrollTrigger en GSAP
+        gsap.registerPlugin(ScrollTrigger);
+
+        // --- CONFIGURACIÓN ESCENA THREE.JS ---
+        const canvas = document.querySelector('#webgl-canvas');
+        const scene = new THREE.Scene();
+
+        // Dimensiones iniciales
+        const sizes = {
+            width: window.innerWidth,
+            height: window.innerHeight
+        };
+
+        // Cámara
+        const camera = new THREE.PerspectiveCamera(60, sizes.width / sizes.height, 0.1, 100);
+        camera.position.x = 0;
+        camera.position.y = 0;
+        camera.position.z = 5;
+        scene.add(camera);
+
+        // Renderer con Antialiasing y Pixel Ratio optimizado
+        const renderer = new THREE.WebGLRenderer({
+            canvas: canvas,
+            antialias: true,
+            alpha: true
+        });
+        renderer.setSize(sizes.width, sizes.height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // --- GEOMETRÍA Y MATERIAL (Torus Knot Cyber-Glass) ---
+        const geometry = new THREE.TorusKnotGeometry(1.2, 0.38, 200, 32, 3, 4);
+
+        // MeshPhysicalMaterial con propiedades de vidrio esmerilado y metal premium
+        const material = new THREE.MeshPhysicalMaterial({
+            color: 0x111115,
+            metalness: 0.9,
+            roughness: 0.25,
+            transmission: 0.6,          // Alta transmisión para el efecto vidrio
+            ior: 1.5,                    // Índice de refracción
+            thickness: 1.5,              // Grosor del vidrio
+            iridescence: 0.8,            // Ligera iridiscencia cibernética
+            iridescenceIOR: 1.7,
+            side: THREE.DoubleSide,
+            flatShading: false
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+
+        // --- ILUMINACIÓN ESTRICTA DE 3 PUNTOS ---
+
+        // 1. Luz direccional azul neón fuerte
+        const blueDirectionalLight = new THREE.DirectionalLight(0x00e5ff, 6);
+        blueDirectionalLight.position.set(-3, 3, 2);
+        scene.add(blueDirectionalLight);
+
+        // 2. Luz puntual púrpura profunda para rellenar sombras
+        const purplePointLight = new THREE.PointLight(0x9d00ff, 8, 15);
+        purplePointLight.position.set(3, -2, 1);
+        scene.add(purplePointLight);
+
+        // 3. Luz de contorno sutil (Rim Light) posterior
+        const rimLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        rimLight.position.set(0, 0, -5);
+        scene.add(rimLight);
+
+        // --- GESTIÓN DE RESIZE ---
+        window.addEventListener('resize', () => {
+            // Actualizar dimensiones
+            sizes.width = window.innerWidth;
+            sizes.height = window.innerHeight;
+
+            // Actualizar cámara
+            camera.aspect = sizes.width / sizes.height;
+            camera.updateProjectionMatrix();
+
+            // Actualizar renderer
+            renderer.setSize(sizes.width, sizes.height);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        });
+
+        // --- ANIMACIÓN FLOTANTE CONTINUA (Efecto Respiración) ---
+        const clock = new THREE.Clock();
+
+        // Variables para suavizar la animación de mano alzada
+        let targetX = 0;
+        let targetY = 0;
+
+        // --- ANIMACIÓN GSAP VINCULADA AL SCROLL ---
+        // Animación de la cámara y rotación del objeto basada en el scroll global
+        gsap.timeline({
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1.5, // Scroll suave
+            }
+        })
+        .to(camera.position, {
+            z: 2.8,        // Empuja visualmente al usuario más cerca del objeto
+            y: -0.5,
+            ease: "none"
+        }, 0)
+        .to(mesh.rotation, {
+            x: Math.PI * 1.5,
+            y: Math.PI * 2,
+            ease: "none"
+        }, 0);
+
+        // --- BUCLE DE RENDERIZADO (TICK) ---
+        const tick = () => {
+            const elapsedTime = clock.getElapsedTime();
+
+            // Rotación constante lenta del objeto
+            mesh.rotation.x = elapsedTime * 0.05 + (mesh.rotation.x * 0.02);
+            mesh.rotation.y = elapsedTime * 0.08;
+
+            // Simulación de efecto flotante continuo (respiración / mano) en la cámara
+            camera.position.x += (Math.sin(elapsedTime * 0.8) * 0.002 - camera.position.x * 0.01);
+            camera.position.y += (Math.cos(elapsedTime * 0.6) * 0.002 - camera.position.y * 0.01);
+
+            // Renderizar
+            renderer.render(scene, camera);
+
+            // Llamar de nuevo en el siguiente frame
+            window.requestAnimationFrame(tick);
+        };
+
+        tick();
+    </script>
+</body>
+
+</html>
