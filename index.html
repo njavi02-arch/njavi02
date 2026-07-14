@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VDT | Diseño atemporal, calidad premium</title>
-    <meta name="description" content="VDT — Diseño atemporal y calidad premium. Descubrí nuestra colección.">
+    <title>VDT | Café, matcha y accesorios premium</title>
+    <meta name="description" content="VDT — Café, matcha, bebidas y accesorios premium. No vendemos solo café, creamos momentos.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,10 +19,14 @@
         :root {
             --cream: #faf7f2;
             --cream-deep: #f1ebe1;
+            --beige: #eee1c8;
             --brown-900: #2b1c12;
             --brown-800: #3d2a1c;
             --brown-700: #5a4028;
             --brown-500: #8a6238;
+            --matcha-900: #2c3820;
+            --matcha-700: #4a5c34;
+            --matcha-500: #7c8f5e;
             --gold: #c9a86a;
         }
 
@@ -41,7 +45,7 @@
         ::-webkit-scrollbar-track { background: var(--cream); }
         ::-webkit-scrollbar-thumb { background: var(--brown-500); border-radius: 4px; }
 
-        /* --- Intro cinematográfica --- */
+        /* --- Intro en video --- */
         #intro-overlay {
             position: fixed;
             inset: 0;
@@ -85,6 +89,12 @@
             transition: opacity 0.25s ease;
         }
 
+        /* Textura sutil tipo "grano" para dar calidez a fondos oscuros */
+        .grain-texture {
+            background-image: radial-gradient(rgba(250,247,242,0.05) 1px, transparent 1px);
+            background-size: 14px 14px;
+        }
+
         /* Selector de color de producto */
         .color-swatch {
             width: 2.25rem;
@@ -111,8 +121,24 @@
             border-color: var(--brown-900);
         }
 
+        /* Tarjetas de producto/categoría */
+        .product-card, .category-tile {
+            transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), box-shadow 0.35s ease;
+        }
+        .product-card:hover, .category-tile:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -20px rgba(43, 28, 18, 0.35);
+        }
+        .product-card .add-cart-btn {
+            transition: all 0.25s ease;
+        }
+
+        .cart-added {
+            background: var(--matcha-700) !important;
+        }
+
         /* Los elementos .reveal son visibles por defecto; el JS los anima
-           solo si Three.js/GSAP cargan correctamente (ver <script> al final). */
+           solo si GSAP carga correctamente (ver <script> al final). */
     </style>
 </head>
 
@@ -130,19 +156,20 @@
     <div id="site">
 
         <!-- NAV -->
-        <header class="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-[var(--cream)]/80 border-b border-[var(--brown-500)]/15">
+        <header class="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-[var(--cream)]/85 border-b border-[var(--brown-500)]/15">
             <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 md:px-10 py-4">
                 <a href="#" class="font-display text-2xl font-semibold tracking-wide text-[var(--brown-900)]">VDT</a>
 
-                <div class="hidden md:flex items-center gap-10 text-sm tracking-wide text-[var(--brown-700)]">
-                    <a href="#hero" class="hover:text-[var(--brown-900)] transition-colors">Inicio</a>
-                    <a href="#producto" class="hover:text-[var(--brown-900)] transition-colors">Producto</a>
-                    <a href="#nosotros" class="hover:text-[var(--brown-900)] transition-colors">Nosotros</a>
+                <div class="hidden md:flex items-center gap-9 text-sm tracking-wide text-[var(--brown-700)]">
+                    <a href="#tienda" class="hover:text-[var(--brown-900)] transition-colors">Tienda</a>
+                    <a href="#experiencia" class="hover:text-[var(--brown-900)] transition-colors">Nuestra historia</a>
+                    <a href="#reviews" class="hover:text-[var(--brown-900)] transition-colors">Reviews</a>
+                    <a href="#club" class="hover:text-[var(--brown-900)] transition-colors">Club VDT</a>
                     <a href="#contacto" class="hover:text-[var(--brown-900)] transition-colors">Contacto</a>
                 </div>
 
-                <a href="#producto" class="hidden md:inline-block bg-[var(--brown-900)] text-[var(--cream)] text-sm px-6 py-2.5 tracking-wide hover:bg-[var(--brown-700)] transition-colors">
-                    Descubrir
+                <a href="#tienda" class="hidden md:inline-block bg-[var(--matcha-700)] text-[var(--cream)] text-sm px-6 py-2.5 tracking-wide hover:bg-[var(--matcha-900)] transition-colors">
+                    Descubre nuestra colección
                 </a>
 
                 <button id="menu-toggle" class="md:hidden text-[var(--brown-900)]" aria-label="Abrir menú" aria-expanded="false">
@@ -151,31 +178,33 @@
             </nav>
 
             <div id="mobile-menu" class="hidden md:hidden flex-col gap-1 px-6 pb-6 text-[var(--brown-700)] bg-[var(--cream)]">
-                <a href="#hero" class="py-3 border-b border-[var(--brown-500)]/10">Inicio</a>
-                <a href="#producto" class="py-3 border-b border-[var(--brown-500)]/10">Producto</a>
-                <a href="#nosotros" class="py-3 border-b border-[var(--brown-500)]/10">Nosotros</a>
+                <a href="#tienda" class="py-3 border-b border-[var(--brown-500)]/10">Tienda</a>
+                <a href="#experiencia" class="py-3 border-b border-[var(--brown-500)]/10">Nuestra historia</a>
+                <a href="#reviews" class="py-3 border-b border-[var(--brown-500)]/10">Reviews</a>
+                <a href="#club" class="py-3 border-b border-[var(--brown-500)]/10">Club VDT</a>
                 <a href="#contacto" class="py-3">Contacto</a>
             </div>
         </header>
 
-        <!-- HERO -->
+        <!-- ===================== 1. HERO ===================== -->
         <section id="hero" class="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-b from-[var(--cream)] to-[var(--cream-deep)]">
-            <div class="absolute -right-40 top-1/4 w-[36rem] h-[36rem] rounded-full bg-gradient-to-br from-[var(--gold)]/25 to-[var(--brown-700)]/10 blur-3xl"></div>
+            <div class="absolute -right-40 top-1/4 w-[36rem] h-[36rem] rounded-full bg-gradient-to-br from-[var(--matcha-500)]/25 to-[var(--brown-700)]/10 blur-3xl"></div>
+            <div class="absolute -left-32 bottom-0 w-[26rem] h-[26rem] rounded-full bg-gradient-to-tr from-[var(--gold)]/20 to-transparent blur-3xl"></div>
 
             <div class="max-w-7xl mx-auto w-full px-6 md:px-10 pt-32 pb-20 grid md:grid-cols-2 gap-12 items-center relative z-10">
                 <div class="reveal" id="hero-copy">
-                    <span class="inline-block text-xs tracking-[0.3em] uppercase text-[var(--brown-500)] mb-6">Colección Signature</span>
+                    <span class="inline-block text-xs tracking-[0.3em] uppercase text-[var(--matcha-700)] mb-6">Café · Matcha · Lifestyle</span>
                     <h1 class="text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.05] text-[var(--brown-900)] mb-6">
-                        Elegancia que <span class="italic text-[var(--brown-500)]">perdura</span>
+                        No vendemos café,<br><span class="italic text-[var(--matcha-700)]">creamos momentos</span>
                     </h1>
                     <p class="text-lg text-[var(--brown-700)] max-w-md mb-10 leading-relaxed">
-                        Piezas diseñadas con precisión y materiales seleccionados. Una experiencia premium pensada para quienes valoran el detalle.
+                        Café de origen, matcha ceremonial y los accesorios para disfrutarlos como se merecen. Una experiencia artesanal, pensada al detalle.
                     </p>
                     <div class="flex items-center gap-6">
-                        <a href="#producto" class="bg-[var(--brown-900)] text-[var(--cream)] px-8 py-4 text-sm tracking-wide hover:bg-[var(--brown-700)] transition-colors">
-                            Ver producto
+                        <a href="#tienda" class="bg-[var(--matcha-700)] text-[var(--cream)] px-8 py-4 text-sm tracking-wide hover:bg-[var(--matcha-900)] transition-colors">
+                            Descubre nuestra colección
                         </a>
-                        <a href="#nosotros" class="text-sm tracking-wide text-[var(--brown-900)] border-b border-[var(--brown-900)] pb-1 hover:text-[var(--brown-500)] hover:border-[var(--brown-500)] transition-colors">
+                        <a href="#experiencia" class="text-sm tracking-wide text-[var(--brown-900)] border-b border-[var(--brown-900)] pb-1 hover:text-[var(--brown-500)] hover:border-[var(--brown-500)] transition-colors">
                             Nuestra historia
                         </a>
                     </div>
@@ -195,12 +224,87 @@
             </div>
         </section>
 
-        <!-- PRODUCTO -->
-        <section id="producto" class="py-28 px-6 md:px-10 bg-[var(--cream)]">
+        <!-- ===================== 2. PRODUCTOS DESTACADOS ===================== -->
+        <section id="tienda" class="py-28 px-6 md:px-10 bg-[var(--cream)]">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16 reveal">
+                    <span class="text-xs tracking-[0.3em] uppercase text-[var(--matcha-700)]">La colección</span>
+                    <h2 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] mt-3">Productos destacados</h2>
+                    <p class="text-[var(--brown-700)] mt-4 max-w-xl mx-auto">* Categorías de catálogo — las fotos reales de café, matcha, tazas y packs se cargan cuando estén disponibles.</p>
+                </div>
+
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="product-card bg-white border border-[var(--brown-500)]/15">
+                        <div class="aspect-square bg-gradient-to-br from-[var(--brown-700)] to-[var(--brown-900)] flex items-center justify-center text-5xl">☕</div>
+                        <div class="p-6">
+                            <span class="text-xs tracking-[0.2em] uppercase text-[var(--brown-500)]">Café</span>
+                            <h3 class="font-display text-xl text-[var(--brown-900)] mt-1 mb-2">Blend Signature VDT</h3>
+                            <p class="text-sm text-[var(--brown-700)] mb-4">Granos de origen único, tueste artesanal.</p>
+                            <button class="add-cart-btn w-full bg-[var(--brown-900)] text-[var(--cream)] py-3 text-sm tracking-wide hover:bg-[var(--brown-700)]">Añadir al carrito</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card bg-white border border-[var(--brown-500)]/15">
+                        <div class="aspect-square bg-gradient-to-br from-[var(--matcha-500)] to-[var(--matcha-900)] flex items-center justify-center text-5xl">🍵</div>
+                        <div class="p-6">
+                            <span class="text-xs tracking-[0.2em] uppercase text-[var(--brown-500)]">Matcha</span>
+                            <h3 class="font-display text-xl text-[var(--brown-900)] mt-1 mb-2">Matcha Ceremonial</h3>
+                            <p class="text-sm text-[var(--brown-700)] mb-4">Molienda fina de piedra, grado ceremonial.</p>
+                            <button class="add-cart-btn w-full bg-[var(--brown-900)] text-[var(--cream)] py-3 text-sm tracking-wide hover:bg-[var(--brown-700)]">Añadir al carrito</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card bg-white border border-[var(--brown-500)]/15">
+                        <div class="aspect-square bg-gradient-to-br from-[var(--beige)] to-[var(--brown-500)] flex items-center justify-center text-5xl">🍶</div>
+                        <div class="p-6">
+                            <span class="text-xs tracking-[0.2em] uppercase text-[var(--brown-500)]">Tazas</span>
+                            <h3 class="font-display text-xl text-[var(--brown-900)] mt-1 mb-2">Taza de Cerámica VDT</h3>
+                            <p class="text-sm text-[var(--brown-700)] mb-4">Diseño artesanal, apta para microondas.</p>
+                            <button class="add-cart-btn w-full bg-[var(--brown-900)] text-[var(--cream)] py-3 text-sm tracking-wide hover:bg-[var(--brown-700)]">Añadir al carrito</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card bg-white border border-[var(--brown-500)]/15">
+                        <div class="aspect-square overflow-hidden">
+                            <img src="assets/product/negro.jpg" alt="Vaso Térmico COFFEE" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-6">
+                            <span class="text-xs tracking-[0.2em] uppercase text-[var(--brown-500)]">Portavasos</span>
+                            <h3 class="font-display text-xl text-[var(--brown-900)] mt-1 mb-2">Vaso Térmico COFFEE</h3>
+                            <p class="text-sm text-[var(--brown-700)] mb-4">Acero inoxidable, doble pared, 5 colores.</p>
+                            <a href="#producto" class="block text-center w-full bg-[var(--matcha-700)] text-[var(--cream)] py-3 text-sm tracking-wide hover:bg-[var(--matcha-900)]">Ver producto</a>
+                        </div>
+                    </div>
+
+                    <div class="product-card bg-white border border-[var(--brown-500)]/15">
+                        <div class="aspect-square bg-gradient-to-br from-[var(--brown-500)] to-[var(--matcha-700)] flex items-center justify-center text-5xl">🥤</div>
+                        <div class="p-6">
+                            <span class="text-xs tracking-[0.2em] uppercase text-[var(--brown-500)]">Accesorios</span>
+                            <h3 class="font-display text-xl text-[var(--brown-900)] mt-1 mb-2">Batidor de Bambú</h3>
+                            <p class="text-sm text-[var(--brown-700)] mb-4">Chasen tradicional para preparar matcha.</p>
+                            <button class="add-cart-btn w-full bg-[var(--brown-900)] text-[var(--cream)] py-3 text-sm tracking-wide hover:bg-[var(--brown-700)]">Añadir al carrito</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card bg-white border border-[var(--brown-500)]/15">
+                        <div class="aspect-square bg-gradient-to-br from-[var(--gold)] to-[var(--brown-700)] flex items-center justify-center text-5xl">🎁</div>
+                        <div class="p-6">
+                            <span class="text-xs tracking-[0.2em] uppercase text-[var(--brown-500)]">Packs regalo</span>
+                            <h3 class="font-display text-xl text-[var(--brown-900)] mt-1 mb-2">Set de Iniciación</h3>
+                            <p class="text-sm text-[var(--brown-700)] mb-4">Café, matcha y vaso térmico, todo en uno.</p>
+                            <button class="add-cart-btn w-full bg-[var(--brown-900)] text-[var(--cream)] py-3 text-sm tracking-wide hover:bg-[var(--brown-700)]">Añadir al carrito</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRODUCTO REAL: VASO TÉRMICO -->
+        <section id="producto" class="py-28 px-6 md:px-10 bg-[var(--cream-deep)]">
             <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-start">
 
                 <div class="reveal md:sticky md:top-28">
-                    <div id="product-visual" class="w-full aspect-square rounded-sm overflow-hidden bg-[var(--cream-deep)]">
+                    <div id="product-visual" class="w-full aspect-square rounded-sm overflow-hidden bg-[var(--cream)]">
                         <img id="product-image" src="assets/product/negro.jpg" alt="Vaso Térmico COFFEE, color negro" class="w-full h-full object-cover">
                     </div>
                 </div>
@@ -237,77 +341,193 @@
                         <li class="flex gap-3"><span class="text-[var(--gold)]">—</span> Disponible en 5 colores y 2 tamaños</li>
                     </ul>
 
-                    <button class="bg-[var(--brown-900)] text-[var(--cream)] px-10 py-4 text-sm tracking-wide hover:bg-[var(--brown-700)] transition-colors">
-                        Consultar disponibilidad
+                    <button class="add-cart-btn bg-[var(--brown-900)] text-[var(--cream)] px-10 py-4 text-sm tracking-wide hover:bg-[var(--brown-700)] transition-colors">
+                        Añadir al carrito
                     </button>
                 </div>
             </div>
         </section>
 
-        <!-- CARACTERÍSTICAS -->
-        <section class="py-28 px-6 md:px-10 bg-[var(--cream-deep)]">
+        <!-- ===================== 3. EXPERIENCIA DE MARCA ===================== -->
+        <section id="experiencia" class="py-28 px-6 md:px-10 bg-[var(--brown-900)] text-[var(--cream)] grain-texture">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-20 reveal">
+                    <span class="text-xs tracking-[0.3em] uppercase text-[var(--gold)]">Nuestra filosofía</span>
+                    <h2 class="font-display text-4xl md:text-5xl mt-4 leading-tight">
+                        No vendemos solo café,<br class="hidden md:block"> creamos momentos.
+                    </h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-x-16 gap-y-12">
+                    <div class="reveal">
+                        <span class="text-xs tracking-[0.2em] uppercase text-[var(--gold)] block mb-3">Nuestra historia</span>
+                        <p class="text-[var(--cream)]/75 leading-relaxed">VDT nació de un viaje entre cafetales y ceremonias de té: la idea de traer ese ritual a la rutina diaria, sin perder el detalle artesanal.</p>
+                    </div>
+                    <div class="reveal">
+                        <span class="text-xs tracking-[0.2em] uppercase text-[var(--gold)] block mb-3">Filosofía</span>
+                        <p class="text-[var(--cream)]/75 leading-relaxed">Creemos que el café y el matcha son más que una bebida: son una pausa consciente. Diseñamos para ese momento.</p>
+                    </div>
+                    <div class="reveal">
+                        <span class="text-xs tracking-[0.2em] uppercase text-[var(--gold)] block mb-3">Calidad de ingredientes</span>
+                        <p class="text-[var(--cream)]/75 leading-relaxed">Trabajamos con origenes seleccionados y proveedores que comparten nuestro estándar de calidad, lote a lote.</p>
+                    </div>
+                    <div class="reveal">
+                        <span class="text-xs tracking-[0.2em] uppercase text-[var(--gold)] block mb-3">Proceso artesanal</span>
+                        <p class="text-[var(--cream)]/75 leading-relaxed">Tueste en pequeños lotes y molienda tradicional de matcha, cuidando cada paso antes de que llegue a tu taza.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== 4. CATEGORÍAS VISUALES ===================== -->
+        <section class="py-24 px-6 md:px-10 bg-[var(--cream)]">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-14 reveal">
+                    <span class="text-xs tracking-[0.3em] uppercase text-[var(--matcha-700)]">Explorá por categoría</span>
+                    <h2 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] mt-3">Encontrá tu ritual</h2>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <a href="#tienda" class="category-tile reveal flex flex-col items-center justify-center gap-3 py-12 bg-[var(--brown-900)] text-[var(--cream)]">
+                        <span class="text-4xl">☕</span>
+                        <span class="text-sm tracking-[0.2em] uppercase">Café</span>
+                    </a>
+                    <a href="#tienda" class="category-tile reveal flex flex-col items-center justify-center gap-3 py-12 bg-[var(--matcha-700)] text-[var(--cream)]">
+                        <span class="text-4xl">🍵</span>
+                        <span class="text-sm tracking-[0.2em] uppercase">Matcha</span>
+                    </a>
+                    <a href="#producto" class="category-tile reveal flex flex-col items-center justify-center gap-3 py-12 bg-[var(--beige)] text-[var(--brown-900)]">
+                        <span class="text-4xl">🥤</span>
+                        <span class="text-sm tracking-[0.2em] uppercase">Accesorios</span>
+                    </a>
+                    <a href="#tienda" class="category-tile reveal flex flex-col items-center justify-center gap-3 py-12 bg-gradient-to-br from-[var(--gold)] to-[var(--brown-700)] text-[var(--cream)]">
+                        <span class="text-4xl">🎁</span>
+                        <span class="text-sm tracking-[0.2em] uppercase">Packs regalo</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== 5. SECCIÓN PREMIUM / DESTACADA ===================== -->
+        <section class="py-24 px-6 md:px-10 bg-[var(--cream-deep)]">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-14 reveal">
+                    <span class="text-xs tracking-[0.3em] uppercase text-[var(--matcha-700)]">Lo mejor de VDT</span>
+                    <h2 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] mt-3">Destacados de la temporada</h2>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="reveal bg-white p-8 border border-[var(--brown-500)]/15">
+                        <span class="inline-block text-xs tracking-[0.2em] uppercase bg-[var(--matcha-700)] text-[var(--cream)] px-3 py-1 mb-5">Más vendido</span>
+                        <h3 class="font-display text-xl text-[var(--brown-900)] mb-2">Vaso Térmico COFFEE</h3>
+                        <p class="text-sm text-[var(--brown-700)]">El favorito de la comunidad VDT, en 5 colores.</p>
+                    </div>
+                    <div class="reveal bg-white p-8 border border-[var(--brown-500)]/15">
+                        <span class="inline-block text-xs tracking-[0.2em] uppercase bg-[var(--gold)] text-[var(--brown-900)] px-3 py-1 mb-5">Novedad</span>
+                        <h3 class="font-display text-xl text-[var(--brown-900)] mb-2">Matcha Ceremonial</h3>
+                        <p class="text-sm text-[var(--brown-700)]">Recién llegado, molienda de piedra grado ceremonial.</p>
+                    </div>
+                    <div class="reveal bg-white p-8 border border-[var(--brown-500)]/15">
+                        <span class="inline-block text-xs tracking-[0.2em] uppercase bg-[var(--brown-900)] text-[var(--cream)] px-3 py-1 mb-5">Edición especial</span>
+                        <h3 class="font-display text-xl text-[var(--brown-900)] mb-2">Set de Iniciación</h3>
+                        <p class="text-sm text-[var(--brown-700)]">Café, matcha y vaso térmico en un solo pack.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== 6. REVIEWS ===================== -->
+        <section id="reviews" class="py-28 px-6 md:px-10 bg-[var(--cream)]">
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-16 reveal">
-                    <span class="text-xs tracking-[0.3em] uppercase text-[var(--brown-500)]">Por qué VDT</span>
-                    <h2 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] mt-3">Detalles que marcan la diferencia</h2>
+                    <span class="text-xs tracking-[0.3em] uppercase text-[var(--matcha-700)]">Confianza real</span>
+                    <h2 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] mt-3">Lo que dice nuestra comunidad</h2>
+                    <p class="text-xs text-[var(--brown-500)] mt-4">* Reseñas de ejemplo — reemplazar por valoraciones reales de clientes.</p>
                 </div>
-
                 <div class="grid md:grid-cols-3 gap-8">
-                    <div class="reveal bg-[var(--cream)] p-10 border border-[var(--brown-500)]/15">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--brown-700)" stroke-width="1.3" class="mb-6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-                        <h3 class="font-display text-xl text-[var(--brown-900)] mb-3">Calidad duradera</h3>
-                        <p class="text-[var(--brown-700)] text-sm leading-relaxed">Materiales y procesos elegidos para que cada pieza perdure en el tiempo.</p>
+                    <div class="reveal bg-[var(--cream-deep)] p-8">
+                        <div class="flex gap-1 text-[var(--gold)] mb-4">★★★★★</div>
+                        <p class="text-[var(--brown-700)] mb-6 leading-relaxed">"El vaso térmico mantiene el café caliente toda la mañana y el diseño es precioso."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-[var(--brown-700)] text-[var(--cream)] flex items-center justify-center text-sm font-medium">M</div>
+                            <span class="text-sm font-medium text-[var(--brown-900)]">María G.</span>
+                        </div>
                     </div>
-                    <div class="reveal bg-[var(--cream)] p-10 border border-[var(--brown-500)]/15">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--brown-700)" stroke-width="1.3" class="mb-6"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
-                        <h3 class="font-display text-xl text-[var(--brown-900)] mb-3">Diseño exclusivo</h3>
-                        <p class="text-[var(--brown-700)] text-sm leading-relaxed">Una identidad visual propia, pensada al detalle en cada línea y proporción.</p>
+                    <div class="reveal bg-[var(--cream-deep)] p-8">
+                        <div class="flex gap-1 text-[var(--gold)] mb-4">★★★★★</div>
+                        <p class="text-[var(--brown-700)] mb-6 leading-relaxed">"Se nota la calidad artesanal en cada detalle. Ya pedí el pack de regalo para toda mi familia."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-[var(--matcha-700)] text-[var(--cream)] flex items-center justify-center text-sm font-medium">J</div>
+                            <span class="text-sm font-medium text-[var(--brown-900)]">Javier R.</span>
+                        </div>
                     </div>
-                    <div class="reveal bg-[var(--cream)] p-10 border border-[var(--brown-500)]/15">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--brown-700)" stroke-width="1.3" class="mb-6"><path d="M20 12a8 8 0 10-8 8"/><path d="M12 4a8 8 0 018 8"/></svg>
-                        <h3 class="font-display text-xl text-[var(--brown-900)] mb-3">Experiencia premium</h3>
-                        <p class="text-[var(--brown-700)] text-sm leading-relaxed">Desde la web hasta el producto: cada punto de contacto cuidado al máximo detalle.</p>
+                    <div class="reveal bg-[var(--cream-deep)] p-8">
+                        <div class="flex gap-1 text-[var(--gold)] mb-4">★★★★★</div>
+                        <p class="text-[var(--brown-700)] mb-6 leading-relaxed">"La experiencia de compra se siente premium de principio a fin. Volvería a comprar sin dudarlo."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-[var(--gold)] text-[var(--brown-900)] flex items-center justify-center text-sm font-medium">S</div>
+                            <span class="text-sm font-medium text-[var(--brown-900)]">Sofía L.</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- MARCA -->
-        <section id="nosotros" class="py-28 px-6 md:px-10 bg-[var(--brown-900)] text-[var(--cream)]">
-            <div class="max-w-5xl mx-auto text-center reveal">
-                <span class="text-xs tracking-[0.3em] uppercase text-[var(--gold)]">Nuestra filosofía</span>
-                <h2 class="font-display text-4xl md:text-5xl mt-4 mb-8 leading-tight">
-                    Creemos en el diseño honesto,<br class="hidden md:block"> hecho para durar.
-                </h2>
-                <p class="text-[var(--cream)]/75 max-w-2xl mx-auto leading-relaxed">
-                    VDT nace de la búsqueda de un equilibrio entre elegancia y funcionalidad. Cada decisión, desde el material hasta el color, responde a una misma idea: calidad que se siente y se nota.
-                </p>
+        <!-- ===================== 7. NEWSLETTER ===================== -->
+        <section id="club" class="py-24 px-6 md:px-10 bg-[var(--matcha-900)] text-[var(--cream)] grain-texture">
+            <div class="max-w-2xl mx-auto text-center reveal">
+                <span class="text-xs tracking-[0.3em] uppercase text-[var(--gold)]">Club VDT</span>
+                <h2 class="font-display text-3xl md:text-4xl mt-4 mb-4">Únete al club del café</h2>
+                <p class="text-[var(--cream)]/75 mb-8">Descuentos exclusivos, novedades antes que nadie y contenido sobre café y matcha directo a tu correo.</p>
+                <form id="newsletter-form" class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <input type="email" required placeholder="tu@email.com" class="flex-1 max-w-sm px-5 py-3.5 text-[var(--brown-900)] bg-[var(--cream)] placeholder:text-[var(--brown-500)] focus:outline-none">
+                    <button type="submit" class="bg-[var(--gold)] text-[var(--brown-900)] px-8 py-3.5 text-sm tracking-wide font-medium hover:bg-[var(--cream)] transition-colors">
+                        Unirme ahora
+                    </button>
+                </form>
+                <p id="newsletter-message" class="text-sm text-[var(--gold)] mt-4 hidden">¡Gracias por unirte! Revisá tu correo para confirmar.</p>
             </div>
         </section>
 
-        <!-- FOOTER / CONTACTO -->
+        <!-- ===================== 8. FOOTER ===================== -->
         <footer id="contacto" class="py-16 px-6 md:px-10 bg-[var(--cream)] border-t border-[var(--brown-500)]/15">
-            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-10">
-                <div>
+            <div class="max-w-7xl mx-auto grid sm:grid-cols-2 md:grid-cols-5 gap-10">
+                <div class="sm:col-span-2 md:col-span-1">
                     <span class="font-display text-2xl text-[var(--brown-900)]">VDT</span>
-                    <p class="text-sm text-[var(--brown-700)] mt-3 max-w-xs">Diseño atemporal y calidad premium.</p>
+                    <p class="text-sm text-[var(--brown-700)] mt-3 max-w-xs">Café, matcha y accesorios premium. No vendemos solo café, creamos momentos.</p>
                 </div>
-                <div class="flex gap-16 text-sm text-[var(--brown-700)]">
-                    <div class="flex flex-col gap-2">
-                        <span class="text-[var(--brown-900)] font-medium mb-1">Sitio</span>
-                        <a href="#hero" class="hover:text-[var(--brown-900)] transition-colors">Inicio</a>
-                        <a href="#producto" class="hover:text-[var(--brown-900)] transition-colors">Producto</a>
-                        <a href="#nosotros" class="hover:text-[var(--brown-900)] transition-colors">Nosotros</a>
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <span class="text-[var(--brown-900)] font-medium mb-1">Social</span>
-                        <a href="#" class="hover:text-[var(--brown-900)] transition-colors">Instagram</a>
-                        <a href="#" class="hover:text-[var(--brown-900)] transition-colors">LinkedIn</a>
-                    </div>
+                <div class="flex flex-col gap-2 text-sm text-[var(--brown-700)]">
+                    <span class="text-[var(--brown-900)] font-medium mb-1">Tienda</span>
+                    <a href="#tienda" class="hover:text-[var(--brown-900)] transition-colors">Café</a>
+                    <a href="#tienda" class="hover:text-[var(--brown-900)] transition-colors">Matcha</a>
+                    <a href="#producto" class="hover:text-[var(--brown-900)] transition-colors">Accesorios</a>
+                    <a href="#tienda" class="hover:text-[var(--brown-900)] transition-colors">Packs regalo</a>
+                </div>
+                <div class="flex flex-col gap-2 text-sm text-[var(--brown-700)]">
+                    <span class="text-[var(--brown-900)] font-medium mb-1">Ayuda</span>
+                    <a href="#contacto" class="hover:text-[var(--brown-900)] transition-colors">Envíos</a>
+                    <a href="#contacto" class="hover:text-[var(--brown-900)] transition-colors">Devoluciones</a>
+                    <a href="#contacto" class="hover:text-[var(--brown-900)] transition-colors">Preguntas frecuentes</a>
+                    <a href="#contacto" class="hover:text-[var(--brown-900)] transition-colors">Contacto</a>
+                </div>
+                <div class="flex flex-col gap-2 text-sm text-[var(--brown-700)]">
+                    <span class="text-[var(--brown-900)] font-medium mb-1">Legal</span>
+                    <a href="#" class="hover:text-[var(--brown-900)] transition-colors">Términos y condiciones</a>
+                    <a href="#" class="hover:text-[var(--brown-900)] transition-colors">Privacidad</a>
+                    <a href="#" class="hover:text-[var(--brown-900)] transition-colors">Cookies</a>
+                </div>
+                <div class="flex flex-col gap-2 text-sm text-[var(--brown-700)]">
+                    <span class="text-[var(--brown-900)] font-medium mb-1">Seguinos</span>
+                    <a href="#" class="hover:text-[var(--brown-900)] transition-colors">Instagram</a>
+                    <a href="#" class="hover:text-[var(--brown-900)] transition-colors">TikTok</a>
+                    <a href="#" class="hover:text-[var(--brown-900)] transition-colors">Pinterest</a>
                 </div>
             </div>
-            <div class="max-w-7xl mx-auto mt-12 pt-6 border-t border-[var(--brown-500)]/10 text-xs text-[var(--brown-500)]">
-                © 2026 VDT. Todos los derechos reservados.
+            <div class="max-w-7xl mx-auto mt-12 pt-6 border-t border-[var(--brown-500)]/10 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <span class="text-xs text-[var(--brown-500)]">© 2026 VDT. Todos los derechos reservados.</span>
+                <div class="flex gap-3 text-xs text-[var(--brown-500)]">
+                    <span class="border border-[var(--brown-500)]/30 px-2.5 py-1">Tarjeta</span>
+                    <span class="border border-[var(--brown-500)]/30 px-2.5 py-1">Transferencia</span>
+                    <span class="border border-[var(--brown-500)]/30 px-2.5 py-1">Pago contra entrega</span>
+                </div>
             </div>
         </footer>
 
@@ -415,6 +635,28 @@
             mobileMenu.classList.toggle('hidden');
             mobileMenu.classList.toggle('flex');
             menuToggle.setAttribute('aria-expanded', String(!isOpen));
+        });
+
+        /* ===================== Añadir al carrito (feedback visual, sin backend) ===================== */
+        document.querySelectorAll('.add-cart-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const original = btn.textContent;
+                btn.textContent = 'Añadido ✓';
+                btn.classList.add('cart-added');
+                setTimeout(() => {
+                    btn.textContent = original;
+                    btn.classList.remove('cart-added');
+                }, 1800);
+            });
+        });
+
+        /* ===================== Newsletter (front-end only, sin backend real) ===================== */
+        const newsletterForm = document.getElementById('newsletter-form');
+        const newsletterMessage = document.getElementById('newsletter-message');
+        newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            newsletterForm.reset();
+            newsletterMessage.classList.remove('hidden');
         });
     </script>
 </body>
