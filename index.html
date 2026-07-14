@@ -150,6 +150,10 @@
         .size-option { cursor: pointer; background: transparent; transition: all 0.3s ease; }
         .size-option[data-active="true"] { background: var(--brown-900); color: var(--cream) !important; border-color: var(--brown-900); }
 
+        .purchase-radio { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--brown-500); display: inline-block; position: relative; flex-shrink: 0; }
+        [data-active="true"] .purchase-radio { border-color: var(--matcha-700); }
+        [data-active="true"] .purchase-radio::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--matcha-700); }
+
         /* Tarjetas premium con tilt 3D sutil */
         .product-card, .narrative-card, .exclusive-card, .blog-card {
             transition: transform 0.5s cubic-bezier(0.16,1,0.3,1), box-shadow 0.5s ease;
@@ -218,6 +222,36 @@
         .review-dot { width: 6px; height: 6px; border-radius: 9999px; background: var(--brown-500); opacity: 0.3; transition: opacity 0.3s ease, width 0.3s ease; }
         .review-dot.active { opacity: 1; width: 18px; border-radius: 9999px; background: var(--matcha-700); }
 
+        /* ---- Popup de bienvenida ---- */
+        .popup-backdrop {
+            position: fixed; inset: 0; z-index: 250; background: rgba(28, 17, 11, 0.7);
+            display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+            opacity: 0; pointer-events: none; transition: opacity 0.35s ease;
+        }
+        .popup-backdrop.open { opacity: 1; pointer-events: auto; }
+        .welcome-popup {
+            position: relative; max-width: 420px; width: 100%; background: var(--brown-900);
+            padding: 3rem 2.5rem; text-align: center; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.5);
+            transform: scale(0.94) translateY(10px); transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+        }
+        .popup-backdrop.open .welcome-popup { transform: scale(1) translateY(0); }
+        .popup-close {
+            position: absolute; top: 1rem; right: 1.2rem; font-size: 1.5rem; line-height: 1;
+            color: rgba(248,244,236,0.5); background: none; border: none; cursor: pointer;
+        }
+        .popup-close:hover { color: var(--cream); }
+
+        /* ---- Barra de countdown, flotante y discreta ---- */
+        .discount-countdown {
+            position: fixed; left: 1.25rem; bottom: 1.25rem; z-index: 60;
+            background: var(--cream); border: 1px solid var(--gold); box-shadow: 0 15px 35px -15px rgba(74,44,32,0.3);
+            padding: 0.85rem 1.4rem; font-size: 0.72rem; color: var(--brown-900);
+            display: flex; flex-direction: column; gap: 0.15rem;
+            transform: translateY(120%); transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+            max-width: min(280px, calc(100vw - 2.5rem));
+        }
+        .discount-countdown.show { transform: translateY(0); }
+
         /* ---- Cursor premium personalizado (solo dispositivos con puntero fino) ---- */
         @media (pointer: fine) {
             body.custom-cursor-active, body.custom-cursor-active a, body.custom-cursor-active button {
@@ -263,10 +297,10 @@
         <!-- BARRA DE BENEFICIOS -->
         <div class="fixed top-0 left-0 w-full z-50 bg-[var(--brown-900)] text-[var(--cream)]">
             <div class="max-w-7xl mx-auto flex items-center justify-center md:justify-between gap-8 px-6 md:px-10 py-2 text-[0.68rem] tracking-[0.15em] uppercase overflow-x-auto whitespace-nowrap">
-                <span>🚚 Envío gratis +80€</span>
-                <span class="hidden sm:inline">⚡ Entrega 48h</span>
-                <span class="hidden md:inline">🌱 Producto ecológico</span>
-                <span class="hidden lg:inline">☕ Café seleccionado premium</span>
+                <span>☕ Envío gratis +80€</span>
+                <span class="hidden sm:inline">🚚 Entrega en 48/72h</span>
+                <span class="hidden md:inline">🌱 Café seleccionado de origen</span>
+                <span class="hidden lg:inline">⭐ Más de 10.000 clientes satisfechos</span>
             </div>
         </div>
 
@@ -404,26 +438,36 @@
                     <span class="eyebrow text-xs uppercase text-[var(--matcha-700)]">Explorá por categoría</span>
                     <h2 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] mt-3 italic">Encontrá tu ritual</h2>
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <a href="#tienda" data-filter-link="cafe" class="category-tile reveal group flex flex-col items-center justify-center gap-3 py-14 bg-[var(--brown-900)] text-[var(--cream)] border border-[var(--gold)]/20">
-                        <span class="text-4xl">☕</span>
-                        <span class="text-xs eyebrow uppercase">Café</span>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-5">
+                    <a href="#tienda" data-filter-link="cafe" class="category-tile reveal group flex flex-col items-center justify-center gap-2 py-12 px-4 text-center bg-[var(--brown-900)] text-[var(--cream)] border border-[var(--gold)]/20">
+                        <span class="text-3xl">☕</span>
+                        <span class="text-xs eyebrow uppercase">Café en grano</span>
+                        <span class="text-[0.65rem] text-[var(--cream)]/60 font-light">Tueste artesanal</span>
                         <span class="text-[0.65rem] text-[var(--gold)] opacity-0 group-hover:opacity-100 transition-opacity">Explorar →</span>
                     </a>
-                    <a href="#tienda" data-filter-link="matcha" class="category-tile reveal group flex flex-col items-center justify-center gap-3 py-14 bg-[var(--matcha-700)] text-[var(--cream)] border border-[var(--gold)]/20">
-                        <span class="text-4xl">🍵</span>
-                        <span class="text-xs eyebrow uppercase">Matcha</span>
+                    <a href="#tienda" data-filter-link="cafe" class="category-tile reveal group flex flex-col items-center justify-center gap-2 py-12 px-4 text-center bg-[var(--brown-700)] text-[var(--cream)] border border-[var(--gold)]/20">
+                        <span class="text-3xl">☕</span>
+                        <span class="text-xs eyebrow uppercase">Café molido</span>
+                        <span class="text-[0.65rem] text-[var(--cream)]/60 font-light">Listo para tu cafetera</span>
                         <span class="text-[0.65rem] text-[var(--gold)] opacity-0 group-hover:opacity-100 transition-opacity">Explorar →</span>
                     </a>
-                    <a href="#producto" class="category-tile reveal group flex flex-col items-center justify-center gap-3 py-14 bg-[var(--beige)] text-[var(--brown-900)] border border-[var(--brown-900)]/10">
-                        <span class="text-4xl">🥤</span>
-                        <span class="text-xs eyebrow uppercase">Accesorios</span>
+                    <a href="#tienda" data-filter-link="regalos" class="category-tile reveal group flex flex-col items-center justify-center gap-2 py-12 px-4 text-center bg-[var(--cream-deep)] text-[var(--brown-900)] border border-[var(--gold)]/40">
+                        <span class="text-3xl">🎁</span>
+                        <span class="text-xs eyebrow uppercase">Packs degustación</span>
+                        <span class="text-[0.65rem] text-[var(--brown-700)] font-light">Probá varios orígenes</span>
+                        <span class="text-[0.65rem] text-[var(--gold)] opacity-0 group-hover:opacity-100 transition-opacity">Explorar →</span>
+                    </a>
+                    <a href="#tienda" data-filter-link="matcha" class="category-tile reveal group flex flex-col items-center justify-center gap-2 py-12 px-4 text-center bg-[var(--matcha-700)] text-[var(--cream)] border border-[var(--gold)]/20">
+                        <span class="text-3xl">🌎</span>
+                        <span class="text-xs eyebrow uppercase">Cafés de origen</span>
+                        <span class="text-[0.65rem] text-[var(--cream)]/60 font-light">Lotes de un solo origen</span>
+                        <span class="text-[0.65rem] text-[var(--gold)] opacity-0 group-hover:opacity-100 transition-opacity">Explorar →</span>
+                    </a>
+                    <a href="#producto-cafe" class="category-tile reveal group flex flex-col items-center justify-center gap-2 py-12 px-4 text-center bg-[var(--beige)] text-[var(--brown-900)] border border-[var(--brown-900)]/10">
+                        <span class="text-3xl">♻️</span>
+                        <span class="text-xs eyebrow uppercase">Suscripción mensual</span>
+                        <span class="text-[0.65rem] text-[var(--brown-700)] font-light">Ahorrá en cada envío</span>
                         <span class="text-[0.65rem] text-[var(--brown-700)] opacity-0 group-hover:opacity-100 transition-opacity">Explorar →</span>
-                    </a>
-                    <a href="#tienda" data-filter-link="regalos" class="category-tile reveal group flex flex-col items-center justify-center gap-3 py-14 bg-[var(--cream-deep)] text-[var(--brown-900)] border border-[var(--gold)]/40">
-                        <span class="text-4xl">🎁</span>
-                        <span class="text-xs eyebrow uppercase">Packs regalo</span>
-                        <span class="text-[0.65rem] text-[var(--gold)] opacity-0 group-hover:opacity-100 transition-opacity">Explorar →</span>
                     </a>
                 </div>
             </div>
@@ -606,6 +650,78 @@
                     <div class="flex items-center justify-between">
                         <span class="font-display text-2xl text-[var(--brown-900)]">24,90 €</span>
                         <button id="add-vaso-termico" class="add-cart-btn bg-[var(--brown-900)] text-[var(--cream)] px-10 py-4 text-xs tracking-[0.2em] uppercase hover:bg-[var(--brown-700)] transition-colors">
+                            Añadir al carrito
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FICHA DE PRODUCTO: CAFÉ SIGNATURE -->
+        <section id="producto-cafe" class="py-32 px-6 md:px-10 bg-[var(--cream-deep)]">
+            <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-start">
+
+                <div class="reveal md:sticky md:top-36">
+                    <div class="w-full aspect-square overflow-hidden bg-gradient-to-br from-[var(--brown-700)] to-[var(--brown-900)] flex items-center justify-center text-8xl" style="box-shadow: 0 40px 80px -40px rgba(74,44,32,0.35);">☕</div>
+                    <p class="text-xs text-[var(--brown-500)] mt-3 font-light">* Imagen ilustrativa — se reemplaza por fotografía real del producto.</p>
+                </div>
+
+                <div class="reveal">
+                    <div class="gold-rule mb-6"></div>
+                    <span class="eyebrow text-xs uppercase text-[var(--brown-500)]">Café de especialidad</span>
+                    <h2 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] mt-3 mb-3 italic">Blend Signature VDT</h2>
+                    <div class="text-[var(--gold)] text-sm mb-8">★★★★★ <span class="text-[var(--brown-500)] text-xs">(128 valoraciones)</span></div>
+                    <p class="text-[var(--brown-700)] leading-relaxed mb-10 font-light">
+                        Un blend equilibrado de lotes seleccionados, tostado en pequeñas cantidades para conservar su aroma. Pensado para quienes buscan una taza con carácter cada mañana.
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-6 mb-10 text-sm">
+                        <div>
+                            <span class="eyebrow text-[0.65rem] uppercase text-[var(--brown-500)] block mb-2">Origen</span>
+                            <span class="text-[var(--brown-900)]">Colombia · Brasil</span>
+                        </div>
+                        <div>
+                            <span class="eyebrow text-[0.65rem] uppercase text-[var(--brown-500)] block mb-2">Intensidad</span>
+                            <span class="inline-flex gap-1">
+                                <span class="w-2.5 h-2.5 rounded-full bg-[var(--brown-900)]"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-[var(--brown-900)]"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-[var(--brown-900)]"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-[var(--brown-500)]/25"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-[var(--brown-500)]/25"></span>
+                            </span>
+                        </div>
+                        <div class="col-span-2">
+                            <span class="eyebrow text-[0.65rem] uppercase text-[var(--brown-500)] block mb-2">Notas de sabor</span>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="tag-pill border border-[var(--brown-500)]/30 text-[var(--brown-700)]">Chocolate</span>
+                                <span class="tag-pill border border-[var(--brown-500)]/30 text-[var(--brown-700)]">Frutos rojos</span>
+                                <span class="tag-pill border border-[var(--brown-500)]/30 text-[var(--brown-700)]">Caramelo</span>
+                            </div>
+                        </div>
+                        <div class="col-span-2">
+                            <span class="eyebrow text-[0.65rem] uppercase text-[var(--brown-500)] block mb-2">Preparación recomendada</span>
+                            <span class="text-[var(--brown-700)] font-light">Espresso, cafetera italiana o V60</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-8 border border-[var(--brown-500)]/25 p-5">
+                        <div class="flex items-center justify-between mb-4 cursor-pointer" id="purchase-onetime-option" data-active="true">
+                            <span class="flex items-center gap-3 text-sm text-[var(--brown-900)]">
+                                <span class="purchase-radio"></span> Compra única
+                            </span>
+                            <span class="text-sm text-[var(--brown-900)]">16,90 €</span>
+                        </div>
+                        <div class="flex items-center justify-between cursor-pointer" id="purchase-subscribe-option">
+                            <span class="flex items-center gap-3 text-sm text-[var(--brown-900)]">
+                                <span class="purchase-radio"></span> Suscríbete y ahorra 10%
+                            </span>
+                            <span class="text-sm text-[var(--matcha-700)]">15,21 € / mes</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <span class="font-display text-2xl text-[var(--brown-900)]" id="cafe-price-display">16,90 €</span>
+                        <button id="add-cafe-signature" class="add-cart-btn bg-[var(--brown-900)] text-[var(--cream)] px-10 py-4 text-xs tracking-[0.2em] uppercase hover:bg-[var(--brown-700)] transition-colors">
                             Añadir al carrito
                         </button>
                     </div>
@@ -921,6 +1037,40 @@
             </div>
             <div id="search-results" class="bg-[var(--cream)] mt-1 max-h-[50vh] overflow-y-auto"></div>
         </div>
+    </div>
+
+    <!-- Popup de bienvenida -->
+    <div id="welcome-backdrop" class="popup-backdrop">
+        <div id="welcome-popup" class="welcome-popup">
+            <button id="welcome-close" class="popup-close" aria-label="Cerrar">&times;</button>
+
+            <div id="welcome-form-view">
+                <span class="text-4xl block mb-5">☕</span>
+                <h3 class="font-display text-3xl italic mb-3 text-[var(--cream)]">Bienvenido a nuestra familia cafetera</h3>
+                <p class="text-sm text-[var(--cream)]/70 mb-7 font-light">Conseguí un 10% de descuento en tu primera compra.</p>
+                <form id="welcome-form" class="flex flex-col gap-3">
+                    <input type="text" id="welcome-name" required placeholder="Tu nombre" class="px-4 py-3 bg-[var(--cream)] text-[var(--brown-900)] placeholder:text-[var(--brown-500)] focus:outline-none text-sm">
+                    <input type="email" id="welcome-email" required placeholder="tu@email.com" class="px-4 py-3 bg-[var(--cream)] text-[var(--brown-900)] placeholder:text-[var(--brown-500)] focus:outline-none text-sm">
+                    <button type="submit" class="bg-[var(--gold)] text-[var(--brown-900)] py-3.5 text-xs tracking-[0.2em] uppercase mt-2 hover:bg-[var(--cream)] transition-colors">Quiero mi descuento</button>
+                </form>
+            </div>
+
+            <div id="welcome-confirmation-view" class="hidden">
+                <span class="text-4xl block mb-5">🎉</span>
+                <h3 class="font-display text-2xl italic mb-3 text-[var(--cream)]">¡Gracias, <span id="welcome-name-display"></span>!</h3>
+                <p class="text-sm text-[var(--cream)]/70 mb-5 font-light">Tu código de descuento:</p>
+                <div class="border border-[var(--gold)] text-[var(--gold)] text-lg tracking-[0.2em] py-3 mb-5">BIENVENIDO10</div>
+                <button id="welcome-continue" class="text-xs tracking-[0.2em] uppercase text-[var(--cream)]/70 hover:text-[var(--cream)] underline">Continuar comprando</button>
+            </div>
+
+            <p class="text-[0.65rem] text-[var(--cream)]/40 mt-6 font-light">* Se guarda solo en este navegador — es una demo sin backend real. El email no se envía a ningún lado todavía.</p>
+        </div>
+    </div>
+
+    <!-- Barra de countdown del descuento -->
+    <div id="discount-countdown" class="discount-countdown hidden">
+        <span id="discount-countdown-text">Tu descuento del 10% está reservado durante</span>
+        <span id="discount-countdown-timer" class="font-display italic">⏳ 29:59</span>
     </div>
 
     <script>
@@ -1269,6 +1419,31 @@
             openPanel('cart-panel');
         });
 
+        /* ===================== Café Signature: compra única vs suscripción ===================== */
+        const onetimeOption = document.getElementById('purchase-onetime-option');
+        const subscribeOption = document.getElementById('purchase-subscribe-option');
+        const cafePriceDisplay = document.getElementById('cafe-price-display');
+        const CAFE_ONETIME_PRICE = 16.90;
+        const CAFE_SUBSCRIBE_PRICE = 15.21;
+
+        function setPurchaseMode(mode) {
+            const isSubscribe = mode === 'subscribe';
+            onetimeOption.setAttribute('data-active', String(!isSubscribe));
+            subscribeOption.setAttribute('data-active', String(isSubscribe));
+            cafePriceDisplay.textContent = (isSubscribe ? CAFE_SUBSCRIBE_PRICE : CAFE_ONETIME_PRICE).toFixed(2).replace('.', ',') + ' €' + (isSubscribe ? ' / mes' : '');
+        }
+        onetimeOption.addEventListener('click', () => setPurchaseMode('onetime'));
+        subscribeOption.addEventListener('click', () => setPurchaseMode('subscribe'));
+
+        document.getElementById('add-cafe-signature').addEventListener('click', () => {
+            const isSubscribe = subscribeOption.getAttribute('data-active') === 'true';
+            const price = isSubscribe ? CAFE_SUBSCRIBE_PRICE : CAFE_ONETIME_PRICE;
+            const name = 'Blend Signature VDT' + (isSubscribe ? ' (Suscripción mensual)' : '');
+            addToCart({ id: 'blend-signature-' + (isSubscribe ? 'sub' : 'onetime'), name, price });
+            flashAdded(document.getElementById('add-cafe-signature'));
+            openPanel('cart-panel');
+        });
+
         function flashAdded(btn) {
             const original = btn.textContent;
             btn.textContent = 'Añadido ✓';
@@ -1361,6 +1536,97 @@
             newsletterForm.reset();
             newsletterMessage.classList.remove('hidden');
         });
+
+        /* ===================== Popup de bienvenida + countdown de descuento =====================
+           Todo esto vive solo en localStorage: no hay backend real que reciba el
+           email ni un descuento que se aplique de verdad en un checkout (no existe
+           checkout real todavía). Es la interfaz lista para conectar a Shopify/Klaviyo. */
+        (function initWelcomePopupAndCountdown() {
+            try {
+                const WELCOME_SHOWN_KEY = 'vdt-welcome-shown';
+                const DEADLINE_KEY = 'vdt-discount-deadline';
+                const COUNTDOWN_MS = 30 * 60 * 1000;
+
+                const backdrop = document.getElementById('welcome-backdrop');
+                const closeBtn = document.getElementById('welcome-close');
+                const form = document.getElementById('welcome-form');
+                const formView = document.getElementById('welcome-form-view');
+                const confirmView = document.getElementById('welcome-confirmation-view');
+                const nameDisplay = document.getElementById('welcome-name-display');
+                const continueBtn = document.getElementById('welcome-continue');
+
+                function closePopup() {
+                    backdrop.classList.remove('open');
+                    try { localStorage.setItem(WELCOME_SHOWN_KEY, 'true'); } catch (e) {}
+                }
+
+                let alreadyShown = false;
+                try { alreadyShown = localStorage.getItem(WELCOME_SHOWN_KEY) === 'true'; } catch (e) {}
+
+                if (!alreadyShown) {
+                    setTimeout(() => backdrop.classList.add('open'), 1800);
+                }
+
+                closeBtn.addEventListener('click', closePopup);
+                backdrop.addEventListener('click', (e) => { if (e.target === backdrop) closePopup(); });
+                continueBtn.addEventListener('click', closePopup);
+
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const name = document.getElementById('welcome-name').value.trim() || 'cliente VDT';
+                    const email = document.getElementById('welcome-email').value.trim();
+                    try {
+                        localStorage.setItem('vdt-welcome-lead', JSON.stringify({ name, email, code: 'BIENVENIDO10', claimedAt: Date.now() }));
+                        localStorage.setItem(WELCOME_SHOWN_KEY, 'true');
+                        if (!localStorage.getItem(DEADLINE_KEY)) {
+                            localStorage.setItem(DEADLINE_KEY, String(Date.now() + COUNTDOWN_MS));
+                        }
+                    } catch (err) {}
+                    nameDisplay.textContent = name;
+                    formView.classList.add('hidden');
+                    confirmView.classList.remove('hidden');
+                    startCountdown();
+                });
+
+                function startCountdown() {
+                    const bar = document.getElementById('discount-countdown');
+                    const timerLabel = document.getElementById('discount-countdown-timer');
+                    const textLabel = document.getElementById('discount-countdown-text');
+                    let deadline;
+                    try { deadline = parseInt(localStorage.getItem(DEADLINE_KEY), 10); } catch (e) { return; }
+                    if (!deadline) return;
+
+                    bar.classList.remove('hidden');
+                    setTimeout(() => bar.classList.add('show'), 50);
+
+                    const tick = () => {
+                        const remaining = deadline - Date.now();
+                        if (remaining <= 0) {
+                            clearInterval(intervalId);
+                            textLabel.textContent = 'Tu descuento de bienvenida ya no está reservado';
+                            timerLabel.textContent = '⏳ Escribinos y te ayudamos';
+                            try { localStorage.removeItem(DEADLINE_KEY); } catch (e) {}
+                            setTimeout(() => bar.classList.remove('show'), 8000);
+                            return;
+                        }
+                        const totalSeconds = Math.floor(remaining / 1000);
+                        const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+                        const seconds = String(totalSeconds % 60).padStart(2, '0');
+                        timerLabel.textContent = '⏳ ' + minutes + ':' + seconds;
+                    };
+                    tick();
+                    const intervalId = setInterval(tick, 1000);
+                }
+
+                // Si el usuario ya había reclamado el descuento en una visita anterior
+                // y el countdown sigue vigente, retomarlo sin reiniciarlo.
+                try {
+                    if (localStorage.getItem(DEADLINE_KEY)) startCountdown();
+                } catch (e) {}
+            } catch (err) {
+                console.error('Popup de bienvenida no disponible.', err);
+            }
+        })();
 
         /* ===================== Carrusel de reseñas ===================== */
         (function initReviewsCarousel() {
