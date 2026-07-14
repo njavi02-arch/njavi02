@@ -22,6 +22,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="assets/data/reviews.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
@@ -187,6 +188,35 @@
 
         .shipping-progress-track { height: 3px; background: rgba(74,44,32,0.12); }
         .shipping-progress-fill { height: 3px; background: var(--matcha-700); transition: width 0.5s ease; }
+
+        /* ---- Carrusel de reseñas ---- */
+        #reviews-viewport { overflow: hidden; }
+        #reviews-track {
+            display: flex; gap: 1.75rem;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+        }
+        #reviews-track.dragging { transition: none; }
+        .review-card {
+            flex: 0 0 auto; width: min(340px, 80vw);
+            background: var(--cream-deep); border-radius: 1.25rem; padding: 2.25rem;
+            box-shadow: 0 20px 45px -30px rgba(74,44,32,0.35);
+        }
+        .review-avatar {
+            width: 2.75rem; height: 2.75rem; border-radius: 9999px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; letter-spacing: 0.05em; color: var(--cream); flex-shrink: 0;
+        }
+        .review-hold-btn {
+            width: 3.25rem; height: 3.25rem; border-radius: 9999px;
+            border: 1px solid var(--gold); color: var(--gold); flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+            transition: background 0.25s ease, color 0.25s ease, transform 0.15s ease;
+            cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: none;
+        }
+        .review-hold-btn.pressed { background: var(--gold); color: var(--brown-900); transform: scale(0.92); }
+        .review-dot { width: 6px; height: 6px; border-radius: 9999px; background: var(--brown-500); opacity: 0.3; transition: opacity 0.3s ease, width 0.3s ease; }
+        .review-dot.active { opacity: 1; width: 18px; border-radius: 9999px; background: var(--matcha-700); }
 
         /* ---- Cursor premium personalizado (solo dispositivos con puntero fino) ---- */
         @media (pointer: fine) {
@@ -697,40 +727,28 @@
         </section>
 
         <!-- ===================== REVIEWS ===================== -->
-        <section id="reviews" class="py-32 px-6 md:px-10 bg-[var(--cream)]">
+        <section id="reviews" class="py-32 px-6 md:px-10 bg-[var(--cream)] overflow-hidden">
             <div class="max-w-7xl mx-auto">
-                <div class="text-center mb-20 reveal">
+                <div class="text-center mb-6 reveal">
                     <div class="gold-rule mx-auto mb-6"></div>
                     <span class="eyebrow text-xs uppercase text-[var(--matcha-700)]">Confianza real</span>
                     <h2 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] mt-3 italic">Lo que dice nuestra comunidad</h2>
-                    <p class="text-xs text-[var(--brown-500)] mt-5">* Reseñas de ejemplo — reemplazar por valoraciones reales de clientes.</p>
+                    <p id="reviews-average" class="text-sm text-[var(--brown-700)] mt-5"></p>
+                    <p class="text-xs text-[var(--brown-500)] mt-2">* Reseñas de ejemplo — el carrusel se conecta a valoraciones reales editando <code>assets/data/reviews.js</code>.</p>
                 </div>
-                <div class="grid md:grid-cols-3 gap-10">
-                    <div class="reveal bg-[var(--cream-deep)] p-10">
-                        <div class="flex gap-1 text-[var(--gold)] mb-5">★★★★★</div>
-                        <p class="text-[var(--brown-700)] mb-8 leading-relaxed font-light italic">"El vaso térmico mantiene el café caliente toda la mañana y el diseño es precioso."</p>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-[var(--brown-700)] text-[var(--cream)] flex items-center justify-center text-sm">M</div>
-                            <span class="text-sm text-[var(--brown-900)]">María G.</span>
-                        </div>
-                    </div>
-                    <div class="reveal bg-[var(--cream-deep)] p-10">
-                        <div class="flex gap-1 text-[var(--gold)] mb-5">★★★★★</div>
-                        <p class="text-[var(--brown-700)] mb-8 leading-relaxed font-light italic">"Se nota la calidad artesanal en cada detalle. Ya pedí el pack de regalo para toda mi familia."</p>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-[var(--matcha-700)] text-[var(--cream)] flex items-center justify-center text-sm">J</div>
-                            <span class="text-sm text-[var(--brown-900)]">Javier R.</span>
-                        </div>
-                    </div>
-                    <div class="reveal bg-[var(--cream-deep)] p-10">
-                        <div class="flex gap-1 text-[var(--gold)] mb-5">★★★★★</div>
-                        <p class="text-[var(--brown-700)] mb-8 leading-relaxed font-light italic">"La experiencia de compra se siente premium de principio a fin. Volvería a comprar sin dudarlo."</p>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-[var(--gold)] text-[var(--brown-900)] flex items-center justify-center text-sm">S</div>
-                            <span class="text-sm text-[var(--brown-900)]">Sofía L.</span>
-                        </div>
+
+                <div class="flex items-center gap-6 mt-16 reveal">
+                    <button id="reviews-hold" class="review-hold-btn hidden sm:flex" aria-label="Mantener pulsado para ver más opiniones">←</button>
+
+                    <div id="reviews-viewport" class="flex-1">
+                        <div id="reviews-track"></div>
                     </div>
                 </div>
+
+                <p class="text-center text-xs text-[var(--brown-500)] mt-3 sm:hidden">Deslizá para ver más opiniones →</p>
+                <p class="hidden sm:block text-center text-xs text-[var(--brown-500)] mt-4">← Mantener pulsado para ver más opiniones</p>
+
+                <div id="reviews-dots" class="flex justify-center gap-2 mt-8"></div>
             </div>
         </section>
 
@@ -1343,6 +1361,111 @@
             newsletterForm.reset();
             newsletterMessage.classList.remove('hidden');
         });
+
+        /* ===================== Carrusel de reseñas ===================== */
+        (function initReviewsCarousel() {
+            try {
+                const reviews = window.VDT_REVIEWS || [];
+                const track = document.getElementById('reviews-track');
+                const viewport = document.getElementById('reviews-viewport');
+                const dotsBox = document.getElementById('reviews-dots');
+                const holdBtn = document.getElementById('reviews-hold');
+                const avgLabel = document.getElementById('reviews-average');
+                if (!track || reviews.length === 0) return;
+
+                const avatarColors = ['var(--brown-700)', 'var(--matcha-700)', 'var(--gold)', 'var(--brown-500)', 'var(--matcha-500)'];
+                const dateFormatter = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
+
+                track.innerHTML = reviews.map((r, i) => {
+                    const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+                    const dateLabel = dateFormatter.format(new Date(r.date));
+                    return (
+                        '<div class="review-card">' +
+                            '<div class="text-[var(--gold)] mb-5 text-lg">' + stars + '</div>' +
+                            '<p class="text-[var(--brown-700)] mb-8 leading-relaxed font-light italic">&ldquo;' + r.text + '&rdquo;</p>' +
+                            '<div class="flex items-center gap-3">' +
+                                '<div class="review-avatar" style="background:' + avatarColors[i % avatarColors.length] + '">' + r.initials + '</div>' +
+                                '<div>' +
+                                    '<p class="text-sm text-[var(--brown-900)]">' + r.name + '</p>' +
+                                    '<p class="text-xs text-[var(--brown-500)]">' + dateLabel + '</p>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>'
+                    );
+                }).join('');
+
+                if (avgLabel) {
+                    const avg = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+                    avgLabel.textContent = avg.toFixed(1) + ' ★ · basado en ' + reviews.length + ' reseñas de ejemplo';
+                }
+
+                dotsBox.innerHTML = reviews.map(() => '<span class="review-dot"></span>').join('');
+                const dots = [...dotsBox.children];
+
+                let currentIndex = 0;
+                function cardStep() {
+                    const card = track.children[0];
+                    if (!card) return 0;
+                    const style = getComputedStyle(track);
+                    const gap = parseFloat(style.columnGap || style.gap || '0');
+                    return card.getBoundingClientRect().width + gap;
+                }
+                function goTo(index) {
+                    currentIndex = ((index % reviews.length) + reviews.length) % reviews.length;
+                    track.style.transform = 'translateX(-' + (currentIndex * cardStep()) + 'px)';
+                    dots.forEach((d, i) => d.classList.toggle('active', i === currentIndex));
+                }
+                goTo(0);
+                window.addEventListener('resize', () => goTo(currentIndex));
+
+                let autoplayTimer = null;
+                function startAutoplay() {
+                    stopAutoplay();
+                    autoplayTimer = setInterval(() => goTo(currentIndex + 1), 4500);
+                }
+                function stopAutoplay() {
+                    if (autoplayTimer) clearInterval(autoplayTimer);
+                    autoplayTimer = null;
+                }
+                startAutoplay();
+                viewport.addEventListener('mouseenter', stopAutoplay);
+                viewport.addEventListener('mouseleave', startAutoplay);
+
+                // Botón de mantener pulsado: avance continuo mientras esté presionado
+                if (holdBtn) {
+                    let holdTimer = null;
+                    function pressStart() {
+                        stopAutoplay();
+                        holdBtn.classList.add('pressed');
+                        holdTimer = setInterval(() => goTo(currentIndex + 1), 420);
+                    }
+                    function pressEnd() {
+                        if (holdTimer) clearInterval(holdTimer);
+                        holdTimer = null;
+                        holdBtn.classList.remove('pressed');
+                        startAutoplay();
+                    }
+                    holdBtn.addEventListener('mousedown', pressStart);
+                    holdBtn.addEventListener('touchstart', (e) => { e.preventDefault(); pressStart(); }, { passive: false });
+                    window.addEventListener('mouseup', pressEnd);
+                    window.addEventListener('touchend', pressEnd);
+                    holdBtn.addEventListener('mouseleave', () => { if (holdTimer) pressEnd(); });
+                }
+
+                // Deslizar con el dedo en móvil (donde no hay botón de mantener pulsado)
+                let touchStartX = null;
+                viewport.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; stopAutoplay(); }, { passive: true });
+                viewport.addEventListener('touchend', (e) => {
+                    if (touchStartX === null) return;
+                    const dx = e.changedTouches[0].clientX - touchStartX;
+                    if (Math.abs(dx) > 40) goTo(currentIndex + (dx < 0 ? 1 : -1));
+                    touchStartX = null;
+                    startAutoplay();
+                });
+            } catch (err) {
+                console.error('Carrusel de reseñas no disponible.', err);
+            }
+        })();
 
         /* ===================== Cursor premium + tilt de tarjetas (solo puntero fino) ===================== */
         (function initPremiumInteractions() {
