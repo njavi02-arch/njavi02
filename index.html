@@ -12,7 +12,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
@@ -54,31 +53,12 @@
             overflow: hidden;
         }
 
-        #intro-canvas {
+        #intro-video {
             position: absolute;
             inset: 0;
             width: 100%;
             height: 100%;
-        }
-
-        #intro-logo {
-            position: relative;
-            z-index: 2;
-            opacity: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.25rem;
-            filter: drop-shadow(0 0 40px rgba(201, 168, 106, 0.35));
-        }
-
-        #intro-tagline {
-            font-family: 'Inter', sans-serif;
-            letter-spacing: 0.35em;
-            font-size: 0.7rem;
-            color: var(--gold);
-            text-transform: uppercase;
-            opacity: 0;
+            object-fit: cover;
         }
 
         #intro-skip {
@@ -138,27 +118,12 @@
 
 <body class="antialiased">
 
-    <!-- ===================== INTRO 3D ===================== -->
+    <!-- ===================== INTRO EN VIDEO ===================== -->
     <div id="intro-overlay">
-        <canvas id="intro-canvas"></canvas>
+        <video id="intro-video" autoplay muted playsinline preload="auto">
+            <source src="assets/intro/intro.mp4" type="video/mp4">
+        </video>
         <button id="intro-skip">Saltar intro</button>
-        <div id="intro-logo">
-            <svg width="150" height="130" viewBox="0 0 220 190" fmt="svg" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="roofGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#e8c98a" />
-                        <stop offset="50%" stop-color="#c9a86a" />
-                        <stop offset="100%" stop-color="#8a6238" />
-                    </linearGradient>
-                </defs>
-                <polygon points="15,95 110,15 205,95 170,95 110,48 50,95" fill="url(#roofGradient)" />
-                <rect x="150" y="15" width="24" height="45" fill="url(#roofGradient)" />
-                <text x="110" y="150" text-anchor="middle" font-family="Playfair Display, serif" font-weight="700" font-size="78" fill="#faf7f2">VD</text>
-                <rect x="150" y="95" width="10" height="65" fill="#faf7f2" />
-                <rect x="60" y="155" width="100" height="8" fill="#faf7f2" />
-            </svg>
-            <span id="intro-tagline">Diseño atemporal · Calidad premium</span>
-        </div>
     </div>
 
     <!-- ===================== SITIO ===================== -->
@@ -352,14 +317,15 @@
         const overlay = document.getElementById('intro-overlay');
         const site = document.getElementById('site');
         const skipBtn = document.getElementById('intro-skip');
+        const introVideo = document.getElementById('intro-video');
 
-        /* Revelado sin dependencias: funciona aunque Three.js/GSAP nunca hayan
-           cargado (CDN caído, red lenta, bloqueo de firewall, etc). El sitio
-           NUNCA debe quedar atrapado detrás de la intro. */
+        /* Revelado sin dependencias: el sitio NUNCA debe quedar atrapado
+           detrás de la intro, pase lo que pase con el video o con GSAP. */
         let revealed = false;
         function showSiteNow() {
             if (revealed) return;
             revealed = true;
+            clearTimeout(safetyTimer);
             try { sessionStorage.setItem('vdt-intro-seen', 'true'); } catch (e) {}
             overlay.style.transition = 'opacity 0.6s ease';
             overlay.style.opacity = '0';
@@ -374,8 +340,8 @@
 
         skipBtn.addEventListener('click', showSiteNow);
 
-        // Red de seguridad: si nada más funciona, el sitio se muestra igual.
-        const safetyTimer = setTimeout(showSiteNow, 7000);
+        // Red de seguridad: si el video no carga/reproduce, el sitio se muestra igual.
+        let safetyTimer = setTimeout(showSiteNow, 15000);
 
         let alreadySeen = false;
         try { alreadySeen = sessionStorage.getItem('vdt-intro-seen') === 'true'; } catch (e) {}
@@ -385,97 +351,17 @@
             overlay.style.display = 'none';
             site.style.opacity = '1';
             document.querySelectorAll('.reveal').forEach((el) => { el.style.opacity = '1'; el.style.transform = 'none'; });
-        } else if (typeof THREE === 'undefined' || typeof gsap === 'undefined') {
-            clearTimeout(safetyTimer);
-            showSiteNow();
         } else {
-            try {
-                runIntroAnimation();
-            } catch (err) {
-                console.error('Intro 3D falló, se muestra el sitio directamente.', err);
-                clearTimeout(safetyTimer);
-                showSiteNow();
-            }
-        }
-
-        /* ===================== INTRO 3D: planeta + logo ===================== */
-        function runIntroAnimation() {
-            const canvas = document.getElementById('intro-canvas');
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-            camera.position.set(0, 0.4, 9);
-
-            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-            // Planeta
-            const planetGeo = new THREE.SphereGeometry(2.2, 64, 64);
-            const planetMat = new THREE.MeshStandardMaterial({
-                color: 0x3d2a1c,
-                metalness: 0.4,
-                roughness: 0.55,
-                emissive: 0x1a0f08,
-                emissiveIntensity: 0.4
+            // Ajusta la red de seguridad a la duración real del video una vez conocida.
+            introVideo.addEventListener('loadedmetadata', () => {
+                if (introVideo.duration && isFinite(introVideo.duration)) {
+                    clearTimeout(safetyTimer);
+                    safetyTimer = setTimeout(showSiteNow, (introVideo.duration * 1000) + 1500);
+                }
             });
-            const planet = new THREE.Mesh(planetGeo, planetMat);
-            scene.add(planet);
-
-            // Halo/atmósfera dorada
-            const haloGeo = new THREE.SphereGeometry(2.35, 64, 64);
-            const haloMat = new THREE.MeshBasicMaterial({ color: 0xc9a86a, transparent: true, opacity: 0.12, side: THREE.BackSide });
-            const halo = new THREE.Mesh(haloGeo, haloMat);
-            halo.scale.setScalar(1.15);
-            scene.add(halo);
-
-            // Estrellas
-            const starGeo = new THREE.BufferGeometry();
-            const starCount = 1200;
-            const starPositions = new Float32Array(starCount * 3);
-            for (let i = 0; i < starCount * 3; i++) starPositions[i] = (Math.random() - 0.5) * 60;
-            starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-            const starMat = new THREE.PointsMaterial({ color: 0xfaf7f2, size: 0.045 });
-            const stars = new THREE.Points(starGeo, starMat);
-            scene.add(stars);
-
-            // Luces
-            const keyLight = new THREE.DirectionalLight(0xc9a86a, 3);
-            keyLight.position.set(-4, 3, 4);
-            scene.add(keyLight);
-            const rim = new THREE.DirectionalLight(0xfaf7f2, 1.2);
-            rim.position.set(3, -2, -3);
-            scene.add(rim);
-            scene.add(new THREE.AmbientLight(0x3d2a1c, 0.6));
-
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
-
-            const clock = new THREE.Clock();
-            let rafId;
-            function tick() {
-                const t = clock.getElapsedTime();
-                planet.rotation.y = t * 0.08;
-                stars.rotation.y = t * 0.01;
-                renderer.render(scene, camera);
-                rafId = requestAnimationFrame(tick);
-            }
-            tick();
-
-            function finishIntro() {
-                clearTimeout(safetyTimer);
-                showSiteNow();
-                cancelAnimationFrame(rafId);
-            }
-
-            const tl = gsap.timeline({ delay: 0.3 });
-            tl.to(camera.position, { z: 5.5, duration: 3.2, ease: 'power2.inOut' })
-              .to('#intro-logo', { opacity: 1, duration: 1.2, ease: 'power2.out' }, '-=1.8')
-              .to('#intro-tagline', { opacity: 1, duration: 1, ease: 'power2.out' }, '-=0.6')
-              .to({}, { duration: 1.4 }) // hold
-              .add(finishIntro);
+            introVideo.addEventListener('ended', showSiteNow);
+            introVideo.addEventListener('error', showSiteNow);
+            introVideo.play().catch(() => showSiteNow());
         }
 
         /* ===================== Reveal al hacer scroll ===================== */
