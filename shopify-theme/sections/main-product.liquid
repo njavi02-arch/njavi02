@@ -1,0 +1,140 @@
+{%- assign variant = product.selected_or_first_available_variant -%}
+
+<section class="py-32 px-6 md:px-10 bg-[var(--cream)]">
+  <div class="max-w-7xl mx-auto">
+    <nav class="text-xs text-[var(--brown-500)] mb-10 uppercase tracking-wide" aria-label="breadcrumb">
+      <a href="{{ routes.root_url }}" class="hover:text-[var(--matcha-700)]">{{ 'general.menu.home' | t }}</a>
+      {%- if product.type != blank -%} / <span>{{ product.type }}</span>{%- endif -%} / <span class="text-[var(--brown-900)]">{{ product.title }}</span>
+    </nav>
+
+    <div class="grid md:grid-cols-2 gap-20 items-start" data-product-form>
+      <script type="application/json" data-product-json>{{ product | json }}</script>
+
+      <div class="reveal md:sticky md:top-36">
+        <div class="w-full aspect-square overflow-hidden bg-[var(--cream-deep)]" style="box-shadow: 0 40px 80px -40px rgba(74,44,32,0.35);">
+          {%- if variant.featured_image -%}
+            <img data-product-image src="{{ variant.featured_image | image_url: width: 1200 }}" alt="{{ variant.featured_image.alt | default: product.title | escape }}" class="w-full h-full object-cover" id="product-image" width="{{ variant.featured_image.width }}" height="{{ variant.featured_image.height }}">
+          {%- elsif product.featured_image -%}
+            <img data-product-image src="{{ product.featured_image | image_url: width: 1200 }}" alt="{{ product.title | escape }}" class="w-full h-full object-cover" id="product-image" width="{{ product.featured_image.width }}" height="{{ product.featured_image.height }}">
+          {%- else -%}
+            <div class="w-full h-full flex items-center justify-center">{%- render 'icon', name: 'coffee', class: 'w-16 h-16 text-[var(--gold)]' -%}</div>
+          {%- endif -%}
+        </div>
+        {%- if product.images.size > 1 -%}
+          <div class="grid grid-cols-5 gap-3 mt-4">
+            {%- for image in product.images limit: 5 -%}
+              <button type="button" class="aspect-square overflow-hidden border border-[var(--brown-500)]/20" data-thumbnail data-full-src="{{ image | image_url: width: 1200 }}">
+                <img src="{{ image | image_url: width: 200 }}" alt="{{ image.alt | escape }}" class="w-full h-full object-cover" width="{{ image.width }}" height="{{ image.height }}">
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="reveal">
+        <div class="gold-rule mb-6"></div>
+        {%- if product.vendor != blank -%}<span class="eyebrow text-xs uppercase text-[var(--brown-500)]">{{ product.vendor }}</span>{%- endif -%}
+        <h1 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] mt-3 mb-3 italic">{{ product.title }}</h1>
+
+        {%- assign rating = product.metafields.reviews.rating.value -%}
+        {%- if rating -%}
+          <div class="text-[var(--gold)] text-sm mb-8">
+            {%- for i in (1..5) -%}{% if i <= rating.rating %}★{% else %}☆{% endif %}{%- endfor -%}
+            <span class="text-[var(--brown-500)] text-xs">({{ product.metafields.reviews.rating_count.value }} {{ 'general.reviews.label' | t }})</span>
+          </div>
+        {%- endif -%}
+
+        <div class="text-[var(--brown-700)] leading-relaxed mb-10 font-light">{{ product.description }}</div>
+
+        {%- for option in product.options_with_values -%}
+          <div class="mb-8">
+            <span class="text-sm text-[var(--brown-900)] block mb-3">{{ option.name }}: <span data-option-label="{{ forloop.index }}">{{ option.selected_value }}</span></span>
+            <div class="flex gap-3 flex-wrap">
+              {%- assign option_key = 'option' | append: forloop.index -%}
+              {%- if option.name == 'Color' -%}
+                {%- for value in option.values -%}
+                  {%- assign matching_variant = product.variants | where: option_key, value | first -%}
+                  <button type="button" data-option-index="{{ forloop.parentloop.index }}" data-option-value="{{ value | escape }}" {% if value == option.selected_value %}data-active="true"{% endif %} class="color-swatch" aria-label="{{ 'general.product.color' | t }} {{ value }}" style="{% if matching_variant.featured_image %}background-image:url('{{ matching_variant.featured_image | image_url: width: 80 }}'); background-size: cover;{% else %}background: var(--beige);{% endif %}"></button>
+                {%- endfor -%}
+              {%- else -%}
+                {%- for value in option.values -%}
+                  <button type="button" data-option-index="{{ forloop.parentloop.index }}" data-option-value="{{ value | escape }}" {% if value == option.selected_value %}data-active="true"{% endif %} class="size-option px-5 py-2 text-sm border border-[var(--brown-500)]/40 text-[var(--brown-900)]">{{ value }}</button>
+                {%- endfor -%}
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+
+        {%- assign group = product.selling_plan_groups.first -%}
+        {%- assign plan = group.selling_plans.first -%}
+        {%- assign allocation = variant.selling_plan_allocations | where: 'selling_plan_id', plan.id | first -%}
+        {%- if allocation -%}
+          <div class="mb-8 border border-[var(--brown-500)]/25 p-5">
+            <div class="flex items-center justify-between mb-4 cursor-pointer" data-selling-plan-option data-selling-plan-id="onetime" data-active="true">
+              <span class="flex items-center gap-3 text-sm text-[var(--brown-900)]"><span class="purchase-radio"></span> {{ 'general.product.one_time_purchase' | t }}</span>
+              <span class="text-sm text-[var(--brown-900)]">{{ variant.price | money }}</span>
+            </div>
+            <div class="flex items-center justify-between cursor-pointer" data-selling-plan-option data-selling-plan-id="{{ plan.id }}">
+              <span class="flex items-center gap-3 text-sm text-[var(--brown-900)]"><span class="purchase-radio"></span> {{ plan.name }}</span>
+              <span class="text-sm text-[var(--matcha-700)]">{{ allocation.price | money }} / {{ group.name | downcase }}</span>
+            </div>
+          </div>
+        {%- endif -%}
+
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+          <span class="font-display text-2xl text-[var(--brown-900)]">
+            <span data-price-display>{{ variant.price | money }}</span>
+            <span data-compare-at-display class="hidden text-sm text-[var(--brown-500)] line-through ml-2"></span>
+          </span>
+          <input type="hidden" data-variant-id-input name="id" value="{{ variant.id }}">
+          <button type="submit" data-add-to-cart data-label-available="{{ 'general.product.add_to_cart' | t }}" data-label-sold-out="{{ 'general.product.sold_out' | t }}" class="add-cart-btn bg-[var(--brown-900)] text-[var(--cream)] px-10 py-4 text-xs tracking-[0.2em] uppercase hover:bg-[var(--brown-700)] transition-colors" {% unless variant.available %}disabled{% endunless %}>
+            {%- if variant.available -%}{{ 'general.product.add_to_cart' | t }}{%- else -%}{{ 'general.product.sold_out' | t }}{%- endif -%}
+          </button>
+        </div>
+
+        {%- if section.settings.show_sku and variant.sku != blank -%}
+          <p class="text-xs text-[var(--brown-500)] mt-6">SKU: {{ variant.sku }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "image": [{{ product.featured_image | image_url: width: 800 | json }}],
+    "description": {{ product.description | strip_html | json }},
+    "sku": {{ variant.sku | json }},
+    "brand": { "@type": "Brand", "name": {{ product.vendor | json }} },
+    "offers": {
+      "@type": "Offer",
+      "url": {{ canonical_url | json }},
+      "priceCurrency": {{ cart.currency.iso_code | json }},
+      "price": {{ variant.price | divided_by: 100.0 | json }},
+      "availability": "https://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}"
+    }
+  }
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-thumbnail]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var img = document.getElementById('product-image');
+        if (img) { img.src = btn.dataset.fullSrc; }
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Página de producto",
+  "settings": [
+    { "type": "checkbox", "id": "show_sku", "label": "Mostrar SKU", "default": true }
+  ]
+}
+{% endschema %}

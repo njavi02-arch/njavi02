@@ -1,0 +1,62 @@
+{% comment %}
+  Renders one product card. Expects `product` (a real Shopify product object).
+  Merchandising badges (Bestseller / Nuevo / Ecológico / Edición limitada) come
+  from product tags — tag a product "bestseller", "nuevo", "ecologico" or
+  "edicion-limitada" in Shopify Admin to surface them here automatically.
+{% endcomment %}
+{%- assign variant = product.selected_or_first_available_variant -%}
+<div class="product-card bg-[var(--cream)]" data-category="{{ product.type | handle }}" data-id="{{ product.id }}">
+  <div class="relative aspect-square overflow-hidden">
+    <a href="{{ product.url }}" class="block w-full h-full">
+      {%- if product.featured_image -%}
+        <img src="{{ product.featured_image | image_url: width: 800 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" class="w-full h-full object-cover" loading="lazy" width="800" height="800">
+      {%- else -%}
+        <div class="w-full h-full bg-gradient-to-br from-[var(--brown-700)] to-[var(--brown-900)] flex items-center justify-center">{%- render 'icon', name: 'coffee', class: 'w-10 h-10 text-[var(--gold)]' -%}</div>
+      {%- endif -%}
+    </a>
+    {%- if product.tags contains 'bestseller' -%}
+      <span class="tag-pill absolute top-4 left-4 bg-[var(--matcha-700)] text-[var(--cream)]">{{ 'general.badges.bestseller' | t }}</span>
+    {%- elsif product.tags contains 'nuevo' -%}
+      <span class="tag-pill absolute top-4 left-4 bg-[var(--gold)] text-[var(--brown-900)]">{{ 'general.badges.new' | t }}</span>
+    {%- elsif product.tags contains 'edicion-limitada' -%}
+      <span class="tag-pill absolute top-4 left-4 bg-[var(--brown-900)] text-[var(--cream)]">{{ 'general.badges.limited' | t }}</span>
+    {%- elsif product.tags contains 'ecologico' -%}
+      <span class="tag-pill absolute top-4 left-4 bg-[var(--gold)] text-[var(--brown-900)]">{{ 'general.badges.eco' | t }}</span>
+    {%- endif -%}
+    <button
+      class="fav-btn absolute top-4 right-4 w-9 h-9 flex items-center justify-center bg-[var(--cream)]/85 text-[var(--brown-900)] backdrop-blur-sm"
+      aria-label="{{ 'general.favorites.add' | t }}"
+      data-product-id="{{ product.id }}"
+      data-product-title="{{ product.title | escape }}"
+      data-product-price="{{ variant.price }}"
+      data-product-image="{{ product.featured_image | image_url: width: 200 }}"
+      data-product-url="{{ product.url }}"
+    >{%- render 'icon', name: 'heart', class: 'w-4 h-4' -%}</button>
+  </div>
+  <div class="p-7">
+    {%- if product.type != blank -%}<span class="eyebrow text-[0.65rem] uppercase text-[var(--brown-500)]">{{ product.type }}</span>{%- endif -%}
+    <h3 class="font-display text-2xl text-[var(--brown-900)] mt-2 mb-1 italic"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+    {%- assign rating = product.metafields.reviews.rating.value -%}
+    {%- if rating -%}
+      <div class="text-[var(--gold)] text-sm mb-3">
+        {%- for i in (1..5) -%}{% if i <= rating.rating %}★{% else %}☆{% endif %}{%- endfor -%}
+        <span class="text-[var(--brown-500)] text-xs">({{ product.metafields.reviews.rating_count.value }})</span>
+      </div>
+    {%- endif -%}
+    {%- if product.description != blank -%}
+      <p class="text-sm text-[var(--brown-700)] mb-5 font-light">{{ product.description | strip_html | truncate: 70 }}</p>
+    {%- endif -%}
+    <div class="flex items-center justify-between">
+      <span class="font-display text-xl text-[var(--brown-900)]">
+        {%- if product.price_varies -%}{{ 'general.price.from' | t }} {{ product.price_min | money }}{%- else -%}{{ product.price | money }}{%- endif -%}
+      </span>
+      {%- if product.has_only_default_variant and variant.available -%}
+        <button data-add-to-cart-simple="{{ variant.id }}" class="add-cart-btn btn-outline text-[var(--brown-900)] px-5 py-2.5 text-xs tracking-wide uppercase" data-label-available="{{ 'general.product.add_to_cart' | t }}" data-label-sold-out="{{ 'general.product.sold_out' | t }}">{{ 'general.product.add_to_cart' | t }}</button>
+      {%- elsif variant.available -%}
+        <a href="{{ product.url }}" class="bg-[var(--matcha-700)] text-[var(--cream)] px-5 py-2.5 text-xs tracking-wide uppercase">{{ 'general.product.view_product' | t }}</a>
+      {%- else -%}
+        <span class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'general.product.sold_out' | t }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+</div>

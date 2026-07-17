@@ -1,0 +1,36 @@
+<div class="panel-backdrop" id="panel-backdrop"></div>
+
+<aside id="cart-panel" class="side-panel" aria-label="{{ 'general.cart.title' | t }}">
+  <div class="flex items-center justify-between p-7 border-b border-[var(--brown-500)]/15">
+    <h3 class="font-display text-2xl text-[var(--brown-900)] italic">{{ 'general.cart.title' | t }}</h3>
+    <button class="panel-close text-2xl leading-none text-[var(--brown-700)]" aria-label="{{ 'general.cart.close' | t }}">&times;</button>
+  </div>
+  <div class="px-7 pt-5">
+    <p id="shipping-progress-text" class="text-xs text-[var(--brown-700)] mb-2">{{ 'general.cart.free_shipping_prompt' | t }}</p>
+    <div class="shipping-progress-track"><div id="shipping-progress-fill" class="shipping-progress-fill" style="width:0%"></div></div>
+  </div>
+  <div id="cart-items" class="flex-1 overflow-y-auto p-7 flex flex-col gap-6"></div>
+  <div id="cart-upsell" class="px-7 pb-3"></div>
+  <div class="p-7 border-t border-[var(--brown-500)]/15 text-sm text-[var(--brown-700)]">
+    <div class="flex justify-between mb-2"><span>{{ 'general.cart.subtotal' | t }}</span><span id="cart-subtotal">{{ 0 | money }}</span></div>
+    <div class="flex justify-between mb-2"><span>{{ 'general.cart.shipping' | t }}</span><span id="cart-shipping">—</span></div>
+    <div class="flex justify-between text-[var(--brown-900)] text-base mt-4 pt-4 border-t border-[var(--brown-500)]/15"><span>{{ 'general.cart.total' | t }}</span><span id="cart-total">{{ 0 | money }}</span></div>
+    <button id="checkout-btn" class="mt-6 w-full bg-[var(--matcha-700)] text-[var(--cream)] py-4 text-xs tracking-[0.2em] uppercase hover:bg-[var(--matcha-900)]">{{ 'general.cart.checkout' | t }}</button>
+  </div>
+</aside>
+
+{%- if settings.cart_upsell_collection != blank and collections[settings.cart_upsell_collection] -%}
+  <script type="application/json" id="cart-upsell-data">
+    [
+      {%- for product in collections[settings.cart_upsell_collection].products limit: 6 -%}
+        {
+          "product_id": {{ product.id | json }},
+          "variant_id": {{ product.selected_or_first_available_variant.id | json }},
+          "title": {{ product.title | json }},
+          "price": {{ product.selected_or_first_available_variant.price | json }},
+          "image": {{ product.featured_image | image_url: width: 200 | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  </script>
+{%- endif -%}

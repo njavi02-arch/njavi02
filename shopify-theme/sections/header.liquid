@@ -1,0 +1,60 @@
+<header id="main-header" class="fixed top-8 left-0 w-full z-40">
+  <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 md:px-10 py-5 gap-4">
+    <a href="{{ routes.root_url }}" id="logo-mark" class="shrink-0" aria-label="{{ shop.name }}">{%- render 'logo', variant: 'compact' -%}</a>
+
+    <div class="hidden lg:flex items-center gap-9 text-xs tracking-[0.15em] uppercase">
+      {%- for link in section.settings.menu.links -%}
+        {%- render 'mega-menu', link: link -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="flex items-center gap-5 shrink-0">
+      <button id="search-toggle" class="header-icon" aria-label="{{ 'general.search.title' | t }}">{%- render 'icon', name: 'search', class: 'w-[1.1rem] h-[1.1rem]' -%}</button>
+      <button id="account-toggle" class="header-icon" aria-label="{{ 'customer.account.title' | t }}">{%- render 'icon', name: 'account', class: 'w-[1.1rem] h-[1.1rem]' -%}</button>
+      <button id="favorites-toggle" class="relative header-icon" aria-label="{{ 'general.favorites.title' | t }}">
+        {%- render 'icon', name: 'heart', class: 'w-[1.1rem] h-[1.1rem]' -%}
+        <span id="favorites-count" class="hidden absolute -top-2 -right-2 bg-[var(--gold)] text-[var(--brown-900)] text-[0.6rem] w-4 h-4 rounded-full items-center justify-center">0</span>
+      </button>
+      <button id="cart-toggle" class="relative header-icon" aria-label="{{ 'general.cart.title' | t }}">
+        {%- render 'icon', name: 'bag', class: 'w-[1.1rem] h-[1.1rem]' -%}
+        <span id="cart-count" class="{% if cart.item_count == 0 %}hidden{% else %}flex{% endif %} absolute -top-2 -right-2 bg-[var(--gold)] text-[var(--brown-900)] text-[0.6rem] w-4 h-4 rounded-full items-center justify-center">{{ cart.item_count }}</span>
+      </button>
+      <button id="menu-toggle" class="header-icon lg:hidden" aria-label="{{ 'general.menu.open' | t }}" aria-expanded="false">
+        {%- render 'icon', name: 'menu', class: 'w-6 h-6' -%}
+      </button>
+    </div>
+  </nav>
+
+  <div id="mobile-menu" class="hidden lg:hidden flex-col gap-1 px-6 pb-6 text-[var(--brown-700)] bg-[var(--cream)] max-h-[70vh] overflow-y-auto">
+    <a href="{{ routes.root_url }}" class="py-3 border-b border-[var(--brown-500)]/10">{{ 'general.menu.home' | t }}</a>
+    {%- for link in section.settings.menu.links -%}
+      {%- if link.links != blank -%}
+        <details class="border-b border-[var(--brown-500)]/10 py-2">
+          <summary class="py-1 cursor-pointer">{{ link.title }}</summary>
+          <div class="flex flex-col gap-2 pl-4 py-2 text-sm">
+            {%- for child_link in link.links -%}
+              <a href="{{ child_link.url }}">{{ child_link.title }}</a>
+            {%- endfor -%}
+          </div>
+        </details>
+      {%- else -%}
+        <a href="{{ link.url }}" class="py-3 border-b border-[var(--brown-500)]/10">{{ link.title }}</a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menú de navegación",
+      "default": "main-menu",
+      "info": "Creá el menú en Shopify Admin > Navegación. Los ítems con sub-enlaces se muestran como mega-menú."
+    }
+  ]
+}
+{% endschema %}

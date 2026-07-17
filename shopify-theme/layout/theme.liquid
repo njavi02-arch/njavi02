@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="{{ canonical_url }}">
+    {%- if settings.favicon -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 96 }}">
+    {%- else -%}
+      <link rel="icon" type="image/png" href="{{ 'favicon.png' | asset_url }}">
+    {%- endif -%}
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; {{ current_tags | join: ', ' }}{% endif -%}
+      {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    <meta property="og:site_name" content="{{ shop.name }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:title" content="{{ page_title }}">
+    <meta property="og:type" content="website">
+    {% if page_description %}<meta property="og:description" content="{{ page_description | escape }}">{% endif %}
+
+    {{ content_for_header }}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" defer="defer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer="defer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer="defer"></script>
+
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+
+    <style>
+        :root {
+            --cream: {{ settings.color_cream }};
+            --cream-deep: {{ settings.color_cream_deep }};
+            --beige: {{ settings.color_beige }};
+            --brown-900: {{ settings.color_brown_900 }};
+            --brown-800: {{ settings.color_brown_800 }};
+            --brown-700: {{ settings.color_brown_700 }};
+            --brown-500: {{ settings.color_brown_500 }};
+            --matcha-900: {{ settings.color_matcha_900 }};
+            --matcha-700: {{ settings.color_matcha_700 }};
+            --matcha-500: {{ settings.color_matcha_500 }};
+            --gold: {{ settings.color_gold }};
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    {%- if settings.enable_intro -%}
+      {% render 'intro-video' %}
+    {%- endif -%}
+
+    <div id="custom-cursor"><span id="custom-cursor-text"></span></div>
+
+    <div id="site" {% if settings.enable_intro %}class="intro-pending"{% endif %}>
+
+        {% section 'announcement-bar' %}
+        {% section 'header' %}
+
+        <main id="MainContent">
+            {{ content_for_layout }}
+        </main>
+
+        {% section 'footer' %}
+
+    </div>
+
+    {% render 'cart-drawer' %}
+    {% render 'favorites-drawer' %}
+    {% render 'account-drawer' %}
+    {% render 'search-drawer' %}
+    {% render 'welcome-popup' %}
+
+    <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'favorites.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'reviews-carousel.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'welcome-popup.js' | asset_url }}" defer="defer"></script>
+
+    <script>
+      window.VDT = window.VDT || {};
+      window.VDT.routes = {
+        cartAdd: '{{ routes.cart_add_url }}',
+        cartChange: '{{ routes.cart_change_url }}',
+        cartUpdate: '{{ routes.cart_update_url }}',
+        cart: '{{ routes.cart_url }}.js',
+        predictiveSearch: '{{ routes.predictive_search_url }}'
+      };
+      window.VDT.settings = {
+        freeShippingThreshold: {{ settings.free_shipping_threshold | default: 80 }},
+        moneyFormat: {{ shop.money_format | json }}
+      };
+      window.VDT.cart = {{ cart | json }};
+    </script>
+</body>
+
+</html>

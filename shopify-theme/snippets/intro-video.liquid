@@ -1,0 +1,15 @@
+{% comment %}
+  Renders the fullscreen cinematic intro. Merchants can swap the clip via
+  Theme settings > Intro video (Settings > Files/Videos). Falls back to the
+  bundled asset so the theme always has a working intro out of the box.
+{% endcomment %}
+<div id="intro-overlay">
+  {% if settings.intro_video != blank %}
+    {{ settings.intro_video | video_tag: autoplay: true, loop: false, muted: true, playsinline: true, controls: false, id: 'intro-video' }}
+  {% else %}
+    <video id="intro-video" autoplay muted playsinline preload="auto">
+      <source src="{{ 'intro-video.mp4' | asset_url }}" type="video/mp4">
+    </video>
+  {% endif %}
+  <button id="intro-skip">{{ 'general.intro.skip' | t }}</button>
+</div>

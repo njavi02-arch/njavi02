@@ -1,0 +1,76 @@
+<footer id="contacto" class="py-20 px-6 md:px-10 bg-[var(--cream)] border-t border-[var(--gold)]/20">
+  <div class="max-w-7xl mx-auto grid sm:grid-cols-2 md:grid-cols-5 gap-10">
+    <div class="sm:col-span-2 md:col-span-1">
+      {%- render 'logo', variant: 'compact' -%}
+      {%- if section.settings.description != blank -%}
+        <p class="text-sm text-[var(--brown-700)] mt-3 max-w-xs font-light">{{ section.settings.description }}</p>
+      {%- endif -%}
+      {%- if shop.email -%}
+        <p class="text-sm text-[var(--brown-700)] mt-4 font-light">{{ shop.email }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'menu' -%}
+          <div class="flex flex-col gap-2.5 text-sm text-[var(--brown-700)] font-light" {{ block.shopify_attributes }}>
+            <span class="text-[var(--brown-900)] mb-1">{{ block.settings.title }}</span>
+            {%- for link in block.settings.menu.links -%}
+              <a href="{{ link.url }}" class="hover:text-[var(--matcha-700)] transition-colors">{{ link.title }}</a>
+            {%- endfor -%}
+          </div>
+        {%- when 'social' -%}
+          <div class="flex flex-col gap-2.5 text-sm text-[var(--brown-700)] font-light" {{ block.shopify_attributes }}>
+            <span class="text-[var(--brown-900)] mb-1">{{ block.settings.title }}</span>
+            {%- if settings.social_instagram_link != blank -%}<a href="{{ settings.social_instagram_link }}" class="hover:text-[var(--matcha-700)] transition-colors">Instagram</a>{%- endif -%}
+            {%- if settings.social_tiktok_link != blank -%}<a href="{{ settings.social_tiktok_link }}" class="hover:text-[var(--matcha-700)] transition-colors">TikTok</a>{%- endif -%}
+            {%- if settings.social_pinterest_link != blank -%}<a href="{{ settings.social_pinterest_link }}" class="hover:text-[var(--matcha-700)] transition-colors">Pinterest</a>{%- endif -%}
+            {%- if settings.social_facebook_link != blank -%}<a href="{{ settings.social_facebook_link }}" class="hover:text-[var(--matcha-700)] transition-colors">Facebook</a>{%- endif -%}
+          </div>
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+
+  <div class="max-w-7xl mx-auto mt-14 pt-6 border-t border-[var(--brown-500)]/10 flex flex-col sm:flex-row justify-between items-center gap-4">
+    <span class="text-xs text-[var(--brown-500)]">© {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ 'general.footer.rights' | t }}</span>
+    {%- if shop.enabled_payment_types.size > 0 -%}
+      <div class="flex gap-3 text-[var(--brown-500)]">
+        {%- for type in shop.enabled_payment_types -%}
+          {{ type | payment_type_svg_tag: class: 'h-6 w-auto' }}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Descripción de marca",
+      "default": "Café, matcha y accesorios premium. No vendemos solo café, creamos momentos."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Columna de menú",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Título de la columna", "default": "Comprar" },
+        { "type": "link_list", "id": "menu", "label": "Menú", "default": "footer" }
+      ]
+    },
+    {
+      "type": "social",
+      "name": "Redes sociales",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Título de la columna", "default": "Seguinos" }
+      ]
+    }
+  ],
+  "max_blocks": 6
+}
+{% endschema %}

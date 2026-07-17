@@ -1,0 +1,66 @@
+<section id="tienda" class="py-28 px-6 md:px-10 bg-[var(--cream-deep)]">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-12 reveal">
+      <div class="gold-rule mx-auto mb-5"></div>
+      {%- if section.settings.eyebrow != blank -%}<span class="eyebrow text-xs uppercase text-[var(--matcha-700)]">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      <h2 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] mt-3 italic">{{ section.settings.heading }}</h2>
+      {%- if section.settings.note != blank -%}
+        <p class="text-[var(--brown-700)] mt-5 max-w-xl mx-auto text-xs">{{ section.settings.note }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- assign filter_blocks = section.blocks | where: 'type', 'filter' -%}
+    {%- if filter_blocks.size > 0 -%}
+      <div class="flex flex-wrap justify-center gap-3 mb-16" data-filter-bar="#product-grid-{{ section.id }}">
+        <button class="filter-pill px-5 py-2 text-xs tracking-wide uppercase border border-[var(--brown-500)]/30 text-[var(--brown-900)]" data-filter="todos" data-active="true">{{ 'general.filters.all' | t }}</button>
+        {%- for block in filter_blocks -%}
+          <button class="filter-pill px-5 py-2 text-xs tracking-wide uppercase border border-[var(--brown-500)]/30 text-[var(--brown-900)]" data-filter="{{ block.settings.type_value | handle }}" {{ block.shopify_attributes }}>{{ block.settings.label }}</button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-10" id="product-grid-{{ section.id }}">
+      {%- for product in section.settings.collection.products limit: section.settings.products_to_show -%}
+        {%- render 'product-card', product: product -%}
+      {%- else -%}
+        <p class="col-span-full text-center text-[var(--brown-500)]">{{ 'general.collection.empty' | t }}</p>
+      {%- endfor -%}
+    </div>
+    <p data-no-results class="hidden text-center text-[var(--brown-500)] mt-10">{{ 'general.filters.no_results' | t }}</p>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Colección destacada",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Texto pequeño", "default": "La colección" },
+    { "type": "text", "id": "heading", "label": "Título", "default": "Productos destacados" },
+    { "type": "textarea", "id": "note", "label": "Nota", "default": "" },
+    { "type": "collection", "id": "collection", "label": "Colección" },
+    { "type": "range", "id": "products_to_show", "label": "Productos a mostrar", "min": 3, "max": 24, "step": 1, "default": 12 }
+  ],
+  "blocks": [
+    {
+      "type": "filter",
+      "name": "Filtro",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Etiqueta del filtro", "default": "Café" },
+        { "type": "text", "id": "type_value", "label": "Tipo de producto que filtra", "info": "Debe coincidir con el campo 'Tipo' del producto en Shopify Admin (ej: Cafe, Matcha, Accesorios, Regalos).", "default": "Cafe" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "Colección destacada",
+      "blocks": [
+        { "type": "filter", "settings": { "label": "Café", "type_value": "Cafe" } },
+        { "type": "filter", "settings": { "label": "Matcha", "type_value": "Matcha" } },
+        { "type": "filter", "settings": { "label": "Accesorios", "type_value": "Accesorios" } },
+        { "type": "filter", "settings": { "label": "Packs regalo", "type_value": "Regalos" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

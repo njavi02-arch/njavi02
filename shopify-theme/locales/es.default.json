@@ -1,0 +1,148 @@
+{
+  "general": {
+    "meta": {
+      "page": "Página {{ page }}"
+    },
+    "hero": {
+      "scroll": "Scroll"
+    },
+    "intro": {
+      "skip": "Saltar intro"
+    },
+    "menu": {
+      "home": "Inicio",
+      "open": "Abrir menú"
+    },
+    "search": {
+      "title": "Buscar",
+      "placeholder": "Buscar café, matcha, accesorios...",
+      "close": "Cerrar búsqueda",
+      "results_count": {
+        "one": "{{ count }} resultado",
+        "other": "{{ count }} resultados"
+      },
+      "no_results": "Sin resultados para \"{{ terms }}\"."
+    },
+    "favorites": {
+      "title": "Tus favoritos",
+      "close": "Cerrar favoritos",
+      "add": "Añadir a favoritos"
+    },
+    "cart": {
+      "title": "Tu carrito",
+      "close": "Cerrar carrito",
+      "free_shipping_prompt": "Añadí productos para conseguir envío gratis",
+      "subtotal": "Subtotal",
+      "shipping": "Envío",
+      "total": "Total",
+      "checkout": "Finalizar compra",
+      "empty": "Tu carrito está vacío.",
+      "continue_shopping": "Seguir comprando",
+      "update": "Actualizar carrito"
+    },
+    "filters": {
+      "all": "Todos",
+      "no_results": "No encontramos productos con ese filtro."
+    },
+    "collection": {
+      "eyebrow": "La colección",
+      "empty": "Todavía no hay productos en esta colección."
+    },
+    "category": {
+      "explore": "Explorar"
+    },
+    "badges": {
+      "bestseller": "Bestseller",
+      "new": "Nuevo",
+      "limited": "Edición limitada",
+      "eco": "Ecológico"
+    },
+    "price": {
+      "from": "Desde"
+    },
+    "product": {
+      "add_to_cart": "Añadir al carrito",
+      "sold_out": "Agotado",
+      "view_product": "Ver producto",
+      "color": "Color",
+      "one_time_purchase": "Compra única"
+    },
+    "reviews": {
+      "label": "valoraciones",
+      "hold_hint": "Mantener pulsado para ver más opiniones",
+      "swipe_hint": "Deslizá para ver más opiniones →"
+    },
+    "blog": {
+      "empty": "Todavía no hay artículos publicados."
+    },
+    "article": {
+      "comments": {
+        "one": "{{ count }} comentario",
+        "other": "{{ count }} comentarios"
+      },
+      "comment_posted": "Tu comentario fue enviado y quedará visible cuando se apruebe.",
+      "comment_name": "Tu nombre",
+      "comment_body": "Tu comentario",
+      "comment_submit": "Enviar comentario",
+      "back_to_blog": "Volver al blog"
+    },
+    "footer": {
+      "rights": "Todos los derechos reservados."
+    },
+    "404": {
+      "heading": "Página no encontrada",
+      "text": "El enlace puede estar roto o la página ya no existe.",
+      "back_home": "Volver al inicio"
+    },
+    "list_collections": {
+      "heading": "Todas las colecciones",
+      "products": "productos"
+    },
+    "newsletter": {
+      "submit": "Quiero mi descuento",
+      "thanks": "¡Gracias,",
+      "code_intro": "Tu código de descuento:",
+      "continue": "Continuar comprando",
+      "disclaimer": "Al enviar tus datos aceptás recibir novedades por email. Podés darte de baja cuando quieras.",
+      "countdown_text": "Tu descuento está reservado durante"
+    },
+    "pagination": {
+      "label": "Paginación"
+    },
+    "gift_card": {
+      "title": "Tarjeta de regalo",
+      "subtitle": "Usá este código en el checkout.",
+      "disabled": "Esta tarjeta de regalo ya no está activa.",
+      "balance": "Saldo disponible"
+    },
+    "password_page": {
+      "close": "Cerrar",
+      "login_password_placeholder": "Contraseña de la tienda",
+      "login_form_submit": "Entrar",
+      "contact": "Contactanos en"
+    }
+  },
+  "customer": {
+    "account": {
+      "title": "Mi cuenta",
+      "close": "Cerrar",
+      "greeting": "Hola, {{ name }}",
+      "view_orders": "Ver pedidos",
+      "addresses": "Direcciones guardadas",
+      "details": "Gestionar datos personales",
+      "logout": "Cerrar sesión"
+    },
+    "login": {
+      "email": "Email",
+      "password": "Contraseña",
+      "sign_in": "Iniciar sesión",
+      "forgot_password": "¿Olvidaste tu contraseña?"
+    },
+    "register": {
+      "title": "Crear cuenta",
+      "first_name": "Nombre",
+      "last_name": "Apellido",
+      "submit": "Crear cuenta"
+    }
+  }
+}

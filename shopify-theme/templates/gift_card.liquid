@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ 'general.gift_card.title' | t }}</title>
+  <meta name="robots" content="noindex">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" defer="defer"></script>
+  {{ 'theme.css' | asset_url | stylesheet_tag }}
+  <style>
+    :root {
+      --cream: {{ settings.color_cream }};
+      --brown-900: {{ settings.color_brown_900 }};
+      --brown-700: {{ settings.color_brown_700 }};
+      --gold: {{ settings.color_gold }};
+    }
+    body { background: var(--cream); color: var(--brown-900); font-family: 'Inter', sans-serif; font-weight: 300; }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex items-center justify-center px-6 py-16">
+  <div class="max-w-lg w-full text-center border border-[var(--gold)]/40 p-12">
+    <span class="font-display text-2xl italic">{{ shop.name }}</span>
+    <div class="gold-rule mx-auto my-6"></div>
+    <h1 class="font-display text-4xl italic mb-2">{{ gift_card.initial_value | money }}</h1>
+    <p class="text-sm text-[var(--brown-700)] mb-8">{{ 'general.gift_card.subtitle' | t }}</p>
+
+    {%- if gift_card.enabled and gift_card.expired == false -%}
+      <div class="border border-dashed border-[var(--brown-500)]/40 py-4 mb-6">
+        <p class="text-2xl tracking-[0.3em]">{{ gift_card.code | format_code }}</p>
+      </div>
+    {%- else -%}
+      <p class="text-sm text-[var(--brown-500)]">{{ 'general.gift_card.disabled' | t }}</p>
+    {%- endif -%}
+
+    <p class="text-xs text-[var(--brown-500)] mt-10">{{ 'general.gift_card.balance' | t }}: {{ gift_card.balance | money }}</p>
+  </div>
+</body>
+</html>

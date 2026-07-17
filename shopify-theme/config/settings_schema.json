@@ -1,0 +1,90 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "KOHI & CHA",
+    "theme_version": "1.0.0",
+    "theme_author": "KOHI & CHA",
+    "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
+    "theme_support_email": "soporte@kohicha.com"
+  },
+  {
+    "name": "Marca",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo_image",
+        "label": "Logo (opcional)",
+        "info": "Si lo dejás vacío, se usa el logotipo 'KOHI & CHA' construido en vivo con el theme (círculo + tipografía + texto en japonés) — se ve nítido a cualquier tamaño y cambia de color con la paleta."
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "Recomendado: imagen cuadrada de al menos 512x512px. Si lo dejás vacío se usa el favicon incluido por defecto."
+      }
+    ]
+  },
+  {
+    "name": "Colores",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Paleta 'washi & bronce' — inspirada en papel japonés, ceniza de té y metal envejecido. Menos saturada que un marrón-café estándar, a propósito: la sobriedad es lo que lee como lujo."
+      },
+      { "type": "color", "id": "color_cream", "label": "Papel (fondo principal)", "default": "#F3ECE0" },
+      { "type": "color", "id": "color_cream_deep", "label": "Papel oscuro (fondo secundario)", "default": "#E8DECB" },
+      { "type": "color", "id": "color_beige", "label": "Piedra (neutro/bordes)", "default": "#CBB99C" },
+      { "type": "color", "id": "color_brown_900", "label": "Tinta 900 (texto principal / fondos oscuros)", "default": "#211811" },
+      { "type": "color", "id": "color_brown_800", "label": "Tinta 800", "default": "#332619" },
+      { "type": "color", "id": "color_brown_700", "label": "Tinta 700", "default": "#4A3A28" },
+      { "type": "color", "id": "color_brown_500", "label": "Tinta 500 (texto secundario)", "default": "#7C6A54" },
+      { "type": "color", "id": "color_matcha_900", "label": "Matcha 900 (fondo oscuro)", "default": "#232E1C" },
+      { "type": "color", "id": "color_matcha_700", "label": "Matcha 700 (acento)", "default": "#465A38" },
+      { "type": "color", "id": "color_matcha_500", "label": "Matcha 500 (suave)", "default": "#7C8A6A" },
+      { "type": "color", "id": "color_gold", "label": "Bronce (detalle metálico)", "default": "#A47B4C" }
+    ]
+  },
+  {
+    "name": "Introducción en video",
+    "settings": [
+      { "type": "checkbox", "id": "enable_intro", "label": "Activar intro cinemática en video", "default": true },
+      {
+        "type": "video",
+        "id": "intro_video",
+        "label": "Video de introducción",
+        "info": "Si no subís un video, se usa el video incluido en el theme por defecto."
+      }
+    ]
+  },
+  {
+    "name": "Envío y carrito",
+    "settings": [
+      { "type": "number", "id": "free_shipping_threshold", "label": "Umbral de envío gratis", "default": 80, "info": "Importe en la moneda de la tienda a partir del cual se muestra 'envío gratis' en la barra de progreso del carrito." },
+      { "type": "collection", "id": "cart_upsell_collection", "label": "Colección para sugerencias del carrito (\"Combinalo con...\")" }
+    ]
+  },
+  {
+    "name": "Popup de bienvenida",
+    "settings": [
+      { "type": "checkbox", "id": "enable_welcome_popup", "label": "Activar popup de bienvenida", "default": true },
+      { "type": "text", "id": "welcome_heading", "label": "Título", "default": "Bienvenido a KOHI & CHA" },
+      { "type": "textarea", "id": "welcome_body", "label": "Texto", "default": "Un 10% de descuento en tu primer ritual de café o matcha." },
+      {
+        "type": "text",
+        "id": "welcome_discount_code",
+        "label": "Código de descuento",
+        "info": "Tiene que existir de verdad en Shopify Admin > Descuentos. El popup arma un enlace que lo aplica automáticamente (shop.url/discount/CODE)."
+      },
+      { "type": "range", "id": "welcome_countdown_minutes", "label": "Minutos del countdown", "min": 5, "max": 120, "step": 5, "default": 30 }
+    ]
+  },
+  {
+    "name": "Redes sociales",
+    "settings": [
+      { "type": "url", "id": "social_instagram_link", "label": "Instagram" },
+      { "type": "url", "id": "social_tiktok_link", "label": "TikTok" },
+      { "type": "url", "id": "social_pinterest_link", "label": "Pinterest" },
+      { "type": "url", "id": "social_facebook_link", "label": "Facebook" }
+    ]
+  }
+]
