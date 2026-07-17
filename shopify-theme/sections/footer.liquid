@@ -13,12 +13,27 @@
     {%- for block in section.blocks -%}
       {%- case block.type -%}
         {%- when 'menu' -%}
-          <div class="flex flex-col gap-2.5 text-sm text-[var(--brown-700)] font-light" {{ block.shopify_attributes }}>
-            <span class="text-[var(--brown-900)] mb-1">{{ block.settings.title }}</span>
-            {%- for link in block.settings.menu.links -%}
-              <a href="{{ link.url }}" class="hover:text-[var(--matcha-700)] transition-colors">{{ link.title }}</a>
-            {%- endfor -%}
-          </div>
+          {%- comment -%}
+            Shopify auto-creates a default "footer" menu whose only link is the
+            built-in Search page. We skip exactly that placeholder link (matched
+            by URL, never by title, so a merchant's own "Search" link with a
+            different URL still shows) and hide the whole column if nothing real
+            is left — better than a column with a title and no useful links.
+          {%- endcomment -%}
+          {%- assign has_real_links = false -%}
+          {%- for link in block.settings.menu.links -%}
+            {%- unless link.url == routes.search_url -%}{%- assign has_real_links = true -%}{%- endunless -%}
+          {%- endfor -%}
+          {%- if block.settings.menu != blank and has_real_links -%}
+            <div class="flex flex-col gap-2.5 text-sm text-[var(--brown-700)] font-light" {{ block.shopify_attributes }}>
+              <span class="text-[var(--brown-900)] mb-1">{{ block.settings.title }}</span>
+              {%- for link in block.settings.menu.links -%}
+                {%- unless link.url == routes.search_url -%}
+                  <a href="{{ link.url }}" class="hover:text-[var(--matcha-700)] transition-colors">{{ link.title }}</a>
+                {%- endunless -%}
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
         {%- when 'social' -%}
           <div class="flex flex-col gap-2.5 text-sm text-[var(--brown-700)] font-light" {{ block.shopify_attributes }}>
             <span class="text-[var(--brown-900)] mb-1">{{ block.settings.title }}</span>
