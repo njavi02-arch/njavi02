@@ -1,0 +1,39 @@
+<section class="py-32 px-6 md:px-10 bg-[var(--cream)] min-h-[70vh]">
+  <div class="max-w-md mx-auto">
+    <div class="text-center mb-12 reveal">
+      <div class="gold-rule mx-auto mb-6"></div>
+      <h1 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] italic">{{ 'customer.register.title' | t }}</h1>
+    </div>
+
+    {%- form 'create_customer' -%}
+      {{ form.errors | default_errors }}
+      <div class="flex flex-col gap-4">
+        <label class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'customer.register.first_name' | t }}
+          <input type="text" name="customer[first_name]" autocomplete="given-name" class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none focus:border-[var(--gold)]">
+        </label>
+        <label class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'customer.register.last_name' | t }}
+          <input type="text" name="customer[last_name]" autocomplete="family-name" class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none focus:border-[var(--gold)]">
+        </label>
+        <label class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'customer.register.email' | t }}
+          <input type="email" name="customer[email]" autocomplete="email" required class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none focus:border-[var(--gold)]" placeholder="tu@email.com">
+        </label>
+        <label class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'customer.register.password' | t }}
+          <input type="password" name="customer[password]" autocomplete="new-password" required class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none focus:border-[var(--gold)]" placeholder="••••••••">
+        </label>
+        <button type="submit" class="bg-[var(--brown-900)] text-[var(--cream)] py-3.5 text-xs tracking-[0.2em] uppercase hover:bg-[var(--brown-700)] transition-colors mt-2">{{ 'customer.register.submit' | t }}</button>
+      </div>
+    {%- endform -%}
+
+    <p class="text-center text-sm text-[var(--brown-700)] mt-10 pt-8 border-t border-[var(--brown-500)]/15">
+      {{ 'customer.register.has_account' | t }}
+      <a href="{{ routes.account_login_url }}" class="text-[var(--matcha-700)] underline">{{ 'customer.register.sign_in' | t }}</a>
+    </p>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Crear cuenta",
+  "settings": []
+}
+{% endschema %}

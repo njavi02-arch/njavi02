@@ -120,6 +120,16 @@
       "login_password_placeholder": "Contraseña de la tienda",
       "login_form_submit": "Entrar",
       "contact": "Contactanos en"
+    },
+    "contact": {
+      "title": "Contacto",
+      "subtitle": "¿Tenés una pregunta? Escribinos y te respondemos a la brevedad.",
+      "name": "Nombre",
+      "email": "Email",
+      "phone": "Teléfono (opcional)",
+      "message": "Mensaje",
+      "submit": "Enviar mensaje",
+      "success": "¡Gracias! Recibimos tu mensaje y te responderemos pronto."
     }
   },
   "customer": {
@@ -130,19 +140,94 @@
       "view_orders": "Ver pedidos",
       "addresses": "Direcciones guardadas",
       "details": "Gestionar datos personales",
-      "logout": "Cerrar sesión"
+      "logout": "Cerrar sesión",
+      "orders_title": "Tus pedidos",
+      "no_orders": "Todavía no hiciste ningún pedido.",
+      "order_number": "Pedido",
+      "order_date": "Fecha",
+      "order_payment": "Pago",
+      "order_fulfillment": "Envío",
+      "order_total": "Total",
+      "view_order": "Ver detalle"
     },
     "login": {
+      "title": "Iniciar sesión",
       "email": "Email",
       "password": "Contraseña",
       "sign_in": "Iniciar sesión",
-      "forgot_password": "¿Olvidaste tu contraseña?"
+      "forgot_password": "¿Olvidaste tu contraseña?",
+      "no_account": "¿Todavía no tenés cuenta?",
+      "create_account": "Creá una aquí",
+      "recover_email": "Email",
+      "recover_submit": "Enviar instrucciones",
+      "recover_success": "Si el email existe en nuestro sistema, te enviamos instrucciones para restablecer tu contraseña.",
+      "back_to_login": "Volver a iniciar sesión"
     },
     "register": {
       "title": "Crear cuenta",
       "first_name": "Nombre",
       "last_name": "Apellido",
-      "submit": "Crear cuenta"
+      "email": "Email",
+      "password": "Contraseña",
+      "submit": "Crear cuenta",
+      "has_account": "¿Ya tenés cuenta?",
+      "sign_in": "Iniciá sesión aquí"
+    },
+    "addresses": {
+      "title": "Direcciones",
+      "add_new": "Añadir dirección",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "default": "Predeterminada",
+      "set_default": "Marcar como predeterminada",
+      "first_name": "Nombre",
+      "last_name": "Apellido",
+      "company": "Empresa (opcional)",
+      "address1": "Dirección",
+      "address2": "Piso, depto (opcional)",
+      "city": "Ciudad",
+      "country": "País",
+      "province": "Provincia / Estado",
+      "zip": "Código postal",
+      "phone": "Teléfono",
+      "save": "Guardar dirección",
+      "cancel": "Cancelar",
+      "confirm_delete": "¿Eliminar esta dirección?",
+      "none": "Todavía no guardaste ninguna dirección."
+    },
+    "order": {
+      "title": "Pedido {{ name }}",
+      "date": "Realizado el {{ date }}",
+      "cancelled": "Pedido cancelado el {{ date }}",
+      "shipping_address": "Dirección de envío",
+      "billing_address": "Dirección de facturación",
+      "payment_status": "Estado del pago",
+      "fulfillment_status": "Estado del envío",
+      "product": "Producto",
+      "sku": "SKU",
+      "price": "Precio",
+      "quantity": "Cantidad",
+      "total": "Total",
+      "subtotal": "Subtotal",
+      "shipping": "Envío",
+      "tax": "Impuestos",
+      "discount": "Descuento",
+      "tracking": "Seguimiento",
+      "back_to_account": "Volver a mi cuenta"
+    },
+    "reset_password": {
+      "title": "Restablecer contraseña",
+      "subtitle": "Ingresá una nueva contraseña para {{ email }}",
+      "password": "Nueva contraseña",
+      "password_confirm": "Confirmar contraseña",
+      "submit": "Guardar contraseña"
+    },
+    "activate_account": {
+      "title": "Activar cuenta",
+      "subtitle": "Creá tu contraseña para activar la cuenta",
+      "password": "Contraseña",
+      "password_confirm": "Confirmar contraseña",
+      "submit": "Activar cuenta"
     }
   }
 }

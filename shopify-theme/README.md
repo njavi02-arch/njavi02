@@ -31,9 +31,40 @@ Para que se vea igual que el diseño de referencia, necesitás crear estos recur
 - **Código de descuento de bienvenida**: en Configuración del tema → Popup de bienvenida, cargá
   un código que exista de verdad en `Admin → Descuentos` — el popup arma un enlace que lo aplica
   automáticamente al carrito.
+- **Página de contacto**: creá una Página (`Admin → Contenido → Páginas`), asignale la plantilla
+  `page.contact` (selector "Plantilla" en la barra lateral derecha del editor de la página) y el
+  formulario de contacto real de Shopify (`{% form 'contact' %}`) queda funcionando — los mensajes
+  llegan al email de la tienda configurado en `Admin → Configuración → General`.
+- **Cuenta de cliente**: login, registro, "Mi cuenta", direcciones, detalle de pedido, restablecer
+  contraseña y activar cuenta son páginas reales (`templates/customers/*.json`), no solo el panel
+  lateral del header — así los enlaces que Shopify manda por email (recuperar contraseña, activar
+  cuenta, ver pedido) abren una página con la estética del theme en vez de la plantilla genérica
+  de Shopify.
 
 ## Notas de diseño
 
 Paleta, tipografía y componentes están documentados inline en `config/settings_schema.json`
 (grupo "Colores") y en los comentarios de cada sección. Los íconos son un set de líneas propio
 (`snippets/icon.liquid`), no un paquete externo.
+
+## Rendimiento / dependencias externas
+
+Tailwind CSS y GSAP están compilados/copiados como assets propios del theme
+(`assets/tailwind-built.css`, `assets/gsap.min.js`, `assets/ScrollTrigger.min.js`) sin depender de
+un CDN externo en tiempo de ejecución — el build de Tailwind vía CDN (`@tailwindcss/browser`) es
+solo para desarrollo/prototipado según la propia documentación de Tailwind, así que no se usa en
+producción. La única dependencia externa restante son las tipografías de Google Fonts (Cormorant
+Garamond, Inter), que es un patrón estándar incluso en themes oficiales de Shopify.
+
+Si cambiás clases de Tailwind en algún `.liquid`, hay que recompilar `assets/tailwind-built.css`
+(no se genera solo — Shopify no compila Tailwind, es un paso manual antes de subir el zip).
+
+## Limitaciones conocidas
+
+- El formulario de contacto usa el objeto `contact` nativo de Shopify — el checker de temas marca
+  `form` como "Unknown object" en `main-login.liquid` y `contact-form.liquid`; es una limitación de
+  detección estática de `shopify theme check`, no un error real (el objeto existe en runtime dentro
+  de cualquier bloque `{% form %}`).
+- `layout/password.liquid` y `templates/gift_card.liquid` cargan las tipografías de Google Fonts
+  directamente (no pasan por `theme.liquid`) porque son layouts/páginas independientes; por eso
+  aparecen como advertencias `RemoteAsset` en el checker, igual que en `theme.liquid`.
