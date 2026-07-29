@@ -1,0 +1,49 @@
+<aside id="account-panel" class="side-panel" aria-label="{{ 'customer.account.title' | t }}">
+  <div class="flex items-center justify-between p-7 border-b border-[var(--brown-500)]/15">
+    <h3 class="font-display text-2xl text-[var(--brown-900)] italic">{{ 'customer.account.title' | t }}</h3>
+    <button class="panel-close text-2xl leading-none text-[var(--brown-700)]" aria-label="{{ 'customer.account.close' | t }}">&times;</button>
+  </div>
+
+  <div class="p-7 flex flex-col gap-6 text-sm text-[var(--brown-700)]">
+    {%- if customer -%}
+      <div>
+        <p class="text-[var(--brown-900)] font-display text-xl italic mb-1">{{ 'customer.account.greeting' | t: name: customer.first_name }}</p>
+        <p class="text-xs text-[var(--brown-500)]">{{ customer.email }}</p>
+      </div>
+      <ul class="space-y-3 pt-5 border-t border-[var(--brown-500)]/15 font-light">
+        <li><a href="{{ routes.account_url }}" class="hover:text-[var(--matcha-700)]">· {{ 'customer.account.view_orders' | t }} ({{ customer.orders_count }})</a></li>
+        <li><a href="{{ routes.account_addresses_url }}" class="hover:text-[var(--matcha-700)]">· {{ 'customer.account.addresses' | t }}</a></li>
+        <li><a href="{{ routes.account_url }}" class="hover:text-[var(--matcha-700)]">· {{ 'customer.account.details' | t }}</a></li>
+      </ul>
+      <a href="{{ routes.account_logout_url }}" class="border border-[var(--brown-500)]/40 py-3 text-xs tracking-[0.2em] uppercase text-[var(--brown-900)] text-center hover:bg-[var(--cream-deep)]">{{ 'customer.account.logout' | t }}</a>
+    {%- else -%}
+      {%- form 'customer_login' -%}
+        {{ form.errors | default_errors }}
+        <div class="flex flex-col gap-3">
+          <label class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'customer.login.email' | t }}
+            <input type="email" name="customer[email]" autocomplete="email" required class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none" placeholder="tu@email.com">
+          </label>
+          <label class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'customer.login.password' | t }}
+            <input type="password" name="customer[password]" autocomplete="current-password" required class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none" placeholder="••••••••">
+          </label>
+          <button type="submit" class="bg-[var(--brown-900)] text-[var(--cream)] py-3 text-xs tracking-[0.2em] uppercase hover:bg-[var(--brown-700)] mt-2">{{ 'customer.login.sign_in' | t }}</button>
+          <a href="{{ routes.account_recover_url }}" class="text-xs text-[var(--brown-500)] underline text-center mt-1">{{ 'customer.login.forgot_password' | t }}</a>
+        </div>
+      {%- endform -%}
+
+      <details class="pt-5 border-t border-[var(--brown-500)]/15">
+        <summary class="cursor-pointer text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'customer.register.title' | t }}</summary>
+        {%- form 'create_customer' -%}
+          {{ form.errors | default_errors }}
+          <div class="flex flex-col gap-3 mt-4">
+            <input type="text" name="customer[first_name]" autocomplete="given-name" class="px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none text-sm" placeholder="{{ 'customer.register.first_name' | t }}">
+            <input type="text" name="customer[last_name]" autocomplete="family-name" class="px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none text-sm" placeholder="{{ 'customer.register.last_name' | t }}">
+            <input type="email" name="customer[email]" autocomplete="email" required class="px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none text-sm" placeholder="tu@email.com">
+            <input type="password" name="customer[password]" autocomplete="new-password" required class="px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none text-sm" placeholder="••••••••">
+            <button type="submit" class="border border-[var(--brown-500)]/40 py-3 text-xs tracking-[0.2em] uppercase text-[var(--brown-900)] hover:bg-[var(--cream-deep)]">{{ 'customer.register.submit' | t }}</button>
+          </div>
+        {%- endform -%}
+      </details>
+    {%- endif -%}
+  </div>
+</aside>

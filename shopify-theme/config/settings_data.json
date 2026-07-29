@@ -1,0 +1,35 @@
+{
+  "current": {
+    "sections": {
+      "announcement-bar": {
+        "type": "announcement-bar",
+        "blocks": {
+          "message-1": { "type": "message", "settings": { "icon": "coffee", "text": "Envío gratis +80€", "show_from": "all" } },
+          "message-2": { "type": "message", "settings": { "icon": "truck", "text": "Entrega en 48/72h", "show_from": "sm" } },
+          "message-3": { "type": "message", "settings": { "icon": "leaf", "text": "Café seleccionado de origen", "show_from": "md" } },
+          "message-4": { "type": "message", "settings": { "icon": "star", "text": "Más de 10.000 clientes satisfechos", "show_from": "lg" } }
+        },
+        "block_order": ["message-1", "message-2", "message-3", "message-4"]
+      },
+      "header": {
+        "type": "header",
+        "settings": {
+          "menu": "main-menu"
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {
+          "description": "Café, matcha y accesorios premium. No vendemos solo café, creamos momentos."
+        },
+        "blocks": {
+          "col-1": { "type": "menu", "settings": { "title": "Comprar", "menu": "footer" } },
+          "col-2": { "type": "menu", "settings": { "title": "Ayuda", "menu": "footer" } },
+          "col-3": { "type": "social", "settings": { "title": "Seguinos" } }
+        },
+        "block_order": ["col-1", "col-2", "col-3"]
+      }
+    }
+  },
+  "presets": {}
+}

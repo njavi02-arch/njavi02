@@ -1,0 +1,57 @@
+<section id="experiencia" class="relative py-32 px-6 md:px-10 text-[var(--cream)] overflow-hidden">
+  {%- if section.settings.image -%}
+    <img src="{{ section.settings.image | image_url: width: 2000 }}" alt="{{ section.settings.heading | escape }}" class="absolute inset-0 w-full h-full object-cover" loading="lazy" width="{{ section.settings.image.width }}" height="{{ section.settings.image.height }}">
+  {%- else -%}
+    <img src="{{ 'brand-filosofia.png' | asset_url }}" alt="{{ section.settings.heading | escape }}" class="absolute inset-0 w-full h-full object-cover" loading="lazy" width="2699" height="1280">
+  {%- endif -%}
+  <div class="absolute inset-0" style="background: rgba(28,17,11,0.82);"></div>
+  <div class="max-w-6xl mx-auto relative z-10">
+    <div class="text-center mb-24 reveal">
+      <div class="gold-rule mx-auto mb-6"></div>
+      {%- if section.settings.eyebrow != blank -%}<span class="eyebrow text-xs uppercase text-[var(--gold)]">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      <h2 class="font-display text-4xl md:text-5xl mt-4 leading-tight italic">{{ section.settings.heading }}</h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-x-20 gap-y-14">
+      {%- for block in section.blocks -%}
+        <div class="reveal" {{ block.shopify_attributes }}>
+          <span class="eyebrow text-[0.65rem] uppercase text-[var(--gold)] block mb-3">{{ block.settings.heading }}</span>
+          <p class="text-[var(--cream)]/70 leading-relaxed font-light">{{ block.settings.text }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Filosofía de marca",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Imagen de fondo" },
+    { "type": "text", "id": "eyebrow", "label": "Texto pequeño", "default": "Nuestra filosofía" },
+    { "type": "textarea", "id": "heading", "label": "Título", "default": "No vendemos solo café, creamos momentos." }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Columna",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Título", "default": "Nuestra historia" },
+        { "type": "textarea", "id": "text", "label": "Texto", "default": "KOHI & CHA nació del encuentro entre el café de especialidad y la ceremonia del té." }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Filosofía de marca",
+      "blocks": [
+        { "type": "column", "settings": { "heading": "Nuestra historia", "text": "KOHI & CHA nació del encuentro entre el café de especialidad y la ceremonia del té: la idea de traer ese ritual a la rutina diaria, sin perder el detalle artesanal." } },
+        { "type": "column", "settings": { "heading": "Origen de los productos", "text": "Trabajamos con orígenes seleccionados y proveedores que comparten nuestro estándar de calidad, lote a lote." } },
+        { "type": "column", "settings": { "heading": "Calidad de ingredientes", "text": "Tueste en pequeños lotes y molienda tradicional de matcha, cuidando cada paso antes de que llegue a tu taza." } },
+        { "type": "column", "settings": { "heading": "Compromiso sostenible", "text": "Elegimos proveedores y envases pensando en el impacto, no solo en el producto final." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

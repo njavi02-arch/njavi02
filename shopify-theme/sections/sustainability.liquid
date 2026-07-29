@@ -1,0 +1,62 @@
+<section class="py-28 px-6 md:px-10 bg-[var(--matcha-900)] text-[var(--cream)]">
+  <div class="max-w-6xl mx-auto text-center">
+    <div class="mb-16 reveal">
+      <div class="gold-rule mx-auto mb-5"></div>
+      {%- if section.settings.eyebrow != blank -%}<span class="eyebrow text-xs uppercase text-[var(--gold)]">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      <h2 class="font-display text-4xl md:text-5xl mt-3 italic">{{ section.settings.heading }}</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-12">
+      {%- for block in section.blocks -%}
+        <div class="reveal" {{ block.shopify_attributes }}>
+          <span class="inline-flex items-center justify-center w-14 h-14 rounded-full border border-[var(--gold)]/40 mb-5">
+            {%- render 'icon', name: block.settings.icon, class: 'w-6 h-6 text-[var(--gold)]' -%}
+          </span>
+          <h3 class="font-display text-xl mb-2 italic">{{ block.settings.heading }}</h3>
+          <p class="text-[var(--cream)]/70 text-sm leading-relaxed font-light">{{ block.settings.text }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Sostenibilidad",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Texto pequeño", "default": "Compromiso real" },
+    { "type": "text", "id": "heading", "label": "Título", "default": "Café y matcha con conciencia" }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Columna",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icono",
+          "options": [
+            { "value": "leaf", "label": "Hoja" },
+            { "value": "recycle", "label": "Reciclaje" },
+            { "value": "globe", "label": "Globo" }
+          ],
+          "default": "leaf"
+        },
+        { "type": "text", "id": "heading", "label": "Título", "default": "Productos ecológicos" },
+        { "type": "textarea", "id": "text", "label": "Texto", "default": "Origen certificado y cultivos respetuosos con la tierra." }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Sostenibilidad",
+      "blocks": [
+        { "type": "column", "settings": { "icon": "leaf", "heading": "Productos ecológicos", "text": "Origen certificado y cultivos respetuosos con la tierra." } },
+        { "type": "column", "settings": { "icon": "recycle", "heading": "Envases responsables", "text": "Materiales reciclables o reutilizables en todo el packaging." } },
+        { "type": "column", "settings": { "icon": "globe", "heading": "Compromiso con el planeta", "text": "Decisiones pensadas para reducir nuestro impacto, envío a envío." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

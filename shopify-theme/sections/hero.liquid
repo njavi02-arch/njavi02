@@ -1,0 +1,58 @@
+<section id="hero" class="relative min-h-screen flex items-center overflow-hidden">
+  {%- if section.settings.image -%}
+    <img src="{{ section.settings.image | image_url: width: 2000 }}" alt="{{ section.settings.image.alt | default: section.settings.heading | escape }}" id="hero-photo" class="absolute inset-0 w-full h-full object-cover" style="object-position: center 68%;" loading="eager" width="{{ section.settings.image.width }}" height="{{ section.settings.image.height }}">
+  {%- else -%}
+    <img src="{{ 'brand-hero.png' | asset_url }}" alt="{{ section.settings.heading | escape }}" id="hero-photo" class="absolute inset-0 w-full h-full object-cover" style="object-position: center 68%;" loading="eager" width="2737" height="1376">
+  {%- endif -%}
+  <div class="absolute inset-0" style="background: linear-gradient(100deg, rgba(28,17,11,0.92) 0%, rgba(28,17,11,0.78) 32%, rgba(28,17,11,0.35) 60%, rgba(28,17,11,0.55) 100%);"></div>
+  <div id="hero-parallax" class="absolute -right-32 top-1/5 w-[42rem] h-[42rem] rounded-full bg-gradient-to-br from-[var(--gold)]/10 to-transparent blur-3xl"></div>
+
+  <div class="max-w-7xl mx-auto w-full px-6 md:px-10 pt-24 pb-20 relative z-10">
+    <div class="reveal max-w-xl" id="hero-copy">
+      <div class="gold-rule mb-6"></div>
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="inline-block eyebrow text-xs uppercase text-[var(--gold)] mb-6">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+      <h1 class="text-5xl md:text-6xl lg:text-7xl leading-[1.05] text-[var(--cream)] mb-8 italic">
+        {{ section.settings.heading }}
+      </h1>
+      {%- if section.settings.subheading != blank -%}
+        <p class="text-base text-[var(--cream)]/75 max-w-md mb-12 leading-relaxed font-light">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+      <div class="flex flex-wrap items-center gap-8">
+        {%- if section.settings.button_1_text != blank -%}
+          <a href="{{ section.settings.button_1_link | default: '#tienda' }}" class="btn-outline text-[var(--cream)] px-9 py-4 text-xs tracking-[0.2em] uppercase">
+            {{ section.settings.button_1_text }}
+          </a>
+        {%- endif -%}
+        {%- if section.settings.button_2_text != blank -%}
+          <a href="{{ section.settings.button_2_link | default: '#tienda' }}" class="btn-gold-line text-xs tracking-[0.2em] uppercase text-[var(--gold)]">
+            {{ section.settings.button_2_text }}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--cream)]/60 z-10">
+    <span class="text-[0.6rem] eyebrow uppercase">{{ 'general.hero.scroll' | t }}</span>
+    <div class="w-px h-12 bg-[var(--cream)]/30"></div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero cinemático",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Imagen de fondo" },
+    { "type": "text", "id": "eyebrow", "label": "Texto pequeño superior", "default": "Café de especialidad · Matcha ceremonial" },
+    { "type": "text", "id": "heading", "label": "Título", "default": "El arte del café y el matcha en cada momento" },
+    { "type": "textarea", "id": "subheading", "label": "Subtítulo", "default": "Una selección exclusiva de café de origen y matcha ceremonial, servida con la calma de un ritual. Bienvenido a KOHI & CHA." },
+    { "type": "text", "id": "button_1_text", "label": "Botón 1 · texto", "default": "Descubrir colección" },
+    { "type": "url", "id": "button_1_link", "label": "Botón 1 · enlace" },
+    { "type": "text", "id": "button_2_text", "label": "Botón 2 · texto", "default": "Comprar ahora" },
+    { "type": "url", "id": "button_2_link", "label": "Botón 2 · enlace" }
+  ],
+  "presets": [{ "name": "Hero cinemático" }]
+}
+{% endschema %}

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="{{ canonical_url }}">
+    {%- if settings.favicon -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 96 }}">
+    {%- else -%}
+      <link rel="icon" type="image/png" href="{{ 'favicon.png' | asset_url }}">
+    {%- endif -%}
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; {{ current_tags | join: ', ' }}{% endif -%}
+      {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    <meta property="og:site_name" content="{{ shop.name }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:title" content="{{ page_title }}">
+    <meta property="og:type" content="website">
+    {% if page_description %}<meta property="og:description" content="{{ page_description | escape }}">{% endif %}
+    {%- assign share_image = page_image | default: settings.logo_image -%}
+    {%- if share_image != blank -%}
+      <meta property="og:image" content="{{ share_image | image_url: width: 1200 }}">
+      <meta property="og:image:width" content="1200">
+      <meta property="og:image:secure_url" content="{{ share_image | image_url: width: 1200 }}">
+      <meta name="twitter:card" content="summary_large_image">
+      <meta name="twitter:image" content="{{ share_image | image_url: width: 1200 }}">
+    {%- else -%}
+      <meta name="twitter:card" content="summary">
+    {%- endif -%}
+    <meta name="twitter:title" content="{{ page_title }}">
+    {% if page_description %}<meta name="twitter:description" content="{{ page_description | escape }}">{% endif %}
+
+    {%- if request.page_type == 'index' -%}
+      <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": {{ shop.name | json }},
+          "url": {{ shop.url | json }}
+          {%- if settings.logo_image -%},"logo": {{ settings.logo_image | image_url: width: 512 | json }}{%- endif -%}
+          {%- if settings.social_instagram_link != blank or settings.social_facebook_link != blank or settings.social_tiktok_link != blank or settings.social_pinterest_link != blank -%}
+            ,"sameAs": [
+              {%- assign socials = '' -%}
+              {%- if settings.social_instagram_link != blank -%}{{ settings.social_instagram_link | json }}{%- assign socials = 'x' -%}{%- endif -%}
+              {%- if settings.social_facebook_link != blank -%}{% if socials != '' %},{% endif %}{{ settings.social_facebook_link | json }}{%- assign socials = 'x' -%}{%- endif -%}
+              {%- if settings.social_tiktok_link != blank -%}{% if socials != '' %},{% endif %}{{ settings.social_tiktok_link | json }}{%- assign socials = 'x' -%}{%- endif -%}
+              {%- if settings.social_pinterest_link != blank -%}{% if socials != '' %},{% endif %}{{ settings.social_pinterest_link | json }}{%- endif -%}
+            ]
+          {%- endif -%}
+        }
+      </script>
+      <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": {{ shop.name | json }},
+          "url": {{ shop.url | json }},
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{{ shop.url }}{{ routes.search_url }}?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }
+      </script>
+    {%- endif -%}
+
+    {{ content_for_header }}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <script src="{{ 'gsap.min.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'ScrollTrigger.min.js' | asset_url }}" defer="defer"></script>
+
+    {{ 'tailwind-built.css' | asset_url | stylesheet_tag }}
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+
+    <style>
+        :root {
+            --cream: {{ settings.color_cream }};
+            --cream-deep: {{ settings.color_cream_deep }};
+            --beige: {{ settings.color_beige }};
+            --brown-900: {{ settings.color_brown_900 }};
+            --brown-800: {{ settings.color_brown_800 }};
+            --brown-700: {{ settings.color_brown_700 }};
+            --brown-500: {{ settings.color_brown_500 }};
+            --matcha-900: {{ settings.color_matcha_900 }};
+            --matcha-700: {{ settings.color_matcha_700 }};
+            --matcha-500: {{ settings.color_matcha_500 }};
+            --gold: {{ settings.color_gold }};
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    {%- if settings.enable_intro -%}
+      {% render 'intro-video' %}
+    {%- endif -%}
+
+    <div id="custom-cursor"><span id="custom-cursor-text"></span></div>
+
+    <div id="site" {% if settings.enable_intro %}class="intro-pending"{% endif %}>
+
+        {% section 'announcement-bar' %}
+        {% section 'header' %}
+
+        <main id="MainContent">
+            {{ content_for_layout }}
+        </main>
+
+        {% section 'footer' %}
+
+    </div>
+
+    {% render 'cart-drawer' %}
+    {% render 'favorites-drawer' %}
+    {% render 'account-drawer' %}
+    {% render 'search-drawer' %}
+    {% render 'welcome-popup' %}
+
+    <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'favorites.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'reviews-carousel.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'welcome-popup.js' | asset_url }}" defer="defer"></script>
+
+    <script>
+      window.VDT = window.VDT || {};
+      window.VDT.routes = {
+        cartAdd: '{{ routes.cart_add_url }}',
+        cartChange: '{{ routes.cart_change_url }}',
+        cartUpdate: '{{ routes.cart_update_url }}',
+        cart: '{{ routes.cart_url }}.js',
+        predictiveSearch: '{{ routes.predictive_search_url }}'
+      };
+      window.VDT.settings = {
+        freeShippingThreshold: {{ settings.free_shipping_threshold | default: 80 }},
+        moneyFormat: {{ shop.money_format | json }}
+      };
+      window.VDT.cart = {{ cart | json }};
+    </script>
+</body>
+
+</html>

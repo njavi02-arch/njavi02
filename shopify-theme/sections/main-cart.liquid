@@ -1,0 +1,49 @@
+<section class="py-32 px-6 md:px-10 bg-[var(--cream)] min-h-[60vh]">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-16 reveal">
+      <div class="gold-rule mx-auto mb-5"></div>
+      <h1 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] italic">{{ 'general.cart.title' | t }}</h1>
+    </div>
+
+    {%- if cart.item_count == 0 -%}
+      <p class="text-center text-[var(--brown-500)] mb-10">{{ 'general.cart.empty' | t }}</p>
+      <div class="text-center">
+        <a href="{{ routes.all_products_collection_url }}" class="btn-outline text-[var(--brown-900)] px-9 py-4 text-xs tracking-[0.2em] uppercase">{{ 'general.cart.continue_shopping' | t }}</a>
+      </div>
+    {%- else -%}
+      <form action="{{ routes.cart_url }}" method="post" novalidate>
+        <div class="flex flex-col gap-6 mb-10">
+          {%- for item in cart.items -%}
+            <div class="flex items-center gap-5 border-b border-[var(--brown-500)]/10 pb-6">
+              {%- if item.image -%}
+                <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.image.alt | escape }}" class="w-20 h-20 object-cover flex-shrink-0" width="{{ item.image.width }}" height="{{ item.image.height }}">
+              {%- endif -%}
+              <div class="flex-1">
+                <a href="{{ item.url }}" class="text-[var(--brown-900)]">{{ item.product_title }}</a>
+                {%- if item.variant_title -%}<p class="text-xs text-[var(--brown-500)]">{{ item.variant_title }}</p>{%- endif -%}
+                {%- if item.selling_plan_allocation -%}<p class="text-xs text-[var(--matcha-700)]">{{ item.selling_plan_allocation.selling_plan.name }}</p>{%- endif -%}
+                <p class="text-sm text-[var(--brown-700)] mt-1">{{ item.final_price | money }}</p>
+              </div>
+              <input type="number" name="updates[{{ forloop.index0 }}]" value="{{ item.quantity }}" min="0" class="w-16 px-3 py-2 border border-[var(--brown-500)]/30 text-center bg-transparent">
+              <span class="w-24 text-right text-[var(--brown-900)]">{{ item.final_line_price | money }}</span>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        <div class="flex justify-between items-center mb-8">
+          <button type="submit" name="update" class="text-xs uppercase tracking-wide text-[var(--brown-700)] underline">{{ 'general.cart.update' | t }}</button>
+          <span class="font-display text-2xl text-[var(--brown-900)]">{{ 'general.cart.total' | t }}: {{ cart.total_price | money }}</span>
+        </div>
+
+        <button type="submit" name="checkout" class="w-full bg-[var(--matcha-700)] text-[var(--cream)] py-4 text-xs tracking-[0.2em] uppercase hover:bg-[var(--matcha-900)]">{{ 'general.cart.checkout' | t }}</button>
+      </form>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Página de carrito",
+  "settings": []
+}
+{% endschema %}
