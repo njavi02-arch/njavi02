@@ -6,7 +6,7 @@
   <title>{{ 'general.gift_card.title' | t }}</title>
   <meta name="robots" content="noindex">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" defer="defer"></script>
+  {{ 'tailwind-built.css' | asset_url | stylesheet_tag }}
   {{ 'theme.css' | asset_url | stylesheet_tag }}
   <style>
     :root {
