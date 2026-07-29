@@ -18,7 +18,7 @@
     "featured-collection": {
       "type": "featured-collection",
       "settings": {
-        "note": "* Se muestran los productos reales de la colección elegida en este bloque — asigná la colección desde el editor de temas."
+        "collection": "destacados"
       },
       "blocks": {
         "filter-1": { "type": "filter", "settings": { "label": "Café", "type_value": "Cafe" } },
@@ -31,6 +31,7 @@
     "featured-product-vaso": {
       "type": "featured-product",
       "settings": {
+        "product": "vaso-termico-coffee",
         "anchor_id": "producto",
         "eyebrow": "Producto Signature",
         "description": "Vaso térmico de acero inoxidable con doble pared aislante y tapa abatible antiderrames. Pensado para acompañar tu rutina de café con estilo, dentro y fuera de casa.",
@@ -47,6 +48,7 @@
     "featured-product-cafe": {
       "type": "featured-product",
       "settings": {
+        "product": "blend-signature",
         "anchor_id": "producto-cafe",
         "eyebrow": "Café de especialidad",
         "description": "Un blend equilibrado de lotes seleccionados, tostado en pequeñas cantidades para conservar su aroma. Pensado para quienes buscan una taza con carácter cada mañana.",
@@ -107,7 +109,9 @@
     },
     "featured-blog": {
       "type": "featured-blog",
-      "settings": {}
+      "settings": {
+        "blog": "news"
+      }
     },
     "newsletter": {
       "type": "newsletter",

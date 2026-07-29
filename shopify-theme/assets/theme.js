@@ -36,6 +36,7 @@
 
         let alreadySeen = false;
         try { alreadySeen = sessionStorage.getItem('vdt-intro-seen') === 'true'; } catch (e) {}
+        if (window.location.search.indexOf('intro=1') !== -1) alreadySeen = false;
 
         if (alreadySeen) {
             clearTimeout(safetyTimer);
