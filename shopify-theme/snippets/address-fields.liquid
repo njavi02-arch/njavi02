@@ -1,0 +1,54 @@
+{%- comment -%}
+  Shared field markup for customer address forms. Must be rendered inside a
+  `{% form 'customer_address', address %}` block. Expects `form` (the form
+  object) and implicitly uses the `address` variable from the enclosing form
+  tag for prefill values.
+{%- endcomment -%}
+<div class="grid sm:grid-cols-2 gap-3 mt-4">
+  <label class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'customer.addresses.first_name' | t }}
+    <input type="text" name="address[first_name]" value="{{ form.first_name }}" autocomplete="given-name" class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none focus:border-[var(--gold)]">
+  </label>
+  <label class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'customer.addresses.last_name' | t }}
+    <input type="text" name="address[last_name]" value="{{ form.last_name }}" autocomplete="family-name" class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none focus:border-[var(--gold)]">
+  </label>
+</div>
+<label class="text-xs uppercase tracking-wide text-[var(--brown-500)] block mt-3">{{ 'customer.addresses.company' | t }}
+  <input type="text" name="address[company]" value="{{ form.company }}" autocomplete="organization" class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none focus:border-[var(--gold)]">
+</label>
+<label class="text-xs uppercase tracking-wide text-[var(--brown-500)] block mt-3">{{ 'customer.addresses.address1' | t }}
+  <input type="text" name="address[address1]" value="{{ form.address1 }}" autocomplete="address-line1" class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none focus:border-[var(--gold)]">
+</label>
+<label class="text-xs uppercase tracking-wide text-[var(--brown-500)] block mt-3">{{ 'customer.addresses.address2' | t }}
+  <input type="text" name="address[address2]" value="{{ form.address2 }}" autocomplete="address-line2" class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none focus:border-[var(--gold)]">
+</label>
+<div class="grid sm:grid-cols-2 gap-3 mt-3">
+  <label class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'customer.addresses.city' | t }}
+    <input type="text" name="address[city]" value="{{ form.city }}" autocomplete="address-level2" class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none focus:border-[var(--gold)]">
+  </label>
+  <label class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'customer.addresses.zip' | t }}
+    <input type="text" name="address[zip]" value="{{ form.zip }}" autocomplete="postal-code" class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none focus:border-[var(--gold)]">
+  </label>
+</div>
+<div class="grid sm:grid-cols-2 gap-3 mt-3">
+  <label class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'customer.addresses.country' | t }}
+    <select id="AddressCountry-{{ form.id }}" name="address[country]" data-default="{{ form.country }}" autocomplete="country" class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-[var(--cream)] focus:outline-none focus:border-[var(--gold)]">
+      {{ all_country_option_tags }}
+    </select>
+  </label>
+  <label id="AddressProvinceContainer-{{ form.id }}" class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'customer.addresses.province' | t }}
+    <select id="AddressProvince-{{ form.id }}" name="address[province]" data-default="{{ form.province }}" autocomplete="address-level1" class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-[var(--cream)] focus:outline-none focus:border-[var(--gold)]"></select>
+  </label>
+</div>
+<label class="text-xs uppercase tracking-wide text-[var(--brown-500)] block mt-3">{{ 'customer.addresses.phone' | t }}
+  <input type="tel" name="address[phone]" value="{{ form.phone }}" autocomplete="tel" class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none focus:border-[var(--gold)]">
+</label>
+<script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.Shopify && Shopify.CountryProvinceSelector) {
+      new Shopify.CountryProvinceSelector('AddressCountry-{{ form.id }}', 'AddressProvince-{{ form.id }}', {
+        hideElement: 'AddressProvinceContainer-{{ form.id }}'
+      });
+    }
+  });
+</script>

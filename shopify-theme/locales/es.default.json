@@ -1,0 +1,233 @@
+{
+  "general": {
+    "meta": {
+      "page": "Página {{ page }}"
+    },
+    "hero": {
+      "scroll": "Scroll"
+    },
+    "intro": {
+      "skip": "Saltar intro"
+    },
+    "menu": {
+      "home": "Inicio",
+      "open": "Abrir menú"
+    },
+    "search": {
+      "title": "Buscar",
+      "placeholder": "Buscar café, matcha, accesorios...",
+      "close": "Cerrar búsqueda",
+      "results_count": {
+        "one": "{{ count }} resultado",
+        "other": "{{ count }} resultados"
+      },
+      "no_results": "Sin resultados para \"{{ terms }}\"."
+    },
+    "favorites": {
+      "title": "Tus favoritos",
+      "close": "Cerrar favoritos",
+      "add": "Añadir a favoritos"
+    },
+    "cart": {
+      "title": "Tu carrito",
+      "close": "Cerrar carrito",
+      "free_shipping_prompt": "Añadí productos para conseguir envío gratis",
+      "subtotal": "Subtotal",
+      "shipping": "Envío",
+      "total": "Total",
+      "checkout": "Finalizar compra",
+      "empty": "Tu carrito está vacío.",
+      "continue_shopping": "Seguir comprando",
+      "update": "Actualizar carrito"
+    },
+    "filters": {
+      "all": "Todos",
+      "no_results": "No encontramos productos con ese filtro."
+    },
+    "collection": {
+      "eyebrow": "La colección",
+      "empty": "Todavía no hay productos en esta colección."
+    },
+    "category": {
+      "explore": "Explorar"
+    },
+    "badges": {
+      "bestseller": "Bestseller",
+      "new": "Nuevo",
+      "limited": "Edición limitada",
+      "eco": "Ecológico"
+    },
+    "price": {
+      "from": "Desde"
+    },
+    "product": {
+      "add_to_cart": "Añadir al carrito",
+      "sold_out": "Agotado",
+      "view_product": "Ver producto",
+      "color": "Color",
+      "one_time_purchase": "Compra única"
+    },
+    "reviews": {
+      "label": "valoraciones",
+      "hold_hint": "Mantener pulsado para ver más opiniones",
+      "swipe_hint": "Deslizá para ver más opiniones →"
+    },
+    "blog": {
+      "empty": "Todavía no hay artículos publicados."
+    },
+    "article": {
+      "comments": {
+        "one": "{{ count }} comentario",
+        "other": "{{ count }} comentarios"
+      },
+      "comment_posted": "Tu comentario fue enviado y quedará visible cuando se apruebe.",
+      "comment_name": "Tu nombre",
+      "comment_body": "Tu comentario",
+      "comment_submit": "Enviar comentario",
+      "back_to_blog": "Volver al blog"
+    },
+    "footer": {
+      "rights": "Todos los derechos reservados."
+    },
+    "404": {
+      "heading": "Página no encontrada",
+      "text": "El enlace puede estar roto o la página ya no existe.",
+      "back_home": "Volver al inicio"
+    },
+    "list_collections": {
+      "heading": "Todas las colecciones",
+      "products": "productos"
+    },
+    "newsletter": {
+      "submit": "Quiero mi descuento",
+      "thanks": "¡Gracias,",
+      "code_intro": "Tu código de descuento:",
+      "continue": "Continuar comprando",
+      "disclaimer": "Al enviar tus datos aceptás recibir novedades por email. Podés darte de baja cuando quieras.",
+      "countdown_text": "Tu descuento está reservado durante"
+    },
+    "pagination": {
+      "label": "Paginación"
+    },
+    "gift_card": {
+      "title": "Tarjeta de regalo",
+      "subtitle": "Usá este código en el checkout.",
+      "disabled": "Esta tarjeta de regalo ya no está activa.",
+      "balance": "Saldo disponible"
+    },
+    "password_page": {
+      "close": "Cerrar",
+      "login_password_placeholder": "Contraseña de la tienda",
+      "login_form_submit": "Entrar",
+      "contact": "Contactanos en"
+    },
+    "contact": {
+      "title": "Contacto",
+      "subtitle": "¿Tenés una pregunta? Escribinos y te respondemos a la brevedad.",
+      "name": "Nombre",
+      "email": "Email",
+      "phone": "Teléfono (opcional)",
+      "message": "Mensaje",
+      "submit": "Enviar mensaje",
+      "success": "¡Gracias! Recibimos tu mensaje y te responderemos pronto."
+    }
+  },
+  "customer": {
+    "account": {
+      "title": "Mi cuenta",
+      "close": "Cerrar",
+      "greeting": "Hola, {{ name }}",
+      "view_orders": "Ver pedidos",
+      "addresses": "Direcciones guardadas",
+      "details": "Gestionar datos personales",
+      "logout": "Cerrar sesión",
+      "orders_title": "Tus pedidos",
+      "no_orders": "Todavía no hiciste ningún pedido.",
+      "order_number": "Pedido",
+      "order_date": "Fecha",
+      "order_payment": "Pago",
+      "order_fulfillment": "Envío",
+      "order_total": "Total",
+      "view_order": "Ver detalle"
+    },
+    "login": {
+      "title": "Iniciar sesión",
+      "email": "Email",
+      "password": "Contraseña",
+      "sign_in": "Iniciar sesión",
+      "forgot_password": "¿Olvidaste tu contraseña?",
+      "no_account": "¿Todavía no tenés cuenta?",
+      "create_account": "Creá una aquí",
+      "recover_email": "Email",
+      "recover_submit": "Enviar instrucciones",
+      "recover_success": "Si el email existe en nuestro sistema, te enviamos instrucciones para restablecer tu contraseña.",
+      "back_to_login": "Volver a iniciar sesión"
+    },
+    "register": {
+      "title": "Crear cuenta",
+      "first_name": "Nombre",
+      "last_name": "Apellido",
+      "email": "Email",
+      "password": "Contraseña",
+      "submit": "Crear cuenta",
+      "has_account": "¿Ya tenés cuenta?",
+      "sign_in": "Iniciá sesión aquí"
+    },
+    "addresses": {
+      "title": "Direcciones",
+      "add_new": "Añadir dirección",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "default": "Predeterminada",
+      "set_default": "Marcar como predeterminada",
+      "first_name": "Nombre",
+      "last_name": "Apellido",
+      "company": "Empresa (opcional)",
+      "address1": "Dirección",
+      "address2": "Piso, depto (opcional)",
+      "city": "Ciudad",
+      "country": "País",
+      "province": "Provincia / Estado",
+      "zip": "Código postal",
+      "phone": "Teléfono",
+      "save": "Guardar dirección",
+      "cancel": "Cancelar",
+      "confirm_delete": "¿Eliminar esta dirección?",
+      "none": "Todavía no guardaste ninguna dirección."
+    },
+    "order": {
+      "title": "Pedido {{ name }}",
+      "date": "Realizado el {{ date }}",
+      "cancelled": "Pedido cancelado el {{ date }}",
+      "shipping_address": "Dirección de envío",
+      "billing_address": "Dirección de facturación",
+      "payment_status": "Estado del pago",
+      "fulfillment_status": "Estado del envío",
+      "product": "Producto",
+      "sku": "SKU",
+      "price": "Precio",
+      "quantity": "Cantidad",
+      "total": "Total",
+      "subtotal": "Subtotal",
+      "shipping": "Envío",
+      "tax": "Impuestos",
+      "discount": "Descuento",
+      "tracking": "Seguimiento",
+      "back_to_account": "Volver a mi cuenta"
+    },
+    "reset_password": {
+      "title": "Restablecer contraseña",
+      "subtitle": "Ingresá una nueva contraseña para {{ email }}",
+      "password": "Nueva contraseña",
+      "password_confirm": "Confirmar contraseña",
+      "submit": "Guardar contraseña"
+    },
+    "activate_account": {
+      "title": "Activar cuenta",
+      "subtitle": "Creá tu contraseña para activar la cuenta",
+      "password": "Contraseña",
+      "password_confirm": "Confirmar contraseña",
+      "submit": "Activar cuenta"
+    }
+  }
+}
