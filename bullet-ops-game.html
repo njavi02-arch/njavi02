@@ -1319,6 +1319,7 @@
                 bullet.material = getSharedBulletMaterial(this.scene, true);
                 bullet.owner = this.player;
                 bullet.damage = cfg.damage;
+                bullet.headshotMul = cfg.headshotMul;
                 bullet.velocity = direction.scale(cfg.bulletSpeed);
                 bullet.life = 10;
                 // cfg.range existed per-weapon from the start but was never
@@ -1929,6 +1930,7 @@
 
                 bullet.owner = this;
                 bullet.damage = this.currentWeapon.damage;
+                bullet.headshotMul = this.currentWeapon.headshotMul;
                 bullet.velocity = fireDir.scale(this.currentWeapon.bulletSpeed);
                 bullet.life = 10;
                 bullet.maxRange = this.currentWeapon.range;
@@ -2495,7 +2497,12 @@
                             // own core segment, not the bullet's height).
                             const headThreshold = entity.mesh.position.y + 0.4;
                             const isHeadshot = closest.pointOnSecond.y > headThreshold;
-                            const damageMul = isHeadshot ? 2.0 : 1.0;
+                            // Per-weapon headshotMul (a config field that
+                            // existed from the start but was previously
+                            // ignored in favor of a flat 2.0 for every
+                            // weapon) - e.g. a Sniper's 2.2x actually hits
+                            // harder on a headshot than a Shotgun's 1.2x now.
+                            const damageMul = isHeadshot ? bullet.headshotMul : 1.0;
                             const totalDamage = bullet.damage * damageMul;
 
                             entity.takeDamage(totalDamage);
