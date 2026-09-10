@@ -451,10 +451,21 @@
                     this.reloadCooldown = weapon.reload;
                 }
 
-                // Weapon switch
-                if (inputs.keys['1']) this.currentWeapon = 0;
-                if (inputs.keys['2']) this.currentWeapon = 1;
-                if (inputs.keys['3']) this.currentWeapon = 2;
+                // Weapon switch - currentMag/currentReserve are reset to the
+                // new weapon's own max values, but only on the frame the
+                // weapon actually changes (not every frame the key is held,
+                // which would otherwise fully refill ammo continuously while
+                // holding the key down - an infinite-ammo exploit).
+                let requestedWeapon = this.currentWeapon;
+                if (inputs.keys['1']) requestedWeapon = 0;
+                else if (inputs.keys['2']) requestedWeapon = 1;
+                else if (inputs.keys['3']) requestedWeapon = 2;
+                if (requestedWeapon !== this.currentWeapon) {
+                    this.currentWeapon = requestedWeapon;
+                    this.currentMag = this.weapons[this.currentWeapon].mag;
+                    this.currentReserve = this.weapons[this.currentWeapon].reserve;
+                    this.reloadCooldown = 0;
+                }
 
                 // Respawn if fell
                 if (this.mesh.position.y < -50) this.die();
@@ -1054,6 +1065,18 @@
             location.reload();
         });
 
+        // Closest point on segment [segA, segB] to `point`. Used for bullet
+        // hit detection against the bullet's whole travel path this frame,
+        // not just its endpoint (see updateGame).
+        function closestPointOnSegment(point, segA, segB) {
+            const ab = segB.subtract(segA);
+            const abLengthSq = ab.lengthSquared();
+            if (abLengthSq < 1e-8) return segA.clone();
+            let t = BABYLON.Vector3.Dot(point.subtract(segA), ab) / abLengthSq;
+            t = Math.max(0, Math.min(1, t));
+            return segA.add(ab.scale(t));
+        }
+
         // ========== GAME UPDATE ==========
         function updateGame() {
             const deltaTime = engine.getDeltaTime() / 1000;
@@ -1080,18 +1103,27 @@
             // Update bullets with performance limits
             for (let i = bullets.length - 1; i >= 0; i--) {
                 const bullet = bullets[i];
+                const prevPos = bullet.position.clone();
                 bullet.position.addInPlace(bullet.velocity.scale(deltaTime));
                 bullet.life -= deltaTime;
 
-                // Check collisions (limited to alive entities)
+                // Check collisions (limited to alive entities). Fast weapons
+                // (up to 900 u/s) can move ~14 units in a single frame, so
+                // testing only the bullet's endpoint each frame lets it tunnel
+                // straight through a target without ever registering as
+                // "close enough" at a sampled instant. Instead test the
+                // closest point on the whole travel segment for this frame
+                // (prevPos -> new position) against the entity.
                 let hit = false;
                 for (let entity of [player, ...bots]) {
                     if (entity && entity.isAlive && entity !== bullet.owner) {
-                        const dist = BABYLON.Vector3.Distance(bullet.position, entity.mesh.position);
+                        const impactPoint = closestPointOnSegment(entity.mesh.position, prevPos, bullet.position);
+                        const dist = BABYLON.Vector3.Distance(impactPoint, entity.mesh.position);
                         if (dist < 0.5) {
+                            bullet.position.copyFrom(impactPoint);
                             // Check if headshot (top 25% of mesh)
                             const headThreshold = entity.mesh.position.y + 0.4;
-                            const isHeadshot = bullet.position.y > headThreshold;
+                            const isHeadshot = impactPoint.y > headThreshold;
                             const damageMul = isHeadshot ? 2.0 : 1.0;
                             const totalDamage = bullet.damage * damageMul;
 
