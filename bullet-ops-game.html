@@ -2680,6 +2680,24 @@
             // walls the way a plain camera-parented mesh would.
             scene.setRenderingAutoClearDepthStencil(1, true);
 
+            // Light color grading + vignette - the scene never configured
+            // any postprocessing at all, part of what reads as "prototype"
+            // flatness. Deliberately NOT a full DefaultRenderingPipeline
+            // with bloom: that adds its own extra full-screen render
+            // passes, the same category of cost that made shadows measure
+            // so badly in this session's software-rendering test
+            // environment (see the shadow work above). Image processing
+            // (contrast/exposure/vignette) with applyByPostProcess left at
+            // its default false gets baked directly into each material's
+            // existing fragment shader instead - no additional render
+            // target, effectively free.
+            scene.imageProcessingConfiguration.contrast = 1.15;
+            scene.imageProcessingConfiguration.exposure = 1.05;
+            scene.imageProcessingConfiguration.vignetteEnabled = true;
+            scene.imageProcessingConfiguration.vignetteWeight = 2.2;
+            scene.imageProcessingConfiguration.vignetteStretch = 0.4;
+            scene.imageProcessingConfiguration.vignetteColor = new BABYLON.Color4(0, 0, 0, 1);
+
             // Lights - per-map mood via MAP_LIGHTING (see above), not a
             // single fixed config shared by all 3 maps.
             const lighting = MAP_LIGHTING[selectedMap] || MAP_LIGHTING['BACKLOT-7'];

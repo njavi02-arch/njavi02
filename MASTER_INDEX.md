@@ -132,7 +132,7 @@ Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(
 | Iluminación diferenciada por mapa | 🟢 | — | |
 | Sombras dinámicas | 🟢 | — | Ver FASE 6 |
 | Partículas (muzzle flash, impacto, explosión) | 🟢 | — | |
-| Postprocesado (tone mapping, vignette, bloom sutil) | 🔴 | P2 | Nunca configurado, la escena usa el pipeline por defecto |
+| Postprocesado (tone mapping, vignette) | 🟢 | — | Vía `imageProcessingConfiguration` (horneado en shader, sin coste de pase extra) en vez de `DefaultRenderingPipeline` con bloom |
 | Texturas/materiales reales | 🔒 | P3 | Bloqueado en assets |
 | Modelos 3D reales | 🔒 | P3 | Bloqueado en assets |
 | Animaciones (viewmodel procedural) | 🟢 | — | |
@@ -186,6 +186,7 @@ Revisión continua transversal. Elementos "de prototipo" detectados activamente 
 - ~~Brillo especular no deseado en superficies de mapa~~ — 🟢 corregido de paso al implementar sombras.
 - ~~Sin sonido de UI~~ — 🟢 corregido, ver FASE 7/9.
 - ~~Retícula única para 35 armas~~ — 🟢 corregido, ver FASE 5.
+- ~~Sin postprocesado~~ — 🟢 corregido, ver FASE 8.
 - **Retícula única para 35 armas** (FASE 5, P2).
 - **Sin postprocesado** (FASE 8, P2).
 - Resto de "prototipo" visual (texturas planas, modelos de bloques) está correctamente identificado como bloqueado en assets reales, no como negligencia — cada uno tiene ya su placeholder funcional documentado en `BULLET_OPS_PROGRESS.md`.
@@ -197,7 +198,8 @@ Revisión continua transversal. Elementos "de prototipo" detectados activamente 
 ~~P1 — Sombras dinámicas~~ 🟢 completado.
 ~~P1 — Sonido de UI~~ 🟢 completado.
 ~~P2 — Retículas por categoría de arma~~ 🟢 completado.
+~~P2 — Postprocesado ligero~~ 🟢 completado.
 
-Ya no quedan tareas P1 abiertas. **P2 — postprocesado ligero** (FASE 8): la escena nunca configuró ningún pipeline de postprocesado. Se implementa a continuación en este mismo ciclo.
+Ya no quedan tareas P1 ni P2 abiertas de la lista original de esta fase. Auditoría de rendimiento (FASE 1/11) revisada de paso al investigar el coste de las sombras: `initGame()` solo puede ejecutarse una vez por carga de página (las dos rutas de "volver al menú" — resultados y pausa — hacen `location.reload()`), así que no existe riesgo de acumulación de escenas/mallas entre partidas; no se encontró ninguna fuga nueva. Sin más hallazgos de rendimiento que abordar por ahora.
 
-Después: auditoría de rendimiento (FASE 1/11), luego sonido ambiente diferenciado por mapa (FASE 6/7, P2), luego ADS real "a través de la mira" (bloqueado en modelo real, revisar si hay alguna mejora intermedia posible sin modelo).
+**Siguiente**: sonido ambiente diferenciado por mapa (FASE 6/7, P2) — los 3 mapas usan exactamente el mismo bucle de viento. Se implementa a continuación en este mismo ciclo. Después: ADS real "a través de la mira" (bloqueado en modelo real — revisar si hay alguna mejora intermedia posible sin modelo, por ejemplo centrar mejor el placeholder).
