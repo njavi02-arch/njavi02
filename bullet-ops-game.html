@@ -169,6 +169,17 @@
             box-shadow: inset 0 0 100px rgba(255, 0, 0, 0);
             transition: box-shadow 0.1s;
         }
+        #pauseMenu {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10, 14, 39, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            color: #00ff00;
+        }
     </style>
 </head>
 <body>
@@ -223,6 +234,14 @@
 
     <div id="loading" class="hidden">LOADING GAME...</div>
 
+    <div id="pauseMenu" class="hidden">
+        <div style="text-align: center;">
+            <div class="menu-title" style="font-size: 2.5rem;">⏸ PAUSED</div>
+            <button class="menu-button" id="resumeBtn">▶ RESUME</button>
+            <button class="menu-button" id="quitToMenuBtn">✕ QUIT TO MENU</button>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babylonjs/7.0.0/babylon.min.js"></script>
     <script>
         // ========== GLOBALS ==========
@@ -230,6 +249,13 @@
         const menu = document.getElementById('menu');
         const hud = document.getElementById('hud');
         const loading = document.getElementById('loading');
+        const pauseMenu = document.getElementById('pauseMenu');
+
+        // Single source of truth for cursor/control ownership. Pointer lock and
+        // the pause menu are both driven from this instead of independent,
+        // competing systems (see requestGamePointerLock/pauseGame/resumeGame).
+        const GameState = { MENU: 'MENU', PLAYING: 'PLAYING', PAUSED: 'PAUSED', ENDED: 'ENDED' };
+        let currentGameState = GameState.MENU;
 
         let engine, scene, gameActive = false, gameStartTime = 0;
         let player = null, bots = [], bullets = [];
@@ -332,11 +358,6 @@
                 this.pitch -= inputs.mouseY * 0.001;
                 this.pitch = Math.max(-Math.PI / 2.5, Math.min(Math.PI / 2.5, this.pitch));
                 this.camera.rotation = new BABYLON.Vector3(this.pitch, this.yaw, 0);
-                // Reset accumulated mouse delta now that it's been applied, otherwise
-                // the same stale delta gets re-applied every single frame (was causing
-                // rotation to snowball into an extremely fast/erratic camera).
-                inputs.mouseX = 0;
-                inputs.mouseY = 0;
 
                 // Movement (arcade style - responsive)
                 const forward = new BABYLON.Vector3(Math.sin(this.yaw), 0, Math.cos(this.yaw));
@@ -733,22 +754,33 @@
                 }
             }
 
+            currentGameState = GameState.PLAYING;
             gameActive = true;
             gameStartTime = Date.now();
             blueScore = 0;
             redScore = 0;
             loading.classList.add('hidden');
             hud.classList.remove('hidden');
+            pauseMenu.classList.add('hidden');
 
             // Render loop
             engine.runRenderLoop(() => {
-                if (gameActive) {
+                if (currentGameState === GameState.PLAYING) {
                     updateGame();
                 }
                 scene.render();
             });
 
             window.addEventListener('resize', () => engine.resize());
+
+            // Explicitly capture the cursor now that the game view is fully up,
+            // as part of the same user gesture that clicked PLAY. This replaces
+            // the old approach of requesting the lock from a global 'mousedown'
+            // listener on document.documentElement (fired on every click,
+            // including the PLAY button itself, racing with the menu being
+            // hidden) which is what made the game feel unresponsive until an
+            // unrelated ESC + re-click "kicked" it into working.
+            requestGamePointerLock();
         }
 
         // ========== BUILD MAP ==========
@@ -885,11 +917,20 @@
             mouseDown: false
         };
 
+        // Keys the game itself handles. Space in particular must not be
+        // allowed to fall through to the browser's default "scroll page"
+        // behavior, and none of these should trigger other page shortcuts.
+        const GAME_KEYS = new Set(['w', 'a', 's', 'd', ' ', 'shift', 'r', '1', '2', '3', 'c', 'escape']);
+
         window.addEventListener('keydown', (e) => {
-            inputs.keys[e.key.toLowerCase()] = true;
+            const key = e.key.toLowerCase();
+            inputs.keys[key] = true;
+            if (GAME_KEYS.has(key)) e.preventDefault();
         });
         window.addEventListener('keyup', (e) => {
-            inputs.keys[e.key.toLowerCase()] = false;
+            const key = e.key.toLowerCase();
+            inputs.keys[key] = false;
+            if (GAME_KEYS.has(key)) e.preventDefault();
         });
 
         document.addEventListener('mousemove', (e) => {
@@ -897,12 +938,81 @@
             inputs.mouseY += e.movementY || 0;
         });
 
+        // Firing is tracked independently of cursor capture - clicking anywhere
+        // outside the game (menus, pause screen) sets/clears this too, but it's
+        // harmless since Player.update() (which reads it) only runs during
+        // GameState.PLAYING.
         document.addEventListener('mousedown', () => {
             inputs.mouseDown = true;
-            document.documentElement.requestPointerLock?.();
         });
         document.addEventListener('mouseup', () => {
             inputs.mouseDown = false;
+        });
+
+        // ========== CURSOR CAPTURE / PAUSE STATE MACHINE ==========
+        // This is the single place that owns the mouse cursor. Nothing else in
+        // the game should call requestPointerLock/exitPointerLock directly.
+        function requestGamePointerLock() {
+            const promise = canvas.requestPointerLock();
+            // requestPointerLock() returns a Promise in current browsers; a
+            // denial (e.g. browser cooldown right after an exit) must not
+            // surface as an unhandled promise rejection in the console. The
+            // 'pointerlockerror' listener below is the fallback for browsers
+            // using the older callback-style API.
+            if (promise && typeof promise.catch === 'function') {
+                promise.catch(() => { /* reflected via pointerlockerror/pointerlockchange */ });
+            }
+        }
+
+        function pauseGame() {
+            if (currentGameState !== GameState.PLAYING) return;
+            currentGameState = GameState.PAUSED;
+            gameActive = false;
+            pauseMenu.classList.remove('hidden');
+            if (document.pointerLockElement === canvas) {
+                document.exitPointerLock();
+            }
+        }
+
+        function resumeGame() {
+            if (currentGameState !== GameState.PAUSED) return;
+            currentGameState = GameState.PLAYING;
+            gameActive = true;
+            pauseMenu.classList.add('hidden');
+            // Discard any mouse movement that happened while paused so resuming
+            // doesn't whip the camera around from a stale accumulated delta.
+            inputs.mouseX = 0;
+            inputs.mouseY = 0;
+            requestGamePointerLock();
+        }
+
+        document.addEventListener('pointerlockchange', () => {
+            const locked = document.pointerLockElement === canvas;
+            // The browser releases pointer lock natively when the user presses
+            // Escape while locked (or alt-tabs, etc). Treat that release as the
+            // pause trigger instead of duplicating our own Escape handling -
+            // this is the ESC -> PAUSE MENU -> CURSOR LIBERADO flow.
+            if (!locked && currentGameState === GameState.PLAYING) {
+                pauseGame();
+            }
+        });
+        document.addEventListener('pointerlockerror', () => {
+            console.warn('BULLET OPS: pointer lock request was denied by the browser.');
+        });
+
+        // Explicit fallback: if the lock request itself was denied (so no
+        // native pointer-lock-exit will ever fire) Escape still has to pause.
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && currentGameState === GameState.PLAYING) {
+                pauseGame();
+            }
+        });
+
+        document.getElementById('resumeBtn').addEventListener('click', () => {
+            resumeGame();
+        });
+        document.getElementById('quitToMenuBtn').addEventListener('click', () => {
+            location.reload();
         });
 
         // ========== GAME UPDATE ==========
@@ -913,6 +1023,14 @@
             if (player) {
                 player.update(deltaTime, inputs);
             }
+            // Consume the accumulated mouse delta exactly once per frame,
+            // regardless of whether the player was alive to use it above.
+            // Player.update() returns early while dead, so leaving this reset
+            // inside it meant any mouse movement during the respawn delay kept
+            // accumulating and got applied all at once on respawn, snapping the
+            // camera to a random angle.
+            inputs.mouseX = 0;
+            inputs.mouseY = 0;
 
             // Update bots
             const allPlayers = [player, ...bots].filter(p => p.isAlive);
