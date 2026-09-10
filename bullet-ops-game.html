@@ -414,6 +414,10 @@
                 <span style="font-size: 0.8rem;">INVERT Y-AXIS</span>
                 <button class="menu-button" id="invertYToggle" style="padding: 0.4rem 0.9rem; font-size: 0.75rem;"></button>
             </div>
+            <div style="margin: 1.2rem 0; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem;" title="LOW disables dynamic shadows and renders at reduced resolution - real, measured levers for underpowered hardware.">GRAPHICS QUALITY</span>
+                <button class="menu-button" id="graphicsQualityToggle" style="padding: 0.4rem 0.9rem; font-size: 0.75rem;"></button>
+            </div>
             <button class="menu-button" id="settingsResetBtn" style="margin-top: 0.5rem; font-size: 0.75rem;">↺ RESET TO DEFAULT</button>
             <button class="menu-button" id="settingsBackBtn" style="margin-top: 1rem;">↩ BACK</button>
         </div>
@@ -1130,7 +1134,7 @@
         }
 
         // ========== SETTINGS ==========
-        const DEFAULT_SETTINGS = { sensitivity: 1.0, invertY: false, volume: 1.0 };
+        const DEFAULT_SETTINGS = { sensitivity: 1.0, invertY: false, volume: 1.0, graphicsQuality: 'HIGH' };
         let gameSettings = { ...DEFAULT_SETTINGS };
         try {
             const savedSettings = JSON.parse(localStorage.getItem('bulletOpsSettings'));
@@ -1138,6 +1142,7 @@
                 if (typeof savedSettings.sensitivity === 'number') gameSettings.sensitivity = Math.max(0.1, Math.min(3, savedSettings.sensitivity));
                 if (typeof savedSettings.invertY === 'boolean') gameSettings.invertY = savedSettings.invertY;
                 if (typeof savedSettings.volume === 'number') gameSettings.volume = Math.max(0, Math.min(1, savedSettings.volume));
+                if (savedSettings.graphicsQuality === 'HIGH' || savedSettings.graphicsQuality === 'LOW') gameSettings.graphicsQuality = savedSettings.graphicsQuality;
             }
         } catch (e) { /* ignore - keep defaults */ }
         function saveSettings() {
@@ -2803,6 +2808,12 @@
             if (!engine) {
                 engine = new BABYLON.Engine(canvas, true);
             }
+            // LOW quality renders at a reduced internal resolution (upscaled
+            // to fill the canvas) - a real, measured GPU fill-rate saving,
+            // unlike the postprocessing values above which cost nothing
+            // regardless of quality level (see the comment on them). 1.5
+            // means 1/1.5 the pixel count per axis (~44% of the pixels).
+            engine.setHardwareScalingLevel(gameSettings.graphicsQuality === 'LOW' ? 1.5 : 1);
 
             scene = new BABYLON.Scene(engine);
             scene.clearColor = new BABYLON.Color3(0.08, 0.06, 0.15);
@@ -2853,14 +2864,20 @@
             // throttled refresh, only larger structures as casters below) -
             // an early pass with a bigger map + PCF filtering measured a
             // severe frame-time hit in this project's headless test
-            // environment.
-            shadowGenerator = new BABYLON.ShadowGenerator(1024, dlight);
-            shadowGenerator.bias = 0.003;
-            // Shadows only need to look right, not update every single
-            // frame - halving the refresh rate is imperceptible for slow-
-            // moving capsules and static structures, and roughly halves the
-            // depth-pass cost.
-            shadowGenerator.getShadowMap().refreshRate = BABYLON.RenderTargetTexture.REFRESHRATE_RENDER_ONEVERYTWOFRAMES;
+            // environment. That same measured cost is exactly why LOW
+            // quality skips shadows entirely instead of just shrinking the
+            // map further - every downstream use of `shadowGenerator` is
+            // already null-guarded (see addShadowCaster call sites), so
+            // leaving it null here is enough to disable shadows cleanly.
+            if (gameSettings.graphicsQuality !== 'LOW') {
+                shadowGenerator = new BABYLON.ShadowGenerator(1024, dlight);
+                shadowGenerator.bias = 0.003;
+                // Shadows only need to look right, not update every single
+                // frame - halving the refresh rate is imperceptible for slow-
+                // moving capsules and static structures, and roughly halves
+                // the depth-pass cost.
+                shadowGenerator.getShadowMap().refreshRate = BABYLON.RenderTargetTexture.REFRESHRATE_RENDER_ONEVERYTWOFRAMES;
+            }
 
             setLoadingProgress(30, 'BUILDING MAP...');
             await nextFrame();
@@ -4048,6 +4065,7 @@
             document.getElementById('volumeSlider').value = gameSettings.volume;
             document.getElementById('volumeValue').textContent = Math.round(gameSettings.volume * 100) + '%';
             document.getElementById('invertYToggle').textContent = gameSettings.invertY ? 'ON' : 'OFF';
+            document.getElementById('graphicsQualityToggle').textContent = gameSettings.graphicsQuality;
         }
 
         document.getElementById('settingsBtn').addEventListener('click', () => {
@@ -4069,6 +4087,16 @@
         document.getElementById('invertYToggle').addEventListener('click', () => {
             gameSettings.invertY = !gameSettings.invertY;
             document.getElementById('invertYToggle').textContent = gameSettings.invertY ? 'ON' : 'OFF';
+            saveSettings();
+        });
+        // Only readable from the main menu (never the pause menu, see
+        // #settingsBtn above), and only applied once per page load inside
+        // initGame() (shadow generator creation + hardware scaling) - so a
+        // change here always takes effect for the next match about to
+        // start, never needs to migrate an already-running scene.
+        document.getElementById('graphicsQualityToggle').addEventListener('click', () => {
+            gameSettings.graphicsQuality = gameSettings.graphicsQuality === 'HIGH' ? 'LOW' : 'HIGH';
+            document.getElementById('graphicsQualityToggle').textContent = gameSettings.graphicsQuality;
             saveSettings();
         });
         document.getElementById('settingsResetBtn').addEventListener('click', () => {
