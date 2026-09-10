@@ -1681,6 +1681,19 @@
             }
         }
 
+        // Draws 3 distinct random weapon configs from the full WEAPON_CONFIGS
+        // roster for a bot to carry - Fisher-Yates partial shuffle so every
+        // weapon (including the 9 added after the original fixed 3-bot
+        // loadout) has an equal chance of showing up.
+        function pickRandomBotLoadout() {
+            const ids = Object.keys(WEAPON_CONFIGS);
+            for (let i = ids.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [ids[i], ids[j]] = [ids[j], ids[i]];
+            }
+            return ids.slice(0, 3).map(id => WEAPON_CONFIGS[id]);
+        }
+
         // ========== BOT CLASS ==========
         class Bot {
             constructor(scene, pos, team) {
@@ -1720,7 +1733,12 @@
                 this.coverPoint = null;
                 this.coverTimer = 0;
 
-                this.weapons = [WEAPONS.BO01, WEAPONS.BO51, WEAPONS.BO11];
+                // Each bot gets its own random 3-weapon loadout drawn from the
+                // full 15-weapon roster (previously every bot always carried
+                // the exact same fixed trio regardless of the arsenal the
+                // player can choose from on the Loadout screen) - bots now
+                // show the same weapon variety the player can equip.
+                this.weapons = pickRandomBotLoadout();
                 this.currentWeaponIdx = Math.floor(Math.random() * 3);
                 this.currentWeapon = this.weapons[this.currentWeaponIdx];
                 this.weaponCooldown = 0;
