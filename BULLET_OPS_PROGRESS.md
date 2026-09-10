@@ -70,6 +70,9 @@ Añadidas `BO-21 BREACHER` (Shotgun), `BO-31 LONGSHOT` (Sniper), `BO-41 JUGGERNA
 ### FASE 7 — Menús (arrancada)
 Menú principal ampliado con las 5 secciones del roadmap (LOADOUT/WEAPONS/OPERATORS/CUSTOMIZE/SETTINGS) como botones **genuinamente deshabilitados** (atributo `disabled`, no solo con estilo de bloqueado), marcados "🔒 Próximamente" — un click no hace absolutamente nada, no aparentan funcionar. Verificado que no interfieren con PLAY ni con el resto del menú.
 
+### FASE 6 — Pantalla de resultados (pulido)
+`endGame()` usaba `alert()` nativo (bloquea toda la página hasta que se cierra) para mostrar resultados. Sustituido por una pantalla `#resultsScreen` propia (mismo estilo visual que el menú de pausa): título con ganador/color de equipo o "VICTORY" en FFA, marcador final, kills/deaths/K/D/tiempo de partida, botón "Back to Menu". Cursor liberado al mostrarla. Empezado a usar `GameState.ENDED`, que existía en el enum pero nunca se usaba. Probado en TDM y FFA con captura de pantalla — sin diálogo bloqueante, formato correcto en ambos modos.
+
 ---
 
 ## 🔧 SIGUIENTE PASO (para retomar la sesión)
@@ -77,9 +80,9 @@ Menú principal ampliado con las 5 secciones del roadmap (LOADOUT/WEAPONS/OPERAT
 Nada quedó a medias — cada pieza se cerró probada. Por orden de prioridad, según el roadmap original:
 
 1. **Fase 5 (Bots) — mejora pendiente**: los bots ya navegan/detectan/persiguen/combaten/respawnean/tienen equipo desde el prototipo base, pero **no buscan cobertura** todavía (piden explícitamente "cobertura" en el roadmap) — es la pieza que falta de esa fase.
-2. **Fase 6 (TDM) — pulido pendiente**: el modo ya funciona completo (puntuación, kills, deaths, respawn, límite de tiempo/puntuación, fin de partida, killfeed), pero la pantalla de resultados es un `alert()` nativo, no una pantalla de resultados propia — funciona pero no es lo pedido en "scoreboard"/"resultados".
-3. **Arsenal**: quedan 9 armas más por añadir a `WEAPON_CONFIGS` para completar el roster de 15 (2 AR, 2 SMG, 1 shotgun, 1 sniper, 1 LMG, 2 pistolas) — mecánico y de bajo riesgo, la plantilla ya está validada en las 6 categorías.
-4. **Fase 9 (Loadouts)**: seleccionar qué 3 armas del roster completo se equipan — necesario antes de que el resto del arsenal sea jugable de verdad (ahora mismo solo BO-01/BO-11/BO-51 están en el loadout activo).
+2. **Arsenal**: quedan 9 armas más por añadir a `WEAPON_CONFIGS` para completar el roster de 15 (2 AR, 2 SMG, 1 shotgun, 1 sniper, 1 LMG, 2 pistolas) — mecánico y de bajo riesgo, la plantilla ya está validada en las 6 categorías.
+3. **Fase 9 (Loadouts)**: seleccionar qué 3 armas del roster completo se equipan — necesario antes de que el resto del arsenal sea jugable de verdad (ahora mismo solo BO-01/BO-11/BO-51 están en el loadout activo).
+4. **Fase 7 (Menús)**: las 5 secciones bloqueadas ya están en el menú; darles contenido real es lo que sigue cuando se prioricen esas features (empezando probablemente por WEAPONS, ya que el catálogo de datos ya existe).
 5. **Mapas**: un segundo mapa original si se prioriza contenido, o pase de arte sobre los 3 existentes cuando haya assets reales.
 
 ---
