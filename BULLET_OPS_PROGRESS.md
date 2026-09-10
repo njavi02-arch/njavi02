@@ -146,6 +146,9 @@ Pedido explícito del usuario bajo "Cámara y sensación de juego". La cámara d
 
 Probado con Playwright llamando a `player.update()` con inputs controlados: de pie la cámara se asienta exactamente en `0.6`; agachado se asienta en `≈0.35` (coincide con el objetivo); caminando 40 frames produce un rango de oscilación de `≈0.029`; manteniendo ADS (rampa real vía `adsDown`, no forzado) con `adsAmount≈0.999`, el mismo recorrido de 40 frames caminando produce un rango de solo `≈0.009` — una reducción de ~70%, coincide con la fórmula de amortiguación esperada. Cero errores de consola.
 
+### FASE FINAL: Regresión combinada en los 3 mapas × 2 modos (completa)
+Última pasada de verificación tras toda la tanda de cambios de esta fase (slide, cámara, pose de sprint, pasos/salto/aterrizaje, iluminación por mapa, sonido ambiente). Se ejecutó la secuencia combinada completa (esprintar→deslizar→ponerse de pie→disparar→recargar→saltar→moverse) sobre el jugador real en las 3 combinaciones `BACKLOT-7/TDM`, `INDUSTRIAL-5/FFA`, `OUTPOST-9/TDM`: el jugador terminó vivo y con salud completa en los 3 casos, la cámara volvió correctamente a su altura de pie (`0.6`) tras toda la secuencia, y cero errores de consola en total. Confirma que la combinación de todos los sistemas nuevos de esta fase no interfiere entre sí ni con ningún mapa/modo existente.
+
 ### FASE FINAL: Prueba de regresión de extremo a extremo (completa)
 Tras la tanda de cambios de esta fase (slide, pasos/salto/aterrizaje, sonido ambiente, fix de retícula, fix de headshot, fix de alcance, fix de sprint-to-fire), se probó con Playwright la cadena completa que el usuario pidió poder validar al volver: **moverse → esprintar → agacharse → deslizarse → sacar arma → apuntar con la mira → disparar → recargar → cambiar de arma → moverse por el mapa**, todo en una sola secuencia continua sobre el jugador real:
 1. Mover (W) → velocidad 8 (moveSpeed) ✓
