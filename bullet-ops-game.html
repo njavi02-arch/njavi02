@@ -1118,6 +1118,42 @@
             }
         }
 
+        // Finds a point on the far side of the nearest usable obstacle from
+        // a threat's position, so a bot moving there gets that obstacle
+        // between itself and the threat. Works generically off whatever
+        // obstacles exist in the current map (anything with
+        // checkCollisions=true besides the ground/entities themselves), so
+        // it needs no per-map special-casing across BACKLOT-7/INDUSTRIAL-5/
+        // OUTPOST-9. Only called when a bot starts seeking cover (not every
+        // frame) - deliberately not cheap enough to run continuously.
+        function findCoverPosition(fromPos, threatPos) {
+            let best = null;
+            let bestDist = Infinity;
+            for (const mesh of scene.meshes) {
+                if (!mesh.checkCollisions || mesh.name === 'ground') continue;
+                const obsPos = mesh.getAbsolutePosition();
+                const distFromBot = BABYLON.Vector3.Distance(fromPos, obsPos);
+                if (distFromBot > 45) continue; // ignore obstacles too far to reach quickly
+
+                const awayFromThreat = obsPos.subtract(threatPos);
+                awayFromThreat.y = 0;
+                if (awayFromThreat.lengthSquared() < 0.01) continue;
+                awayFromThreat.normalize();
+
+                const bb = mesh.getBoundingInfo().boundingBox;
+                const halfExtent = Math.max(bb.extendSizeWorld.x, bb.extendSizeWorld.z);
+                const coverPoint = obsPos.add(awayFromThreat.scale(halfExtent + 1.8));
+                coverPoint.y = fromPos.y;
+
+                const distToCover = BABYLON.Vector3.Distance(fromPos, coverPoint);
+                if (distToCover < bestDist) {
+                    bestDist = distToCover;
+                    best = coverPoint;
+                }
+            }
+            return best;
+        }
+
         // ========== PLAYER CLASS ==========
         class Player {
             constructor(scene, pos, team) {
@@ -1375,6 +1411,12 @@
                 this.stateTimer = 0;
                 this.difficulty = Math.random() < 0.5 ? 'normal' : 'hard'; // Random difficulty
 
+                // Cover-seeking: entered when wounded or reloading under
+                // threat instead of always pushing straight at the target.
+                this.seekingCover = false;
+                this.coverPoint = null;
+                this.coverTimer = 0;
+
                 this.weapons = [WEAPONS.BO01, WEAPONS.BO51, WEAPONS.BO11];
                 this.currentWeaponIdx = Math.floor(Math.random() * 3);
                 this.currentWeapon = this.weapons[this.currentWeaponIdx];
@@ -1405,33 +1447,76 @@
 
                 // Movement
                 if (this.target) {
-                    const dir = this.target.mesh.position.subtract(this.mesh.position);
-                    dir.y = 0;
-                    if (dir.length() > 0) {
-                        dir.normalize();
-
-                        // Strafe randomly
-                        const strafeChance = Math.random();
-                        if (strafeChance < 0.3) {
-                            dir.x += (Math.random() - 0.5) * 0.5;
-                            dir.normalize();
+                    // Seek cover when wounded or reloading under threat,
+                    // instead of always pushing straight at the target -
+                    // findCoverPosition() is only called once per episode
+                    // (when cover-seeking starts), not every frame.
+                    const wounded = this.health < this.maxHealth * 0.4;
+                    const reloading = this.reloadCooldown > 0;
+                    if (!this.seekingCover && (wounded || reloading) && closestDist < 40) {
+                        const cover = findCoverPosition(this.mesh.position, this.target.mesh.position);
+                        if (cover) {
+                            this.seekingCover = true;
+                            this.coverPoint = cover;
+                            this.coverTimer = 3.5;
                         }
+                    }
 
-                        this.velocity.x = dir.x * this.moveSpeed;
-                        this.velocity.z = dir.z * this.moveSpeed;
-
-                        // Fire more aggressively at close range (difficulty affects accuracy)
-                        if (closestDist < 50) {
-                            let fireChance = closestDist < 15 ? 0.3 : 0.1;
-                            if (this.difficulty === 'hard') {
-                                fireChance *= 1.5; // Hard bots are more aggressive
+                    if (this.seekingCover) {
+                        this.coverTimer -= deltaTime;
+                        const toCover = this.coverPoint.subtract(this.mesh.position);
+                        toCover.y = 0;
+                        const distToCover = toCover.length();
+                        if (distToCover < 2 || this.coverTimer <= 0 || (!wounded && !reloading)) {
+                            this.seekingCover = false;
+                            this.coverPoint = null;
+                        } else {
+                            toCover.normalize();
+                            this.velocity.x = toCover.x * this.moveSpeed;
+                            this.velocity.z = toCover.z * this.moveSpeed;
+                            // Still returns fire while retreating (unless
+                            // mid-reload, when it obviously can't).
+                            if (!reloading && closestDist < 50 && Math.random() < 0.12) {
+                                const fireDir = this.target.mesh.position.subtract(this.mesh.position);
+                                fireDir.y = 0;
+                                if (fireDir.length() > 0) {
+                                    fireDir.normalize();
+                                    this.fire(fireDir);
+                                }
                             }
-                            if (Math.random() < fireChance) {
-                                this.fire(dir);
+                        }
+                    }
+
+                    if (!this.seekingCover) {
+                        const dir = this.target.mesh.position.subtract(this.mesh.position);
+                        dir.y = 0;
+                        if (dir.length() > 0) {
+                            dir.normalize();
+
+                            // Strafe randomly
+                            const strafeChance = Math.random();
+                            if (strafeChance < 0.3) {
+                                dir.x += (Math.random() - 0.5) * 0.5;
+                                dir.normalize();
+                            }
+
+                            this.velocity.x = dir.x * this.moveSpeed;
+                            this.velocity.z = dir.z * this.moveSpeed;
+
+                            // Fire more aggressively at close range (difficulty affects accuracy)
+                            if (closestDist < 50) {
+                                let fireChance = closestDist < 15 ? 0.3 : 0.1;
+                                if (this.difficulty === 'hard') {
+                                    fireChance *= 1.5; // Hard bots are more aggressive
+                                }
+                                if (Math.random() < fireChance) {
+                                    this.fire(dir);
+                                }
                             }
                         }
                     }
                 } else {
+                    this.seekingCover = false;
                     this.velocity.x *= 0.95;
                     this.velocity.z *= 0.95;
 
@@ -1524,6 +1609,8 @@
                 this.velocity = new BABYLON.Vector3(0, 0, 0);
                 this.isAlive = true;
                 this.currentMag = this.currentWeapon.mag;
+                this.seekingCover = false;
+                this.coverPoint = null;
             }
 
             addKill() {
