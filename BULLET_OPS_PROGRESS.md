@@ -124,6 +124,12 @@ Redirección explícita de prioridad a mitad de sesión: pasar a una fase de "ba
 
 Probado con Playwright llamando directamente a `player.update()` con inputs controlados: tras 3 frames de sprint (`velLen=14`, `wasSprinting=true`), pulsar C dispara el slide con `slideSpeed` decayendo exactamente según la fórmula de fricción esperada dentro del mismo frame (16 → 14.976, coincide con el cálculo exacto), `isCrouching=true`, elipsoide ya en altura de crouch, y FOV en `0.8 × 1.06 = 0.848` (coincide exacto con `baseFov`). Pasos siguientes muestran la velocidad decayendo suavemente frame a frame hasta tocar el suelo de 5 u/s, momento en el que `isSliding` pasa a `false` y el jugador queda agachado (C seguía pulsada) con la desaceleración normal tomando el relevo. Cero errores de consola.
 
+### FASE FINAL: Sonido ambiente de mapa (completo, procedural)
+Primer elemento del checklist "sonido de mapas" del usuario: ambiente/viento. Añadido `SoundSynth.startAmbient()/stopAmbient()` — ruido filtrado en bucle (paso-bajo, ganancia baja) enrutado por el mismo `masterGain` que ya controla el volumen general, sin ningún archivo de audio externo (mismo enfoque que el resto de `SoundSynth`). Se inicia al empezar una partida (`initGame`) y se detiene al terminarla (`endGame`), para no sonar bajo la pantalla de resultados ni duplicarse en una repetición. Probado con Playwright: el contexto de audio queda en estado `running` durante la partida, y llamadas repetidas de start/stop/start/stop (incluida una llamada duplicada a `startAmbient()` ya en marcha) no lanzan ningún error — confirma que es seguro invocarlo desde cualquier punto del ciclo de vida de la partida.
+
+### FASE FINAL: Bug de retícula — no reaccionaba al movimiento (corregido)
+`updateCrosshairSize()` pasaba `moving: false` **fijo** a `getEffectiveSpread()`, a pesar de que el comentario junto a esa línea afirmaba lo contrario — la retícula nunca se ensanchaba al caminar/esprintar/deslizarse, solo reaccionaba a ADS/agachado/bloom de disparo. Corregido exponiendo `player.isMoving` (ya calculado internamente en `Player.update()`, simplemente no se guardaba) y usándolo en la llamada. Probado con Playwright: en reposo la retícula midió 31.8px, moviéndose hacia delante (`W`) midió 37.4px — confirma que ahora sí responde al estado de movimiento real, no solo a un valor congelado.
+
 ---
 
 ## 🔧 SIGUIENTE PASO (para retomar la sesión)

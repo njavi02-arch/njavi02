@@ -767,6 +767,42 @@
                 if (masterGain) masterGain.gain.value = Math.max(0, Math.min(1, v));
             }
 
+            // Procedural ambient wind bed - looping filtered noise, no
+            // external audio file. Started per-match (initGame) and stopped
+            // at endGame() so it doesn't run under the results screen or
+            // stack a second layer on replay.
+            let ambientSource = null;
+            let ambientGain = null;
+            function startAmbient() {
+                const c = getCtx();
+                if (!c || ambientSource) return;
+                const bufferSize = c.sampleRate * 2;
+                const buffer = c.createBuffer(1, bufferSize, c.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+                const source = c.createBufferSource();
+                source.buffer = buffer;
+                source.loop = true;
+                const filter = c.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 450;
+                ambientGain = c.createGain();
+                ambientGain.gain.value = 0.045;
+                source.connect(filter);
+                filter.connect(ambientGain);
+                ambientGain.connect(masterGain);
+                source.start();
+                ambientSource = source;
+            }
+            function stopAmbient() {
+                if (ambientSource) {
+                    try { ambientSource.stop(); } catch (e) { /* already stopped */ }
+                    ambientSource.disconnect();
+                    ambientSource = null;
+                }
+                if (ambientGain) { ambientGain.disconnect(); ambientGain = null; }
+            }
+
             function noiseBurst(opts) {
                 const c = getCtx();
                 if (!c) return;
@@ -835,7 +871,7 @@
             function playHeadshot()    { tone({ freq: 1800, duration: 0.05, type: 'sine', gain: 0.18, decay: 0.05, freqEnd: 900 }); }
             function playKillConfirm() { tone({ freq: 600, duration: 0.12, type: 'triangle', gain: 0.18, decay: 0.12, freqEnd: 1200 }); }
 
-            return { getCtx, setVolume, playGunshot, playReloadClick, playMagOut, playMagIn, playEmpty, playEquip, playHitmarker, playHeadshot, playKillConfirm };
+            return { getCtx, setVolume, startAmbient, stopAmbient, playGunshot, playReloadClick, playMagOut, playMagIn, playEmpty, playEquip, playHitmarker, playHeadshot, playKillConfirm };
         })();
 
         // ========== SKIN / CAMOUFLAGE SYSTEM ==========
@@ -1527,6 +1563,7 @@
                 this.sprintSpeed = 14;
                 this.jumpForce = 8;
                 this.isGrounded = false;
+                this.isMoving = false;
 
                 // Slide: Sprint -> (press Crouch) -> Slide -> Recovery. A
                 // burst of speed along the current facing, decaying via
@@ -1631,6 +1668,9 @@
                 this.mesh.ellipsoid.y = this.isCrouching ? this.crouchEllipsoidY : this.standEllipsoidY;
 
                 const isMoving = this.isSliding || moveDir.length() > 0;
+                // Exposed so HUD code (crosshair) can read the player's real
+                // current movement state instead of assuming stationary.
+                this.isMoving = isMoving;
                 const isSprinting = !this.isSliding && !!inputs.keys['shift'] && !this.isCrouching && isMoving && !this.weaponController.isADS;
                 this.wasSprinting = isSprinting;
 
@@ -2035,6 +2075,7 @@
             // Create/resume the Web Audio context as part of this click
             // gesture (browsers block audio from starting without one).
             SoundSynth.getCtx();
+            SoundSynth.startAmbient();
 
             if (!engine) {
                 engine = new BABYLON.Engine(canvas, true);
@@ -2747,7 +2788,10 @@
             // Reflects the weapon's actual current effective spread (hip/ADS/
             // moving/bloom all included), not just a static per-weapon value,
             // so the crosshair genuinely communicates current accuracy.
-            const spread = wc.getEffectiveSpread({ moving: false, crouching: player.isCrouching });
+            // `moving` was previously hardcoded false here despite the
+            // comment above claiming otherwise - the crosshair never
+            // actually widened while walking/sprinting/sliding.
+            const spread = wc.getEffectiveSpread({ moving: player.isMoving, crouching: player.isCrouching });
             const spreadSize = 22 + spread * 700;
             crosshair.style.width = spreadSize + 'px';
             crosshair.style.height = spreadSize + 'px';
@@ -2776,6 +2820,7 @@
         function endGame() {
             gameActive = false;
             currentGameState = GameState.ENDED;
+            SoundSynth.stopAmbient();
             if (document.pointerLockElement === canvas) {
                 document.exitPointerLock();
             }
