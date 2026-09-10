@@ -133,11 +133,24 @@
         <div style="text-align: center;">
             <div class="menu-title">⚡ BULLET OPS ⚡</div>
             <div style="margin: 1rem 0; font-size: 1rem;">COMPETITIVE FPS</div>
-            <button class="menu-button" id="playBtn">▶ PLAY</button>
-            <button class="menu-button" id="quitBtn">✕ QUIT</button>
-            <div style="margin-top: 2rem; font-size: 0.8rem; color: #00aa00;">
-                WASD Move • Mouse Look • Click Fire • R Reload<br>
-                1/2 Swap Weapon • Space Jump • Shift Sprint
+
+            <div style="margin: 1.5rem 0;">
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">GAME MODE:</div>
+                <button class="menu-button" id="tdmBtn" style="width: 120px;">🎯 TEAM DEATHMATCH</button>
+                <button class="menu-button" id="ffaBtn" style="width: 120px;">⚔ FREE FOR ALL</button>
+            </div>
+
+            <div style="margin: 1rem 0;">
+                <button class="menu-button" id="playBtn">▶ PLAY</button>
+                <button class="menu-button" id="quitBtn">✕ QUIT</button>
+            </div>
+
+            <div style="margin-top: 1.5rem; font-size: 0.8rem; color: #00aa00;">
+                <div id="modeDisplay">MODE: TEAM DEATHMATCH</div>
+                <div style="margin-top: 1rem;">
+                    WASD Move • Mouse Look • Click Fire • R Reload<br>
+                    1/2 Swap Weapon • Space Jump • Shift Sprint
+                </div>
             </div>
         </div>
     </div>
@@ -167,17 +180,31 @@
         let player = null, bots = [], bullets = [];
         let blueScore = 0, redScore = 0;
         let killstreakMessages = [];
+        let gameMode = 'TDM'; // 'TDM' or 'FFA'
         const gameConfig = {
             targetScore: 10,
             timeLimit: 600,
-            botCount: 3
+            botCount: 3,
+            gameMode: 'TDM'
         };
 
         // ========== WEAPONS CONFIG ==========
         const WEAPONS = {
-            BO01: { name: 'BO-01 ASSAULT RIFLE', damage: 24, fireRate: 10, mag: 30, reserve: 120, reload: 2.0, recoil: 0.03, spread: 0.015, speed: 800 },
-            BO41: { name: 'BO-41 PISTOL', damage: 35, fireRate: 6, mag: 15, reserve: 60, reload: 1.5, recoil: 0.06, spread: 0.025, speed: 400 },
-            BO11: { name: 'BO-11 SMG', damage: 18, fireRate: 15, mag: 25, reserve: 150, reload: 1.8, recoil: 0.05, spread: 0.04, speed: 350 }
+            BO01: {
+                name: 'BO-01 ASSAULT RIFLE',
+                damage: 28, fireRate: 10, mag: 30, reserve: 120, reload: 2.0,
+                recoil: 0.025, spread: 0.012, speed: 900, headshotMul: 1.5, rof: 0.1
+            },
+            BO41: {
+                name: 'BO-41 PISTOL',
+                damage: 40, fireRate: 5, mag: 15, reserve: 60, reload: 1.2,
+                recoil: 0.05, spread: 0.02, speed: 500, headshotMul: 1.8, rof: 0.2
+            },
+            BO11: {
+                name: 'BO-11 SMG',
+                damage: 20, fireRate: 18, mag: 25, reserve: 150, reload: 1.5,
+                recoil: 0.04, spread: 0.035, speed: 400, headshotMul: 1.3, rof: 0.055
+            }
         };
 
         // ========== PLAYER CLASS ==========
@@ -225,7 +252,9 @@
 
                 // Material
                 const mat = new BABYLON.StandardMaterial('playerMat', scene);
-                mat.diffuse = team === 'BLUE' ? new BABYLON.Color3(0, 0.3, 1) : new BABYLON.Color3(1, 0.2, 0.2);
+                if (team === 'BLUE') mat.diffuse = new BABYLON.Color3(0, 0.3, 1);
+                else if (team === 'RED') mat.diffuse = new BABYLON.Color3(1, 0.2, 0.2);
+                else mat.diffuse = new BABYLON.Color3(0.8, 0.8, 0.1); // NEUTRAL (FFA)
                 this.mesh.material = mat;
             }
 
@@ -238,7 +267,7 @@
                 this.pitch = Math.max(-Math.PI / 2.5, Math.min(Math.PI / 2.5, this.pitch));
                 this.camera.rotation = new BABYLON.Vector3(this.pitch, this.yaw, 0);
 
-                // Movement
+                // Movement (arcade style - responsive)
                 const forward = new BABYLON.Vector3(Math.sin(this.yaw), 0, Math.cos(this.yaw));
                 const right = new BABYLON.Vector3(Math.cos(this.yaw), 0, -Math.sin(this.yaw));
 
@@ -248,11 +277,21 @@
                 if (inputs.keys['d']) moveDir.addInPlace(right);
                 if (inputs.keys['a']) moveDir.addInPlace(right.scale(-1));
 
-                const speed = inputs.keys['shift'] ? this.sprintSpeed : this.moveSpeed;
+                // Weapon mobility modifier
+                const weaponMobility = this.currentWeapon === 1 ? 1.15 : (this.currentWeapon === 2 ? 1.1 : 1.0);
+                const baseSpeed = this.moveSpeed * weaponMobility;
+                const baseSprint = this.sprintSpeed * weaponMobility;
+                const speed = inputs.keys['shift'] ? baseSprint : baseSpeed;
+
                 if (moveDir.length() > 0) {
                     moveDir.normalize();
+                    // Instant acceleration (arcade)
                     this.velocity.x = moveDir.x * speed;
                     this.velocity.z = moveDir.z * speed;
+                } else {
+                    // Quick deceleration
+                    this.velocity.x *= 0.95;
+                    this.velocity.z *= 0.95;
                 }
 
                 // Gravity
@@ -399,7 +438,8 @@
                 let closestDist = 100;
 
                 for (let p of allPlayers) {
-                    if (p.team !== this.team && p.isAlive) {
+                    const isEnemy = gameMode === 'FFA' ? (p !== this) : (p.team !== this.team);
+                    if (isEnemy && p.isAlive) {
                         const dist = BABYLON.Vector3.Distance(this.mesh.position, p.mesh.position);
                         if (dist < closestDist) {
                             closest = p;
@@ -535,7 +575,8 @@
             buildMap();
 
             // Spawn player
-            player = new Player(scene, new BABYLON.Vector3(-25, 2, -25), 'BLUE');
+            const playerTeam = gameMode === 'TDM' ? 'BLUE' : 'NEUTRAL';
+            player = new Player(scene, new BABYLON.Vector3(-25, 2, -25), playerTeam);
             scene.activeCamera = player.camera;
 
             // Spawn bots
@@ -544,12 +585,23 @@
                 new BABYLON.Vector3(30, 2, 20),
                 new BABYLON.Vector3(20, 2, 30)
             ];
-            for (let pos of botSpawns) {
-                bots.push(new Bot(scene, pos, 'RED'));
+
+            if (gameMode === 'TDM') {
+                // Team Deathmatch: bots are RED team
+                for (let pos of botSpawns) {
+                    bots.push(new Bot(scene, pos, 'RED'));
+                }
+            } else {
+                // Free for All: all bots are independent
+                for (let i = 0; i < botSpawns.length; i++) {
+                    bots.push(new Bot(scene, botSpawns[i], `BOT${i}`));
+                }
             }
 
             gameActive = true;
             gameStartTime = Date.now();
+            blueScore = 0;
+            redScore = 0;
             loading.classList.add('hidden');
             hud.classList.remove('hidden');
 
@@ -685,24 +737,44 @@
                     if (entity && entity.isAlive && entity !== bullet.owner) {
                         const dist = BABYLON.Vector3.Distance(bullet.position, entity.mesh.position);
                         if (dist < 0.5) {
-                            entity.takeDamage(bullet.damage);
+                            // Check if headshot (top 25% of mesh)
+                            const headThreshold = entity.mesh.position.y + 0.4;
+                            const isHeadshot = bullet.position.y > headThreshold;
+                            const damageMul = isHeadshot ? 2.0 : 1.0;
+                            const totalDamage = bullet.damage * damageMul;
+
+                            entity.takeDamage(totalDamage);
                             if (bullet.owner === player) {
                                 showHitmarker();
+                                if (isHeadshot) {
+                                    addKillMsg('💥 HEADSHOT!');
+                                }
                             }
                             if (bullet.owner && entity.health <= 0) {
                                 bullet.owner.addKill();
-                                if (bullet.owner.team === 'BLUE') {
-                                    blueScore++;
-                                } else {
-                                    redScore++;
+
+                                // Score system (TDM vs FFA)
+                                if (gameMode === 'TDM') {
+                                    if (bullet.owner.team === 'BLUE') {
+                                        blueScore++;
+                                    } else {
+                                        redScore++;
+                                    }
                                 }
 
                                 // Killstreak messages
-                                let msg = `${bullet.owner.team} PLAYER Eliminated ${entity.team}`;
+                                let msg = '';
+                                if (gameMode === 'FFA') {
+                                    msg = `${bullet.owner === player ? '👤 YOU' : 'BOT'} eliminated opponent`;
+                                } else {
+                                    msg = `${bullet.owner.team} PLAYER Eliminated ${entity.team}`;
+                                }
+
+                                if (isHeadshot) msg += ' 💥';
                                 if (bullet.owner.kills === 3) msg = '🔥 KILLING SPREE!';
                                 else if (bullet.owner.kills === 5) msg = '⚡ RAMPAGE!';
                                 else if (bullet.owner.kills === 10) msg = '💀 UNSTOPPABLE!';
-                                else if (bullet.owner.kills % 5 === 0) msg = `${bullet.owner.team} ON ${bullet.owner.kills} KILLSTREAK`;
+                                else if (bullet.owner.kills % 5 === 0 && bullet.owner.kills > 0) msg = `${bullet.owner === player ? '👤' : '🤖'} ON ${bullet.owner.kills} KILLSTREAK`;
 
                                 addKillMsg(msg);
                             }
@@ -722,8 +794,14 @@
             updateHUD();
 
             // Check win condition
-            if (blueScore >= gameConfig.targetScore || redScore >= gameConfig.targetScore) {
-                endGame();
+            if (gameMode === 'TDM') {
+                if (blueScore >= gameConfig.targetScore || redScore >= gameConfig.targetScore) {
+                    endGame();
+                }
+            } else {
+                if (player.kills >= gameConfig.targetScore) {
+                    endGame();
+                }
             }
         }
 
@@ -734,19 +812,36 @@
             const mins = Math.floor(remaining / 60);
             const secs = Math.floor(remaining % 60);
 
-            document.getElementById('score').textContent = `BLUE ${blueScore} - RED ${redScore} | TIME ${mins}:${secs.toString().padStart(2, '0')}`;
-            document.getElementById('hpVal').textContent = Math.ceil(player.health);
-            document.getElementById('kills').textContent = `KILLS: ${player.kills}`;
-            document.getElementById('weapon').textContent = `🔫 ${player.weapons[player.currentWeapon].name}`;
+            // Score (different for each mode)
+            let scoreText;
+            if (gameMode === 'TDM') {
+                scoreText = `BLUE ${blueScore.toString().padStart(2, '0')} - RED ${redScore.toString().padStart(2, '0')} | TIME ${mins}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                scoreText = `KILLS: ${player.kills} | TIME ${mins}:${secs.toString().padStart(2, '0')}`;
+            }
+            document.getElementById('score').textContent = scoreText;
+
+            // Health
+            const healthColor = player.health <= 0 ? '#ff0000' : (player.health <= 30 ? '#ffaa00' : '#00ff00');
+            document.getElementById('health').style.color = healthColor;
+            document.getElementById('hpVal').textContent = Math.max(0, Math.ceil(player.health));
+
+            // Kills and deaths
+            document.getElementById('kills').textContent = `KILLS: ${player.kills} | DEATHS: ${player.deaths}`;
+
+            // Weapon and ammo
+            const weapon = player.weapons[player.currentWeapon];
+            document.getElementById('weapon').textContent = `🔫 ${weapon.name} (${player.currentWeapon + 1}/3)`;
             document.getElementById('magVal').textContent = player.currentMag;
             document.getElementById('resVal').textContent = player.currentReserve;
 
-            if (player.health <= 0) {
-                document.getElementById('hpVal').parentElement.style.color = '#ff0000';
-            } else if (player.health <= 30) {
-                document.getElementById('hpVal').parentElement.style.color = '#ffaa00';
+            // Ammo color warning
+            if (player.currentMag === 0) {
+                document.getElementById('ammo').style.color = '#ff0000';
+            } else if (player.currentMag < 10) {
+                document.getElementById('ammo').style.color = '#ffaa00';
             } else {
-                document.getElementById('hpVal').parentElement.style.color = '#00ff00';
+                document.getElementById('ammo').style.color = '#00ff00';
             }
         }
 
@@ -771,12 +866,44 @@
 
         function endGame() {
             gameActive = false;
-            const winner = blueScore > redScore ? 'BLUE' : 'RED';
-            alert(`GAME OVER!\n${winner} TEAM WINS!\nFinal Score: BLUE ${blueScore} - RED ${redScore}`);
+            let message = '';
+            if (gameMode === 'TDM') {
+                const winner = blueScore > redScore ? 'BLUE' : 'RED';
+                message = `GAME OVER!\n${winner} TEAM WINS!\nFinal Score: BLUE ${blueScore} - RED ${redScore}`;
+            } else {
+                message = `GAME OVER!\n👤 YOU WIN!\nFinal Kills: ${player.kills}\nDeaths: ${player.deaths}`;
+            }
+            alert(message);
             location.reload();
         }
 
         // ========== BUTTONS ==========
+        function updateModeDisplay() {
+            const modeText = gameMode === 'TDM' ? 'TEAM DEATHMATCH' : 'FREE FOR ALL';
+            document.getElementById('modeDisplay').textContent = `MODE: ${modeText}`;
+            const tdmBtn = document.getElementById('tdmBtn');
+            const ffaBtn = document.getElementById('ffaBtn');
+            if (gameMode === 'TDM') {
+                tdmBtn.style.boxShadow = '0 0 30px rgba(0, 255, 0, 1)';
+                ffaBtn.style.boxShadow = '0 0 15px rgba(0, 255, 0, 0.5)';
+            } else {
+                ffaBtn.style.boxShadow = '0 0 30px rgba(0, 255, 0, 1)';
+                tdmBtn.style.boxShadow = '0 0 15px rgba(0, 255, 0, 0.5)';
+            }
+        }
+
+        document.getElementById('tdmBtn').addEventListener('click', () => {
+            gameMode = 'TDM';
+            gameConfig.gameMode = 'TDM';
+            updateModeDisplay();
+        });
+
+        document.getElementById('ffaBtn').addEventListener('click', () => {
+            gameMode = 'FFA';
+            gameConfig.gameMode = 'FFA';
+            updateModeDisplay();
+        });
+
         document.getElementById('playBtn').addEventListener('click', () => {
             initGame();
         });
@@ -784,6 +911,9 @@
         document.getElementById('quitBtn').addEventListener('click', () => {
             alert('Thanks for playing BULLET OPS!');
         });
+
+        // Initialize mode display
+        updateModeDisplay();
     </script>
 </body>
 </html>
