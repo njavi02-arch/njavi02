@@ -2097,6 +2097,27 @@
             }
         }
 
+        // Per-map lighting - the 3 maps used to share the exact same flat
+        // lighting config regardless of theme (urban / industrial /
+        // outpost), which read as generic. No new assets needed - just
+        // per-map intensity/color/direction so each map reads with its own
+        // mood: BACKLOT-7 bright neutral daylight, INDUSTRIAL-5 dimmer/
+        // cooler overcast-factory light, OUTPOST-9 a warmer low-angle dusk.
+        const MAP_LIGHTING = {
+            'BACKLOT-7': {
+                hemi: { intensity: 0.85, color: new BABYLON.Color3(1, 1, 1) },
+                dir: { intensity: 0.65, color: new BABYLON.Color3(1, 0.98, 0.92), direction: new BABYLON.Vector3(-1, -1, 0.5) }
+            },
+            'INDUSTRIAL-5': {
+                hemi: { intensity: 0.55, color: new BABYLON.Color3(0.75, 0.8, 0.9) },
+                dir: { intensity: 0.4, color: new BABYLON.Color3(0.8, 0.85, 0.95), direction: new BABYLON.Vector3(-0.3, -1, 0.2) }
+            },
+            'OUTPOST-9': {
+                hemi: { intensity: 0.7, color: new BABYLON.Color3(1, 0.9, 0.75) },
+                dir: { intensity: 0.75, color: new BABYLON.Color3(1, 0.7, 0.4), direction: new BABYLON.Vector3(-1, -0.35, 0.3) }
+            }
+        };
+
         // ========== INITIALIZE GAME ==========
         function initGame() {
             loading.classList.remove('hidden');
@@ -2119,11 +2140,15 @@
             // walls the way a plain camera-parented mesh would.
             scene.setRenderingAutoClearDepthStencil(1, true);
 
-            // Lights
+            // Lights - per-map mood via MAP_LIGHTING (see above), not a
+            // single fixed config shared by all 3 maps.
+            const lighting = MAP_LIGHTING[selectedMap] || MAP_LIGHTING['BACKLOT-7'];
             const hlight = new BABYLON.HemisphericLight('hlight', new BABYLON.Vector3(0, 1, 0));
-            hlight.intensity = 0.8;
-            const dlight = new BABYLON.DirectionalLight('dlight', new BABYLON.Vector3(-1, -1, 0.5));
-            dlight.intensity = 0.6;
+            hlight.intensity = lighting.hemi.intensity;
+            hlight.diffuse = lighting.hemi.color;
+            const dlight = new BABYLON.DirectionalLight('dlight', lighting.dir.direction);
+            dlight.intensity = lighting.dir.intensity;
+            dlight.diffuse = lighting.dir.color;
 
             // Build map
             buildMap();

@@ -135,6 +135,9 @@ El checklist de sonido del usuario pedía explícitamente "Pasos/Saltos/Aterriza
 
 ---
 
+### FASE FINAL: Iluminación diferenciada por mapa (completa)
+Los 3 mapas compartían exactamente la misma configuración de luz (misma intensidad, mismo color blanco, misma dirección) — el inventario de arriba lo señalaba como pendiente. Añadido `MAP_LIGHTING`, sin ningún asset nuevo: BACKLOT-7 mantiene una luz de día neutra y brillante (como antes), INDUSTRIAL-5 pasa a una luz más tenue y fría (tono azulado, sensación de nave industrial cubierta), OUTPOST-9 pasa a una luz cálida de atardecer (tono ámbar/naranja, ángulo más bajo). Probado con Playwright: los 3 mapas tienen valores de luz numéricamente distintos entre sí (confirmado por código) y capturas de pantalla confirman la diferencia visualmente perceptible — OUTPOST-9 se ve claramente ambarino/cálido frente al gris neutro de BACKLOT-7. Cero errores de consola.
+
 ### FASE FINAL: Prueba de regresión de extremo a extremo (completa)
 Tras la tanda de cambios de esta fase (slide, pasos/salto/aterrizaje, sonido ambiente, fix de retícula, fix de headshot, fix de alcance, fix de sprint-to-fire), se probó con Playwright la cadena completa que el usuario pidió poder validar al volver: **moverse → esprintar → agacharse → deslizarse → sacar arma → apuntar con la mira → disparar → recargar → cambiar de arma → moverse por el mapa**, todo en una sola secuencia continua sobre el jugador real:
 1. Mover (W) → velocidad 8 (moveSpeed) ✓
@@ -181,7 +184,7 @@ Los 3 mapas (`BACKLOT-7`, `INDUSTRIAL-5`, `OUTPOST-9`) comparten exactamente la 
 | Coberturas (crates, muros, barriles) | ✅ Primitivas + `checkCollisions` | Modelo 3D (GLB) de props | No |
 | Puertas | ❌ No existen (todo son cajas sólidas fijas) | Modelo + animación de apertura | No — nada las requiere aún |
 | Ventanas | ❌ No existen | Modelo/material transparente | No |
-| Iluminación | ✅ 1 luz hemisférica + 1 direccional, fija e idéntica en los 3 mapas | Configuración de iluminación diferenciada por mapa/hora del día | No |
+| Iluminación | ✅ **Nuevo esta sesión**: 1 luz hemisférica + 1 direccional, con intensidad/color/ángulo propios por mapa (`MAP_LIGHTING`) | — | — |
 | Skybox | ❌ Color de fondo plano (`scene.clearColor`) | HDR o 6 caras JPG | No |
 | Sonido ambiente | ✅ **Nuevo esta sesión**: viento sintetizado (ruido filtrado en bucle), igual en los 3 mapas | Variación por mapa (interior/exterior distinto) | No |
 | Props ambientales (vegetación, señalética, escombros) | ❌ No existen | Modelos 3D variados (GLB) | No |
