@@ -56,21 +56,78 @@ Documento vivo de gestión autónoma del proyecto. Se actualiza en cada ciclo de
 | Combate cuerpo a cuerpo | 🟢 | — | Reutiliza el pipeline de balas |
 | IA de bots: usa las 35 armas (incl. melee/explosivo) | 🟢 | — | |
 
-## FASE 4 — ARMAS (35 armas · 9 categorías)
+## FASE 4 — ARMAS (SISTEMA PRINCIPAL DEL PROYECTO)
 
-| Categoría | Cantidad | Estado gameplay | Estado modelo/textura real |
-|---|---|---|---|
-| Fusiles de asalto | 5 | 🟢 | 🔒 placeholder procedural, sin GLB real |
-| Subfusiles | 5 | 🟢 | 🔒 |
-| Escopetas | 4 | 🟢 | 🔒 |
-| Ametralladoras ligeras | 4 | 🟢 | 🔒 |
-| Fusiles de francotirador | 4 | 🟢 | 🔒 (sin mira real modelada, ver FASE 5) |
-| Pistolas | 5 | 🟢 | 🔒 |
-| Lanzacohetes | 2 | 🟢 | 🔒 |
-| Cuchillos / melee | 3 | 🟢 | 🔒 |
-| Armas balísticas/especiales | 3 | 🟢 | 🔒 |
+Redirección explícita del usuario: el sistema de armas pasa a ser uno de los pilares del proyecto, con Battlefield 4/V/2042 como referencia de **estructura, variedad y cantidad** — nunca de assets. Ningún modelo, textura, sonido ni animación se copia de ningún juego; solo se estudia su organización de categorías para diseñar la nuestra propia.
 
-Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(🟢 código) → animaciones(🟢 procedurales: equipar/disparo/recarga/ADS/sprint/inspección) → disparo(🟢) → recarga(🟢) → sonidos(🟢 sintetizados) → retroceso(🟢) → ADS(🟢) → estadísticas(🟢) → efectos(🟢) → testing(🟢). **Ningún arma nueva necesita trabajo de gameplay** — lo único pendiente en las 35 es el mismo bloqueo de siempre: modelos 3D/texturas reales.
+### Investigación: categorías por entrega (BF4 / BFV / BF2042)
+
+| Entrega | Categorías de armas |
+|---|---|
+| Battlefield 4 | Fusil de asalto, **Carabina** (propia, todas las clases), SMG, LMG, **DMR** (propia, todas las clases), Francotirador, Escopeta, Pistola (all-kit), Lanzadores, Cuchillo |
+| Battlefield V | Fusil de asalto, Fusil semiautomático, Fusil de cerrojo (sniper), **Fusil autocargante**, SMG, LMG, **Ametralladora media** (propia, más pesada que LMG), Escopeta, Arma secundaria (pistola) |
+| Battlefield 2042 | Fusil de asalto, SMG, LMG, **Fusil de marcador/DMR** ("Marksman"), Francotirador, Utilidad (escopetas), Pistola |
+
+Ningún juego usa exactamente la misma lista. El hilo común a las tres entregas — y el motivo de las decisiones de taxonomía de abajo — es que **AR, SMG, LMG, DMR, Sniper, Shotgun y Pistol/Sidearm aparecen siempre**, mientras que Carabina (BF4), Fusil autocargante/Ametralladora media (BFV) y la fusión Utilidad=Escopeta (BF2042) son variaciones de una misma entrega, no un consenso.
+
+### Tabla maestra: categoría → BF4 → BFV → BF2042 → objetivo del proyecto
+
+Cifras de BF4/BFV/BF2042 son aproximadas (rosters base, sin DLC/temporadas — varían por fuente y expansión; ver fuentes en `BULLET_OPS_PROGRESS.md`). La columna "objetivo" no es una copia de ninguna cifra: es una cantidad ambiciosa pero realista para una arquitectura escalable, priorizando variedad de gameplay por categoría sobre un número arbitrario.
+
+| Categoría (nuestra) | BF4 | BFV | BF2042 | Objetivo del proyecto | Estado actual |
+|---|---|---|---|---|---|
+| Fusiles de asalto (AR) | ~10 | ~8 | 2 (base) | 12 | 🟡 5/12 |
+| Subfusiles (SMG) | ~9 | ~6 | 4 | 10 | 🟡 5/10 |
+| LMG | ~6 | ~5 | 2 | 8 | 🟡 4/8 |
+| DMR (fusil de marcador) | ~5 | ~4 (autocargante) | 3 | 8 | 🟡 1/8 — recién creada, ver abajo |
+| Francotiradores (Sniper, cerrojo) | ~6 | ~6 (cerrojo) | 3 | 8 | 🟡 3/8 |
+| Escopetas | ~5 | ~4 | 2 | 8 | 🟡 4/8 |
+| Pistolas | ~8 | ~6 | 3 | 6 | 🟡 4/6 |
+| Revólveres | (dentro de Pistolas en BF4/BFV) | (íd.) | (íd.) | 4 | 🟡 1/4 — recién creada, ver abajo |
+| Lanzadores | ~4 | ~3 | ~3 | 6 | 🟡 2/6 |
+| Especiales/balísticos | — (no existe como categoría en ninguna entrega — decisión propia para armas futuristas/no convencionales) | — | — | 6 | 🟡 3/6 |
+| Cuerpo a cuerpo (cuchillos + contundentes) | 1 (cuchillo genérico) | 1 | 1 | 6 | 🟡 3/6 |
+| **Total** | ~65 (sin melee/gadgets) | ~48 | ~23 (base) | **82** | **35/82 (43%)** |
+
+El objetivo de 82 no es un techo — es la primera meta ambiciosa de una arquitectura ya probada para escalar a "cientos de armas" (cada arma nueva es una entrada de datos en `WEAPON_CONFIGS`, sin tocar `WeaponController`/`Bot`/HUD/crosshair). Cuando 82 esté cerca, se revisará si ampliar más aporta valor real de gameplay o solo relleno.
+
+### Taxonomía definitiva del proyecto (11 categorías)
+
+No es una copia de ninguna entrega — es la síntesis tras comparar las tres (ver tabla de investigación arriba). `WEAPON_CATEGORY` en `bullet-ops-game.html` es la fuente de verdad en código:
+
+1. **AR** — Fusil de asalto, todoterreno.
+2. **SMG** — Subfusil, movilidad alta, corto alcance.
+3. **LMG** — Ametralladora ligera, cargador grande, movilidad reducida.
+4. **DMR** — *(nueva)* Fusil semiautomático de precisión — daño/zoom intermedios entre AR y Sniper, sin la penalización de recuperación lenta del cerrojo. Sembrada con BO-32 PHANTOM (reclasificada desde SNIPER: su cadencia de 2.2 disp/s siempre desentonó con el resto de francotiradores de cerrojo lento).
+5. **Sniper** — Cerrojo, daño altísimo, cadencia muy lenta, recuperación de retroceso lenta.
+6. **Shotgun** — Corto alcance, daño de área por perdigones.
+7. **Pistol** — Semiautomática, cargador medio, arma secundaria estándar.
+8. **Revolver** — *(nueva)* Cargador pequeño, daño por disparo muy alto, recarga lenta. Sembrada con BO-52 MAGNUM (reclasificada desde PISTOL: 6 balas y 65 de daño ya la distinguían del resto de pistolas semiautomáticas).
+9. **Rocket/Launcher** — Explosivos de área, daño en salpicadura.
+10. **Special** — Armas balísticas/futuristas no convencionales — categoría sin equivalente directo en ninguna entrega de Battlefield, decisión propia del proyecto.
+11. **Melee** — Cuerpo a cuerpo; subcategoría `subcategory` distingue cuchillos (`'Knife'`) de armas contundentes cuando se puebla (ver esquema de datos).
+
+### Esquema de datos por arma (arquitectura escalable)
+
+`WEAPON_CONFIGS[id]` ya cubre: `id, name, category, damage, headshotMul, fireRate, mag, reserve, reloadTime, reloadTimeEmpty, spread{hip/ads/moving}, range, bulletSpeed, ads{time/fovMul/sensitivityMul}, movement{hipMul/adsMul}, sprintToFireDelay, recoil{vertical/horizontal/cameraKick/recoverySpeed}, sway{amount/speed/bobAmount/bobSpeed}, soundProfile, defaultSkin, attachmentSlots, projectileType` (+ `meleeRange/meleeSpeed` o `splashRadius` según el tipo). Nuevos campos añadidos esta sesión, empezando por BO-32/BO-52 como ejemplo concreto: `subcategory` (string libre, p. ej. `'Marksman Rifle'`), `ammoType` (string descriptivo, p. ej. `'7.62mm'`), `fireMode` (`'semi-auto'` / `'single-action'` / futuro `'burst'`/`'full-auto'`). Backfill de estos 3 campos al resto de las 33 armas existentes es tarea pendiente (no bloqueante — ningún código de gameplay los lee todavía; son metadatos de catalogación).
+
+**Decisión deliberada de diseño:** el checklist detallado por arma que pide el usuario (modelo/escala/piezas/cargador/miras/accesorios; texturas base-color/normal/roughness/metallic/desgaste; animaciones idle/equipar/disparo/recarga/ADS/inspección; audio disparo/recarga/casquillo/impacto; VFX muzzle/humo/casquillos/tracer) **vive aquí en el índice, no como campos de `WEAPON_CONFIGS`** — son estados de producción de assets (bloqueados en modelos 3D reales para casi todo), no datos que el motor de juego necesite leer en tiempo de ejecución. Meterlos en el objeto de config bloatearía los datos con docenas de campos que ningún código consulta. El resumen compacto de abajo es ese checklist, ya aplicado a las 35 armas actuales.
+
+Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(🟢 código) → animaciones(🟢 procedurales: equipar/disparo/recarga/ADS/sprint/inspección) → disparo(🟢) → recarga(🟢) → sonidos(🟢 sintetizados) → retroceso(🟢) → ADS(🟢) → estadísticas(🟢) → efectos(🟢) → testing(🟢) → subcategory/ammoType/fireMode(🟡 2/35, resto pendiente de backfill). **Ninguna arma nueva necesita trabajo de gameplay** — lo único pendiente en las 35 (salvo el backfill de metadatos) es el mismo bloqueo de siempre: modelos 3D/texturas reales.
+
+### Roster actual por categoría (35 armas · 11 categorías)
+
+- **AR** (5/12): BO-01 VANGUARD, BO-02 PREDATOR, BO-03 STORMCALLER, BO-04 SENTINEL, BO-05 OUTLAW
+- **SMG** (5/10): BO-11 RAZORBACK, BO-12 WHISPER, BO-13 ENFORCER, BO-14 VIPERBITE, BO-15 UNDERTOW
+- **Shotgun** (4/8): BO-21 BREACHER, BO-22 SCATTERGUN, BO-23 WIDOWMAKER, BO-24 SLUGSTORM
+- **Sniper** (3/8): BO-31 LONGSHOT, BO-33 WRAITHFANG, BO-34 DEADEYE
+- **DMR** (1/8): BO-32 PHANTOM
+- **LMG** (4/8): BO-41 JUGGERNAUT, BO-42 RAMPART, BO-43 OVERLORD, BO-44 VANDAL
+- **Pistol** (4/6): BO-51 SIDEARM, BO-53 VIPER, BO-54 ECHO, BO-55 DUELIST
+- **Revolver** (1/4): BO-52 MAGNUM
+- **Rocket** (2/6): BO-61 DEVASTATOR, BO-62 SKYFALL
+- **Melee** (3/6): BO-71 FANG, BO-72 KARAMBIT, BO-73 CLEAVER
+- **Special** (3/6): BO-81 SILENTBOLT, BO-82 THUMPER, BO-83 HORNET
 
 | Tarea transversal | Estado | Prioridad |
 |---|---|---|
@@ -78,6 +135,9 @@ Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(
 | Camuflajes reales (solo 1 skin + 1 patrón de prueba) | 🔴 | P3 |
 | Sonido de casquillos | 🔴 | P4 |
 | Sonido de disparo con variación por distancia | 🔴 | P4 |
+| Backfill subcategory/ammoType/fireMode en las 35 armas restantes | 🔴 | P3 |
+| Ampliación de roster hacia el objetivo de 82 (ver tabla maestra) | 🔴 | P2 — prioridad principal actual, ver PRÓXIMA TAREA |
+| Burst fire / modos de disparo múltiples por arma | 🔴 | P3 — depende de que `fireMode` tenga backfill primero |
 
 ## FASE 5 — APUNTADO Y HUD
 
@@ -228,6 +288,8 @@ Sección permanente, actualizada cada vez que se evalúa o conecta una herramien
 ~~P4 — Barra de progreso de carga real~~ 🟢 completado.
 ~~P4 — Configuración gráfica (calidad/resolución)~~ 🟢 completado.
 
-Ya no quedan tareas P0/P1/P2/P3 abiertas en el índice en este momento. Todo lo restante es P4 o está bloqueado en assets reales (🔒).
+**Redirección de prioridad del usuario (esta sesión):** el sistema de armas pasa a ser prioridad P2 principal — ver FASE 4 reescrita arriba con tabla comparativa BF4/BFV/BF2042, taxonomía de 11 categorías y objetivo de roster (35/82). Completado en este ciclo: investigación + taxonomía + arquitectura de datos (`subcategory`/`ammoType`/`fireMode`) + 2 categorías nuevas sembradas (DMR con BO-32, Revolver con BO-52, cada una con viewmodel/crosshair/catálogo propios, probado con Playwright).
+
+**Siguiente**: ampliación real del roster (FASE 4, P2) — añadir armas nuevas categoría por categoría empezando por las más vacías (DMR 1/8, Revolver 1/4, Rocket 2/6), reutilizando la plantilla ya validada (config + viewmodel silhouette si la categoría lo necesita). Música de menú/partida (P4) queda pausada mientras dure esta prioridad.
 
 **Siguiente**: revisar candidatos P4 restantes — un 4º mapa, música de menú/partida, CUSTOMIZE (bloqueado hasta tener más de 1 skin real). Ninguno es urgente; se evaluará cuál aporta más antes de implementar. Fase 10 multijugador sigue en pausa según la redirección de prioridad del usuario.

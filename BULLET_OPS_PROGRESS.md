@@ -385,6 +385,33 @@ Las 15 armas (`BO01-BO03` AR, `BO11-BO13` SMG, `BO21-BO22` Shotgun, `BO31-BO32` 
 
 ---
 
+### Sistema de armas como pilar principal: investigación + taxonomía + arquitectura de datos (P2, redirección del usuario)
+
+El usuario redirigió explícitamente la prioridad: el sistema de armas pasa a ser uno de los sistemas principales del proyecto, usando Battlefield 4/V/2042 como referencia de estructura/variedad/cantidad — nunca de assets (ningún modelo, textura, sonido ni animación copiado; solo estudio de categorías).
+
+**Investigación** (búsqueda web, fuentes abajo): BF4 usa Fusil de asalto/Carabina/SMG/LMG/DMR/Francotirador/Escopeta/Pistola(all-kit); BFV usa Fusil de asalto/Semiautomático/Cerrojo/Autocargante/SMG/LMG/Ametralladora media/Escopeta/Secundaria; BF2042 usa Fusil de asalto/SMG/LMG/Marksman(DMR)/Francotirador/Utilidad(escopetas)/Pistola. Ningún juego coincide exactamente con otro — el hilo común (AR/SMG/LMG/DMR/Sniper/Shotgun/Pistol aparecen en las tres) es lo que se usó para derivar la taxonomía propia del proyecto, documentada íntegra en `MASTER_INDEX.md` (tabla comparativa BF4/BFV/BF2042/objetivo, 11 categorías, roster actual por categoría).
+
+**Taxonomía definitiva (11 categorías)**: a las 9 existentes (AR/SMG/Shotgun/Sniper/LMG/Pistol/Rocket/Melee/Special) se añaden **DMR** y **Revolver** — ninguna copiada literalmente de una sola entrega, sino derivadas del hilo común de las tres. Cada categoría nueva se sembró con una arma **completamente funcional** reclasificando una existente cuyos stats ya encajaban mejor en el nuevo rol que en el antiguo, en vez de crear una arma nueva desde cero para esta primera pasada (más rápido, cero riesgo de desbalance, y dejó la categoría jugable de inmediato):
+- **BO-32 PHANTOM**: SNIPER → **DMR**. Su cadencia (2.2 disp/s) siempre desentonaba con el resto de francotiradores de cerrojo lento (BO-31: 0.75, BO-33: 1.1, BO-34: 0.55) — un perfil de fusil semiautomático de precisión, no de cerrojo.
+- **BO-52 MAGNUM**: PISTOL → **REVOLVER**. Su cargador de 6 balas y 65 de daño por disparo ya la distinguían del resto de pistolas semiautomáticas (12-24 balas, 18-52 de daño).
+
+**Arquitectura de datos ampliada**: `WEAPON_CONFIGS` gana 3 campos nuevos — `subcategory` (string descriptivo, p. ej. `'Marksman Rifle'`), `ammoType` (p. ej. `'7.62mm'`), `fireMode` (`'semi-auto'`/`'single-action'`, con `'burst'`/`'full-auto'` como futuros valores) — aplicados primero a BO-32/BO-52 como ejemplo concreto de la nueva plantilla; backfill al resto de las 33 armas queda como tarea pendiente no bloqueante (ningún código de gameplay los lee todavía). El checklist detallado por arma que pidió el usuario (modelo/texturas/animaciones/audio/VFX por sub-ítem) se decidió mantener en `MASTER_INDEX.md` como estado de producción de assets, no como campos de `WEAPON_CONFIGS` — meter docenas de campos de metadatos de catalogación en el objeto de config que el motor de juego lee en cada frame habría sido bloat sin beneficio funcional.
+
+**Cambios de código para que las categorías nuevas sean reales, no solo etiquetas**: cada punto donde el código ya se ramificaba por `category` (no por `projectileType`, que es agnóstico) necesitaba una entrada nueva o las armas DMR/Revolver habrían caído en un fallback genérico:
+- `buildWeaponViewmodel()`: nueva rama DMR (cuerpo proporción-AR con óptica compacta, distinto del bloque de mira grande de SNIPER) y nueva rama REVOLVER (marco de pistola pero con un cilindro grueso en vez del cargador plano).
+- `CROSSHAIR_STYLE_BY_CATEGORY`: DMR hereda el diamante de SNIPER (sigue siendo un rol de precisión); REVOLVER hereda el "solo punto" de PISTOL/MELEE (arma secundaria de corto alcance, no un arma con mira).
+- `renderWeaponsScreen()`'s `order`: DMR insertada junto a SNIPER, REVOLVER junto a PISTOL — mismo bug que ya se había encontrado y corregido una vez al añadir ROCKET/MELEE/SPECIAL (una categoría ausente de este array queda invisible en el catálogo aunque sus armas existan).
+
+Probado con Playwright: catálogo de armas confirma las cabeceras "DMR" y "REVOLVER" en la posición correcta (entre SNIPER/LMG y PISTOL/ROCKET respectivamente) con BO-32/BO-52 listadas debajo; `WEAPON_CONFIGS.BO32.category === 'DMR'` y `.BO52.category === 'Revolver'` con los 3 campos nuevos poblados; equipar BO-32 en una partida real genera su viewmodel (6 mallas) y dispara con normalidad (mag 10→9 tras un disparo real vía `inputs.mouseDown`); equipar BO-52 genera su viewmodel (4 mallas, cilindro visible) — captura de pantalla confirma el HUD mostrando "BO-52 MAGNUM (1/3)" correctamente. Pase de regresión del camino dorado con el loadout por defecto (BO01/BO11/BO51, sin tocar) tras el cambio: disparo → cambio de arma → recarga, sin errores. Cero errores de consola nuevos en ningún caso.
+
+Sources:
+- [Battlefield 4 - Internet Movie Firearms Database](https://www.imfdb.org/wiki/Battlefield_4)
+- [Category:Weapons of Battlefield 4 | Battlefield Wiki | Fandom](https://battlefield.fandom.com/wiki/Category:Weapons_of_Battlefield_4)
+- [The Weapons, Vehicles, and Other Gear Coming with Battlefield V](https://www.ea.com/games/battlefield/news/weapons-vehicles-gadgets-reinforcements-list-battlefield-5)
+- [Battlefield V - Internet Movie Firearms Database](https://www.imfdb.org/wiki/Battlefield_V)
+- [All Battlefield 2042 weapons to unlock in multiplayer | GamesRadar+](https://www.gamesradar.com/battlefield-2042-weapons-guns/)
+- [Battlefield 2042 - Internet Movie Firearms Database](https://www.imfdb.org/wiki/Battlefield_2042)
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.

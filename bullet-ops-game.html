@@ -467,13 +467,36 @@
         // without needing a licensing deal. Category ranges are reserved so
         // future weapons slot in predictably: 01-09 AR, 11-19 SMG, 21-29
         // Shotgun, 31-39 Sniper, 41-49 LMG, 51-59 Pistol.
+        // Definitive category taxonomy for this project - not a straight
+        // copy of any one Battlefield title's roster, but a synthesis after
+        // comparing BF4 (adds a dedicated Carbine tier, separates DMR from
+        // Sniper), BFV (adds a Medium Machinegun tier above LMG, and splits
+        // Semi-Automatic/Self-Loading rifles from bolt-action Sniper), and
+        // BF2042 (keeps DMR as "Marksman Rifles", folds shotguns into a
+        // wider "Utility" slot). The common thread kept across all three -
+        // and the reason DMR and REVOLVER exist here as their own
+        // categories rather than living inside SNIPER/PISTOL - is that each
+        // one earns a genuinely different playstyle: DMR trades a sniper's
+        // one-shot punch for faster semi-auto follow-ups at medium zoom;
+        // REVOLVER trades a pistol's magazine size for a much bigger
+        // per-shot hit and a slower reload. See BULLET_OPS_PROGRESS.md for
+        // the full BF4/BFV/BF2042 comparison table and target roster size
+        // this taxonomy was derived from.
         const WEAPON_CATEGORY = {
             AR: 'Assault Rifle', SMG: 'SMG', SHOTGUN: 'Shotgun',
             SNIPER: 'Sniper', LMG: 'LMG', PISTOL: 'Pistol',
-            // New categories: reserved id ranges 61-69 Rocket, 71-79 Melee,
-            // 81-89 Special/Ballistic, following the existing 01-09/11-19/
-            // 21-29/31-39/41-49/51-59 scheme.
-            ROCKET: 'Rocket Launcher', MELEE: 'Melee', SPECIAL: 'Special'
+            // Reserved id ranges: 61-69 Rocket, 71-79 Melee, 81-89 Special,
+            // following the existing 01-09/11-19/21-29/31-39/41-49/51-59
+            // scheme.
+            ROCKET: 'Rocket Launcher', MELEE: 'Melee', SPECIAL: 'Special',
+            // DMR and REVOLVER are carved out of the SNIPER (31-39) and
+            // PISTOL (51-59) id decades instead of getting a fresh one of
+            // their own, since each currently seeds from a single
+            // reclassified weapon that already lived in that decade (BO32,
+            // BO52) - future additions to either category should use the
+            // unused tail of that same decade (35-39 for DMR, 56-59 for
+            // REVOLVER) rather than opening a new range.
+            DMR: 'DMR', REVOLVER: 'Revolver'
         };
 
         // ========== ATTACHMENTS FRAMEWORK (architecture only - not yet populated) ==========
@@ -696,8 +719,18 @@
                 soundProfile: 'shotgun', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             },
+            // Reclassified from SNIPER to DMR (see WEAPON_CATEGORY comment):
+            // its 2.2 shots/sec fire rate was always the odd one out among
+            // BO31/33/34's slow, heavy bolt-action feel (0.75/1.1/0.55) -
+            // a semi-auto marksman rifle profile, not a sniper's. First
+            // weapon carrying the new subcategory/ammoType/fireMode data
+            // fields (see BULLET_OPS_PROGRESS.md for the schema writeup);
+            // backfilling them onto the other 34 weapons is a queued task,
+            // not a blocker - every field the existing code actually reads
+            // (damage/fireRate/spread/etc.) is unchanged.
             BO32: {
-                id: 'BO32', name: 'BO-32 PHANTOM', category: WEAPON_CATEGORY.SNIPER,
+                id: 'BO32', name: 'BO-32 PHANTOM', category: WEAPON_CATEGORY.DMR,
+                subcategory: 'Marksman Rifle', ammoType: '7.62mm', fireMode: 'semi-auto',
                 damage: 62, headshotMul: 2.0,
                 fireRate: 2.2, mag: 10, reserve: 40,
                 reloadTime: 2.4, reloadTimeEmpty: 2.9,
@@ -726,8 +759,15 @@
                 soundProfile: 'lmg', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             },
+            // Reclassified from PISTOL to REVOLVER (see WEAPON_CATEGORY
+            // comment): its 6-round mag and high per-shot damage already
+            // read as a revolver, not a semi-auto sidearm - the category
+            // rename makes that explicit instead of leaving it as an
+            // outlier inside PISTOL. Second weapon carrying the new
+            // subcategory/ammoType/fireMode fields.
             BO52: {
-                id: 'BO52', name: 'BO-52 MAGNUM', category: WEAPON_CATEGORY.PISTOL,
+                id: 'BO52', name: 'BO-52 MAGNUM', category: WEAPON_CATEGORY.REVOLVER,
+                subcategory: 'Revolver', ammoType: '.44 Magnum', fireMode: 'single-action',
                 damage: 65, headshotMul: 2.2,
                 fireRate: 2.8, mag: 6, reserve: 36,
                 reloadTime: 1.8, reloadTimeEmpty: 2.2,
@@ -1527,6 +1567,16 @@
                 addBox('grip', { width: 0.055, height: 0.14, depth: 0.06 }, new BABYLON.Vector3(0, -0.11, -0.06));
                 addBox('mag', { width: 0.04, height: 0.1, depth: 0.04 }, new BABYLON.Vector3(0, -0.16, -0.05));
                 muzzleZ = 0.1;
+            } else if (category === WEAPON_CATEGORY.REVOLVER) {
+                // Same pistol-scale frame/grip, but a thick cylinder in
+                // place of the pistol's flat magazine - the one silhouette
+                // change that reads as "revolver" instead of "sidearm"
+                // without needing a real model.
+                addBox('frame', { width: 0.06, height: 0.06, depth: 0.14 }, new BABYLON.Vector3(0, 0, -0.02));
+                addCylinder('cylinder', { diameter: 0.09, height: 0.07 }, new BABYLON.Vector3(0, 0.005, 0.02), new BABYLON.Vector3(Math.PI / 2, 0, 0));
+                addCylinder('barrel', { diameter: 0.025, height: 0.16 }, new BABYLON.Vector3(0, 0.005, 0.16), new BABYLON.Vector3(Math.PI / 2, 0, 0));
+                addBox('grip', { width: 0.058, height: 0.15, depth: 0.065 }, new BABYLON.Vector3(0, -0.11, -0.07));
+                muzzleZ = 0.24;
             } else if (category === WEAPON_CATEGORY.SHOTGUN) {
                 addBox('receiver', { width: 0.1, height: 0.1, depth: 0.35 }, new BABYLON.Vector3(0, 0, 0));
                 addCylinder('barrel', { diameter: 0.05, height: 0.45 }, new BABYLON.Vector3(0, 0.02, 0.42), new BABYLON.Vector3(Math.PI / 2, 0, 0));
@@ -1542,6 +1592,18 @@
                 addBox('stock', { width: 0.06, height: 0.1, depth: 0.32 }, new BABYLON.Vector3(0, -0.03, -0.42));
                 addBox('grip', { width: 0.06, height: 0.15, depth: 0.06 }, new BABYLON.Vector3(0, -0.12, -0.14));
                 muzzleZ = 0.75;
+            } else if (category === WEAPON_CATEGORY.DMR) {
+                // AR-proportioned body (shorter/lighter than SNIPER's) with
+                // a compact optic instead of SNIPER's bulky scope box - a
+                // marksman rifle reads as "AR that's been stretched and
+                // given a sight", not as a shrunken bolt-action.
+                addBox('receiver', { width: 0.085, height: 0.09, depth: 0.52 }, new BABYLON.Vector3(0, 0, 0));
+                addCylinder('barrel', { diameter: 0.032, height: 0.32 }, new BABYLON.Vector3(0, 0.005, 0.42), new BABYLON.Vector3(Math.PI / 2, 0, 0));
+                addBox('optic', { width: 0.035, height: 0.045, depth: 0.14 }, new BABYLON.Vector3(0, 0.075, 0.08));
+                addBox('mag', { width: 0.055, height: 0.18, depth: 0.065 }, new BABYLON.Vector3(0, -0.15, 0.06));
+                addBox('stock', { width: 0.06, height: 0.08, depth: 0.24 }, new BABYLON.Vector3(0, -0.02, -0.34));
+                addBox('grip', { width: 0.06, height: 0.16, depth: 0.06 }, new BABYLON.Vector3(0, -0.12, -0.1));
+                muzzleZ = 0.6;
             } else if (category === WEAPON_CATEGORY.LMG) {
                 addBox('receiver', { width: 0.1, height: 0.1, depth: 0.55 }, new BABYLON.Vector3(0, 0, 0));
                 addCylinder('barrel', { diameter: 0.04, height: 0.4 }, new BABYLON.Vector3(0, 0.01, 0.45), new BABYLON.Vector3(Math.PI / 2, 0, 0));
@@ -3786,7 +3848,12 @@
             [WEAPON_CATEGORY.PISTOL]: { shape: 'dot-only', dot: true },
             [WEAPON_CATEGORY.MELEE]: { shape: 'dot-only', dot: true },
             [WEAPON_CATEGORY.ROCKET]: { shape: 'square', dot: true },
-            [WEAPON_CATEGORY.SPECIAL]: { shape: 'diamond', dot: true }
+            [WEAPON_CATEGORY.SPECIAL]: { shape: 'diamond', dot: true },
+            // DMR shares SNIPER's diamond (still a precision role) but
+            // REVOLVER shares PISTOL/MELEE's dot-only (a close-range
+            // sidearm, not a scoped weapon).
+            [WEAPON_CATEGORY.DMR]: { shape: 'diamond', dot: true },
+            [WEAPON_CATEGORY.REVOLVER]: { shape: 'dot-only', dot: true }
             // AR / SMG / LMG fall through to the 'circle' default below.
         };
 
@@ -3992,9 +4059,13 @@
                 (byCategory[cfg.category] = byCategory[cfg.category] || []).push(cfg);
             }
             // Stable category display order matching the roster ranges.
+            // DMR/REVOLVER placed next to their parent SNIPER/PISTOL decade
+            // rather than at the end, matching WEAPON_CATEGORY's own
+            // comment on why they were carved out of those ranges.
             const order = [
                 WEAPON_CATEGORY.AR, WEAPON_CATEGORY.SMG, WEAPON_CATEGORY.SHOTGUN,
-                WEAPON_CATEGORY.SNIPER, WEAPON_CATEGORY.LMG, WEAPON_CATEGORY.PISTOL,
+                WEAPON_CATEGORY.SNIPER, WEAPON_CATEGORY.DMR, WEAPON_CATEGORY.LMG,
+                WEAPON_CATEGORY.PISTOL, WEAPON_CATEGORY.REVOLVER,
                 WEAPON_CATEGORY.ROCKET, WEAPON_CATEGORY.MELEE, WEAPON_CATEGORY.SPECIAL
             ];
             for (const category of order) {
