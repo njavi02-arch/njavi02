@@ -438,7 +438,10 @@
                 this.mesh.position = pos.clone();
 
                 const mat = new BABYLON.StandardMaterial('botMat' + Math.random(), scene);
-                mat.diffuse = team === 'BLUE' ? new BABYLON.Color3(0, 0.2, 0.8) : new BABYLON.Color3(0.8, 0.1, 0.1);
+                let color = new BABYLON.Color3(0.2, 0.8, 0.2); // Green for FFA bots
+                if (team === 'BLUE') color = new BABYLON.Color3(0, 0.2, 0.8);
+                else if (team === 'RED') color = new BABYLON.Color3(0.8, 0.1, 0.1);
+                mat.diffuse = color;
                 this.mesh.material = mat;
 
                 this.velocity = new BABYLON.Vector3(0, 0, 0);
@@ -446,6 +449,7 @@
                 this.target = null;
                 this.targetTimer = 0;
                 this.stateTimer = 0;
+                this.difficulty = Math.random() < 0.5 ? 'normal' : 'hard'; // Random difficulty
 
                 this.currentWeapon = WEAPONS.BO01;
                 this.weaponCooldown = 0;
@@ -489,9 +493,12 @@
                         this.velocity.x = dir.x * this.moveSpeed;
                         this.velocity.z = dir.z * this.moveSpeed;
 
-                        // Fire more aggressively at close range
+                        // Fire more aggressively at close range (difficulty affects accuracy)
                         if (closestDist < 50) {
-                            const fireChance = closestDist < 15 ? 0.3 : 0.1;
+                            let fireChance = closestDist < 15 ? 0.3 : 0.1;
+                            if (this.difficulty === 'hard') {
+                                fireChance *= 1.5; // Hard bots are more aggressive
+                            }
                             if (Math.random() < fireChance) {
                                 this.fire(dir);
                             }
@@ -531,7 +538,9 @@
                 this.currentMag--;
 
                 const origin = this.mesh.position.add(new BABYLON.Vector3(0, 0.7, 0));
-                const spread = this.currentWeapon.spread * 2;
+                // Hard bots have better accuracy
+                const spreadMul = this.difficulty === 'hard' ? 1.2 : 2;
+                const spread = this.currentWeapon.spread * spreadMul;
                 const fireDir = direction.add(new BABYLON.Vector3((Math.random() - 0.5) * spread, (Math.random() - 0.5) * spread * 0.5, (Math.random() - 0.5) * spread));
                 fireDir.normalize();
 
