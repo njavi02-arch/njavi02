@@ -192,7 +192,7 @@
             box-shadow: inset 0 0 100px rgba(255, 0, 0, 0);
             transition: box-shadow 0.1s;
         }
-        #pauseMenu, #resultsScreen, #loadoutScreen, #weaponsScreen, #operatorsScreen {
+        #pauseMenu, #resultsScreen, #loadoutScreen, #weaponsScreen, #operatorsScreen, #settingsScreen {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(10, 14, 39, 0.85);
@@ -239,7 +239,7 @@
                 <button class="menu-button" id="weaponsBtn">🔫 WEAPONS</button>
                 <button class="menu-button" id="operatorsBtn">🧑 OPERATORS</button>
                 <button class="menu-button locked" disabled title="Próximamente">🎨 CUSTOMIZE</button>
-                <button class="menu-button locked" disabled title="Próximamente">⚙ SETTINGS</button>
+                <button class="menu-button" id="settingsBtn">⚙ SETTINGS</button>
             </div>
             <div style="font-size: 0.65rem; color: #557755; margin-bottom: 0.4rem;">🔒 Próximamente</div>
 
@@ -319,6 +319,32 @@
             <div style="font-size: 0.7rem; color: #00aa00; margin-bottom: 0.6rem; flex-shrink: 0;">Catálogo completo — 15 armas</div>
             <div id="weaponsList" style="overflow-y: auto; padding: 0 1rem; flex: 1;"></div>
             <button class="menu-button" id="weaponsBackBtn" style="margin-top: 1rem; flex-shrink: 0;">↩ BACK</button>
+        </div>
+    </div>
+
+    <div id="settingsScreen" class="hidden">
+        <div style="text-align: center; width: 320px;">
+            <div class="menu-title" style="font-size: 2rem;">⚙ SETTINGS</div>
+            <div style="margin: 1.2rem 0; text-align: left;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                    <span style="font-size: 0.8rem;">MOUSE SENSITIVITY</span>
+                    <span id="sensitivityValue" style="font-size: 0.8rem; color: #00ff00;"></span>
+                </div>
+                <input type="range" id="sensitivitySlider" min="0.1" max="3" step="0.1" style="width: 100%;">
+            </div>
+            <div style="margin: 1.2rem 0; text-align: left;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                    <span style="font-size: 0.8rem;">MASTER VOLUME</span>
+                    <span id="volumeValue" style="font-size: 0.8rem; color: #00ff00;"></span>
+                </div>
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.05" style="width: 100%;">
+            </div>
+            <div style="margin: 1.2rem 0; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem;">INVERT Y-AXIS</span>
+                <button class="menu-button" id="invertYToggle" style="padding: 0.4rem 0.9rem; font-size: 0.75rem;"></button>
+            </div>
+            <button class="menu-button" id="settingsResetBtn" style="margin-top: 0.5rem; font-size: 0.75rem;">↺ RESET TO DEFAULT</button>
+            <button class="menu-button" id="settingsBackBtn" style="margin-top: 1rem;">↩ BACK</button>
         </div>
     </div>
 
@@ -700,6 +726,21 @@
             try { localStorage.setItem('bulletOpsOperator', currentOperator); } catch (e) { /* ignore */ }
         }
 
+        // ========== SETTINGS ==========
+        const DEFAULT_SETTINGS = { sensitivity: 1.0, invertY: false, volume: 1.0 };
+        let gameSettings = { ...DEFAULT_SETTINGS };
+        try {
+            const savedSettings = JSON.parse(localStorage.getItem('bulletOpsSettings'));
+            if (savedSettings && typeof savedSettings === 'object') {
+                if (typeof savedSettings.sensitivity === 'number') gameSettings.sensitivity = Math.max(0.1, Math.min(3, savedSettings.sensitivity));
+                if (typeof savedSettings.invertY === 'boolean') gameSettings.invertY = savedSettings.invertY;
+                if (typeof savedSettings.volume === 'number') gameSettings.volume = Math.max(0, Math.min(1, savedSettings.volume));
+            }
+        } catch (e) { /* ignore - keep defaults */ }
+        function saveSettings() {
+            try { localStorage.setItem('bulletOpsSettings', JSON.stringify(gameSettings)); } catch (e) { /* ignore */ }
+        }
+
         // ========== SOUND SYSTEM ==========
         // Every sound below is synthesized at runtime via the Web Audio API
         // (noise bursts + oscillators) - no external audio files are used
@@ -708,13 +749,22 @@
         // real per-weapon sound files this is meant to be replaced with.
         const SoundSynth = (() => {
             let ctx = null;
+            let masterGain = null;
             function getCtx() {
                 if (!ctx) {
                     const AC = window.AudioContext || window.webkitAudioContext;
                     ctx = AC ? new AC() : null;
+                    if (ctx) {
+                        masterGain = ctx.createGain();
+                        masterGain.gain.value = gameSettings.volume;
+                        masterGain.connect(ctx.destination);
+                    }
                 }
                 if (ctx && ctx.state === 'suspended') ctx.resume();
                 return ctx;
+            }
+            function setVolume(v) {
+                if (masterGain) masterGain.gain.value = Math.max(0, Math.min(1, v));
             }
 
             function noiseBurst(opts) {
@@ -737,7 +787,7 @@
 
                 source.connect(filter);
                 filter.connect(g);
-                g.connect(c.destination);
+                g.connect(masterGain);
                 source.start();
                 source.stop(c.currentTime + duration);
             }
@@ -757,7 +807,7 @@
                 g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + (opts.decay || 0.05));
 
                 osc.connect(g);
-                g.connect(c.destination);
+                g.connect(masterGain);
                 osc.start();
                 osc.stop(c.currentTime + duration);
             }
@@ -785,7 +835,7 @@
             function playHeadshot()    { tone({ freq: 1800, duration: 0.05, type: 'sine', gain: 0.18, decay: 0.05, freqEnd: 900 }); }
             function playKillConfirm() { tone({ freq: 600, duration: 0.12, type: 'triangle', gain: 0.18, decay: 0.12, freqEnd: 1200 }); }
 
-            return { getCtx, playGunshot, playReloadClick, playMagOut, playMagIn, playEmpty, playEquip, playHitmarker, playHeadshot, playKillConfirm };
+            return { getCtx, setVolume, playGunshot, playReloadClick, playMagOut, playMagIn, playEmpty, playEquip, playHitmarker, playHeadshot, playKillConfirm };
         })();
 
         // ========== SKIN / CAMOUFLAGE SYSTEM ==========
@@ -1491,9 +1541,9 @@
                 // camera rotation is assigned below - not anywhere else.
                 // ADS reduces mouse sensitivity via the equipped weapon's
                 // own config instead of a single fixed multiplier.
-                const sensitivity = 0.001 * this.weaponController.getSensitivityMultiplier();
+                const sensitivity = 0.001 * gameSettings.sensitivity * this.weaponController.getSensitivityMultiplier();
                 this.yaw += inputs.mouseX * sensitivity;
-                this.pitch -= inputs.mouseY * sensitivity;
+                this.pitch += (gameSettings.invertY ? 1 : -1) * inputs.mouseY * sensitivity;
                 this.pitch = Math.max(-Math.PI / 2.5, Math.min(Math.PI / 2.5, this.pitch));
 
                 // Movement (arcade style - responsive). Uses the player's own
@@ -2808,6 +2858,47 @@
         document.getElementById('operatorNextBtn').addEventListener('click', () => cycleOperator(1));
         document.getElementById('operatorsBackBtn').addEventListener('click', () => {
             document.getElementById('operatorsScreen').classList.add('hidden');
+            menu.classList.remove('hidden');
+        });
+
+        // ========== SETTINGS SCREEN ==========
+        function renderSettingsScreen() {
+            document.getElementById('sensitivitySlider').value = gameSettings.sensitivity;
+            document.getElementById('sensitivityValue').textContent = gameSettings.sensitivity.toFixed(1) + 'x';
+            document.getElementById('volumeSlider').value = gameSettings.volume;
+            document.getElementById('volumeValue').textContent = Math.round(gameSettings.volume * 100) + '%';
+            document.getElementById('invertYToggle').textContent = gameSettings.invertY ? 'ON' : 'OFF';
+        }
+
+        document.getElementById('settingsBtn').addEventListener('click', () => {
+            renderSettingsScreen();
+            menu.classList.add('hidden');
+            document.getElementById('settingsScreen').classList.remove('hidden');
+        });
+        document.getElementById('sensitivitySlider').addEventListener('input', (e) => {
+            gameSettings.sensitivity = parseFloat(e.target.value);
+            document.getElementById('sensitivityValue').textContent = gameSettings.sensitivity.toFixed(1) + 'x';
+            saveSettings();
+        });
+        document.getElementById('volumeSlider').addEventListener('input', (e) => {
+            gameSettings.volume = parseFloat(e.target.value);
+            document.getElementById('volumeValue').textContent = Math.round(gameSettings.volume * 100) + '%';
+            SoundSynth.setVolume(gameSettings.volume);
+            saveSettings();
+        });
+        document.getElementById('invertYToggle').addEventListener('click', () => {
+            gameSettings.invertY = !gameSettings.invertY;
+            document.getElementById('invertYToggle').textContent = gameSettings.invertY ? 'ON' : 'OFF';
+            saveSettings();
+        });
+        document.getElementById('settingsResetBtn').addEventListener('click', () => {
+            gameSettings = { ...DEFAULT_SETTINGS };
+            SoundSynth.setVolume(gameSettings.volume);
+            saveSettings();
+            renderSettingsScreen();
+        });
+        document.getElementById('settingsBackBtn').addEventListener('click', () => {
+            document.getElementById('settingsScreen').classList.add('hidden');
             menu.classList.remove('hidden');
         });
 

@@ -82,6 +82,14 @@ Probado de extremo a extremo con Playwright, verificando el criterio explícito 
 - Regresión TDM: con el mismo operador elegido, una partida TDM sigue asignando el color de equipo (azul/rojo) al material, no el color del operador — confirma que la prioridad de equipo no se rompió.
 - Cero errores de consola durante todo el flujo.
 
+### FASE 7 — Pantalla SETTINGS (sensibilidad, volumen, invertir eje Y — completa)
+Última sección de Fase 7 que no dependía de ningún asset. `gameSettings` (`sensitivity`, `invertY`, `volume`) persistido en `localStorage` (`bulletOpsSettings`) igual que loadout/operador, con botón de reset a valores por defecto. Tres efectos reales, no solo UI decorativa:
+- **Sensibilidad**: multiplica directamente la fórmula de mouse-look ya existente (`0.001 * gameSettings.sensitivity * getSensitivityMultiplier()`), así que sigue respetando la reducción de sensibilidad al hacer ADS por arma.
+- **Invertir eje Y**: se añadió como un flip de signo condicional sobre la MISMA línea que ya tenía el fix explícito de inversión del pitch de esta sesión (`this.pitch += (gameSettings.invertY ? 1 : -1) * inputs.mouseY * sensitivity`) — no se tocó el convenio de signos ya corregido, solo se hizo el signo opcional.
+- **Volumen**: `SoundSynth` ahora enruta todos los sonidos por un `GainNode` maestro (antes cada sonido conectaba directo a `ctx.destination`); el volumen guardado se aplica como valor inicial al crear el contexto de audio y `SoundSynth.setVolume()` lo actualiza en caliente si el jugador cambia el slider durante la sesión.
+
+Probado con Playwright: mover los sliders actualiza el estado y `localStorage` en vivo; tras recargar la página los tres valores se mantienen; con `invertY=true` y sensibilidad `2.5x`, una llamada directa a `player.update()` con `mouseY=10` produce un delta de pitch de exactamente `+0.025` (signo invertido respecto al comportamiento normal, y magnitud que coincide con la sensibilidad configurada) — confirma matemáticamente que ambos ajustes se aplican correctamente, no solo visualmente. Cero errores de consola.
+
 ### FASE 6 — Pantalla de resultados (pulido)
 `endGame()` usaba `alert()` nativo (bloquea toda la página hasta que se cierra) para mostrar resultados. Sustituido por una pantalla `#resultsScreen` propia (mismo estilo visual que el menú de pausa): título con ganador/color de equipo o "VICTORY" en FFA, marcador final, kills/deaths/K/D/tiempo de partida, botón "Back to Menu". Cursor liberado al mostrarla. Empezado a usar `GameState.ENDED`, que existía en el enum pero nunca se usaba. Probado en TDM y FFA con captura de pantalla — sin diálogo bloqueante, formato correcto en ambos modos.
 
@@ -101,9 +109,9 @@ Cada bala (jugador y bot) y cada muzzle flash creaba su propio `StandardMaterial
 
 ## 🔧 SIGUIENTE PASO (para retomar la sesión)
 
-Nada quedó a medias. Todo lo que estaba en la lista anterior ("siguiente paso") está terminado y probado — WEAPONS y OPERATORS, que eran el punto 1, ya están hechos. Por orden de prioridad según el roadmap original, lo que sigue:
+Nada quedó a medias. LOADOUT, WEAPONS, OPERATORS y SETTINGS ya son funcionales. Por orden de prioridad según el roadmap original, lo que sigue:
 
-1. **Fase 7 (Menús)**: quedan 2 secciones bloqueadas (CUSTOMIZE/SETTINGS) — LOADOUT, WEAPONS y OPERATORS ya son funcionales. SETTINGS es la más natural de seguir (sensibilidad de ratón, volumen, invertir eje Y) porque no depende de ningún asset. CUSTOMIZE (combinar skin + operador visualmente) tiene más sentido una vez haya más de un skin real por arma.
+1. **Fase 7 (Menús)**: solo queda 1 sección bloqueada (CUSTOMIZE) — tiene más sentido una vez haya más de un skin real por arma (combinar skin + operador visualmente todavía no aporta mucho con un único skin sólido por defecto y un patrón "digital" de prueba).
 2. **Fase 10 (Multiplayer)**: explícitamente "solo cuando el prototipo offline sea estable" — dado que Fases 0-2, 4-9 están sólidas y probadas, es razonable empezar a planificar la arquitectura cliente/red sin tocar lo existente.
 3. **Mapas**: un segundo mapa original si se prioriza más contenido, o pase de arte sobre los 3 existentes cuando haya assets reales.
 4. **Attachments**: la arquitectura (`ATTACHMENT_SLOTS`, `getEffectiveWeaponStats()`) está lista pero vacía — implementarlos requiere decidir su representación visual, que a su vez depende de tener modelos 3D reales (no tiene sentido un attachment procedural sobre un arma procedural).
