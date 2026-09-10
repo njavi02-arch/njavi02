@@ -425,6 +425,17 @@ Las 4 usan las ramas de viewmodel/crosshair/catálogo ya creadas para DMR/REVOLV
 
 Probado con Playwright: las 4 configs verificadas con categoría/fireMode/daño correctos; total de `WEAPON_CONFIGS` confirmado en 39 (35 + 4); catálogo de armas confirma los 4 nombres visibles bajo sus cabeceras; BO-35 equipado en una partida real genera su viewmodel (6 mallas, rama DMR reutilizada) y dispara con normalidad (mag 8→7 tras un disparo real). Cero errores de consola nuevos.
 
+### Ampliación de roster: Rocket/Launcher (2/6→4/6)
+
+Siguiente categoría más vacía tras el pase de DMR/Revolver. 2 armas nuevas, cada una en un extremo distinto del espectro de lanzadores en vez de repetir el perfil de BO-61/BO-62 a otra escala:
+
+- **BO-63 BREACHPOINT** (`subcategory: 'Grenade Launcher'`, `fireMode: 'semi-auto'`): lanzagranadas ligero de disparo múltiple — daño y splash bajos (55 / 3.5) pero cadencia mucho mayor (1.8 vs 0.6-1.0 del resto) y cargador de 4, pensado para denegación de área por volumen de fuego en vez de un golpe único grande. Movilidad casi normal (`hipMul: 1.0`), el lanzador más ágil de la categoría.
+- **BO-64 LONGARM** (`subcategory: 'Anti-Materiel Launcher'`, `fireMode: 'single-shot'`): el extremo pesado — el arma con más daño de todo el juego (160), splash más amplio (8.5), pero la cadencia más lenta (0.4), la recarga más larga (4.2s) y la peor movilidad (`hipMul: 0.7`, `adsMul: 0.48`) de las 41 armas. Es deliberadamente el arma más "cara de usar" del arsenal, coherente con ser también la más letal.
+
+Ambas reutilizan la rama de viewmodel ROCKET ya existente (tubo + cono trasero + mira + empuñadura) — ninguna infraestructura nueva, mismo patrón que DMR/Revolver.
+
+Probado con Playwright: configs verificadas (categoría, `projectileType: 'explosive'`, `splashRadius`, daño); total de armas confirmado en 41; catálogo muestra ambos nombres bajo la cabecera ROCKET LAUNCHER. Prueba de disparo real con bots congelados/alejados: BO-64 equipada y disparada vía `inputs.mouseDown` real, mag 1→0 tras el disparo, y `player.health` se mantuvo en 100 (exclusión de auto-daño de `triggerExplosion()` sigue funcionando correctamente con el arma más nueva y de mayor splash del juego). Cero errores de consola nuevos.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.

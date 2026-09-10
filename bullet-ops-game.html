@@ -1089,6 +1089,45 @@
                 soundProfile: 'rocket', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             },
+            // Rocket/Launcher roster expansion (2/6 -> 4/6): a light
+            // multi-shot grenade launcher (area denial via faster
+            // follow-ups, not one big hit) and a heavy anti-materiel
+            // launcher (the slowest/heaviest weapon in the game, trading
+            // mobility and reload speed for the single biggest hit).
+            BO63: {
+                id: 'BO63', name: 'BO-63 BREACHPOINT', category: WEAPON_CATEGORY.ROCKET,
+                subcategory: 'Grenade Launcher', ammoType: '40mm Grenade', fireMode: 'semi-auto',
+                projectileType: 'explosive', splashRadius: 3.5,
+                damage: 55, headshotMul: 1.0,
+                fireRate: 1.8, mag: 4, reserve: 12,
+                reloadTime: 2.2, reloadTimeEmpty: 2.6,
+                spread: { hip: 0.022, ads: 0.006, moving: 0.014 },
+                range: 50, bulletSpeed: 90,
+                ads: { time: 0.2, fovMul: 0.9, sensitivityMul: 0.8 },
+                movement: { hipMul: 1.0, adsMul: 0.75 },
+                sprintToFireDelay: 0.2,
+                recoil: { vertical: 0.025, horizontal: 0.01, cameraKick: 0.02, recoverySpeed: 6 },
+                sway: { amount: 0.018, speed: 1.6, bobAmount: 0.02, bobSpeed: 9 },
+                soundProfile: 'rocket', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO64: {
+                id: 'BO64', name: 'BO-64 LONGARM', category: WEAPON_CATEGORY.ROCKET,
+                subcategory: 'Anti-Materiel Launcher', ammoType: 'Guided Rocket', fireMode: 'single-shot',
+                projectileType: 'explosive', splashRadius: 8.5,
+                damage: 160, headshotMul: 1.0,
+                fireRate: 0.4, mag: 1, reserve: 3,
+                reloadTime: 4.2, reloadTimeEmpty: 4.2,
+                spread: { hip: 0.016, ads: 0.004, moving: 0.012 },
+                range: 100, bulletSpeed: 45,
+                ads: { time: 0.42, fovMul: 0.8, sensitivityMul: 0.65 },
+                movement: { hipMul: 0.7, adsMul: 0.48 },
+                sprintToFireDelay: 0.45,
+                recoil: { vertical: 0.06, horizontal: 0.018, cameraKick: 0.05, recoverySpeed: 3.2 },
+                sway: { amount: 0.028, speed: 0.9, bobAmount: 0.026, bobSpeed: 6.5 },
+                soundProfile: 'rocket', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
             // ----- MELEE (new category): melee projectileType - instant
             // short-range swing, no ammo, cooldown gated by fireRate. -----
             BO71: {
