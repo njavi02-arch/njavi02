@@ -1,6 +1,6 @@
 # BULLET OPS — Progress Tracker
 
-Sesión autónoma completada (trabajo continuo hasta revisión a las 19:00). 17 commits en `claude/bullet-ops-fps-game-jizk2k`, artifact republicado en cada hito con build funcionando. Nada quedó "en progreso" a medio hacer — cada bloque se cerró probado con el juego real (Playwright) antes de pasar al siguiente.
+Sesión autónoma extendida, modo agente completo. 24 commits en `claude/bullet-ops-fps-game-jizk2k`, artifact republicado en cada hito con build funcionando. Nada quedó "en progreso" a medio hacer — cada bloque se cerró probado con el juego real (Playwright) antes de pasar al siguiente. Los 3 puntos del "siguiente paso" de la revisión anterior (cobertura de bots, arsenal completo, selección de loadout) están terminados y probados.
 
 ---
 
@@ -73,17 +73,25 @@ Menú principal ampliado con las 5 secciones del roadmap (LOADOUT/WEAPONS/OPERAT
 ### FASE 6 — Pantalla de resultados (pulido)
 `endGame()` usaba `alert()` nativo (bloquea toda la página hasta que se cierra) para mostrar resultados. Sustituido por una pantalla `#resultsScreen` propia (mismo estilo visual que el menú de pausa): título con ganador/color de equipo o "VICTORY" en FFA, marcador final, kills/deaths/K/D/tiempo de partida, botón "Back to Menu". Cursor liberado al mostrarla. Empezado a usar `GameState.ENDED`, que existía en el enum pero nunca se usaba. Probado en TDM y FFA con captura de pantalla — sin diálogo bloqueante, formato correcto en ambos modos.
 
+### FASE 5 — Cobertura de bots (completa)
+`findCoverPosition()`: función genérica que busca el obstáculo más cercano y calcula un punto al otro lado respecto a la amenaza — funciona igual en los 3 mapas sin código específico por mapa (solo usa meshes con `checkCollisions`). Un bot con <40% de vida o recargando, con un objetivo a <40 unidades, se retira hacia ese punto en vez de avanzar en línea recta (sigue devolviendo fuego si no está recargando). Episodio de 3.5s o hasta llegar/curarse. Solo se calcula al iniciar el episodio, no cada frame. Probado: un bot herido cambia de rumbo medible hacia su punto de cobertura en vez de hacia el jugador; se cura y dejar de buscar cobertura; 3 bots heridos a la vez durante 8s sin errores.
+
+### Arsenal completo — 15/15 armas (3 AR, 3 SMG, 3 Pistol, 2 Shotgun, 2 Sniper, 2 LMG)
+Las 9 armas que faltaban añadidas a `WEAPON_CONFIGS`, cada una con rol distinto dentro de su categoría (ej. AR: VANGUARD equilibrado / PREDATOR preciso-lento / STORMCALLER rápido-impreciso). Cero cambios de arquitectura necesarios — se instanció un `WeaponController` con las 15 a la vez y las 15 disparan y gestionan su propia munición correctamente.
+
+### FASE 9 — Selección de Loadout (completa)
+El botón LOADOUT (antes bloqueado) ahora es funcional de verdad: pantalla con 3 slots, cada uno cicla entre las 15 armas del catálogo. Elección guardada en `localStorage`, sobrevive a recargar la página. `Player` ahora construye su `WeaponController` con `currentLoadout` en vez de un array fijo. Probado de extremo a extremo: elegir un Sniper en el slot 1 → recargar página → la elección persiste → empezar partida → el arma equipada en la ranura 1 es el Sniper elegido → pulsar "1" en partida efectivamente la equipa.
+
 ---
 
 ## 🔧 SIGUIENTE PASO (para retomar la sesión)
 
-Nada quedó a medias — cada pieza se cerró probada. Por orden de prioridad, según el roadmap original:
+Nada quedó a medias. Todo lo que estaba en la lista anterior ("siguiente paso") está terminado y probado. Por orden de prioridad según el roadmap original, lo que sigue:
 
-1. **Fase 5 (Bots) — mejora pendiente**: los bots ya navegan/detectan/persiguen/combaten/respawnean/tienen equipo desde el prototipo base, pero **no buscan cobertura** todavía (piden explícitamente "cobertura" en el roadmap) — es la pieza que falta de esa fase.
-2. **Arsenal**: quedan 9 armas más por añadir a `WEAPON_CONFIGS` para completar el roster de 15 (2 AR, 2 SMG, 1 shotgun, 1 sniper, 1 LMG, 2 pistolas) — mecánico y de bajo riesgo, la plantilla ya está validada en las 6 categorías.
-3. **Fase 9 (Loadouts)**: seleccionar qué 3 armas del roster completo se equipan — necesario antes de que el resto del arsenal sea jugable de verdad (ahora mismo solo BO-01/BO-11/BO-51 están en el loadout activo).
-4. **Fase 7 (Menús)**: las 5 secciones bloqueadas ya están en el menú; darles contenido real es lo que sigue cuando se prioricen esas features (empezando probablemente por WEAPONS, ya que el catálogo de datos ya existe).
-5. **Mapas**: un segundo mapa original si se prioriza contenido, o pase de arte sobre los 3 existentes cuando haya assets reales.
+1. **Fase 7 (Menús)**: quedan 4 secciones bloqueadas (WEAPONS/OPERATORS/CUSTOMIZE/SETTINGS) — LOADOUT ya es funcional. La más natural para seguir es WEAPONS (catálogo/inspección de las 15 armas), ya que el catálogo de datos ya existe completo.
+2. **Fase 10 (Multiplayer)**: explícitamente "solo cuando el prototipo offline sea estable" — dado que Fases 0-2, 4-9 están sólidas y probadas, es razonable empezar a planificar la arquitectura cliente/red sin tocar lo existente.
+3. **Mapas**: un segundo mapa original si se prioriza más contenido, o pase de arte sobre los 3 existentes cuando haya assets reales.
+4. **Attachments**: la arquitectura (`ATTACHMENT_SLOTS`, `getEffectiveWeaponStats()`) está lista pero vacía — implementarlos requiere decidir su representación visual, que a su vez depende de tener modelos 3D reales (no tiene sentido un attachment procedural sobre un arma procedural).
 
 ---
 
