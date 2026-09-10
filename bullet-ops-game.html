@@ -1178,6 +1178,44 @@
                 soundProfile: 'special', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             },
+            // Melee roster expansion (3/6 -> 5/6): the existing 3 are all
+            // blades at different speed/damage points - adds a blunt
+            // weapon (heavy, slow, longest reach) and a dual-blade (the
+            // fastest weapon in the entire game) for real category spread.
+            BO74: {
+                id: 'BO74', name: 'BO-74 WRECKER', category: WEAPON_CATEGORY.MELEE,
+                subcategory: 'Blunt', ammoType: 'n/a', fireMode: 'melee',
+                projectileType: 'melee', meleeRange: 2.5, meleeSpeed: 40,
+                damage: 110, headshotMul: 1.0,
+                fireRate: 0.9, mag: 1, reserve: 1,
+                reloadTime: 0.01, reloadTimeEmpty: 0.01,
+                spread: { hip: 0.01, ads: 0.01, moving: 0.01 },
+                range: 2.5, bulletSpeed: 40,
+                ads: { time: 0.1, fovMul: 1.0, sensitivityMul: 1.0 },
+                movement: { hipMul: 1.05, adsMul: 1.0 },
+                sprintToFireDelay: 0.0,
+                recoil: { vertical: 0, horizontal: 0, cameraKick: 0.018, recoverySpeed: 12 },
+                sway: { amount: 0.012, speed: 1.5, bobAmount: 0.018, bobSpeed: 8 },
+                soundProfile: 'special', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO75: {
+                id: 'BO75', name: 'BO-75 TALONS', category: WEAPON_CATEGORY.MELEE,
+                subcategory: 'Dual Blade', ammoType: 'n/a', fireMode: 'melee',
+                projectileType: 'melee', meleeRange: 1.7, meleeSpeed: 45,
+                damage: 28, headshotMul: 1.0,
+                fireRate: 4.5, mag: 1, reserve: 1,
+                reloadTime: 0.01, reloadTimeEmpty: 0.01,
+                spread: { hip: 0.01, ads: 0.01, moving: 0.01 },
+                range: 1.7, bulletSpeed: 45,
+                ads: { time: 0.1, fovMul: 1.0, sensitivityMul: 1.0 },
+                movement: { hipMul: 1.35, adsMul: 1.25 },
+                sprintToFireDelay: 0.0,
+                recoil: { vertical: 0, horizontal: 0, cameraKick: 0.006, recoverySpeed: 24 },
+                sway: { amount: 0.009, speed: 2.4, bobAmount: 0.014, bobSpeed: 12 },
+                soundProfile: 'special', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
             // ----- SPECIAL (new category): ballistic weapons with unique
             // flavor (silent crossbow, lobbed explosive, suppressed burst
             // sidearm) - reuses 'bullet'/'explosive' projectileType, no new
@@ -1227,9 +1265,47 @@
                 sway: { amount: 0.018, speed: 2.0, bobAmount: 0.021, bobSpeed: 10.5 },
                 soundProfile: 'special', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            // Special roster expansion (3/6 -> 5/6): a slow one-shot rail
+            // weapon (highest single-hit damage of any hitscan-speed
+            // weapon in the game) and an ultra-fast flechette swarm gun
+            // (fastest fire rate of any weapon), each pushing further
+            // toward an extreme SILENTBOLT/THUMPER/HORNET didn't already
+            // occupy.
+            BO84: {
+                id: 'BO84', name: 'BO-84 RAILDRIVER', category: WEAPON_CATEGORY.SPECIAL,
+                subcategory: 'Rail Weapon', ammoType: 'Ferrous Slug', fireMode: 'single-shot',
+                damage: 150, headshotMul: 1.6,
+                fireRate: 0.5, mag: 3, reserve: 15,
+                reloadTime: 2.8, reloadTimeEmpty: 2.8,
+                spread: { hip: 0.006, ads: 0.0006, moving: 0.005 },
+                range: 90, bulletSpeed: 2000,
+                ads: { time: 0.32, fovMul: 0.55, sensitivityMul: 0.5 },
+                movement: { hipMul: 0.9, adsMul: 0.6 },
+                sprintToFireDelay: 0.2,
+                recoil: { vertical: 0.045, horizontal: 0.008, cameraKick: 0.04, recoverySpeed: 4 },
+                sway: { amount: 0.012, speed: 1.1, bobAmount: 0.015, bobSpeed: 7 },
+                soundProfile: 'special', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO85: {
+                id: 'BO85', name: 'BO-85 WASP', category: WEAPON_CATEGORY.SPECIAL,
+                subcategory: 'Micro-Munition SMG', ammoType: 'Flechette', fireMode: 'full-auto',
+                damage: 10, headshotMul: 1.3,
+                fireRate: 25, mag: 40, reserve: 200,
+                reloadTime: 1.6, reloadTimeEmpty: 1.9,
+                spread: { hip: 0.034, ads: 0.012, moving: 0.018 },
+                range: 35, bulletSpeed: 380,
+                ads: { time: 0.12, fovMul: 0.9, sensitivityMul: 0.82 },
+                movement: { hipMul: 1.1, adsMul: 0.78 },
+                sprintToFireDelay: 0.05,
+                recoil: { vertical: 0.006, horizontal: 0.014, cameraKick: 0.005, recoverySpeed: 14 },
+                sway: { amount: 0.02, speed: 2.1, bobAmount: 0.022, bobSpeed: 11 },
+                soundProfile: 'special', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             }
-            // Full 35-weapon roster: 5 AR, 5 SMG, 4 Shotgun, 4 Sniper, 4 LMG,
-            // 5 Pistol, 2 Rocket, 3 Melee, 3 Special = 35 total.
+            // Full roster: 5 AR, 5 SMG, 4 Shotgun, 4 Sniper, 3 DMR, 4 LMG,
+            // 4 Pistol, 3 Revolver, 4 Rocket, 5 Melee, 5 Special = 45 total.
         };
         // Backwards-compatible alias: Bot AI only ever reads the plain
         // numeric stats (damage/fireRate/mag/reserve/spread/speed), so it

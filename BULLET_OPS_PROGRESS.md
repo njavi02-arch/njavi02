@@ -436,6 +436,19 @@ Ambas reutilizan la rama de viewmodel ROCKET ya existente (tubo + cono trasero +
 
 Probado con Playwright: configs verificadas (categoría, `projectileType: 'explosive'`, `splashRadius`, daño); total de armas confirmado en 41; catálogo muestra ambos nombres bajo la cabecera ROCKET LAUNCHER. Prueba de disparo real con bots congelados/alejados: BO-64 equipada y disparada vía `inputs.mouseDown` real, mag 1→0 tras el disparo, y `player.health` se mantuvo en 100 (exclusión de auto-daño de `triggerExplosion()` sigue funcionando correctamente con el arma más nueva y de mayor splash del juego). Cero errores de consola nuevos.
 
+### Ampliación de roster: Melee y Special (3/6→5/6 cada una)
+
+Últimas dos categorías más vacías del pase de ampliación. 4 armas nuevas:
+
+- **BO-74 WRECKER** (Melee, `subcategory: 'Blunt'`): arma contundente — las 3 melee existentes eran todas hojas a distinta velocidad/daño; esta añade el primer arma no cortante, con el daño más alto de la categoría (110), el mayor alcance (2.5) y la cadencia más lenta (0.9), y penaliza la movilidad (`hipMul: 1.05`) reflejando su peso.
+- **BO-75 TALONS** (Melee, `subcategory: 'Dual Blade'`): el extremo opuesto — el arma más rápida de todo el juego (cadencia 4.5), el mayor `hipMul` (1.35) de las 45 armas, pero el daño por golpe más bajo de la categoría (28) y el alcance más corto (1.7).
+- **BO-84 RAILDRIVER** (Special, `subcategory: 'Rail Weapon'`): arma de un solo disparo de precisión — 150 de daño (el más alto del juego entre armas no-melee/no-explosivas), `bulletSpeed: 2000` (esencialmente hitscan), cadencia muy lenta (0.5) y solo 3 balas de cargador.
+- **BO-85 WASP** (Special, `subcategory: 'Micro-Munition SMG'`): el extremo opuesto — cadencia de 25 disparos/s (la más alta del juego), 10 de daño por impacto (de los más bajos), cargador de 40, pensada para DPS por volumen a muy corto alcance (35).
+
+**Lección de metodología de pruebas (recurrente en esta sesión, redescubierta aquí):** la primera prueba de BO-74 dio un falso negativo — el golpe cuerpo a cuerpo no registró daño pese a que `fire()` sí se ejecutó (`fireCooldown` cambió correctamente). Causa: el script de prueba construía un viewmodel nuevo con `buildWeaponViewmodel()` para un arma fuera del loadout original pero **olvidaba hacer `vm.root.parent = player.camera`** (el propio constructor de `WeaponController` sí lo hace siempre). Sin ese parenting, la posición absoluta del muzzle queda en el origen de la escena en vez de seguir al jugador, así que el "proyectil" de melee nacía y viajaba desde un punto completamente distinto de donde estaba el jugador — un bug del arnés de pruebas, no del juego. Corregido añadiendo el `parent` en el script de prueba; repetido el golpe con la posición corregida y el bot (100 HP) murió instantáneamente (110 de daño de BO-74), confirmando que el gameplay real era correcto desde el principio. La misma comprobación aplicada a BO-84 RAILDRIVER confirmó un impacto de 150 de daño a 20 unidades de distancia, matando al objetivo de un disparo.
+
+Catálogo de armas confirma los 4 nombres nuevos bajo sus cabeceras correspondientes (MELEE, SPECIAL); total de `WEAPON_CONFIGS` confirmado en 45. Cero errores de consola nuevos en ninguna prueba.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.

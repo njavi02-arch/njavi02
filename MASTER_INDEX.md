@@ -5,7 +5,7 @@ Documento vivo de gestión autónoma del proyecto. Se actualiza en cada ciclo de
 **Leyenda de estado:** 🔴 Pendiente · 🟡 En progreso · 🟢 Completado · 🔧 Funciona pero necesita mejora · 🔒 Bloqueado (requiere intervención del usuario) · ⚠️ Tiene errores conocidos
 **Leyenda de prioridad:** P0 Crítico · P1 Muy importante · P2 Importante · P3 Pulido · P4 Opcional
 
-Última actualización: sesión autónoma en curso (sistema de armas como prioridad principal; roster 41/82, ver `BULLET_OPS_PROGRESS.md`).
+Última actualización: sesión autónoma en curso (sistema de armas como prioridad principal; roster 45/82, ver `BULLET_OPS_PROGRESS.md`).
 
 ---
 
@@ -14,7 +14,7 @@ Documento vivo de gestión autónoma del proyecto. Se actualiza en cada ciclo de
 | Tarea | Estado | Prioridad | Notas |
 |---|---|---|---|
 | Arquitectura de archivo único (sin build step, compatible con Artifact) | 🟢 | — | Decisión técnica estable, no revisar sin motivo de peso |
-| `WEAPON_CONFIGS` como fuente única de datos de armas | 🟢 | — | 41 armas (objetivo 82), escalable por config |
+| `WEAPON_CONFIGS` como fuente única de datos de armas | 🟢 | — | 45 armas (objetivo 82), escalable por config |
 | `WeaponController` (estado IDLE/RELOADING/SWITCHING/INSPECTING) | 🟢 | — | |
 | `SoundSynth` (audio 100% sintetizado, sin assets externos) | 🟢 | — | |
 | `SKIN_REGISTRY` / sistema de camuflajes | 🟢 | — | Solo 1 skin real + 1 patrón de prueba, ver FASE 4 |
@@ -85,9 +85,9 @@ Cifras de BF4/BFV/BF2042 son aproximadas (rosters base, sin DLC/temporadas — v
 | Pistolas | ~8 | ~6 | 3 | 6 | 🟡 4/6 |
 | Revólveres | (dentro de Pistolas en BF4/BFV) | (íd.) | (íd.) | 4 | 🟡 3/4 |
 | Lanzadores | ~4 | ~3 | ~3 | 6 | 🟡 4/6 |
-| Especiales/balísticos | — (no existe como categoría en ninguna entrega — decisión propia para armas futuristas/no convencionales) | — | — | 6 | 🟡 3/6 |
-| Cuerpo a cuerpo (cuchillos + contundentes) | 1 (cuchillo genérico) | 1 | 1 | 6 | 🟡 3/6 |
-| **Total** | ~65 (sin melee/gadgets) | ~48 | ~23 (base) | **82** | **41/82 (50%)** |
+| Especiales/balísticos | — (no existe como categoría en ninguna entrega — decisión propia para armas futuristas/no convencionales) | — | — | 6 | 🟡 5/6 |
+| Cuerpo a cuerpo (cuchillos + contundentes) | 1 (cuchillo genérico) | 1 | 1 | 6 | 🟡 5/6 |
+| **Total** | ~65 (sin melee/gadgets) | ~48 | ~23 (base) | **82** | **45/82 (55%)** |
 
 El objetivo de 82 no es un techo — es la primera meta ambiciosa de una arquitectura ya probada para escalar a "cientos de armas" (cada arma nueva es una entrada de datos en `WEAPON_CONFIGS`, sin tocar `WeaponController`/`Bot`/HUD/crosshair). Cuando 82 esté cerca, se revisará si ampliar más aporta valor real de gameplay o solo relleno.
 
@@ -115,7 +115,7 @@ No es una copia de ninguna entrega — es la síntesis tras comparar las tres (v
 
 Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(🟢 código) → animaciones(🟢 procedurales: equipar/disparo/recarga/ADS/sprint/inspección) → disparo(🟢) → recarga(🟢) → sonidos(🟢 sintetizados) → retroceso(🟢) → ADS(🟢) → estadísticas(🟢) → efectos(🟢) → testing(🟢) → subcategory/ammoType/fireMode(🟡 2/35, resto pendiente de backfill). **Ninguna arma nueva necesita trabajo de gameplay** — lo único pendiente en las 35 (salvo el backfill de metadatos) es el mismo bloqueo de siempre: modelos 3D/texturas reales.
 
-### Roster actual por categoría (41 armas · 11 categorías)
+### Roster actual por categoría (45 armas · 11 categorías)
 
 - **AR** (5/12): BO-01 VANGUARD, BO-02 PREDATOR, BO-03 STORMCALLER, BO-04 SENTINEL, BO-05 OUTLAW
 - **SMG** (5/10): BO-11 RAZORBACK, BO-12 WHISPER, BO-13 ENFORCER, BO-14 VIPERBITE, BO-15 UNDERTOW
@@ -126,8 +126,8 @@ Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(
 - **Pistol** (4/6): BO-51 SIDEARM, BO-53 VIPER, BO-54 ECHO, BO-55 DUELIST
 - **Revolver** (3/4): BO-52 MAGNUM, BO-56 PEACEMAKER, BO-57 SNAKEEYE
 - **Rocket** (4/6): BO-61 DEVASTATOR, BO-62 SKYFALL, BO-63 BREACHPOINT, BO-64 LONGARM
-- **Melee** (3/6): BO-71 FANG, BO-72 KARAMBIT, BO-73 CLEAVER
-- **Special** (3/6): BO-81 SILENTBOLT, BO-82 THUMPER, BO-83 HORNET
+- **Melee** (5/6): BO-71 FANG, BO-72 KARAMBIT, BO-73 CLEAVER, BO-74 WRECKER, BO-75 TALONS
+- **Special** (5/6): BO-81 SILENTBOLT, BO-82 THUMPER, BO-83 HORNET, BO-84 RAILDRIVER, BO-85 WASP
 
 | Tarea transversal | Estado | Prioridad |
 |---|---|---|
@@ -292,4 +292,6 @@ Sección permanente, actualizada cada vez que se evalúa o conecta una herramien
 
 ~~P2 — Ampliación Rocket/Launcher (2/6→4/6)~~ 🟢 completado. BO-63 BREACHPOINT (lanzagranadas ligero) + BO-64 LONGARM (anti-materiel pesado).
 
-**Siguiente**: seguir la ampliación de roster (FASE 4, P2) por la categoría más vacía en cada ciclo — tras este pase, Melee y Special (3/6 cada una) son las más cortas, seguidas de Sniper/Escopetas/LMG (4-3/8). Reutilizar la plantilla ya validada (config +, si la categoría lo necesita, una rama de viewmodel nueva). El resto de items P4 (4º mapa, música de menú/partida, CUSTOMIZE bloqueado en skins) y Fase 10 multijugador siguen en pausa mientras dure esta prioridad.
+~~P2 — Ampliación Melee/Special (3/6→5/6 cada una)~~ 🟢 completado. BO-74 WRECKER + BO-75 TALONS, BO-84 RAILDRIVER + BO-85 WASP. Lección de metodología: viewmodel de prueba sin `parent = player.camera` da un falso negativo en el hit de melee — corregido y re-verificado, ver `BULLET_OPS_PROGRESS.md`.
+
+**Siguiente**: seguir la ampliación de roster (FASE 4, P2) por la categoría más vacía en cada ciclo — tras este pase, DMR/Sniper (3/8 cada una) son las más cortas, seguidas de LMG/Escopetas (4/8). Reutilizar la plantilla ya validada (config +, si la categoría lo necesita, una rama de viewmodel nueva). El resto de items P4 (4º mapa, música de menú/partida, CUSTOMIZE bloqueado en skins) y Fase 10 multijugador siguen en pausa mientras dure esta prioridad.
