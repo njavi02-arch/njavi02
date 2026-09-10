@@ -54,6 +54,19 @@
             transform: scale(1.1);
             box-shadow: 0 0 25px rgba(0, 255, 0, 0.8);
         }
+        .menu-button.locked {
+            font-size: 0.75rem;
+            padding: 0.6rem 1rem;
+            background: #1a2a1a;
+            color: #3a5a3a;
+            border: 1px solid #2a3a2a;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+        .menu-button.locked:hover {
+            transform: none;
+            box-shadow: none;
+        }
         #hud {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -217,6 +230,18 @@
                 <button class="menu-button" id="playBtn">▶ PLAY</button>
                 <button class="menu-button" id="quitBtn">✕ QUIT</button>
             </div>
+
+            <!-- Fase 7 nav: these are genuinely disabled (not just styled to
+                 look locked), so a click literally does nothing - the game
+                 never claims a feature works when it doesn't. -->
+            <div style="margin: 0.6rem 0;">
+                <button class="menu-button locked" disabled title="Próximamente">🎒 LOADOUT</button>
+                <button class="menu-button locked" disabled title="Próximamente">🔫 WEAPONS</button>
+                <button class="menu-button locked" disabled title="Próximamente">🧑 OPERATORS</button>
+                <button class="menu-button locked" disabled title="Próximamente">🎨 CUSTOMIZE</button>
+                <button class="menu-button locked" disabled title="Próximamente">⚙ SETTINGS</button>
+            </div>
+            <div style="font-size: 0.65rem; color: #557755; margin-bottom: 0.4rem;">🔒 Próximamente</div>
 
             <div style="margin-top: 1rem; font-size: 0.75rem; color: #00aa00;">
                 <div id="modeDisplay">MODE: TEAM DEATHMATCH</div>
