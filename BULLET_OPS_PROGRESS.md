@@ -211,16 +211,18 @@ Mismo patrón que las 15 originales (ver tabla de inventario más abajo, que apl
 
 ## 🔧 SIGUIENTE PASO (para retomar la sesión)
 
-**Redirección de prioridad a mitad de sesión (instrucción explícita del usuario):** pasar a una "fase final de visual y gameplay" — base jugable sólida antes de más contenido. Nuevo orden de prioridad: 1) Mapas, 2) Movimiento del jugador, 3) Sprint, 4) Agacharse, 5) Slide, 6) ADS, 7) Retícula, 8) Cámara, 9) Armas/animaciones, 10) Sonidos, 11) Texturas/materiales, 12) Pulido visual, 13) Optimización, 14) Bugs/testing.
+**Historial de redirecciones de prioridad explícitas del usuario, en orden cronológico** (cada una sigue vigente sobre la anterior salvo que la nueva la reemplace):
+1. Fase visual/jugable — mapas, movimiento (sprint/crouch/slide), ADS, retícula, cámara. **Completada** (ver secciones "FASE FINAL" arriba: slide, pasos/salto/aterrizaje, sonido ambiente, iluminación por mapa, fix de retícula, cámara con altura de crouch + head bob, pose de sprint del arma).
+2. **Prioridad especial actual: sistema de armas grande y escalable.** Roster ampliado de 15 a 35 armas, 3 categorías nuevas (Rocket/Melee/Special) sobre una arquitectura `projectileType` (`bullet`/`melee`/`explosive`) que permite añadir armas nuevas casi solo con datos, sin tocar `WeaponController`. Ver sección "PRIORIDAD ESPECIAL" arriba para el detalle completo y las pruebas.
 
-Ya cubierto dentro de esta nueva prioridad (ver secciones "FASE FINAL" arriba): Slide completo y probado, pasos/salto/aterrizaje, sonido ambiente de mapa, fix de retícula (no reaccionaba a movimiento), y una pasada de regresión de extremo a extremo confirmando el flujo completo mover→esprintar→agachar→deslizar→sacar arma→apuntar→disparar→recargar→cambiar→moverse. Lo que queda de esta lista, en orden:
+Dentro de la prioridad de armas, ya cubierto: arquitectura de proyectiles, splash damage con caída por distancia y sin auto-daño, sonidos/efectos propios por categoría nueva, animación de inspección (`I`), sonido de equipar (bug de "definido pero nunca llamado", mismo patrón que `sprintToFireDelay`/`range`/`headshotMul` corregidos antes). Lo que queda, en orden de valor:
 
-1. **Mapas (prioridad máxima del usuario, aún pendiente en profundidad)**: el inventario de arriba ya identifica qué falta por elemento. Lo accionable sin assets externos: iluminación diferenciada por mapa (ahora mismo las 3 usan exactamente la misma luz plana), variación del sonido ambiente por mapa (interior/exterior), más props de cobertura procedurales para dar más textura visual sin necesitar modelos reales.
-2. **ADS real "a través de la mira"**: el pedido explícito es que se apunte de verdad, no solo zoom de cámara — la limitación conocida (geometría de bloque sin mira real, documentada en el código y en Decisiones Técnicas) sigue sin resolverse porque depende de un modelo real con mira modelada.
-3. **Cámara**: head bob ya existe (bob de viewmodel), pero no hay bob de cámara en sí (solo el arma se mueve) — revisar si el usuario lo espera en la cámara del jugador también.
-4. **Fase 7 (Menús)**: solo queda CUSTOMIZE bloqueado — de prioridad baja en el nuevo orden.
-5. **Fase 10 (Multiplayer)**: pausado — la redirección de prioridad no lo menciona, se retoma cuando la base visual/jugable esté más sólida.
-6. **Attachments**: sigue bloqueado en modelos 3D reales, sin cambios.
+1. **IA de bots con cuerpo a cuerpo/explosivos**: por ahora los bots solo usan armas `projectileType:'bullet'` (decisión documentada, no bloqueo) — darles lógica de rush cuerpo a cuerpo o de disparo con arco/splash es la extensión natural siguiente si se quiere más variedad en el combate contra bots.
+2. **Mapas — pulido restante**: props de cobertura procedurales adicionales, variación del sonido ambiente por mapa (interior/exterior, ahora mismo el mismo viento en los 3).
+3. **ADS real "a través de la mira"**: sigue bloqueado por la geometría placeholder sin mira modelada (documentado en Decisiones Técnicas) — aplica igual a las 35 armas, no es específico de ninguna nueva.
+4. **Attachments**: arquitectura lista (`ATTACHMENT_SLOTS`/`getEffectiveWeaponStats()`), sigue bloqueada en modelos 3D reales — ahora con 35 armas a las que aplicar attachments en cuanto haya assets.
+5. **Fase 7 (Menús)**: solo CUSTOMIZE sigue bloqueado.
+6. **Fase 10 (Multiplayer)**: pausado, sin cambios desde la redirección de prioridad.
 
 ---
 
