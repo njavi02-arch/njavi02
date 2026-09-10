@@ -1170,6 +1170,10 @@
                 this.kickOffset = new BABYLON.Vector3(0, 0, 0);
                 this.kickRotX = 0;
 
+                // Sprint-to-fire recovery: counts down cfg.sprintToFireDelay
+                // once sprinting stops, firing is locked out until it hits 0.
+                this.sprintRecoveryTimer = 0;
+
                 this.baseFov = player.camera.fov;
 
                 // Pre-build a viewmodel for every loadout weapon up front and
@@ -1228,6 +1232,19 @@
                 this.kickOffset.z += (0 - this.kickOffset.z) * Math.min(1, deltaTime * 10);
                 this.kickRotX += (0 - this.kickRotX) * Math.min(1, deltaTime * 10);
 
+                // Sprint-to-fire recovery: cfg.sprintToFireDelay existed on
+                // every weapon config from the start but was never actually
+                // read anywhere. While sprinting, the lockout stays pinned at
+                // the weapon's full delay; the moment sprint stops it counts
+                // down, and firing is refused until it reaches 0 (see the
+                // firing check below) - a heavier LMG/Shotgun takes longer to
+                // recover than an SMG/Pistol, matching their configured value.
+                if (movementState.sprinting) {
+                    this.sprintRecoveryTimer = cfg.sprintToFireDelay;
+                } else if (this.sprintRecoveryTimer > 0) {
+                    this.sprintRecoveryTimer = Math.max(0, this.sprintRecoveryTimer - deltaTime);
+                }
+
                 // --- Weapon switching input ---
                 let requestedIndex = null;
                 for (let i = 0; i < this.loadout.length; i++) {
@@ -1268,8 +1285,8 @@
                     this.startReload();
                 }
 
-                // --- Firing ---
-                if (inputs.mouseDown && this.fireCooldown <= 0 && this.state === 'IDLE') {
+                // --- Firing --- (also gated on sprintRecoveryTimer above)
+                if (inputs.mouseDown && this.fireCooldown <= 0 && this.state === 'IDLE' && this.sprintRecoveryTimer <= 0) {
                     if (this.currentAmmo.mag > 0) {
                         this.fire(movementState);
                     } else {
@@ -1673,6 +1690,7 @@
                 wc.recoilKickPitch = 0;
                 wc.recoilKickYaw = 0;
                 wc.spreadBloom = 0;
+                wc.sprintRecoveryTimer = 0;
                 this.camera.fov = wc.baseFov;
             }
 
