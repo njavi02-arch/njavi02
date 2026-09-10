@@ -449,6 +449,19 @@ Probado con Playwright: configs verificadas (categoría, `projectileType: 'explo
 
 Catálogo de armas confirma los 4 nombres nuevos bajo sus cabeceras correspondientes (MELEE, SPECIAL); total de `WEAPON_CONFIGS` confirmado en 45. Cero errores de consola nuevos en ninguna prueba.
 
+### Ampliación de roster: DMR y Sniper (3/8→5/8 cada una)
+
+Últimas dos categorías empatadas como más vacías tras el pase de Melee/Special. 4 armas nuevas:
+
+- **BO-37 FALCONER** (DMR, `subcategory: 'Suppressed Marksman Rifle'`): DMR de rango medio con mejor movilidad (`hipMul: 1.05`, la mejor de la categoría) y cargador más grande (12) que BO-32/35/36 — un perfil "más ágil" dentro del espectro DMR.
+- **BO-38 IRONCLAD** (DMR, `fireMode: 'full-auto'`): el único DMR totalmente automático del arsenal (cadencia 3.6, cargador 20) — lleva el concepto de "fusil de marcador" hasta su extremo de fuego sostenido, un nicho que ningún otro DMR ocupaba.
+- **BO-91 WHISPER-9** (Sniper, `subcategory: 'Suppressed Sniper Rifle'`): francotirador ligero/suprimido — menos daño (70) que el resto pero la mejor movilidad y el ADS más rápido (0.28s) de la categoría, un "sniper móvil" distinto de los 3 existentes (todos pesados).
+- **BO-92 COLOSSUS** (Sniper, `subcategory: 'Heavy Anti-Materiel Rifle'`): nuevo techo de daño del juego (140, headshotMul 2.7) — un paso más allá de BO-34 DEADEYE (120/240 de alcance, ya el más extremo antes de este pase) en pura potencia de asedio, con la peor movilidad y recarga más lenta (4.5s) de las 49 armas.
+
+**Segunda lección de metodología en esta misma tarea:** el primer intento de disparo de BO-92 (a 30 unidades, disparando desde la cadera) no impactó — comportamiento correcto del juego, no un bug: el spread de cadera de un sniper pesado (0.065) es deliberadamente muy impreciso sin apuntar. Un segundo intento con ADS real activado (`inputs.adsDown`, esperando la rampa completa de `adsAmount` a 1) tampoco impactó a corta distancia (5 unidades) pese al spread mínimo esperado en ADS (0.0008) — esta vez la causa fue que el bot objetivo, con su IA sin congelar, tuvo casi 800ms (rampa de ADS + margen) para alejarse de la línea de tiro antes del disparo real. Corregido reposicionando al bot justo antes de disparar (con la munición y el ADS ya listos de antemano) para minimizar la ventana de reacción de su IA: el disparo repetido impactó por -278 (140 de daño × 2.7 del multiplicador de headshot), confirmando que el arma funcionaba correctamente desde el principio en ambos intentos fallidos anteriores.
+
+Catálogo de armas confirma los 4 nombres nuevos bajo DMR y SNIPER; total de `WEAPON_CONFIGS` confirmado en 49. Cero errores de consola nuevos.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.

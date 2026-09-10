@@ -779,6 +779,42 @@
                 soundProfile: 'sniper', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             },
+            // DMR roster expansion (3/8 -> 5/8): a suppressed mid-range
+            // marksman rifle and a full-auto "marksman rifle taken to its
+            // logical extreme" - BO-38 is the only full-auto DMR, a
+            // distinct niche from the semi-auto BO-32/35/36/37.
+            BO37: {
+                id: 'BO37', name: 'BO-37 FALCONER', category: WEAPON_CATEGORY.DMR,
+                subcategory: 'Suppressed Marksman Rifle', ammoType: '6.5 Creedmoor', fireMode: 'semi-auto',
+                damage: 58, headshotMul: 1.9,
+                fireRate: 2.6, mag: 12, reserve: 48,
+                reloadTime: 2.1, reloadTimeEmpty: 2.5,
+                spread: { hip: 0.022, ads: 0.0016, moving: 0.014 },
+                range: 140, bulletSpeed: 1150,
+                ads: { time: 0.26, fovMul: 0.55, sensitivityMul: 0.55 },
+                movement: { hipMul: 1.05, adsMul: 0.55 },
+                sprintToFireDelay: 0.16,
+                recoil: { vertical: 0.022, horizontal: 0.009, cameraKick: 0.018, recoverySpeed: 6.5 },
+                sway: { amount: 0.012, speed: 1.5, bobAmount: 0.017, bobSpeed: 8.5 },
+                soundProfile: 'sniper', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO38: {
+                id: 'BO38', name: 'BO-38 IRONCLAD', category: WEAPON_CATEGORY.DMR,
+                subcategory: 'Automatic Marksman Rifle', ammoType: '7.62mm', fireMode: 'full-auto',
+                damage: 50, headshotMul: 1.75,
+                fireRate: 3.6, mag: 20, reserve: 80,
+                reloadTime: 2.4, reloadTimeEmpty: 2.8,
+                spread: { hip: 0.028, ads: 0.003, moving: 0.018 },
+                range: 125, bulletSpeed: 1050,
+                ads: { time: 0.22, fovMul: 0.65, sensitivityMul: 0.62 },
+                movement: { hipMul: 0.98, adsMul: 0.58 },
+                sprintToFireDelay: 0.15,
+                recoil: { vertical: 0.021, horizontal: 0.011, cameraKick: 0.018, recoverySpeed: 5.8 },
+                sway: { amount: 0.014, speed: 1.5, bobAmount: 0.019, bobSpeed: 9 },
+                soundProfile: 'sniper', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
             BO42: {
                 id: 'BO42', name: 'BO-42 RAMPART', category: WEAPON_CATEGORY.LMG,
                 damage: 24, headshotMul: 1.4,
@@ -992,6 +1028,45 @@
                 sprintToFireDelay: 0.4,
                 recoil: { vertical: 0.065, horizontal: 0.008, cameraKick: 0.06, recoverySpeed: 2.0 },
                 sway: { amount: 0.009, speed: 0.9, bobAmount: 0.014, bobSpeed: 6.5 },
+                soundProfile: 'sniper', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            // Sniper roster expansion (3/8 -> 5/8): BO-34 DEADEYE already
+            // occupied "heaviest hitter" (120 dmg / 240 range / 0.28 zoom),
+            // so these carve out two niches it didn't - a suppressed
+            // mobile sniper (best mobility/fastest ADS of the category,
+            // lower damage) and a step further than DEADEYE into pure
+            // siege-weapon territory (new damage ceiling, worst mobility
+            // and reload of any weapon in the game).
+            BO91: {
+                id: 'BO91', name: 'BO-91 WHISPER-9', category: WEAPON_CATEGORY.SNIPER,
+                subcategory: 'Suppressed Sniper Rifle', ammoType: '.300 Blackout Subsonic', fireMode: 'bolt-action',
+                damage: 70, headshotMul: 1.9,
+                fireRate: 1.3, mag: 6, reserve: 30,
+                reloadTime: 2.6, reloadTimeEmpty: 3.0,
+                spread: { hip: 0.04, ads: 0.001, moving: 0.024 },
+                range: 130, bulletSpeed: 950,
+                ads: { time: 0.28, fovMul: 0.55, sensitivityMul: 0.55 },
+                movement: { hipMul: 1.0, adsMul: 0.5 },
+                sprintToFireDelay: 0.2,
+                recoil: { vertical: 0.03, horizontal: 0.01, cameraKick: 0.025, recoverySpeed: 5.5 },
+                sway: { amount: 0.013, speed: 1.3, bobAmount: 0.017, bobSpeed: 8 },
+                soundProfile: 'sniper', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO92: {
+                id: 'BO92', name: 'BO-92 COLOSSUS', category: WEAPON_CATEGORY.SNIPER,
+                subcategory: 'Heavy Anti-Materiel Rifle', ammoType: '.50 BMG', fireMode: 'bolt-action',
+                damage: 140, headshotMul: 2.7,
+                fireRate: 0.45, mag: 3, reserve: 12,
+                reloadTime: 4.5, reloadTimeEmpty: 4.5,
+                spread: { hip: 0.065, ads: 0.0008, moving: 0.038 },
+                range: 230, bulletSpeed: 1550,
+                ads: { time: 0.6, fovMul: 0.25, sensitivityMul: 0.25 },
+                movement: { hipMul: 0.75, adsMul: 0.22 },
+                sprintToFireDelay: 0.45,
+                recoil: { vertical: 0.075, horizontal: 0.01, cameraKick: 0.065, recoverySpeed: 1.8 },
+                sway: { amount: 0.01, speed: 0.8, bobAmount: 0.013, bobSpeed: 6 },
                 soundProfile: 'sniper', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             },
@@ -1304,8 +1379,8 @@
                 soundProfile: 'special', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             }
-            // Full roster: 5 AR, 5 SMG, 4 Shotgun, 4 Sniper, 3 DMR, 4 LMG,
-            // 4 Pistol, 3 Revolver, 4 Rocket, 5 Melee, 5 Special = 45 total.
+            // Full roster: 5 AR, 5 SMG, 4 Shotgun, 5 Sniper, 5 DMR, 4 LMG,
+            // 4 Pistol, 3 Revolver, 4 Rocket, 5 Melee, 5 Special = 49 total.
         };
         // Backwards-compatible alias: Bot AI only ever reads the plain
         // numeric stats (damage/fireRate/mag/reserve/spread/speed), so it
