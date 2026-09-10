@@ -744,6 +744,41 @@
                 soundProfile: 'sniper', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             },
+            // DMR roster expansion (1/8 -> 3/8) - each weapon takes a
+            // different position along the AR<->Sniper spectrum DMRs sit
+            // on, rather than being a palette-swapped copy of BO-32.
+            BO35: {
+                id: 'BO35', name: 'BO-35 RIDGELINE', category: WEAPON_CATEGORY.DMR,
+                subcategory: 'Heavy Marksman Rifle', ammoType: '.300 Win Mag', fireMode: 'semi-auto',
+                damage: 78, headshotMul: 2.1,
+                fireRate: 1.6, mag: 8, reserve: 32,
+                reloadTime: 2.7, reloadTimeEmpty: 3.2,
+                spread: { hip: 0.036, ads: 0.0014, moving: 0.024 },
+                range: 175, bulletSpeed: 1300,
+                ads: { time: 0.34, fovMul: 0.45, sensitivityMul: 0.45 },
+                movement: { hipMul: 0.88, adsMul: 0.4 },
+                sprintToFireDelay: 0.26,
+                recoil: { vertical: 0.04, horizontal: 0.013, cameraKick: 0.034, recoverySpeed: 3.8 },
+                sway: { amount: 0.016, speed: 1.1, bobAmount: 0.016, bobSpeed: 7 },
+                soundProfile: 'sniper', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO36: {
+                id: 'BO36', name: 'BO-36 QUICKSILVER', category: WEAPON_CATEGORY.DMR,
+                subcategory: 'Battle Rifle', ammoType: '5.56mm', fireMode: 'semi-auto',
+                damage: 46, headshotMul: 1.8,
+                fireRate: 3.2, mag: 15, reserve: 60,
+                reloadTime: 2.0, reloadTimeEmpty: 2.4,
+                spread: { hip: 0.024, ads: 0.0026, moving: 0.015 },
+                range: 130, bulletSpeed: 1100,
+                ads: { time: 0.24, fovMul: 0.62, sensitivityMul: 0.6 },
+                movement: { hipMul: 1.0, adsMul: 0.55 },
+                sprintToFireDelay: 0.16,
+                recoil: { vertical: 0.024, horizontal: 0.01, cameraKick: 0.02, recoverySpeed: 5.5 },
+                sway: { amount: 0.013, speed: 1.4, bobAmount: 0.018, bobSpeed: 8.5 },
+                soundProfile: 'sniper', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
             BO42: {
                 id: 'BO42', name: 'BO-42 RAMPART', category: WEAPON_CATEGORY.LMG,
                 damage: 24, headshotMul: 1.4,
@@ -778,6 +813,41 @@
                 sprintToFireDelay: 0.08,
                 recoil: { vertical: 0.04, horizontal: 0.01, cameraKick: 0.034, recoverySpeed: 6 },
                 sway: { amount: 0.019, speed: 2.2, bobAmount: 0.023, bobSpeed: 11.5 },
+                soundProfile: 'pistol', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            // Revolver roster expansion (1/4 -> 3/4): a heavier long-barrel
+            // hand cannon and a faster double-action, so the category isn't
+            // just BO-52 alone at two different scales.
+            BO56: {
+                id: 'BO56', name: 'BO-56 PEACEMAKER', category: WEAPON_CATEGORY.REVOLVER,
+                subcategory: 'Hand Cannon', ammoType: '.500 Special', fireMode: 'single-action',
+                damage: 85, headshotMul: 2.6,
+                fireRate: 1.8, mag: 6, reserve: 30,
+                reloadTime: 2.6, reloadTimeEmpty: 3.0,
+                spread: { hip: 0.02, ads: 0.003, moving: 0.011 },
+                range: 65, bulletSpeed: 620,
+                ads: { time: 0.22, fovMul: 0.78, sensitivityMul: 0.72 },
+                movement: { hipMul: 1.05, adsMul: 0.78 },
+                sprintToFireDelay: 0.1,
+                recoil: { vertical: 0.055, horizontal: 0.012, cameraKick: 0.046, recoverySpeed: 4.5 },
+                sway: { amount: 0.022, speed: 1.9, bobAmount: 0.024, bobSpeed: 10 },
+                soundProfile: 'pistol', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO57: {
+                id: 'BO57', name: 'BO-57 SNAKEEYE', category: WEAPON_CATEGORY.REVOLVER,
+                subcategory: 'Double-Action Revolver', ammoType: '.357 Magnum', fireMode: 'double-action',
+                damage: 42, headshotMul: 1.8,
+                fireRate: 4.5, mag: 7, reserve: 42,
+                reloadTime: 1.4, reloadTimeEmpty: 1.7,
+                spread: { hip: 0.022, ads: 0.005, moving: 0.012 },
+                range: 45, bulletSpeed: 560,
+                ads: { time: 0.15, fovMul: 0.88, sensitivityMul: 0.82 },
+                movement: { hipMul: 1.2, adsMul: 0.88 },
+                sprintToFireDelay: 0.06,
+                recoil: { vertical: 0.028, horizontal: 0.014, cameraKick: 0.022, recoverySpeed: 7.5 },
+                sway: { amount: 0.02, speed: 2.4, bobAmount: 0.025, bobSpeed: 12 },
                 soundProfile: 'pistol', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             },

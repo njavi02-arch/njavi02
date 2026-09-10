@@ -5,7 +5,7 @@ Documento vivo de gestión autónoma del proyecto. Se actualiza en cada ciclo de
 **Leyenda de estado:** 🔴 Pendiente · 🟡 En progreso · 🟢 Completado · 🔧 Funciona pero necesita mejora · 🔒 Bloqueado (requiere intervención del usuario) · ⚠️ Tiene errores conocidos
 **Leyenda de prioridad:** P0 Crítico · P1 Muy importante · P2 Importante · P3 Pulido · P4 Opcional
 
-Última actualización: sesión autónoma en curso (expansión de armas 15→35 completada, ver `BULLET_OPS_PROGRESS.md`).
+Última actualización: sesión autónoma en curso (sistema de armas como prioridad principal; roster 39/82, ver `BULLET_OPS_PROGRESS.md`).
 
 ---
 
@@ -14,7 +14,7 @@ Documento vivo de gestión autónoma del proyecto. Se actualiza en cada ciclo de
 | Tarea | Estado | Prioridad | Notas |
 |---|---|---|---|
 | Arquitectura de archivo único (sin build step, compatible con Artifact) | 🟢 | — | Decisión técnica estable, no revisar sin motivo de peso |
-| `WEAPON_CONFIGS` como fuente única de datos de armas | 🟢 | — | 35 armas, escalable por config |
+| `WEAPON_CONFIGS` como fuente única de datos de armas | 🟢 | — | 39 armas (objetivo 82), escalable por config |
 | `WeaponController` (estado IDLE/RELOADING/SWITCHING/INSPECTING) | 🟢 | — | |
 | `SoundSynth` (audio 100% sintetizado, sin assets externos) | 🟢 | — | |
 | `SKIN_REGISTRY` / sistema de camuflajes | 🟢 | — | Solo 1 skin real + 1 patrón de prueba, ver FASE 4 |
@@ -54,7 +54,7 @@ Documento vivo de gestión autónoma del proyecto. Se actualiza en cada ciclo de
 | Feedback sonoro (impacto, headshot, kill confirm) | 🟢 | — | |
 | Daño en área / explosiones (splash) | 🟢 | — | Con caída por distancia, sin auto-daño |
 | Combate cuerpo a cuerpo | 🟢 | — | Reutiliza el pipeline de balas |
-| IA de bots: usa las 35 armas (incl. melee/explosivo) | 🟢 | — | |
+| IA de bots: usa el roster completo (incl. melee/explosivo) | 🟢 | — | |
 
 ## FASE 4 — ARMAS (SISTEMA PRINCIPAL DEL PROYECTO)
 
@@ -79,15 +79,15 @@ Cifras de BF4/BFV/BF2042 son aproximadas (rosters base, sin DLC/temporadas — v
 | Fusiles de asalto (AR) | ~10 | ~8 | 2 (base) | 12 | 🟡 5/12 |
 | Subfusiles (SMG) | ~9 | ~6 | 4 | 10 | 🟡 5/10 |
 | LMG | ~6 | ~5 | 2 | 8 | 🟡 4/8 |
-| DMR (fusil de marcador) | ~5 | ~4 (autocargante) | 3 | 8 | 🟡 1/8 — recién creada, ver abajo |
+| DMR (fusil de marcador) | ~5 | ~4 (autocargante) | 3 | 8 | 🟡 3/8 |
 | Francotiradores (Sniper, cerrojo) | ~6 | ~6 (cerrojo) | 3 | 8 | 🟡 3/8 |
 | Escopetas | ~5 | ~4 | 2 | 8 | 🟡 4/8 |
 | Pistolas | ~8 | ~6 | 3 | 6 | 🟡 4/6 |
-| Revólveres | (dentro de Pistolas en BF4/BFV) | (íd.) | (íd.) | 4 | 🟡 1/4 — recién creada, ver abajo |
+| Revólveres | (dentro de Pistolas en BF4/BFV) | (íd.) | (íd.) | 4 | 🟡 3/4 |
 | Lanzadores | ~4 | ~3 | ~3 | 6 | 🟡 2/6 |
 | Especiales/balísticos | — (no existe como categoría en ninguna entrega — decisión propia para armas futuristas/no convencionales) | — | — | 6 | 🟡 3/6 |
 | Cuerpo a cuerpo (cuchillos + contundentes) | 1 (cuchillo genérico) | 1 | 1 | 6 | 🟡 3/6 |
-| **Total** | ~65 (sin melee/gadgets) | ~48 | ~23 (base) | **82** | **35/82 (43%)** |
+| **Total** | ~65 (sin melee/gadgets) | ~48 | ~23 (base) | **82** | **39/82 (48%)** |
 
 El objetivo de 82 no es un techo — es la primera meta ambiciosa de una arquitectura ya probada para escalar a "cientos de armas" (cada arma nueva es una entrada de datos en `WEAPON_CONFIGS`, sin tocar `WeaponController`/`Bot`/HUD/crosshair). Cuando 82 esté cerca, se revisará si ampliar más aporta valor real de gameplay o solo relleno.
 
@@ -115,16 +115,16 @@ No es una copia de ninguna entrega — es la síntesis tras comparar las tres (v
 
 Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(🟢 código) → animaciones(🟢 procedurales: equipar/disparo/recarga/ADS/sprint/inspección) → disparo(🟢) → recarga(🟢) → sonidos(🟢 sintetizados) → retroceso(🟢) → ADS(🟢) → estadísticas(🟢) → efectos(🟢) → testing(🟢) → subcategory/ammoType/fireMode(🟡 2/35, resto pendiente de backfill). **Ninguna arma nueva necesita trabajo de gameplay** — lo único pendiente en las 35 (salvo el backfill de metadatos) es el mismo bloqueo de siempre: modelos 3D/texturas reales.
 
-### Roster actual por categoría (35 armas · 11 categorías)
+### Roster actual por categoría (39 armas · 11 categorías)
 
 - **AR** (5/12): BO-01 VANGUARD, BO-02 PREDATOR, BO-03 STORMCALLER, BO-04 SENTINEL, BO-05 OUTLAW
 - **SMG** (5/10): BO-11 RAZORBACK, BO-12 WHISPER, BO-13 ENFORCER, BO-14 VIPERBITE, BO-15 UNDERTOW
 - **Shotgun** (4/8): BO-21 BREACHER, BO-22 SCATTERGUN, BO-23 WIDOWMAKER, BO-24 SLUGSTORM
 - **Sniper** (3/8): BO-31 LONGSHOT, BO-33 WRAITHFANG, BO-34 DEADEYE
-- **DMR** (1/8): BO-32 PHANTOM
+- **DMR** (3/8): BO-32 PHANTOM, BO-35 RIDGELINE, BO-36 QUICKSILVER
 - **LMG** (4/8): BO-41 JUGGERNAUT, BO-42 RAMPART, BO-43 OVERLORD, BO-44 VANDAL
 - **Pistol** (4/6): BO-51 SIDEARM, BO-53 VIPER, BO-54 ECHO, BO-55 DUELIST
-- **Revolver** (1/4): BO-52 MAGNUM
+- **Revolver** (3/4): BO-52 MAGNUM, BO-56 PEACEMAKER, BO-57 SNAKEEYE
 - **Rocket** (2/6): BO-61 DEVASTATOR, BO-62 SKYFALL
 - **Melee** (3/6): BO-71 FANG, BO-72 KARAMBIT, BO-73 CLEAVER
 - **Special** (3/6): BO-81 SILENTBOLT, BO-82 THUMPER, BO-83 HORNET
@@ -288,8 +288,6 @@ Sección permanente, actualizada cada vez que se evalúa o conecta una herramien
 ~~P4 — Barra de progreso de carga real~~ 🟢 completado.
 ~~P4 — Configuración gráfica (calidad/resolución)~~ 🟢 completado.
 
-**Redirección de prioridad del usuario (esta sesión):** el sistema de armas pasa a ser prioridad P2 principal — ver FASE 4 reescrita arriba con tabla comparativa BF4/BFV/BF2042, taxonomía de 11 categorías y objetivo de roster (35/82). Completado en este ciclo: investigación + taxonomía + arquitectura de datos (`subcategory`/`ammoType`/`fireMode`) + 2 categorías nuevas sembradas (DMR con BO-32, Revolver con BO-52, cada una con viewmodel/crosshair/catálogo propios, probado con Playwright).
+**Redirección de prioridad del usuario (esta sesión):** el sistema de armas pasa a ser prioridad P2 principal — ver FASE 4 reescrita arriba con tabla comparativa BF4/BFV/BF2042, taxonomía de 11 categorías y objetivo de roster. Completado en este ciclo: investigación + taxonomía + arquitectura de datos (`subcategory`/`ammoType`/`fireMode`) + 2 categorías nuevas sembradas y ampliadas (DMR 1→3/8 con BO-32/35/36, Revolver 1→3/4 con BO-52/56/57), roster total 35→39/82.
 
-**Siguiente**: ampliación real del roster (FASE 4, P2) — añadir armas nuevas categoría por categoría empezando por las más vacías (DMR 1/8, Revolver 1/4, Rocket 2/6), reutilizando la plantilla ya validada (config + viewmodel silhouette si la categoría lo necesita). Música de menú/partida (P4) queda pausada mientras dure esta prioridad.
-
-**Siguiente**: revisar candidatos P4 restantes — un 4º mapa, música de menú/partida, CUSTOMIZE (bloqueado hasta tener más de 1 skin real). Ninguno es urgente; se evaluará cuál aporta más antes de implementar. Fase 10 multijugador sigue en pausa según la redirección de prioridad del usuario.
+**Siguiente**: seguir la ampliación de roster (FASE 4, P2) por la categoría más vacía en cada ciclo — tras este pase, Rocket (2/6) y Melee/Special (3/6 cada una) son las más cortas. Reutilizar la plantilla ya validada (config +, si la categoría lo necesita, una rama de viewmodel nueva). El resto de items P4 (4º mapa, música de menú/partida, CUSTOMIZE bloqueado en skins) y Fase 10 multijugador siguen en pausa mientras dure esta prioridad.

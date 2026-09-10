@@ -412,6 +412,19 @@ Sources:
 - [All Battlefield 2042 weapons to unlock in multiplayer | GamesRadar+](https://www.gamesradar.com/battlefield-2042-weapons-guns/)
 - [Battlefield 2042 - Internet Movie Firearms Database](https://www.imfdb.org/wiki/Battlefield_2042)
 
+### Ampliación de roster: DMR y Revolver (1/8→3/8, 1/4→3/4)
+
+Primer paso de la "ampliación masiva" que pide el índice maestro, empezando por las categorías más vacías tras la redirección de prioridad. 4 armas nuevas, cada una ocupando un rol distinto dentro de su categoría en vez de ser una copia con las cifras cambiadas:
+
+- **BO-35 RIDGELINE** (DMR, "Heavy Marksman Rifle"): extremo pesado del espectro DMR — más daño (78 vs 62 de BO-32) y más alcance (175) que BO-32, pero cadencia más lenta (1.6) y zoom más agresivo (fovMul 0.45) — casi un sniper semiautomático.
+- **BO-36 QUICKSILVER** (DMR, "Battle Rifle"): extremo ligero — menos daño (46) pero cadencia mucho mayor (3.2) y zoom más discreto (fovMul 0.62), leyendo casi como un AR de precisión.
+- **BO-56 PEACEMAKER** (Revolver, "Hand Cannon"): más pesado que BO-52 — 85 de daño, headshotMul 2.6, recarga más lenta (2.6s) y más retroceso vertical (0.055).
+- **BO-57 SNAKEEYE** (Revolver, "Double-Action Revolver", `fireMode: 'double-action'` — primer valor de `fireMode` distinto de `'single-action'`/`'semi-auto'`): el extremo rápido — menos daño por disparo (42) pero cadencia casi el doble (4.5) y recarga mucho más corta (1.4s).
+
+Las 4 usan las ramas de viewmodel/crosshair/catálogo ya creadas para DMR/REVOLVER en la tarea anterior — cero cambios de infraestructura necesarios, exactamente el resultado que se buscaba con esa arquitectura escalable.
+
+Probado con Playwright: las 4 configs verificadas con categoría/fireMode/daño correctos; total de `WEAPON_CONFIGS` confirmado en 39 (35 + 4); catálogo de armas confirma los 4 nombres visibles bajo sus cabeceras; BO-35 equipado en una partida real genera su viewmodel (6 mallas, rama DMR reutilizada) y dispara con normalidad (mag 8→7 tras un disparo real). Cero errores de consola nuevos.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.
