@@ -327,9 +327,9 @@
                 // Update spawn shield
                 this.spawnShieldTime = Math.max(0, this.spawnShieldTime - deltaTime);
 
-                // Camera rotation
-                this.yaw += inputs.mouseX * 0.003;
-                this.pitch -= inputs.mouseY * 0.003;
+                // Camera rotation (reduced sensitivity from 0.003 to 0.001)
+                this.yaw += inputs.mouseX * 0.001;
+                this.pitch -= inputs.mouseY * 0.001;
                 this.pitch = Math.max(-Math.PI / 2.5, Math.min(Math.PI / 2.5, this.pitch));
                 this.camera.rotation = new BABYLON.Vector3(this.pitch, this.yaw, 0);
 
