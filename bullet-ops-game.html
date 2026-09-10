@@ -380,10 +380,69 @@
                 soundProfile: 'pistol',
                 defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            // The three entries below prove the template scales to every
+            // remaining category without any structural change - same
+            // WeaponController, same viewmodel builder (already has a
+            // silhouette per category), same everything. Not part of any
+            // default loadout yet (see PLAYER CLASS) since equipping more
+            // than 3 weapons needs the loadout-selection UI from Fase 9,
+            // but they're fully playable already if added to a loadout.
+            BO21: {
+                id: 'BO21', name: 'BO-21 BREACHER', category: WEAPON_CATEGORY.SHOTGUN,
+                damage: 55, headshotMul: 1.3,
+                fireRate: 1.3, mag: 6, reserve: 30,
+                reloadTime: 2.6, reloadTimeEmpty: 3.2,
+                spread: { hip: 0.09, ads: 0.05, moving: 0.03 },
+                range: 20, bulletSpeed: 600,
+                ads: { time: 0.28, fovMul: 0.9, sensitivityMul: 0.85 },
+                movement: { hipMul: 0.95, adsMul: 0.8 },
+                sprintToFireDelay: 0.25,
+                recoil: { vertical: 0.05, horizontal: 0.02, cameraKick: 0.04, recoverySpeed: 5 },
+                sway: { amount: 0.02, speed: 1.3, bobAmount: 0.02, bobSpeed: 8 },
+                soundProfile: 'shotgun',
+                defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO31: {
+                id: 'BO31', name: 'BO-31 LONGSHOT', category: WEAPON_CATEGORY.SNIPER,
+                damage: 95, headshotMul: 2.2,
+                fireRate: 0.75, mag: 5, reserve: 25,
+                reloadTime: 3.0, reloadTimeEmpty: 3.6,
+                spread: { hip: 0.05, ads: 0.0008, moving: 0.03 },
+                range: 200, bulletSpeed: 1400,
+                ads: { time: 0.45, fovMul: 0.35, sensitivityMul: 0.35 },
+                movement: { hipMul: 0.9, adsMul: 0.3 },
+                sprintToFireDelay: 0.35,
+                // "recoil fuerte pero lento": a big kick that recovers much
+                // slower than the AR's (recoverySpeed 2.5 vs 7) - a sniper
+                // shot visibly punishes you for a while, unlike an SMG's
+                // quick, small, fast-recovering kicks below.
+                recoil: { vertical: 0.055, horizontal: 0.01, cameraKick: 0.05, recoverySpeed: 2.5 },
+                sway: { amount: 0.01, speed: 1.0, bobAmount: 0.015, bobSpeed: 7 },
+                soundProfile: 'sniper',
+                defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO41: {
+                id: 'BO41', name: 'BO-41 JUGGERNAUT', category: WEAPON_CATEGORY.LMG,
+                damage: 26, headshotMul: 1.4,
+                fireRate: 12, mag: 75, reserve: 225,
+                reloadTime: 3.4, reloadTimeEmpty: 4.0,
+                spread: { hip: 0.022, ads: 0.006, moving: 0.014 },
+                range: 90, bulletSpeed: 850,
+                ads: { time: 0.32, fovMul: 0.82, sensitivityMul: 0.65 },
+                movement: { hipMul: 0.82, adsMul: 0.5 },
+                sprintToFireDelay: 0.3,
+                recoil: { vertical: 0.016, horizontal: 0.01, cameraKick: 0.013, recoverySpeed: 6 },
+                sway: { amount: 0.02, speed: 1.2, bobAmount: 0.022, bobSpeed: 8 },
+                soundProfile: 'lmg',
+                defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             }
-            // SHOTGUN/SNIPER/LMG categories: the schema above already covers
-            // them (see WEAPON_CATEGORY), just not populated with entries
-            // yet - see BULLET_OPS_PROGRESS.md for the planned roster.
+            // Roster still open: 2 more AR, 2 more SMG, 1 more Shotgun,
+            // 1 more Sniper, 1 more LMG, 2 more Pistol to reach the planned
+            // 3/3/2/2/2/3 arsenal - see BULLET_OPS_PROGRESS.md.
         };
         // Backwards-compatible alias: Bot AI only ever reads the plain
         // numeric stats (damage/fireRate/mag/reserve/spread/speed), so it
