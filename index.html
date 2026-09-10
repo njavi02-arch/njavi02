@@ -181,53 +181,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babylonjs/7.0.0/babylon.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babylonjs/7.0.0/babylon.loaders.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js"></script>
-    <script type="module">
-        // BULLET OPS - FPS Prototype
-        // Core game initialization and main loop
-
-        import GameManager from './src/core/GameManager.js';
-        import InputManager from './src/core/InputManager.js';
-
-        const canvas = document.getElementById('renderCanvas');
-        const engine = new BABYLON.Engine(canvas, true, { antialias: true, preferWebGL2: true });
-
-        let gameManager = null;
-        let inputManager = null;
-
-        async function initGame() {
-            // Initialize game systems
-            gameManager = new GameManager(engine);
-            inputManager = new InputManager();
-
-            // Initialize game world
-            await gameManager.initialize();
-
-            // Render loop
-            engine.runRenderLoop(() => {
-                gameManager.update();
-                gameManager.scene.render();
-            });
-
-            // Resize handling
-            window.addEventListener('resize', () => {
-                engine.resize();
-            });
-        }
-
-        // Start menu
-        document.getElementById('playButton').addEventListener('click', async () => {
-            document.getElementById('mainMenu').classList.add('menu-hidden');
-            document.getElementById('gameHUD').classList.remove('menu-hidden');
-            await initGame();
-        });
-
-        document.getElementById('settingsButton').addEventListener('click', () => {
-            alert('Settings coming soon!');
-        });
-
-        document.getElementById('quitButton').addEventListener('click', () => {
-            alert('Thanks for playing BULLET OPS!');
-        });
-    </script>
+    <script src="/game.js"></script>
 </body>
 </html>

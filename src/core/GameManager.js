@@ -1,12 +1,7 @@
 // GameManager - Central coordinator for all game systems
 // Manages scene, physics, player, bots, and match state
 
-import { Match } from '../game/Match.js';
-import { MapBuilder } from '../map/MapBuilder.js';
-import { PhysicsManager } from './PhysicsManager.js';
-import { PlayerController } from '../player/PlayerController.js';
-import { BotManager } from '../ai/BotManager.js';
-import { UIManager } from '../ui/UIManager.js';
+const BABYLON = window.BABYLON;
 
 export default class GameManager {
     constructor(engine) {
