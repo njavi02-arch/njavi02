@@ -192,6 +192,28 @@ Revisión continua transversal. Elementos "de prototipo" detectados activamente 
 
 ---
 
+## 🔌 HERRAMIENTAS Y CONECTORES
+
+Sección permanente, actualizada cada vez que se evalúa o conecta una herramienta nueva. Formato: Nombre → función → coste → estado → permisos → utilidad → tareas dependientes.
+
+**Estados:** 🟢 Conectado · 🟡 Recomendado · 🔴 No disponible · 🔒 Requiere autorización del usuario · ⚪ No necesario
+
+| Herramienta | Función | Coste | Estado | Permisos | Utilidad | Tareas dependientes |
+|---|---|---|---|---|---|---|
+| Git (Bash) | Control de versiones, commit/push a `claude/bullet-ops-fps-game-jizk2k` | Gratis | 🟢 Conectado | Lectura/escritura del repo local, push al remoto | Imprescindible — único mecanismo de guardado/entrega del proyecto | Todas |
+| TaskCreate/TaskUpdate/TaskList (nativo) | Seguimiento de tareas de esta sesión | Gratis | 🟢 Conectado | Ninguno (interno) | Organiza el ciclo autónomo, visible para el usuario | Todas |
+| Playwright + Chromium local | Testing automatizado contra el juego real (no simulado) | Gratis | 🟢 Conectado | Ejecuta el juego en un navegador headless local | Único método de verificación usado toda la sesión — sin esto no se podría probar nada | Todas las que requieren verificación |
+| Artifact (publish/read) | Despliega el juego jugable con link compartible | Gratis (incluido) | 🟢 Conectado | Publica el contenido de `bullet-ops-game.html` | Es cómo el usuario prueba el juego sin abrir el repo | Cada publicación de build |
+| WebSearch / WebFetch (nativas) | Investigación externa (referencias de otros shooters, técnicas Babylon.js/WebGL, búsqueda de assets libres) | Gratis | 🟢 Conectado (disponibles, uso puntual según necesidad) | Solo lectura de la web pública | Puede acelerar decisiones de diseño de armas/gameplay y localizar assets CC0 reales | Mejora continua de armas/mapas; ver fila siguiente |
+| Bibliotecas de assets CC0 (Kenney.nl, Poly Haven, itch.io CC0) | Modelos 3D / texturas / sonidos gratuitos y sin restricción de licencia | Gratis (CC0) | 🟡 Recomendado — se intentará vía WebFetch antes de pedir cualquier cosa de pago | Solo descarga de archivos públicos | Es el camino realista para desbloquear "modelos 3D reales" y "texturas reales" (hoy 🔒), sin depender de un conector de generación 3D que no existe en este entorno | Modelos de armas, texturas de mapas, skins reales |
+| GitHub MCP (`mcp__github__*`) | Issues/PRs/CI en GitHub | Gratis (incluido) | ⚪ No necesario por ahora | Leer/escribir el repo vía API en vez de git directo | Git directo por Bash ya cubre todo lo que este proyecto necesita (no hay flujo de PR/review solicitado) | Ninguna actualmente |
+| Adobe for Creativity / Canva | Edición de imágenes, generación de diseños gráficos | Gratis con límites / planes de pago | ⚪ No necesario — evaluado y descartado | — | Son herramientas de diseño gráfico/marketing, no de generación de texturas PBR tileable ni modelos 3D de juego — no resuelven el bloqueo real de assets | — |
+| Generador de modelos 3D dedicado | Crear modelos GLB/OBJ reales para armas/personajes | Variable | 🔴 No disponible en este entorno | — | Ningún conector de los disponibles hace esto; sin él, "modelos 3D reales" sigue con placeholder procedural. Antes de recomendar algo de pago se agotará la vía CC0 gratuita de la fila de arriba | Modelos de las 35 armas |
+
+**Nota:** ningún conector nuevo es necesario en este momento para continuar el desarrollo — todo lo disponible (git, testing, tareas, Artifact, búsqueda web) ya está conectado y en uso. Si en algún ciclo futuro se detecta que una tarea concreta realmente lo requiere, se documentará aquí con la recomendación específica (gratuita primero) antes de pedir nada al usuario.
+
+---
+
 ## 🎯 PRÓXIMA TAREA (según este índice, sin esperar instrucción)
 
 ~~P1 — Sombras dinámicas~~ 🟢 completado.
