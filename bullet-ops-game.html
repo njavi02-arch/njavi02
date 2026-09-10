@@ -81,6 +81,17 @@
             font-weight: bold;
             letter-spacing: 2px;
         }
+        #shieldIndicator {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: #00ccff;
+            text-shadow: 0 0 10px rgba(0, 204, 255, 0.6);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
         #crosshair {
             position: absolute;
             top: 50%;
@@ -201,6 +212,7 @@
         <div id="crosshair"><div class="crosshair-dot"></div></div>
         <div id="hitmarker"></div>
         <div id="streakDisplay"></div>
+        <div id="shieldIndicator">🛡 SPAWN SHIELD</div>
         <div id="score">BLUE 0 - RED 0 | TIME 10:00</div>
         <div id="kills">KILLS: 0</div>
         <div id="health">❤ HP: <span id="hpVal">100</span></div>
@@ -297,6 +309,10 @@
                 this.currentMag = this.weapons[this.currentWeapon].mag;
                 this.currentReserve = this.weapons[this.currentWeapon].reserve;
 
+                // Respawn shield
+                this.spawnShieldTime = 0;
+                this.spawnShieldDuration = 3; // 3 seconds of protection
+
                 // Material
                 const mat = new BABYLON.StandardMaterial('playerMat', scene);
                 if (team === 'BLUE') mat.diffuse = new BABYLON.Color3(0, 0.3, 1);
@@ -307,6 +323,9 @@
 
             update(deltaTime, inputs) {
                 if (!this.isAlive) return;
+
+                // Update spawn shield
+                this.spawnShieldTime = Math.max(0, this.spawnShieldTime - deltaTime);
 
                 // Camera rotation
                 this.yaw += inputs.mouseX * 0.003;
@@ -425,6 +444,9 @@
 
             takeDamage(amount) {
                 if (!this.isAlive) return;
+                // Ignore damage if under spawn shield
+                if (this.spawnShieldTime > 0) return;
+
                 this.health -= amount;
                 // Screen shake on damage
                 if (this === player && this.health > 0) {
@@ -445,6 +467,7 @@
                 this.mesh.position = this.spawnPos.clone();
                 this.velocity = new BABYLON.Vector3(0, 0, 0);
                 this.isAlive = true;
+                this.spawnShieldTime = this.spawnShieldDuration; // Activate spawn shield
             }
 
             addKill() {
@@ -1025,6 +1048,15 @@
 
             // Update crosshair size based on weapon
             updateCrosshairSize();
+
+            // Spawn shield indicator
+            const shieldDisplay = document.getElementById('shieldIndicator');
+            if (player.spawnShieldTime > 0) {
+                shieldDisplay.style.opacity = '1';
+                shieldDisplay.textContent = `🛡 SHIELD ${player.spawnShieldTime.toFixed(1)}s`;
+            } else {
+                shieldDisplay.style.opacity = '0';
+            }
         }
 
         function addKillMsg(msg) {
