@@ -241,6 +241,11 @@ Resultado: `scene.meshes.length` se mantuvo exactamente constante (38) en las 8 
 
 Conclusión: sin fugas de mallas/materiales/texturas encontradas. No se requirió ningún cambio de código — esta tarea era de verificación, no de corrección.
 
+### Sonido dedicado de slide (P3 del índice maestro, completo)
+El slide no tenía efecto propio — sonaba en silencio salvo por lo que ya estuviera activo. Añadido `SoundSynth.playSlide()`: un barrido de ruido filtrado paso-bajo descendente (2400Hz → 300Hz a lo largo de 0.5s, vía la nueva opción `filterFreqEnd` de `noiseBurst()`, análoga a `freqEnd` que ya existía en `tone()`) que se lee como un "raspado" largo, más un golpe grave corto (160Hz → 70Hz) para la caída inicial a la posición agachada. Se dispara una sola vez, exactamente en el frame donde `isSliding` pasa de `false` a `true` (mismo punto donde ya se fijaban `slideTimer`/`slideDir`/`slideSpeed`) — no en bucle durante la duración del slide, así que se lee como un evento puntual y no como un drone.
+
+Probado con Playwright interceptando `SoundSynth.playSlide` para contar invocaciones durante un slide real disparado con inputs reales (`W`+`Shift` para esprintar, luego `C` para deslizar): exactamente 1 llamada registrada al iniciar el slide, y ninguna llamada adicional mientras `isSliding` seguía activo ni después de que terminara. Cero errores de consola.
+
 ### Mejora del ADS placeholder sin modelo real (P2 del índice maestro, completo)
 El bloqueo documentado era: sin un modelo de mira real, ADS solo podía ofrecer el zoom de FOV + un ligero desplazamente del arma placeholder, lo cual se leía débil especialmente en las 3 armas SNIPER (el caso donde más importa transmitir "estoy mirando por una mira"). Investigado qué mejora es viable puramente en pantalla (CSS/HUD), sin tocar geometría 3D:
 

@@ -121,7 +121,7 @@ Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(
 | Salto / aterrizaje | 🟢 | — |
 | Impactos (normal/headshot/explosión) | 🟢 | — |
 | Ambiente de mapa | 🟢 | — |
-| Sonido dedicado de slide | 🔴 | P3 |
+| Sonido dedicado de slide | 🟢 | — | Barrido de ruido descendente + golpe grave, disparado una vez al iniciar el slide |
 | Sonido de la UI/menús (click, hover, back) | 🟢 | — | Listener delegado, cubre las 7 pantallas de menú incl. botones dinámicos |
 | Música de menú/partida | 🔴 | P4 |
 
@@ -223,7 +223,8 @@ Sección permanente, actualizada cada vez que se evalúa o conecta una herramien
 ~~P2 — Sonido ambiente diferenciado por mapa~~ 🟢 completado.
 ~~P2 — Auditoría de rendimiento (draw calls, mallas huérfanas)~~ 🟢 completado. Sin fugas encontradas; ver `BULLET_OPS_PROGRESS.md`.
 ~~P2 — ADS "a través de la mira" (mejora sin modelo real)~~ 🟢 completado. Overlay de círculo de mira + retícula para SNIPER, viñeta para el resto.
+~~P3 — Sonido dedicado de slide~~ 🟢 completado.
 
 Ya no quedan tareas P0/P1/P2 abiertas en el índice en este momento. Todo lo restante es P3/P4 o está bloqueado en assets reales (🔒).
 
-**Siguiente**: sonido dedicado de slide (FASE 7, P3) — actualmente el slide no tiene su propio efecto de audio (reutiliza el resto del set de sonidos de movimiento). Después: segundo pase de props/detalle ambiental por mapa (FASE 6, P3).
+**Siguiente**: segundo pase de props/detalle ambiental por mapa (FASE 6, P3) — los 3 mapas tienen cobertura básica pero podrían beneficiarse de más variedad de props dispersos (no solo cajas/barriles repetidos) para romper la monotonía visual. Después: revisar candidatos P4 restantes (pantalla de carga con barra real, configuración gráfica, 4º mapa).

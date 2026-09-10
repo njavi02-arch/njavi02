@@ -1231,7 +1231,10 @@
                 source.buffer = buffer;
                 const filter = c.createBiquadFilter();
                 filter.type = opts.filterType || 'lowpass';
-                filter.frequency.value = opts.filterFreq || 2000;
+                filter.frequency.setValueAtTime(opts.filterFreq || 2000, c.currentTime);
+                if (opts.filterFreqEnd) {
+                    filter.frequency.exponentialRampToValueAtTime(Math.max(1, opts.filterFreqEnd), c.currentTime + duration);
+                }
                 const g = c.createGain();
                 g.gain.setValueAtTime(opts.gain || 0.4, c.currentTime);
                 g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + (opts.decay || 0.06));
@@ -1291,6 +1294,15 @@
             function playJump() { tone({ freq: 300, duration: 0.05, type: 'square', gain: 0.12, decay: 0.05, freqEnd: 500 }); }
             function playLand() { noiseBurst({ duration: 0.06, filterFreq: 600, gain: 0.15, decay: 0.05 }); }
             function playMeleeSwing() { noiseBurst({ duration: 0.08, filterFreq: 2200, gain: 0.18, decay: 0.07 }); }
+            // Slide: a longer scraping whoosh (filter sweeps from a bright
+            // opening transient down to a low rumble as the slide decays)
+            // plus a soft low thump for the initial drop into a crouch -
+            // played once at the moment a slide starts, not looped for its
+            // duration, so it reads as an event rather than a drone.
+            function playSlide() {
+                noiseBurst({ duration: 0.5, filterFreq: 2400, filterFreqEnd: 300, gain: 0.16, decay: 0.45 });
+                tone({ freq: 160, duration: 0.08, type: 'sine', gain: 0.14, decay: 0.08, freqEnd: 70 });
+            }
             function playUIClick() { tone({ freq: 750, duration: 0.03, type: 'sine', gain: 0.14, decay: 0.03, freqEnd: 550 }); }
             function playUIHover() { tone({ freq: 950, duration: 0.02, type: 'sine', gain: 0.06, decay: 0.02 }); }
             function playMeleeHit() { tone({ freq: 180, duration: 0.06, type: 'square', gain: 0.25, decay: 0.06, freqEnd: 80 }); }
@@ -1299,7 +1311,7 @@
                 tone({ freq: 60, duration: 0.3, type: 'sine', gain: 0.5, decay: 0.28, freqEnd: 25 });
             }
 
-            return { getCtx, setVolume, startAmbient, stopAmbient, playGunshot, playReloadClick, playMagOut, playMagIn, playEmpty, playEquip, playHitmarker, playHeadshot, playKillConfirm, playFootstep, playJump, playLand, playMeleeSwing, playMeleeHit, playExplosion, playUIClick, playUIHover };
+            return { getCtx, setVolume, startAmbient, stopAmbient, playGunshot, playReloadClick, playMagOut, playMagIn, playEmpty, playEquip, playHitmarker, playHeadshot, playKillConfirm, playFootstep, playJump, playLand, playMeleeSwing, playMeleeHit, playExplosion, playUIClick, playUIHover, playSlide };
         })();
 
         // ========== SKIN / CAMOUFLAGE SYSTEM ==========
@@ -2226,6 +2238,7 @@
                     this.slideTimer = this.slideDuration;
                     this.slideDir = moveDir.clone().normalize();
                     this.slideSpeed = this.slideStartSpeed;
+                    SoundSynth.playSlide();
                 }
 
                 if (this.isSliding) {
