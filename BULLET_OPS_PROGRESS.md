@@ -165,6 +165,40 @@ Tras la tanda de cambios de esta fase (slide, pasos/salto/aterrizaje, sonido amb
 
 Cero errores de consola en toda la cadena — confirma que ningún sistema se rompió con los cambios acumulados de esta fase.
 
+### PRIORIDAD ESPECIAL: Expansión masiva del arsenal — 15 → 35 armas, 3 categorías nuevas (completo)
+Nueva redirección explícita del usuario a mitad de sesión: sistema de armas "moderno, variado y visualmente atractivo, con una cantidad muy grande de armas", con arquitectura escalable a decenas/cientos sin programar cada arma desde cero, mínimo 9 categorías incluyendo cuerpo a cuerpo, lanzacohetes y armas especiales/balísticas.
+
+**Arquitectura nueva (el verdadero desbloqueo de escalabilidad pedido):** se añadió `projectileType` a `WEAPON_CONFIGS` (`'bullet'` por defecto / `'melee'` / `'explosive'`), manejado en un único método `WeaponController.fire()` en vez de tener lógica de combate separada y duplicada por categoría:
+- **`melee`**: no consume munición (mag/reserve nunca se decrementan), no tiene bloom/spread de apuntado. Se implementó reutilizando el mismo pipeline de balas: una "bala" casi invisible (diámetro 0.02) viaja a `meleeSpeed` (45 u/s) durante `meleeRange` (~2.2u) — se resuelve en 1-2 frames, indistinguible de un golpe instantáneo, pero reutiliza el 100% de la detección de impacto segmento-contra-cápsula ya probada, sin duplicar esa lógica.
+- **`explosive`**: la bala se marca `isExplosive` + `splashRadius`. Al impactar (o al agotar su alcance máximo sin impactar — así un cohete que falla igual explota en algún punto en vez de desaparecer en silencio) dispara `triggerExplosion()`: daño en área con caída lineal por distancia (100% en el centro, 0% en el borde del radio), **excluye explícitamente al propio disparador** (sin auto-daño), efecto visual dedicado más grande (`spawnExplosionEffect`, con destello + partículas más numerosas/duraderas que un impacto de bala normal) y sonido de explosión propio.
+- Se extrajo `awardKill()` (puntuación/killstreak/killfeed) como función compartida entre el impacto normal y el splash de explosión, para que una baja por explosión puntúe exactamente igual que una por bala — sin lógica duplicada que se pudiera desincronizar.
+
+**Categorías nuevas** (rangos de ID reservados siguiendo el esquema ya existente): `61-69 ROCKET`, `71-79 MELEE`, `81-89 SPECIAL`. Cada una con su propia silueta procedural en `buildWeaponViewmodel()` (tubo + cono trasero para Rocket, hoja+mango+guarda para Melee, cuerpo+brazos horizontales+mira para Special/ballesta) — mismo patrón ya usado para las 6 categorías originales.
+
+**Roster final: 35 armas** (antes 15):
+- AR 5, SMG 5, Pistol 5, Shotgun 4, Sniper 4, LMG 4 (2 más por categoría existente, cada una con un rol propio, no un clon renumerado — ej. BO-34 DEADEYE es el sniper más pesado del juego, BO-14 VIPERBITE la SMG más rápida e imprecisa).
+- **Rocket** (2): BO-61 DEVASTATOR (splash 7, daño 130), BO-62 SKYFALL (más ligero/rápido, splash 4.5, daño 85).
+- **Melee** (3): BO-71 FANG (equilibrado), BO-72 KARAMBIT (rápido/bajo daño), BO-73 CLEAVER (lento/casi un solo golpe).
+- **Special** (3): BO-81 SILENTBOLT (ballesta silenciosa, headshotMul 2.0), BO-82 THUMPER (lanzagranadas, explosive), BO-83 HORNET (pistola especial suprimida de alta cadencia).
+
+**Decisión técnica — IA de bots**: `pickRandomBotLoadout()` ahora filtra solo armas con `projectileType==='bullet'` para los bots, porque `Bot.fire()` no tiene (todavía) la rama de comportamiento melee/explosivo que sí tiene `WeaponController.fire()` — evita que un bot "dispare balas" con un cuchillo o lance cohetes sin splash. El jugador sí puede equipar cualquiera de las 35 desde la pantalla LOADOUT. Documentado como decisión, no como bloqueo: dar a los bots lógica de combate cuerpo a cuerpo/explosivos es trabajo futuro razonable, no urgente.
+
+**HUD**: `updateHUD()` ahora muestra "— / MELEE" en vez de un contador de munición engañoso para armas cuerpo a cuerpo (que nunca gastan munición). La pantalla WEAPONS incluye las 3 categorías nuevas en su orden de visualización (antes solo iteraba las 6 originales — las armas nuevas existían pero eran invisibles en el catálogo; corregido).
+
+**Probado con Playwright** (aislando cada prueba de la IA de otros bots para no contaminar resultados, lección aprendida de un fallo de aislamiento en la primera pasada de la prueba del cohete):
+- Roster: 35 armas totales, conteo exacto por categoría (5/5/5/4/4/4/2/3/3).
+- Melee (BO-71, daño 55): un golpe a un bot a 1.5u de distancia le quitó exactamente 55 de vida (100→45), la munición nunca cambió (sigue en 1), sin balas persistentes.
+- Cohete (BO-61, daño 130, splash 7): el bot en el centro del impacto quedó con salud negativa (~118 de daño, cerca del máximo), un segundo bot en el borde del radio (6.5u) recibió solo ~14 de daño (caída por distancia correcta), y **el propio jugador que disparó terminó con 100 de vida intacta** (sin auto-daño).
+- Catálogo WEAPONS: 9 cabeceras de categoría, 35 filas de arma.
+- Pantalla LOADOUT: cicla correctamente a través de las 35 armas (probado 20 pulsaciones seguidas sin error).
+- Regresión: BO-01 (arma original, categoría original) sigue disparando y dañando exactamente igual que antes de esta expansión (headshot de 42 = 28×1.5 exacto).
+- Cero errores de consola en todas las pruebas.
+
+**Nota sobre metodología de prueba**: la primera versión de la prueba de cuerpo a cuerpo dio un falso negativo (sin daño) por invocar `WeaponController.update()` manualmente en un bucle síncrono apretado sin dejar que el motor recalculara las matrices de transformación reales entre llamadas — corregido disparando a través del `inputs` global real y dejando que el bucle de renderizado auténtico (que ya corre vía `engine.runRenderLoop`) resolviera el disparo con transformaciones correctas, como ocurre en el juego real.
+
+### PENDIENTE — asset inventory de las 20 armas nuevas
+Mismo patrón que las 15 originales (ver tabla de inventario más abajo, que aplica igual por categoría): modelo procedural ✅, sonido sintetizado ✅ (incluye 2 nuevos: `rocket`/`special` en `GUNSHOT_PROFILES`, más `playMeleeSwing`/`playMeleeHit`/`playExplosion`), animaciones de disparo/recarga/cambio ✅ vía el mismo `WeaponController` — nada específico de las 20 armas nuevas queda pendiente que no estuviera ya pendiente para las 15 originales (modelos 3D reales, mira real, animación de inspección).
+
 ---
 
 ## 🔧 SIGUIENTE PASO (para retomar la sesión)

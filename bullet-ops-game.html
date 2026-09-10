@@ -389,7 +389,11 @@
         // Shotgun, 31-39 Sniper, 41-49 LMG, 51-59 Pistol.
         const WEAPON_CATEGORY = {
             AR: 'Assault Rifle', SMG: 'SMG', SHOTGUN: 'Shotgun',
-            SNIPER: 'Sniper', LMG: 'LMG', PISTOL: 'Pistol'
+            SNIPER: 'Sniper', LMG: 'LMG', PISTOL: 'Pistol',
+            // New categories: reserved id ranges 61-69 Rocket, 71-79 Melee,
+            // 81-89 Special/Ballistic, following the existing 01-09/11-19/
+            // 21-29/31-39/41-49/51-59 scheme.
+            ROCKET: 'Rocket Launcher', MELEE: 'Melee', SPECIAL: 'Special'
         };
 
         // ========== ATTACHMENTS FRAMEWORK (architecture only - not yet populated) ==========
@@ -671,9 +675,332 @@
                 sway: { amount: 0.021, speed: 2.5, bobAmount: 0.025, bobSpeed: 12.5 },
                 soundProfile: 'pistol', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            // ===== Roster expansion: 2 more per existing category (12), plus
+            // 3 brand-new categories (Rocket/Melee/Special, 8 weapons) - all
+            // built purely as WEAPON_CONFIGS entries against the exact same
+            // WeaponController/buildWeaponViewmodel/SoundSynth architecture
+            // as the original 15. Proves the system scales by config alone:
+            // adding weapon #16 through #35 required zero changes to the
+            // controller, only projectileType (see below) needed new
+            // handling once, for melee/explosive as a category of behavior,
+            // not per-weapon.
+            BO04: {
+                id: 'BO04', name: 'BO-04 SENTINEL', category: WEAPON_CATEGORY.AR,
+                damage: 30, headshotMul: 1.7,
+                fireRate: 9, mag: 20, reserve: 100,
+                reloadTime: 1.9, reloadTimeEmpty: 2.4,
+                spread: { hip: 0.012, ads: 0.0025, moving: 0.007 },
+                range: 105, bulletSpeed: 920,
+                ads: { time: 0.2, fovMul: 0.76, sensitivityMul: 0.6 },
+                movement: { hipMul: 0.98, adsMul: 0.52 },
+                sprintToFireDelay: 0.16,
+                recoil: { vertical: 0.021, horizontal: 0.007, cameraKick: 0.017, recoverySpeed: 7 },
+                sway: { amount: 0.012, speed: 1.5, bobAmount: 0.017, bobSpeed: 8.8 },
+                soundProfile: 'ar', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO05: {
+                id: 'BO05', name: 'BO-05 OUTLAW', category: WEAPON_CATEGORY.AR,
+                damage: 26, headshotMul: 1.45,
+                fireRate: 11, mag: 32, reserve: 128,
+                reloadTime: 1.8, reloadTimeEmpty: 2.2,
+                spread: { hip: 0.016, ads: 0.0035, moving: 0.009 },
+                range: 80, bulletSpeed: 860,
+                ads: { time: 0.18, fovMul: 0.82, sensitivityMul: 0.68 },
+                movement: { hipMul: 1.05, adsMul: 0.6 },
+                sprintToFireDelay: 0.12,
+                recoil: { vertical: 0.019, horizontal: 0.009, cameraKick: 0.015, recoverySpeed: 7.2 },
+                sway: { amount: 0.013, speed: 1.6, bobAmount: 0.018, bobSpeed: 9.2 },
+                soundProfile: 'ar', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO14: {
+                id: 'BO14', name: 'BO-14 VIPERBITE', category: WEAPON_CATEGORY.SMG,
+                damage: 15, headshotMul: 1.2,
+                fireRate: 24, mag: 18, reserve: 126,
+                reloadTime: 1.2, reloadTimeEmpty: 1.5,
+                spread: { hip: 0.04, ads: 0.015, moving: 0.02 },
+                range: 32, bulletSpeed: 360,
+                ads: { time: 0.12, fovMul: 0.89, sensitivityMul: 0.82 },
+                movement: { hipMul: 1.22, adsMul: 0.84 },
+                sprintToFireDelay: 0.05,
+                recoil: { vertical: 0.008, horizontal: 0.018, cameraKick: 0.007, recoverySpeed: 14 },
+                sway: { amount: 0.022, speed: 2.4, bobAmount: 0.026, bobSpeed: 12.5 },
+                soundProfile: 'smg', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO15: {
+                id: 'BO15', name: 'BO-15 UNDERTOW', category: WEAPON_CATEGORY.SMG,
+                damage: 22, headshotMul: 1.3,
+                fireRate: 15, mag: 35, reserve: 210,
+                reloadTime: 1.9, reloadTimeEmpty: 2.3,
+                spread: { hip: 0.022, ads: 0.007, moving: 0.011 },
+                range: 60, bulletSpeed: 420,
+                ads: { time: 0.16, fovMul: 0.84, sensitivityMul: 0.72 },
+                movement: { hipMul: 1.0, adsMul: 0.68 },
+                sprintToFireDelay: 0.11,
+                recoil: { vertical: 0.013, horizontal: 0.011, cameraKick: 0.01, recoverySpeed: 10.5 },
+                sway: { amount: 0.017, speed: 1.8, bobAmount: 0.019, bobSpeed: 9.8 },
+                soundProfile: 'smg', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO23: {
+                id: 'BO23', name: 'BO-23 WIDOWMAKER', category: WEAPON_CATEGORY.SHOTGUN,
+                damage: 70, headshotMul: 1.15,
+                fireRate: 1.0, mag: 2, reserve: 16,
+                reloadTime: 3.2, reloadTimeEmpty: 3.6,
+                spread: { hip: 0.1, ads: 0.06, moving: 0.035 },
+                range: 18, bulletSpeed: 580,
+                ads: { time: 0.3, fovMul: 0.92, sensitivityMul: 0.85 },
+                movement: { hipMul: 0.92, adsMul: 0.78 },
+                sprintToFireDelay: 0.28,
+                recoil: { vertical: 0.06, horizontal: 0.025, cameraKick: 0.05, recoverySpeed: 4.5 },
+                sway: { amount: 0.021, speed: 1.2, bobAmount: 0.021, bobSpeed: 7.5 },
+                soundProfile: 'shotgun', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO24: {
+                id: 'BO24', name: 'BO-24 SLUGSTORM', category: WEAPON_CATEGORY.SHOTGUN,
+                damage: 45, headshotMul: 1.6,
+                fireRate: 2.0, mag: 7, reserve: 35,
+                reloadTime: 2.4, reloadTimeEmpty: 3.0,
+                spread: { hip: 0.04, ads: 0.015, moving: 0.02 },
+                range: 45, bulletSpeed: 700,
+                ads: { time: 0.22, fovMul: 0.85, sensitivityMul: 0.75 },
+                movement: { hipMul: 0.98, adsMul: 0.75 },
+                sprintToFireDelay: 0.18,
+                recoil: { vertical: 0.03, horizontal: 0.012, cameraKick: 0.025, recoverySpeed: 6 },
+                sway: { amount: 0.018, speed: 1.4, bobAmount: 0.019, bobSpeed: 8 },
+                soundProfile: 'shotgun', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO33: {
+                id: 'BO33', name: 'BO-33 WRAITHFANG', category: WEAPON_CATEGORY.SNIPER,
+                damage: 75, headshotMul: 2.4,
+                fireRate: 1.1, mag: 6, reserve: 30,
+                reloadTime: 2.2, reloadTimeEmpty: 2.7,
+                spread: { hip: 0.04, ads: 0.001, moving: 0.022 },
+                range: 160, bulletSpeed: 1250,
+                ads: { time: 0.32, fovMul: 0.42, sensitivityMul: 0.4 },
+                movement: { hipMul: 1.0, adsMul: 0.42 },
+                sprintToFireDelay: 0.2,
+                recoil: { vertical: 0.04, horizontal: 0.012, cameraKick: 0.035, recoverySpeed: 3.5 },
+                sway: { amount: 0.012, speed: 1.1, bobAmount: 0.016, bobSpeed: 7.2 },
+                soundProfile: 'sniper', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO34: {
+                id: 'BO34', name: 'BO-34 DEADEYE', category: WEAPON_CATEGORY.SNIPER,
+                damage: 120, headshotMul: 2.6,
+                fireRate: 0.55, mag: 4, reserve: 20,
+                reloadTime: 3.4, reloadTimeEmpty: 4.0,
+                spread: { hip: 0.06, ads: 0.0006, moving: 0.035 },
+                range: 240, bulletSpeed: 1600,
+                ads: { time: 0.55, fovMul: 0.28, sensitivityMul: 0.28 },
+                movement: { hipMul: 0.82, adsMul: 0.25 },
+                sprintToFireDelay: 0.4,
+                recoil: { vertical: 0.065, horizontal: 0.008, cameraKick: 0.06, recoverySpeed: 2.0 },
+                sway: { amount: 0.009, speed: 0.9, bobAmount: 0.014, bobSpeed: 6.5 },
+                soundProfile: 'sniper', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO43: {
+                id: 'BO43', name: 'BO-43 OVERLORD', category: WEAPON_CATEGORY.LMG,
+                damage: 22, headshotMul: 1.3,
+                fireRate: 13, mag: 100, reserve: 300,
+                reloadTime: 4.2, reloadTimeEmpty: 4.8,
+                spread: { hip: 0.026, ads: 0.007, moving: 0.016 },
+                range: 95, bulletSpeed: 870,
+                ads: { time: 0.38, fovMul: 0.78, sensitivityMul: 0.6 },
+                movement: { hipMul: 0.75, adsMul: 0.42 },
+                sprintToFireDelay: 0.35,
+                recoil: { vertical: 0.017, horizontal: 0.011, cameraKick: 0.014, recoverySpeed: 5.5 },
+                sway: { amount: 0.022, speed: 1.1, bobAmount: 0.023, bobSpeed: 7.5 },
+                soundProfile: 'lmg', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO44: {
+                id: 'BO44', name: 'BO-44 VANDAL', category: WEAPON_CATEGORY.LMG,
+                damage: 24, headshotMul: 1.4,
+                fireRate: 11, mag: 45, reserve: 135,
+                reloadTime: 2.5, reloadTimeEmpty: 3.0,
+                spread: { hip: 0.02, ads: 0.005, moving: 0.012 },
+                range: 75, bulletSpeed: 800,
+                ads: { time: 0.24, fovMul: 0.84, sensitivityMul: 0.7 },
+                movement: { hipMul: 0.95, adsMul: 0.62 },
+                sprintToFireDelay: 0.2,
+                recoil: { vertical: 0.013, horizontal: 0.008, cameraKick: 0.01, recoverySpeed: 7 },
+                sway: { amount: 0.017, speed: 1.4, bobAmount: 0.019, bobSpeed: 9 },
+                soundProfile: 'lmg', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO54: {
+                id: 'BO54', name: 'BO-54 ECHO', category: WEAPON_CATEGORY.PISTOL,
+                damage: 18, headshotMul: 1.35,
+                fireRate: 14, mag: 24, reserve: 120,
+                reloadTime: 1.3, reloadTimeEmpty: 1.6,
+                spread: { hip: 0.03, ads: 0.011, moving: 0.015 },
+                range: 38, bulletSpeed: 480,
+                ads: { time: 0.15, fovMul: 0.88, sensitivityMul: 0.8 },
+                movement: { hipMul: 1.2, adsMul: 0.86 },
+                sprintToFireDelay: 0.05,
+                recoil: { vertical: 0.011, horizontal: 0.015, cameraKick: 0.009, recoverySpeed: 12 },
+                sway: { amount: 0.023, speed: 2.6, bobAmount: 0.026, bobSpeed: 13 },
+                soundProfile: 'pistol', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO55: {
+                id: 'BO55', name: 'BO-55 DUELIST', category: WEAPON_CATEGORY.PISTOL,
+                damage: 52, headshotMul: 2.0,
+                fireRate: 4.2, mag: 12, reserve: 60,
+                reloadTime: 1.4, reloadTimeEmpty: 1.7,
+                spread: { hip: 0.012, ads: 0.003, moving: 0.007 },
+                range: 60, bulletSpeed: 560,
+                ads: { time: 0.15, fovMul: 0.83, sensitivityMul: 0.75 },
+                movement: { hipMul: 1.1, adsMul: 0.8 },
+                sprintToFireDelay: 0.07,
+                recoil: { vertical: 0.022, horizontal: 0.006, cameraKick: 0.018, recoverySpeed: 9 },
+                sway: { amount: 0.016, speed: 2.0, bobAmount: 0.02, bobSpeed: 10.5 },
+                soundProfile: 'pistol', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            // ----- ROCKET (new category): explosive projectileType, splash
+            // damage via splashRadius (see triggerExplosion). -----
+            BO61: {
+                id: 'BO61', name: 'BO-61 DEVASTATOR', category: WEAPON_CATEGORY.ROCKET,
+                projectileType: 'explosive', splashRadius: 7,
+                damage: 130, headshotMul: 1.0,
+                fireRate: 0.6, mag: 1, reserve: 4,
+                reloadTime: 3.5, reloadTimeEmpty: 3.5,
+                spread: { hip: 0.02, ads: 0.005, moving: 0.015 },
+                range: 80, bulletSpeed: 55,
+                ads: { time: 0.35, fovMul: 0.85, sensitivityMul: 0.7 },
+                movement: { hipMul: 0.78, adsMul: 0.55 },
+                sprintToFireDelay: 0.4,
+                recoil: { vertical: 0.05, horizontal: 0.015, cameraKick: 0.045, recoverySpeed: 4 },
+                sway: { amount: 0.025, speed: 1.0, bobAmount: 0.025, bobSpeed: 7 },
+                soundProfile: 'rocket', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO62: {
+                id: 'BO62', name: 'BO-62 SKYFALL', category: WEAPON_CATEGORY.ROCKET,
+                projectileType: 'explosive', splashRadius: 4.5,
+                damage: 85, headshotMul: 1.0,
+                fireRate: 1.0, mag: 2, reserve: 8,
+                reloadTime: 2.6, reloadTimeEmpty: 2.6,
+                spread: { hip: 0.03, ads: 0.008, moving: 0.02 },
+                range: 65, bulletSpeed: 70,
+                ads: { time: 0.26, fovMul: 0.88, sensitivityMul: 0.75 },
+                movement: { hipMul: 0.88, adsMul: 0.65 },
+                sprintToFireDelay: 0.3,
+                recoil: { vertical: 0.035, horizontal: 0.012, cameraKick: 0.03, recoverySpeed: 5 },
+                sway: { amount: 0.02, speed: 1.3, bobAmount: 0.02, bobSpeed: 8 },
+                soundProfile: 'rocket', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            // ----- MELEE (new category): melee projectileType - instant
+            // short-range swing, no ammo, cooldown gated by fireRate. -----
+            BO71: {
+                id: 'BO71', name: 'BO-71 FANG', category: WEAPON_CATEGORY.MELEE,
+                projectileType: 'melee', meleeRange: 2.2, meleeSpeed: 45,
+                damage: 55, headshotMul: 1.0,
+                fireRate: 1.8, mag: 1, reserve: 1,
+                reloadTime: 0.01, reloadTimeEmpty: 0.01,
+                spread: { hip: 0.01, ads: 0.01, moving: 0.01 },
+                range: 2.2, bulletSpeed: 45,
+                ads: { time: 0.1, fovMul: 1.0, sensitivityMul: 1.0 },
+                movement: { hipMul: 1.25, adsMul: 1.15 },
+                sprintToFireDelay: 0.0,
+                recoil: { vertical: 0, horizontal: 0, cameraKick: 0.01, recoverySpeed: 20 },
+                sway: { amount: 0.01, speed: 2.0, bobAmount: 0.015, bobSpeed: 10 },
+                soundProfile: 'special', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO72: {
+                id: 'BO72', name: 'BO-72 KARAMBIT', category: WEAPON_CATEGORY.MELEE,
+                projectileType: 'melee', meleeRange: 1.9, meleeSpeed: 45,
+                damage: 38, headshotMul: 1.0,
+                fireRate: 3.2, mag: 1, reserve: 1,
+                reloadTime: 0.01, reloadTimeEmpty: 0.01,
+                spread: { hip: 0.01, ads: 0.01, moving: 0.01 },
+                range: 1.9, bulletSpeed: 45,
+                ads: { time: 0.1, fovMul: 1.0, sensitivityMul: 1.0 },
+                movement: { hipMul: 1.3, adsMul: 1.2 },
+                sprintToFireDelay: 0.0,
+                recoil: { vertical: 0, horizontal: 0, cameraKick: 0.008, recoverySpeed: 22 },
+                sway: { amount: 0.01, speed: 2.2, bobAmount: 0.015, bobSpeed: 11 },
+                soundProfile: 'special', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO73: {
+                id: 'BO73', name: 'BO-73 CLEAVER', category: WEAPON_CATEGORY.MELEE,
+                projectileType: 'melee', meleeRange: 2.4, meleeSpeed: 45,
+                damage: 95, headshotMul: 1.0,
+                fireRate: 1.1, mag: 1, reserve: 1,
+                reloadTime: 0.01, reloadTimeEmpty: 0.01,
+                spread: { hip: 0.01, ads: 0.01, moving: 0.01 },
+                range: 2.4, bulletSpeed: 45,
+                ads: { time: 0.1, fovMul: 1.0, sensitivityMul: 1.0 },
+                movement: { hipMul: 1.15, adsMul: 1.05 },
+                sprintToFireDelay: 0.0,
+                recoil: { vertical: 0, horizontal: 0, cameraKick: 0.014, recoverySpeed: 16 },
+                sway: { amount: 0.011, speed: 1.8, bobAmount: 0.016, bobSpeed: 9 },
+                soundProfile: 'special', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            // ----- SPECIAL (new category): ballistic weapons with unique
+            // flavor (silent crossbow, lobbed explosive, suppressed burst
+            // sidearm) - reuses 'bullet'/'explosive' projectileType, no new
+            // mechanic needed beyond what Rocket/standard guns already have. -----
+            BO81: {
+                id: 'BO81', name: 'BO-81 SILENTBOLT', category: WEAPON_CATEGORY.SPECIAL,
+                damage: 85, headshotMul: 2.0,
+                fireRate: 0.9, mag: 1, reserve: 12,
+                reloadTime: 1.8, reloadTimeEmpty: 1.8,
+                spread: { hip: 0.008, ads: 0.001, moving: 0.006 },
+                range: 70, bulletSpeed: 220,
+                ads: { time: 0.28, fovMul: 0.7, sensitivityMul: 0.55 },
+                movement: { hipMul: 1.0, adsMul: 0.65 },
+                sprintToFireDelay: 0.15,
+                recoil: { vertical: 0.015, horizontal: 0.004, cameraKick: 0.012, recoverySpeed: 8 },
+                sway: { amount: 0.011, speed: 1.3, bobAmount: 0.015, bobSpeed: 7.5 },
+                soundProfile: 'special', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO82: {
+                id: 'BO82', name: 'BO-82 THUMPER', category: WEAPON_CATEGORY.SPECIAL,
+                projectileType: 'explosive', splashRadius: 5,
+                damage: 70, headshotMul: 1.0,
+                fireRate: 0.8, mag: 1, reserve: 6,
+                reloadTime: 2.2, reloadTimeEmpty: 2.2,
+                spread: { hip: 0.02, ads: 0.006, moving: 0.014 },
+                range: 50, bulletSpeed: 38,
+                ads: { time: 0.3, fovMul: 0.86, sensitivityMul: 0.72 },
+                movement: { hipMul: 0.92, adsMul: 0.65 },
+                sprintToFireDelay: 0.22,
+                recoil: { vertical: 0.04, horizontal: 0.01, cameraKick: 0.035, recoverySpeed: 5.5 },
+                sway: { amount: 0.018, speed: 1.2, bobAmount: 0.02, bobSpeed: 7.8 },
+                soundProfile: 'rocket', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO83: {
+                id: 'BO83', name: 'BO-83 HORNET', category: WEAPON_CATEGORY.SPECIAL,
+                damage: 14, headshotMul: 1.4,
+                fireRate: 20, mag: 30, reserve: 150,
+                reloadTime: 1.4, reloadTimeEmpty: 1.7,
+                spread: { hip: 0.028, ads: 0.009, moving: 0.014 },
+                range: 45, bulletSpeed: 420,
+                ads: { time: 0.14, fovMul: 0.87, sensitivityMul: 0.78 },
+                movement: { hipMul: 1.08, adsMul: 0.75 },
+                sprintToFireDelay: 0.07,
+                recoil: { vertical: 0.008, horizontal: 0.012, cameraKick: 0.007, recoverySpeed: 13 },
+                sway: { amount: 0.018, speed: 2.0, bobAmount: 0.021, bobSpeed: 10.5 },
+                soundProfile: 'special', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             }
-            // Full 15-weapon roster complete: 3 AR, 3 SMG, 2 Shotgun,
-            // 2 Sniper, 2 LMG, 3 Pistol.
+            // Full 35-weapon roster: 5 AR, 5 SMG, 4 Shotgun, 4 Sniper, 4 LMG,
+            // 5 Pistol, 2 Rocket, 3 Melee, 3 Special = 35 total.
         };
         // Backwards-compatible alias: Bot AI only ever reads the plain
         // numeric stats (damage/fireRate/mag/reserve/spread/speed), so it
@@ -854,7 +1181,9 @@
                 pistol:  { noise: { duration: 0.07, filterFreq: 2000, gain: 0.45, decay: 0.06 }, thump: { freq: 110, decay: 0.05 } },
                 shotgun: { noise: { duration: 0.14, filterFreq: 1200, gain: 0.6,  decay: 0.12 }, thump: { freq: 70,  decay: 0.1 } },
                 sniper:  { noise: { duration: 0.16, filterFreq: 900,  gain: 0.65, decay: 0.14 }, thump: { freq: 55,  decay: 0.12 } },
-                lmg:     { noise: { duration: 0.10, filterFreq: 1600, gain: 0.55, decay: 0.09 }, thump: { freq: 85,  decay: 0.08 } }
+                lmg:     { noise: { duration: 0.10, filterFreq: 1600, gain: 0.55, decay: 0.09 }, thump: { freq: 85,  decay: 0.08 } },
+                rocket:  { noise: { duration: 0.22, filterFreq: 700,  gain: 0.7,  decay: 0.18 }, thump: { freq: 45,  decay: 0.16 } },
+                special: { noise: { duration: 0.06, filterFreq: 3200, gain: 0.3,  decay: 0.05 }, thump: { freq: 500, decay: 0.03 } }
             };
 
             function playGunshot(profileKey) {
@@ -873,8 +1202,14 @@
             function playFootstep(crouched) { noiseBurst({ duration: crouched ? 0.03 : 0.045, filterFreq: crouched ? 700 : 900, gain: crouched ? 0.06 : 0.1, decay: 0.03 }); }
             function playJump() { tone({ freq: 300, duration: 0.05, type: 'square', gain: 0.12, decay: 0.05, freqEnd: 500 }); }
             function playLand() { noiseBurst({ duration: 0.06, filterFreq: 600, gain: 0.15, decay: 0.05 }); }
+            function playMeleeSwing() { noiseBurst({ duration: 0.08, filterFreq: 2200, gain: 0.18, decay: 0.07 }); }
+            function playMeleeHit() { tone({ freq: 180, duration: 0.06, type: 'square', gain: 0.25, decay: 0.06, freqEnd: 80 }); }
+            function playExplosion() {
+                noiseBurst({ duration: 0.35, filterFreq: 500, gain: 0.8, decay: 0.3 });
+                tone({ freq: 60, duration: 0.3, type: 'sine', gain: 0.5, decay: 0.28, freqEnd: 25 });
+            }
 
-            return { getCtx, setVolume, startAmbient, stopAmbient, playGunshot, playReloadClick, playMagOut, playMagIn, playEmpty, playEquip, playHitmarker, playHeadshot, playKillConfirm, playFootstep, playJump, playLand };
+            return { getCtx, setVolume, startAmbient, stopAmbient, playGunshot, playReloadClick, playMagOut, playMagIn, playEmpty, playEquip, playHitmarker, playHeadshot, playKillConfirm, playFootstep, playJump, playLand, playMeleeSwing, playMeleeHit, playExplosion };
         })();
 
         // ========== SKIN / CAMOUFLAGE SYSTEM ==========
@@ -1088,6 +1423,25 @@
                 addBox('stock', { width: 0.07, height: 0.09, depth: 0.25 }, new BABYLON.Vector3(0, -0.02, -0.38));
                 addBox('grip', { width: 0.06, height: 0.16, depth: 0.06 }, new BABYLON.Vector3(0, -0.12, -0.1));
                 muzzleZ = 0.65;
+            } else if (category === WEAPON_CATEGORY.ROCKET) {
+                addCylinder('tube', { diameter: 0.14, height: 0.7 }, new BABYLON.Vector3(0, 0, 0.1), new BABYLON.Vector3(Math.PI / 2, 0, 0));
+                addCylinder('rearCone', { diameterTop: 0.16, diameterBottom: 0.09, height: 0.16 }, new BABYLON.Vector3(0, 0, -0.32), new BABYLON.Vector3(Math.PI / 2, 0, 0));
+                addBox('sight', { width: 0.02, height: 0.08, depth: 0.1 }, new BABYLON.Vector3(0, 0.1, 0.15));
+                addBox('grip', { width: 0.06, height: 0.16, depth: 0.06 }, new BABYLON.Vector3(0, -0.13, -0.12));
+                addBox('rearGrip', { width: 0.06, height: 0.14, depth: 0.06 }, new BABYLON.Vector3(0, -0.12, -0.34));
+                muzzleZ = 0.62;
+            } else if (category === WEAPON_CATEGORY.MELEE) {
+                addBox('handle', { width: 0.035, height: 0.035, depth: 0.14 }, new BABYLON.Vector3(0, 0, -0.05));
+                addBox('guard', { width: 0.08, height: 0.02, depth: 0.02 }, new BABYLON.Vector3(0, 0, 0.04));
+                addBox('blade', { width: 0.018, height: 0.05, depth: 0.24 }, new BABYLON.Vector3(0, 0, 0.18));
+                muzzleZ = 0.32;
+            } else if (category === WEAPON_CATEGORY.SPECIAL) {
+                addBox('body', { width: 0.06, height: 0.06, depth: 0.3 }, new BABYLON.Vector3(0, 0, 0));
+                addBox('limbs', { width: 0.42, height: 0.02, depth: 0.03 }, new BABYLON.Vector3(0, 0, 0.14));
+                addBox('scope', { width: 0.03, height: 0.04, depth: 0.1 }, new BABYLON.Vector3(0, 0.06, -0.02));
+                addBox('stock', { width: 0.05, height: 0.08, depth: 0.2 }, new BABYLON.Vector3(0, -0.02, -0.24));
+                addBox('grip', { width: 0.05, height: 0.14, depth: 0.05 }, new BABYLON.Vector3(0, -0.1, -0.08));
+                muzzleZ = 0.34;
             } else {
                 addBox('receiver', { width: 0.08, height: 0.09, depth: 0.4 }, new BABYLON.Vector3(0, 0, 0));
                 addBox('grip', { width: 0.055, height: 0.15, depth: 0.055 }, new BABYLON.Vector3(0, -0.11, -0.1));
@@ -1153,6 +1507,38 @@
             ps.updateSpeed = 0.02;
             ps.start();
             setTimeout(() => { ps.stop(); setTimeout(() => ps.dispose(), 350); }, 60);
+        }
+
+        // Bigger, longer-lived burst for rocket/grenade splash damage - a
+        // plain spawnImpactEffect() reads as a normal bullet impact, which
+        // undersells an actual explosion. A brief bright flash sphere (same
+        // shared-material pattern as spawnMuzzleFlash) plus a wider/denser
+        // particle burst than any bullet impact.
+        function spawnExplosionEffect(scene, position) {
+            const flash = BABYLON.MeshBuilder.CreateSphere('explosionFlash_' + Math.random(), { diameter: 1.2, segments: 8 }, scene);
+            flash.position = position.clone();
+            flash.isPickable = false;
+            flash.material = getSharedMuzzleFlashMaterial(scene);
+            setTimeout(() => flash.dispose(), 90);
+
+            const ps = new BABYLON.ParticleSystem('explosion_' + Math.random(), 60, scene);
+            ps.particleTexture = getSharedParticleTexture(scene);
+            ps.emitter = position;
+            ps.minEmitBox = BABYLON.Vector3.Zero();
+            ps.maxEmitBox = BABYLON.Vector3.Zero();
+            ps.color1 = new BABYLON.Color4(1, 0.7, 0.2, 1);
+            ps.color2 = new BABYLON.Color4(0.9, 0.3, 0.1, 1);
+            ps.colorDead = new BABYLON.Color4(0.2, 0.1, 0.05, 0);
+            ps.minSize = 0.15; ps.maxSize = 0.4;
+            ps.minLifeTime = 0.3; ps.maxLifeTime = 0.6;
+            ps.emitRate = 400;
+            ps.direction1 = new BABYLON.Vector3(1, 1, 1);
+            ps.direction2 = new BABYLON.Vector3(-1, -1, -1);
+            ps.minEmitPower = 3; ps.maxEmitPower = 7;
+            ps.gravity = new BABYLON.Vector3(0, -4, 0);
+            ps.updateSpeed = 0.02;
+            ps.start();
+            setTimeout(() => { ps.stop(); setTimeout(() => ps.dispose(), 700); }, 100);
         }
 
         // ========== WEAPON CONTROLLER ==========
@@ -1325,14 +1711,15 @@
                 this.adsAmount = Math.max(0, Math.min(1, this.adsAmount));
                 this.player.camera.fov = this.baseFov * (1 - this.adsAmount * (1 - this.currentConfig.ads.fovMul));
 
-                // --- Reload input ---
-                if (inputs.keys['r'] && this.state === 'IDLE' && this.currentAmmo.mag < cfg.mag && this.currentAmmo.reserve > 0) {
+                // --- Reload input --- (melee never reloads - it doesn't use ammo)
+                const isMelee = cfg.projectileType === 'melee';
+                if (!isMelee && inputs.keys['r'] && this.state === 'IDLE' && this.currentAmmo.mag < cfg.mag && this.currentAmmo.reserve > 0) {
                     this.startReload();
                 }
 
                 // --- Firing --- (also gated on sprintRecoveryTimer above)
                 if (inputs.mouseDown && this.fireCooldown <= 0 && this.state === 'IDLE' && this.sprintRecoveryTimer <= 0) {
-                    if (this.currentAmmo.mag > 0) {
+                    if (isMelee || this.currentAmmo.mag > 0) {
                         this.fire(movementState);
                     } else {
                         // Dry-fire click, throttled to the weapon's own fire
@@ -1345,36 +1732,55 @@
                 this.updateViewmodelTransform(deltaTime, inputs, movementState, cfg);
             }
 
+            // Handles every projectileType through one path instead of a
+            // separate melee-only method: melee is just a bullet with a
+            // very high bulletSpeed and short range (cfg.meleeRange), so it
+            // resolves within a frame or two using the exact same segment-
+            // vs-capsule hit detection as every gun - no duplicated combat/
+            // scoring logic to keep in sync. Explosive tags the bullet so
+            // updateGame() routes it to triggerExplosion() instead of
+            // single-target damage.
             fire(movementState) {
                 const cfg = this.currentConfig;
                 this.fireCooldown = 1 / cfg.fireRate;
-                this.currentAmmo.mag--;
+                const projectileType = cfg.projectileType || 'bullet';
+                const isMelee = projectileType === 'melee';
+                const isExplosive = projectileType === 'explosive';
+
+                if (!isMelee) this.currentAmmo.mag--;
 
                 const pitch = this.getEffectivePitch();
                 const yaw = this.getEffectiveYaw();
                 const direction = new BABYLON.Vector3(Math.sin(yaw), Math.sin(pitch), Math.cos(yaw));
-                const spread = this.getEffectiveSpread(movementState);
-                direction.addInPlace(new BABYLON.Vector3((Math.random() - 0.5) * spread, (Math.random() - 0.5) * spread, (Math.random() - 0.5) * spread));
+                // Melee doesn't use hip/ADS spread - it's a fixed-range swing,
+                // not an aimed projectile.
+                const spread = isMelee ? 0 : this.getEffectiveSpread(movementState);
+                if (spread > 0) {
+                    direction.addInPlace(new BABYLON.Vector3((Math.random() - 0.5) * spread, (Math.random() - 0.5) * spread, (Math.random() - 0.5) * spread));
+                }
                 direction.normalize();
 
                 const muzzleWorldPos = this.currentViewmodel.muzzle.getAbsolutePosition();
 
-                const bullet = BABYLON.MeshBuilder.CreateSphere('bullet', { diameter: 0.1 }, this.scene);
-                bullet.position = muzzleWorldPos.add(direction.scale(0.3));
+                const bullet = BABYLON.MeshBuilder.CreateSphere('bullet', { diameter: isMelee ? 0.02 : (isExplosive ? 0.16 : 0.1) }, this.scene);
+                bullet.position = muzzleWorldPos.add(direction.scale(isMelee ? 0.05 : 0.3));
                 bullet.material = getSharedBulletMaterial(this.scene, true);
                 bullet.owner = this.player;
                 bullet.damage = cfg.damage;
                 bullet.headshotMul = cfg.headshotMul;
-                bullet.velocity = direction.scale(cfg.bulletSpeed);
+                bullet.velocity = direction.scale(isMelee ? (cfg.meleeSpeed || 40) : cfg.bulletSpeed);
                 bullet.life = 10;
                 // cfg.range existed per-weapon from the start but was never
                 // enforced - every bullet traveled identically far regardless
                 // of weapon, so a Sniper's 200-unit range and an SMG's 55-unit
                 // range meant nothing. Bullets now expire silently (no hit
                 // effects, just gone) once they've traveled their weapon's
-                // configured range.
-                bullet.maxRange = cfg.range;
+                // configured range - for melee, cfg.range doubles as the
+                // swing's reach.
+                bullet.maxRange = isMelee ? (cfg.meleeRange || 2.2) : cfg.range;
                 bullet.distanceTraveled = 0;
+                bullet.isExplosive = isExplosive;
+                bullet.splashRadius = cfg.splashRadius || 0;
                 bullets.push(bullet);
 
                 // Recoil: pattern kick on aim/accuracy (decays per
@@ -1382,12 +1788,16 @@
                 // viewmodel itself + temporary accuracy bloom.
                 this.recoilKickPitch += cfg.recoil.vertical;
                 this.recoilKickYaw += (Math.random() - 0.5) * cfg.recoil.horizontal;
-                this.spreadBloom = Math.min(spread * 2.5, this.spreadBloom + spread * 0.6);
+                if (spread > 0) this.spreadBloom = Math.min(spread * 2.5, this.spreadBloom + spread * 0.6);
                 this.kickOffset.z -= cfg.recoil.cameraKick * 1.4;
                 this.kickRotX -= cfg.recoil.cameraKick * 3;
 
-                spawnMuzzleFlash(this.scene, muzzleWorldPos, direction);
-                SoundSynth.playGunshot(cfg.soundProfile);
+                if (isMelee) {
+                    SoundSynth.playMeleeSwing();
+                } else {
+                    spawnMuzzleFlash(this.scene, muzzleWorldPos, direction);
+                    SoundSynth.playGunshot(cfg.soundProfile);
+                }
             }
 
             startReload() {
@@ -1895,7 +2305,16 @@
         // weapon (including the 9 added after the original fixed 3-bot
         // loadout) has an equal chance of showing up.
         function pickRandomBotLoadout() {
-            const ids = Object.keys(WEAPON_CONFIGS);
+            // Bot.fire() only ever builds a plain ranged bullet (it doesn't
+            // branch on projectileType the way WeaponController.fire() does
+            // for the player) - melee/explosive weapons would visually fire
+            // ordinary bullets instead of swinging/exploding, so bots draw
+            // only from the ranged-bullet categories for now. The player can
+            // still equip any of the 35 weapons via the Loadout screen.
+            const ids = Object.keys(WEAPON_CONFIGS).filter(id => {
+                const t = WEAPON_CONFIGS[id].projectileType || 'bullet';
+                return t === 'bullet';
+            });
             for (let i = ids.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [ids[i], ids[j]] = [ids[j], ids[i]];
@@ -2644,6 +3063,60 @@
         }
 
         // ========== GAME UPDATE ==========
+        // Shared kill-scoring/killfeed logic - factored out so both a
+        // normal direct hit and an explosive's splash-damage pass (which
+        // can kill several entities in one blast) apply score/streak/
+        // killfeed consistently instead of duplicating this block.
+        function awardKill(owner, victim, isHeadshot) {
+            owner.addKill();
+            if (owner === player) {
+                showStreakMessage(player.kills);
+                SoundSynth.playKillConfirm();
+            }
+            if (gameMode === 'TDM') {
+                if (owner.team === 'BLUE') blueScore++; else redScore++;
+            }
+            let msg = '';
+            if (gameMode === 'FFA') {
+                const killerName = owner === player ? `👤 ${player.callsign}` : 'BOT';
+                msg = `${killerName} eliminated opponent`;
+            } else {
+                msg = `${owner.team} PLAYER Eliminated ${victim.team}`;
+            }
+            if (isHeadshot) msg += ' 💥';
+            if (owner.kills === 3) msg = '🔥 KILLING SPREE!';
+            else if (owner.kills === 5) msg = '⚡ RAMPAGE!';
+            else if (owner.kills === 10) msg = '💀 UNSTOPPABLE!';
+            else if (owner.kills % 5 === 0 && owner.kills > 0) msg = `${owner === player ? '👤' : '🤖'} ON ${owner.kills} KILLSTREAK`;
+            addKillMsg(msg);
+        }
+
+        // Explosive splash damage (rockets/grenade launcher): every living
+        // entity within bullet.splashRadius of the impact takes damage that
+        // falls off linearly with distance (full damage at the center, zero
+        // at the radius edge). The bullet's own owner is excluded - no
+        // self-damage, kept simple rather than adding a "too close" penalty
+        // mechanic nobody asked for. Reuses awardKill() so a kill via splash
+        // scores/streaks/killfeeds exactly like a direct hit.
+        function triggerExplosion(position, bullet) {
+            const radius = bullet.splashRadius || 6;
+            spawnExplosionEffect(scene, position);
+            SoundSynth.playExplosion();
+            for (const entity of [player, ...bots]) {
+                if (!entity || !entity.isAlive || entity === bullet.owner) continue;
+                const dist = BABYLON.Vector3.Distance(entity.mesh.position, position);
+                if (dist > radius) continue;
+                const falloff = 1 - dist / radius;
+                const dmg = bullet.damage * falloff;
+                if (dmg <= 0) continue;
+                entity.takeDamage(dmg);
+                if (bullet.owner === player) showHitmarker();
+                if (bullet.owner && entity.health <= 0) {
+                    awardKill(bullet.owner, entity, false);
+                }
+            }
+        }
+
         function updateGame() {
             const deltaTime = engine.getDeltaTime() / 1000;
 
@@ -2673,9 +3146,15 @@
                 bullet.position.addInPlace(bullet.velocity.scale(deltaTime));
                 bullet.life -= deltaTime;
                 bullet.distanceTraveled += BABYLON.Vector3.Distance(prevPos, bullet.position);
-                // Expire silently (no hit effects) once past the weapon's
-                // configured range - see bullet.maxRange at creation.
-                if (bullet.distanceTraveled > bullet.maxRange) bullet.life = -1;
+                // Expire once past the weapon's configured range - see
+                // bullet.maxRange at creation. Silent for a normal bullet;
+                // an explosive self-detonates at its impact/max-range point
+                // instead of just vanishing, so a rocket that never hits
+                // anyone still goes off somewhere.
+                if (bullet.distanceTraveled > bullet.maxRange) {
+                    if (bullet.isExplosive) triggerExplosion(bullet.position, bullet);
+                    bullet.life = -1;
+                }
 
                 // Check collisions (limited to alive entities). Fast weapons
                 // (up to 900 u/s) can move ~14 units in a single frame, so
@@ -2700,66 +3179,40 @@
                         if (closest.distance < 0.4) {
                             const impactPoint = closest.pointOnFirst;
                             bullet.position.copyFrom(impactPoint);
-                            // Headshot = impact landed in the top portion of
-                            // the capsule (the point found on the entity's
-                            // own core segment, not the bullet's height).
-                            const headThreshold = entity.mesh.position.y + 0.4;
-                            const isHeadshot = closest.pointOnSecond.y > headThreshold;
-                            // Per-weapon headshotMul (a config field that
-                            // existed from the start but was previously
-                            // ignored in favor of a flat 2.0 for every
-                            // weapon) - e.g. a Sniper's 2.2x actually hits
-                            // harder on a headshot than a Shotgun's 1.2x now.
-                            const damageMul = isHeadshot ? bullet.headshotMul : 1.0;
-                            const totalDamage = bullet.damage * damageMul;
 
-                            entity.takeDamage(totalDamage);
-                            spawnImpactEffect(scene, impactPoint, isHeadshot);
-                            if (bullet.owner === player) {
-                                showHitmarker();
-                                if (isHeadshot) {
-                                    addKillMsg('💥 HEADSHOT!');
-                                    SoundSynth.playHeadshot();
-                                } else {
-                                    SoundSynth.playHitmarker();
-                                }
-                            }
-                            if (bullet.owner && entity.health <= 0) {
-                                bullet.owner.addKill();
+                            if (bullet.isExplosive) {
+                                // Splash damage handles its own effects/sound/
+                                // scoring for every entity in range (including
+                                // this one) - no separate single-target path.
+                                triggerExplosion(impactPoint, bullet);
+                            } else {
+                                // Headshot = impact landed in the top portion of
+                                // the capsule (the point found on the entity's
+                                // own core segment, not the bullet's height).
+                                const headThreshold = entity.mesh.position.y + 0.4;
+                                const isHeadshot = closest.pointOnSecond.y > headThreshold;
+                                // Per-weapon headshotMul (a config field that
+                                // existed from the start but was previously
+                                // ignored in favor of a flat 2.0 for every
+                                // weapon) - e.g. a Sniper's 2.2x actually hits
+                                // harder on a headshot than a Shotgun's 1.2x now.
+                                const damageMul = isHeadshot ? bullet.headshotMul : 1.0;
+                                const totalDamage = bullet.damage * damageMul;
 
-                                // Show streak message for player
+                                entity.takeDamage(totalDamage);
+                                spawnImpactEffect(scene, impactPoint, isHeadshot);
                                 if (bullet.owner === player) {
-                                    showStreakMessage(player.kills);
-                                    SoundSynth.playKillConfirm();
-                                }
-
-                                // Score system (TDM vs FFA)
-                                if (gameMode === 'TDM') {
-                                    if (bullet.owner.team === 'BLUE') {
-                                        blueScore++;
+                                    showHitmarker();
+                                    if (isHeadshot) {
+                                        addKillMsg('💥 HEADSHOT!');
+                                        SoundSynth.playHeadshot();
                                     } else {
-                                        redScore++;
+                                        SoundSynth.playHitmarker();
                                     }
                                 }
-
-                                // Killstreak messages. In FFA the player's
-                                // chosen operator callsign is used instead of
-                                // a generic "YOU" - see OPERATOR_REGISTRY.
-                                let msg = '';
-                                if (gameMode === 'FFA') {
-                                    const killerName = bullet.owner === player ? `👤 ${player.callsign}` : 'BOT';
-                                    msg = `${killerName} eliminated opponent`;
-                                } else {
-                                    msg = `${bullet.owner.team} PLAYER Eliminated ${entity.team}`;
+                                if (bullet.owner && entity.health <= 0) {
+                                    awardKill(bullet.owner, entity, isHeadshot);
                                 }
-
-                                if (isHeadshot) msg += ' 💥';
-                                if (bullet.owner.kills === 3) msg = '🔥 KILLING SPREE!';
-                                else if (bullet.owner.kills === 5) msg = '⚡ RAMPAGE!';
-                                else if (bullet.owner.kills === 10) msg = '💀 UNSTOPPABLE!';
-                                else if (bullet.owner.kills % 5 === 0 && bullet.owner.kills > 0) msg = `${bullet.owner === player ? '👤' : '🤖'} ON ${bullet.owner.kills} KILLSTREAK`;
-
-                                addKillMsg(msg);
                             }
                             bullet.life = -1;
                             hit = true;
@@ -2838,16 +3291,24 @@
             if (wc.state === 'RELOADING') weaponLabel += ' — RELOADING';
             else if (wc.state === 'SWITCHING') weaponLabel += ' — SWITCHING';
             document.getElementById('weapon').textContent = weaponLabel;
-            document.getElementById('magVal').textContent = ammo.mag;
-            document.getElementById('resVal').textContent = ammo.reserve;
-
-            // Ammo color warning
-            if (ammo.mag === 0) {
-                document.getElementById('ammo').style.color = '#ff0000';
-            } else if (ammo.mag < Math.ceil(weapon.mag * 0.3)) {
-                document.getElementById('ammo').style.color = '#ffaa00';
-            } else {
+            // Melee never consumes ammo (see WeaponController.fire()), so
+            // showing a static mag/reserve number would be misleading -
+            // show a readiness indicator instead.
+            if (weapon.projectileType === 'melee') {
+                document.getElementById('magVal').textContent = '—';
+                document.getElementById('resVal').textContent = 'MELEE';
                 document.getElementById('ammo').style.color = '#00ff00';
+            } else {
+                document.getElementById('magVal').textContent = ammo.mag;
+                document.getElementById('resVal').textContent = ammo.reserve;
+                // Ammo color warning
+                if (ammo.mag === 0) {
+                    document.getElementById('ammo').style.color = '#ff0000';
+                } else if (ammo.mag < Math.ceil(weapon.mag * 0.3)) {
+                    document.getElementById('ammo').style.color = '#ffaa00';
+                } else {
+                    document.getElementById('ammo').style.color = '#00ff00';
+                }
             }
 
             // ADS indicator (subtle - the FOV zoom itself is the main feedback)
@@ -3068,7 +3529,11 @@
                 (byCategory[cfg.category] = byCategory[cfg.category] || []).push(cfg);
             }
             // Stable category display order matching the roster ranges.
-            const order = [WEAPON_CATEGORY.AR, WEAPON_CATEGORY.SMG, WEAPON_CATEGORY.SHOTGUN, WEAPON_CATEGORY.SNIPER, WEAPON_CATEGORY.LMG, WEAPON_CATEGORY.PISTOL];
+            const order = [
+                WEAPON_CATEGORY.AR, WEAPON_CATEGORY.SMG, WEAPON_CATEGORY.SHOTGUN,
+                WEAPON_CATEGORY.SNIPER, WEAPON_CATEGORY.LMG, WEAPON_CATEGORY.PISTOL,
+                WEAPON_CATEGORY.ROCKET, WEAPON_CATEGORY.MELEE, WEAPON_CATEGORY.SPECIAL
+            ];
             for (const category of order) {
                 const weapons = byCategory[category];
                 if (!weapons) continue;
