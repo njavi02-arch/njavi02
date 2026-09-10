@@ -135,14 +135,36 @@ El checklist de sonido del usuario pedía explícitamente "Pasos/Saltos/Aterriza
 
 ---
 
+### FASE FINAL: Prueba de regresión de extremo a extremo (completa)
+Tras la tanda de cambios de esta fase (slide, pasos/salto/aterrizaje, sonido ambiente, fix de retícula, fix de headshot, fix de alcance, fix de sprint-to-fire), se probó con Playwright la cadena completa que el usuario pidió poder validar al volver: **moverse → esprintar → agacharse → deslizarse → sacar arma → apuntar con la mira → disparar → recargar → cambiar de arma → moverse por el mapa**, todo en una sola secuencia continua sobre el jugador real:
+1. Mover (W) → velocidad 8 (moveSpeed) ✓
+2. Esprintar (W+Shift) → velocidad 14 (sprintSpeed), `wasSprinting=true` ✓
+3. Agachar+deslizar (C recién pulsado en sprint) → `isSliding=true`, velocidad ~14.98 decayendo ✓
+4. Fin del slide → sigue agachado (C mantenido) ✓
+5. Soltar C → de pie ✓
+6. Cambiar de arma (tecla 2) → arma correcta equipada, estado `IDLE` tras la transición ✓
+7. Apuntar (ADS) → `isADS=true`, `adsAmount≈1.0`, FOV reducido correctamente ✓
+8. Disparar → munición 25→24, bala creada ✓
+9. Recargar (R) → estado `RELOADING`→`IDLE`, munición restaurada a 25 ✓
+10. Cambiar de arma otra vez (tecla 3) → arma correcta, estado `IDLE` ✓
+11. Moverse por el mapa → posición avanza con normalidad, jugador vivo ✓
+
+Cero errores de consola en toda la cadena — confirma que ningún sistema se rompió con los cambios acumulados de esta fase.
+
+---
+
 ## 🔧 SIGUIENTE PASO (para retomar la sesión)
 
-Nada quedó a medias. LOADOUT, WEAPONS, OPERATORS y SETTINGS ya son funcionales. Por orden de prioridad según el roadmap original, lo que sigue:
+**Redirección de prioridad a mitad de sesión (instrucción explícita del usuario):** pasar a una "fase final de visual y gameplay" — base jugable sólida antes de más contenido. Nuevo orden de prioridad: 1) Mapas, 2) Movimiento del jugador, 3) Sprint, 4) Agacharse, 5) Slide, 6) ADS, 7) Retícula, 8) Cámara, 9) Armas/animaciones, 10) Sonidos, 11) Texturas/materiales, 12) Pulido visual, 13) Optimización, 14) Bugs/testing.
 
-1. **Fase 7 (Menús)**: solo queda 1 sección bloqueada (CUSTOMIZE) — tiene más sentido una vez haya más de un skin real por arma (combinar skin + operador visualmente todavía no aporta mucho con un único skin sólido por defecto y un patrón "digital" de prueba).
-2. **Fase 10 (Multiplayer)**: explícitamente "solo cuando el prototipo offline sea estable" — dado que Fases 0-2, 4-9 están sólidas y probadas, es razonable empezar a planificar la arquitectura cliente/red sin tocar lo existente.
-3. **Mapas**: un segundo mapa original si se prioriza más contenido, o pase de arte sobre los 3 existentes cuando haya assets reales.
-4. **Attachments**: la arquitectura (`ATTACHMENT_SLOTS`, `getEffectiveWeaponStats()`) está lista pero vacía — implementarlos requiere decidir su representación visual, que a su vez depende de tener modelos 3D reales (no tiene sentido un attachment procedural sobre un arma procedural).
+Ya cubierto dentro de esta nueva prioridad (ver secciones "FASE FINAL" arriba): Slide completo y probado, pasos/salto/aterrizaje, sonido ambiente de mapa, fix de retícula (no reaccionaba a movimiento), y una pasada de regresión de extremo a extremo confirmando el flujo completo mover→esprintar→agachar→deslizar→sacar arma→apuntar→disparar→recargar→cambiar→moverse. Lo que queda de esta lista, en orden:
+
+1. **Mapas (prioridad máxima del usuario, aún pendiente en profundidad)**: el inventario de arriba ya identifica qué falta por elemento. Lo accionable sin assets externos: iluminación diferenciada por mapa (ahora mismo las 3 usan exactamente la misma luz plana), variación del sonido ambiente por mapa (interior/exterior), más props de cobertura procedurales para dar más textura visual sin necesitar modelos reales.
+2. **ADS real "a través de la mira"**: el pedido explícito es que se apunte de verdad, no solo zoom de cámara — la limitación conocida (geometría de bloque sin mira real, documentada en el código y en Decisiones Técnicas) sigue sin resolverse porque depende de un modelo real con mira modelada.
+3. **Cámara**: head bob ya existe (bob de viewmodel), pero no hay bob de cámara en sí (solo el arma se mueve) — revisar si el usuario lo espera en la cámara del jugador también.
+4. **Fase 7 (Menús)**: solo queda CUSTOMIZE bloqueado — de prioridad baja en el nuevo orden.
+5. **Fase 10 (Multiplayer)**: pausado — la redirección de prioridad no lo menciona, se retoma cuando la base visual/jugable esté más sólida.
+6. **Attachments**: sigue bloqueado en modelos 3D reales, sin cambios.
 
 ---
 
