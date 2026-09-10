@@ -103,6 +103,18 @@
             opacity: 1;
             transition: opacity 0.3s;
         }
+        #hitmarker {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border: 2px solid #00ff00;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.1s;
+        }
         #loading {
             position: absolute;
             top: 50%;
@@ -132,6 +144,7 @@
 
     <div id="hud" class="hidden">
         <div id="crosshair"><div class="crosshair-dot"></div></div>
+        <div id="hitmarker"></div>
         <div id="score">BLUE 0 - RED 0 | TIME 10:00</div>
         <div id="kills">KILLS: 0</div>
         <div id="health">❤ HP: <span id="hpVal">100</span></div>
@@ -153,6 +166,7 @@
         let engine, scene, gameActive = false, gameStartTime = 0;
         let player = null, bots = [], bullets = [];
         let blueScore = 0, redScore = 0;
+        let killstreakMessages = [];
         const gameConfig = {
             targetScore: 10,
             timeLimit: 600,
@@ -402,17 +416,34 @@
                     dir.y = 0;
                     if (dir.length() > 0) {
                         dir.normalize();
+
+                        // Strafe randomly
+                        const strafeChance = Math.random();
+                        if (strafeChance < 0.3) {
+                            dir.x += (Math.random() - 0.5) * 0.5;
+                            dir.normalize();
+                        }
+
                         this.velocity.x = dir.x * this.moveSpeed;
                         this.velocity.z = dir.z * this.moveSpeed;
 
-                        // Fire
-                        if (closestDist < 40 && Math.random() < 0.15) {
-                            this.fire(dir);
+                        // Fire more aggressively at close range
+                        if (closestDist < 50) {
+                            const fireChance = closestDist < 15 ? 0.3 : 0.1;
+                            if (Math.random() < fireChance) {
+                                this.fire(dir);
+                            }
                         }
                     }
                 } else {
-                    this.velocity.x *= 0.9;
-                    this.velocity.z *= 0.9;
+                    this.velocity.x *= 0.95;
+                    this.velocity.z *= 0.95;
+
+                    // Patrol randomly
+                    if (Math.random() < 0.01) {
+                        this.velocity.x = (Math.random() - 0.5) * this.moveSpeed;
+                        this.velocity.z = (Math.random() - 0.5) * this.moveSpeed;
+                    }
                 }
 
                 // Gravity
@@ -541,34 +572,62 @@
             groundMat.diffuse = new BABYLON.Color3(0.35, 0.35, 0.35);
             ground.material = groundMat;
 
-            // Central tower
-            const tower = BABYLON.MeshBuilder.CreateBox('tower', { size: 12 }, scene);
-            tower.position.y = 6;
             const towerMat = new BABYLON.StandardMaterial('towerMat', scene);
             towerMat.diffuse = new BABYLON.Color3(0.6, 0.55, 0.5);
+
+            // Central tower (key position)
+            const tower = BABYLON.MeshBuilder.CreateBox('tower', { size: 12 }, scene);
+            tower.position.y = 6;
             tower.material = towerMat;
 
-            // Left structure
+            // Elevated platform
+            const platform = BABYLON.MeshBuilder.CreateBox('platform', { width: 25, height: 0.5, depth: 25 }, scene);
+            platform.position = new BABYLON.Vector3(0, 3, 0);
+            platform.material = towerMat;
+
+            // Left base
             const left = BABYLON.MeshBuilder.CreateBox('left', { width: 20, height: 10, depth: 30 }, scene);
-            left.position = new BABYLON.Vector3(-35, 4, 0);
+            left.position = new BABYLON.Vector3(-40, 4, 0);
             left.material = towerMat;
 
-            // Right structure
+            // Right base
             const right = BABYLON.MeshBuilder.CreateBox('right', { width: 20, height: 10, depth: 30 }, scene);
-            right.position = new BABYLON.Vector3(35, 4, 0);
+            right.position = new BABYLON.Vector3(40, 4, 0);
             right.material = towerMat;
 
-            // Obstacles
-            for (let i = 0; i < 6; i++) {
-                const obs = BABYLON.MeshBuilder.CreateBox(`obs${i}`, { width: 6, height: 5, depth: 6 }, scene);
-                obs.position = new BABYLON.Vector3(
-                    (Math.random() - 0.5) * 80,
-                    2.5,
-                    (Math.random() - 0.5) * 80
+            // Walls for cover
+            const wallMat = new BABYLON.StandardMaterial('wallMat', scene);
+            wallMat.diffuse = new BABYLON.Color3(0.45, 0.45, 0.4);
+
+            const wall1 = BABYLON.MeshBuilder.CreateBox('wall1', { width: 2, height: 4, depth: 30 }, scene);
+            wall1.position = new BABYLON.Vector3(-15, 2, 20);
+            wall1.material = wallMat;
+
+            const wall2 = BABYLON.MeshBuilder.CreateBox('wall2', { width: 2, height: 4, depth: 30 }, scene);
+            wall2.position = new BABYLON.Vector3(15, 2, -20);
+            wall2.material = wallMat;
+
+            // Scattered crates
+            for (let i = 0; i < 8; i++) {
+                const crate = BABYLON.MeshBuilder.CreateBox(`crate${i}`, { width: 4, height: 4, depth: 4 }, scene);
+                crate.position = new BABYLON.Vector3(
+                    (Math.random() - 0.5) * 100,
+                    2,
+                    (Math.random() - 0.5) * 100
                 );
-                const obsMat = new BABYLON.StandardMaterial(`obsMat${i}`, scene);
-                obsMat.diffuse = new BABYLON.Color3(0.5, 0.5, 0.45);
-                obs.material = obsMat;
+                crate.material = wallMat;
+            }
+
+            // Corner structures for flanking
+            const cornerMat = new BABYLON.StandardMaterial('cornerMat', scene);
+            cornerMat.diffuse = new BABYLON.Color3(0.5, 0.5, 0.45);
+
+            for (let x of [-50, 50]) {
+                for (let z of [-50, 50]) {
+                    const corner = BABYLON.MeshBuilder.CreateBox(`corner_${x}_${z}`, { size: 8 }, scene);
+                    corner.position = new BABYLON.Vector3(x, 3, z);
+                    corner.material = cornerMat;
+                }
             }
         }
 
@@ -627,6 +686,9 @@
                         const dist = BABYLON.Vector3.Distance(bullet.position, entity.mesh.position);
                         if (dist < 0.5) {
                             entity.takeDamage(bullet.damage);
+                            if (bullet.owner === player) {
+                                showHitmarker();
+                            }
                             if (bullet.owner && entity.health <= 0) {
                                 bullet.owner.addKill();
                                 if (bullet.owner.team === 'BLUE') {
@@ -634,7 +696,15 @@
                                 } else {
                                     redScore++;
                                 }
-                                addKillMsg(`${bullet.owner.team} PLAYER Eliminated ${entity.team}`);
+
+                                // Killstreak messages
+                                let msg = `${bullet.owner.team} PLAYER Eliminated ${entity.team}`;
+                                if (bullet.owner.kills === 3) msg = '🔥 KILLING SPREE!';
+                                else if (bullet.owner.kills === 5) msg = '⚡ RAMPAGE!';
+                                else if (bullet.owner.kills === 10) msg = '💀 UNSTOPPABLE!';
+                                else if (bullet.owner.kills % 5 === 0) msg = `${bullet.owner.team} ON ${bullet.owner.kills} KILLSTREAK`;
+
+                                addKillMsg(msg);
                             }
                             bullet.life = -1;
                             break;
@@ -689,6 +759,14 @@
             while (killFeed.children.length > 5) {
                 killFeed.removeChild(killFeed.lastChild);
             }
+        }
+
+        function showHitmarker() {
+            const hitmarker = document.getElementById('hitmarker');
+            hitmarker.style.opacity = '1';
+            setTimeout(() => {
+                hitmarker.style.opacity = '0';
+            }, 100);
         }
 
         function endGame() {
