@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BULLET OPS - Prototype</title>
+    <title>BULLET OPS - FPS</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -27,31 +27,31 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
-        }
-        .menu-hidden { display: none !important; }
-        .menu-title {
-            font-size: 3rem;
             color: #00ff00;
+        }
+        .hidden { display: none !important; }
+        .menu-title {
+            font-size: 3.5rem;
             text-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
             margin-bottom: 2rem;
             font-weight: bold;
             letter-spacing: 4px;
         }
         .menu-button {
-            padding: 1rem 2rem;
+            padding: 0.8rem 1.5rem;
             margin: 0.5rem;
             background: #00ff00;
-            border: 2px solid #00ff00;
+            border: none;
             color: #000;
-            font-size: 1.2rem;
+            font-size: 1rem;
             cursor: pointer;
             text-transform: uppercase;
             font-weight: bold;
             box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
         .menu-button:hover {
-            transform: scale(1.05);
+            transform: scale(1.1);
             box-shadow: 0 0 25px rgba(0, 255, 0, 0.8);
         }
         #hud {
@@ -60,20 +60,22 @@
             pointer-events: none;
             font-family: monospace;
             color: #00ff00;
-            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+            font-size: 0.9rem;
         }
-        .menu-hidden #hud { display: none; }
-        #score { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-size: 1.2rem; }
-        #health { position: absolute; bottom: 20px; left: 20px; font-size: 1rem; line-height: 1.5; }
-        #ammo { position: absolute; bottom: 20px; right: 20px; font-size: 1rem; }
+        #score { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); }
+        #health { position: absolute; bottom: 10px; left: 10px; }
+        #ammo { position: absolute; bottom: 10px; right: 10px; }
+        #weapon { position: absolute; bottom: 50px; right: 10px; }
+        #kills { position: absolute; top: 50px; right: 10px; }
         #crosshair {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 40px;
-            height: 40px;
-            border: 2px solid rgba(0, 255, 0, 0.5);
+            width: 30px;
+            height: 30px;
+            border: 2px solid rgba(0, 255, 0, 0.4);
             border-radius: 50%;
         }
         .crosshair-dot {
@@ -81,19 +83,33 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 4px;
-            height: 4px;
-            background: rgba(0, 255, 0, 0.7);
+            width: 3px;
+            height: 3px;
+            background: rgba(0, 255, 0, 0.6);
             border-radius: 50%;
         }
-        #info {
+        #killFeed {
+            position: absolute;
+            top: 80px;
+            right: 10px;
+            max-width: 300px;
+            max-height: 200px;
+            overflow: hidden;
+        }
+        .kill-msg {
+            color: #ff0000;
+            font-size: 0.8rem;
+            margin-bottom: 3px;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+        #loading {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             color: #00ff00;
             font-size: 1.5rem;
-            text-align: center;
             text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
         }
     </style>
@@ -103,140 +119,593 @@
 
     <div id="menu">
         <div style="text-align: center;">
-            <div class="menu-title">BULLET OPS</div>
-            <div style="margin: 2rem 0; color: #00ff00; font-size: 1rem;">FPS PROTOTYPE</div>
-            <button class="menu-button" id="playBtn">PLAY</button>
-            <button class="menu-button" id="quitBtn">QUIT</button>
+            <div class="menu-title">⚡ BULLET OPS ⚡</div>
+            <div style="margin: 1rem 0; font-size: 1rem;">COMPETITIVE FPS</div>
+            <button class="menu-button" id="playBtn">▶ PLAY</button>
+            <button class="menu-button" id="quitBtn">✕ QUIT</button>
+            <div style="margin-top: 2rem; font-size: 0.8rem; color: #00aa00;">
+                WASD Move • Mouse Look • Click Fire • R Reload<br>
+                1/2 Swap Weapon • Space Jump • Shift Sprint
+            </div>
         </div>
     </div>
 
-    <div id="hud">
+    <div id="hud" class="hidden">
         <div id="crosshair"><div class="crosshair-dot"></div></div>
         <div id="score">BLUE 0 - RED 0 | TIME 10:00</div>
-        <div id="health">HP: <span id="hpVal">100</span>/100<br>BO-01 AR</div>
-        <div id="ammo">30 / 120</div>
+        <div id="kills">KILLS: 0</div>
+        <div id="health">❤ HP: <span id="hpVal">100</span></div>
+        <div id="weapon">🔫 BO-01</div>
+        <div id="ammo">📦 <span id="magVal">30</span> | <span id="resVal">120</span></div>
+        <div id="killFeed"></div>
     </div>
 
-    <div id="info" style="display: none;">LOADING...</div>
+    <div id="loading" class="hidden">LOADING GAME...</div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babylonjs/7.0.0/babylon.min.js"></script>
     <script>
+        // ========== GLOBALS ==========
         const canvas = document.getElementById('gameCanvas');
         const menu = document.getElementById('menu');
-        let engine, scene, player;
+        const hud = document.getElementById('hud');
+        const loading = document.getElementById('loading');
 
-        function startGame() {
-            menu.classList.add('menu-hidden');
+        let engine, scene, gameActive = false, gameStartTime = 0;
+        let player = null, bots = [], bullets = [];
+        let blueScore = 0, redScore = 0;
+        const gameConfig = {
+            targetScore: 10,
+            timeLimit: 600,
+            botCount: 3
+        };
 
-            if (!engine) {
-                try {
-                    engine = new BABYLON.Engine(canvas, true);
-                    initializeGame();
-                } catch (e) {
-                    console.error('Error initializing game:', e);
-                    document.getElementById('info').textContent = 'Error: ' + e.message;
-                    document.getElementById('info').style.display = 'block';
+        // ========== WEAPONS CONFIG ==========
+        const WEAPONS = {
+            BO01: { name: 'BO-01 ASSAULT RIFLE', damage: 24, fireRate: 10, mag: 30, reserve: 120, reload: 2.0, recoil: 0.03, spread: 0.015, speed: 800 },
+            BO41: { name: 'BO-41 PISTOL', damage: 35, fireRate: 6, mag: 15, reserve: 60, reload: 1.5, recoil: 0.06, spread: 0.025, speed: 400 },
+            BO11: { name: 'BO-11 SMG', damage: 18, fireRate: 15, mag: 25, reserve: 150, reload: 1.8, recoil: 0.05, spread: 0.04, speed: 350 }
+        };
+
+        // ========== PLAYER CLASS ==========
+        class Player {
+            constructor(scene, pos, team) {
+                this.scene = scene;
+                this.team = team;
+                this.spawnPos = pos.clone();
+                this.health = 100;
+                this.maxHealth = 100;
+                this.kills = 0;
+                this.deaths = 0;
+                this.isAlive = true;
+
+                // Create mesh
+                this.mesh = BABYLON.MeshBuilder.CreateCapsule('player', { height: 1.8, radius: 0.3 }, scene);
+                this.mesh.position = pos.clone();
+
+                // Camera
+                this.camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, 0.6, 0), scene);
+                this.camera.parent = this.mesh;
+                this.camera.attachControl(canvas, true);
+                this.camera.inertia = 0.6;
+                this.camera.keysUp = []; this.camera.keysDown = []; this.camera.keysLeft = []; this.camera.keysRight = [];
+                this.camera.angularSensibility = 1000;
+
+                // Camera rotation
+                this.pitch = 0;
+                this.yaw = 0;
+
+                // Movement
+                this.velocity = new BABYLON.Vector3(0, 0, 0);
+                this.moveSpeed = 8;
+                this.sprintSpeed = 14;
+                this.jumpForce = 8;
+                this.isGrounded = false;
+
+                // Weapons
+                this.weapons = [WEAPONS.BO01, WEAPONS.BO41, WEAPONS.BO11];
+                this.currentWeapon = 0;
+                this.weaponCooldown = 0;
+                this.reloadCooldown = 0;
+                this.currentMag = this.weapons[this.currentWeapon].mag;
+                this.currentReserve = this.weapons[this.currentWeapon].reserve;
+
+                // Material
+                const mat = new BABYLON.StandardMaterial('playerMat', scene);
+                mat.diffuse = team === 'BLUE' ? new BABYLON.Color3(0, 0.3, 1) : new BABYLON.Color3(1, 0.2, 0.2);
+                this.mesh.material = mat;
+            }
+
+            update(deltaTime, inputs) {
+                if (!this.isAlive) return;
+
+                // Camera rotation
+                this.yaw += inputs.mouseX * 0.003;
+                this.pitch -= inputs.mouseY * 0.003;
+                this.pitch = Math.max(-Math.PI / 2.5, Math.min(Math.PI / 2.5, this.pitch));
+                this.camera.rotation = new BABYLON.Vector3(this.pitch, this.yaw, 0);
+
+                // Movement
+                const forward = new BABYLON.Vector3(Math.sin(this.yaw), 0, Math.cos(this.yaw));
+                const right = new BABYLON.Vector3(Math.cos(this.yaw), 0, -Math.sin(this.yaw));
+
+                let moveDir = new BABYLON.Vector3(0, 0, 0);
+                if (inputs.keys['w']) moveDir.addInPlace(forward);
+                if (inputs.keys['s']) moveDir.addInPlace(forward.scale(-1));
+                if (inputs.keys['d']) moveDir.addInPlace(right);
+                if (inputs.keys['a']) moveDir.addInPlace(right.scale(-1));
+
+                const speed = inputs.keys['shift'] ? this.sprintSpeed : this.moveSpeed;
+                if (moveDir.length() > 0) {
+                    moveDir.normalize();
+                    this.velocity.x = moveDir.x * speed;
+                    this.velocity.z = moveDir.z * speed;
                 }
+
+                // Gravity
+                if (this.isGrounded && inputs.keys[' ']) {
+                    this.velocity.y = this.jumpForce;
+                    this.isGrounded = false;
+                }
+                this.velocity.y -= 9.81 * deltaTime;
+
+                // Apply velocity
+                this.mesh.position.addInPlace(this.velocity.scale(deltaTime));
+
+                // Ground check
+                this.isGrounded = this.mesh.position.y < 1;
+                if (this.isGrounded) this.velocity.y = Math.max(0, this.velocity.y);
+
+                // Weapon cooldown
+                this.weaponCooldown = Math.max(0, this.weaponCooldown - deltaTime);
+                this.reloadCooldown = Math.max(0, this.reloadCooldown - deltaTime);
+
+                // Firing
+                if (inputs.mouseDown && this.weaponCooldown <= 0 && this.currentMag > 0 && this.reloadCooldown <= 0) {
+                    this.fire();
+                }
+
+                // Reload
+                if (inputs.keys['r'] && this.reloadCooldown <= 0 && this.currentMag < this.weapons[this.currentWeapon].mag) {
+                    const weapon = this.weapons[this.currentWeapon];
+                    const needed = weapon.mag - this.currentMag;
+                    const ammo = Math.min(needed, this.currentReserve);
+                    this.currentMag += ammo;
+                    this.currentReserve -= ammo;
+                    this.reloadCooldown = weapon.reload;
+                }
+
+                // Weapon switch
+                if (inputs.keys['1']) this.currentWeapon = 0;
+                if (inputs.keys['2']) this.currentWeapon = 1;
+                if (inputs.keys['3']) this.currentWeapon = 2;
+
+                // Respawn if fell
+                if (this.mesh.position.y < -50) this.die();
+            }
+
+            fire() {
+                const weapon = this.weapons[this.currentWeapon];
+                this.weaponCooldown = 1 / weapon.fireRate;
+                this.currentMag--;
+
+                const origin = this.mesh.position.add(new BABYLON.Vector3(0, 0.7, 0));
+                const direction = new BABYLON.Vector3(Math.sin(this.yaw), Math.sin(this.pitch), Math.cos(this.yaw));
+
+                // Spread
+                const spread = weapon.spread;
+                direction.addInPlace(new BABYLON.Vector3((Math.random() - 0.5) * spread, (Math.random() - 0.5) * spread, (Math.random() - 0.5) * spread));
+                direction.normalize();
+
+                // Bullet
+                const bullet = BABYLON.MeshBuilder.CreateSphere('bullet', { diameter: 0.1 }, scene);
+                bullet.position = origin.add(direction.scale(0.5));
+                const bulletMat = new BABYLON.StandardMaterial('bulletMat', scene);
+                bulletMat.emissiveColor = new BABYLON.Color3(1, 1, 0);
+                bullet.material = bulletMat;
+
+                bullet.owner = this;
+                bullet.damage = weapon.damage;
+                bullet.velocity = direction.scale(weapon.speed);
+                bullet.life = 10;
+
+                bullets.push(bullet);
+
+                // Recoil
+                this.pitch -= (Math.random() - 0.5) * weapon.recoil;
+                this.yaw += (Math.random() - 0.5) * weapon.recoil * 0.3;
+
+                // Muzzle flash
+                const flash = BABYLON.MeshBuilder.CreateSphere('flash', { diameter: 0.3 }, scene);
+                flash.position = origin.add(direction.scale(0.2));
+                const flashMat = new BABYLON.StandardMaterial('flashMat', scene);
+                flashMat.emissiveColor = new BABYLON.Color3(1, 0.8, 0.3);
+                flash.material = flashMat;
+                setTimeout(() => flash.dispose(), 50);
+            }
+
+            takeDamage(amount) {
+                if (!this.isAlive) return;
+                this.health -= amount;
+                if (this.health <= 0) this.die();
+            }
+
+            die() {
+                this.isAlive = false;
+                this.deaths++;
+                setTimeout(() => this.respawn(), 3000);
+            }
+
+            respawn() {
+                this.health = this.maxHealth;
+                this.mesh.position = this.spawnPos.clone();
+                this.velocity = new BABYLON.Vector3(0, 0, 0);
+                this.isAlive = true;
+            }
+
+            addKill() {
+                this.kills++;
             }
         }
 
-        function initializeGame() {
+        // ========== BOT CLASS ==========
+        class Bot {
+            constructor(scene, pos, team) {
+                this.scene = scene;
+                this.team = team;
+                this.spawnPos = pos.clone();
+                this.health = 100;
+                this.maxHealth = 100;
+                this.kills = 0;
+                this.deaths = 0;
+                this.isAlive = true;
+
+                this.mesh = BABYLON.MeshBuilder.CreateCapsule('bot', { height: 1.8, radius: 0.3 }, scene);
+                this.mesh.position = pos.clone();
+
+                const mat = new BABYLON.StandardMaterial('botMat' + Math.random(), scene);
+                mat.diffuse = team === 'BLUE' ? new BABYLON.Color3(0, 0.2, 0.8) : new BABYLON.Color3(0.8, 0.1, 0.1);
+                this.mesh.material = mat;
+
+                this.velocity = new BABYLON.Vector3(0, 0, 0);
+                this.moveSpeed = 6;
+                this.target = null;
+                this.targetTimer = 0;
+                this.stateTimer = 0;
+
+                this.currentWeapon = WEAPONS.BO01;
+                this.weaponCooldown = 0;
+                this.currentMag = this.currentWeapon.mag;
+            }
+
+            update(deltaTime, allPlayers) {
+                if (!this.isAlive) return;
+
+                // Find closest enemy
+                let closest = null;
+                let closestDist = 100;
+
+                for (let p of allPlayers) {
+                    if (p.team !== this.team && p.isAlive) {
+                        const dist = BABYLON.Vector3.Distance(this.mesh.position, p.mesh.position);
+                        if (dist < closestDist) {
+                            closest = p;
+                            closestDist = dist;
+                        }
+                    }
+                }
+
+                this.target = closest;
+
+                // Movement
+                if (this.target) {
+                    const dir = this.target.mesh.position.subtract(this.mesh.position);
+                    dir.y = 0;
+                    if (dir.length() > 0) {
+                        dir.normalize();
+                        this.velocity.x = dir.x * this.moveSpeed;
+                        this.velocity.z = dir.z * this.moveSpeed;
+
+                        // Fire
+                        if (closestDist < 40 && Math.random() < 0.15) {
+                            this.fire(dir);
+                        }
+                    }
+                } else {
+                    this.velocity.x *= 0.9;
+                    this.velocity.z *= 0.9;
+                }
+
+                // Gravity
+                this.velocity.y -= 9.81 * deltaTime;
+                this.mesh.position.addInPlace(this.velocity.scale(deltaTime));
+
+                // Ground
+                if (this.mesh.position.y < 1) {
+                    this.velocity.y = 0;
+                    this.mesh.position.y = 1;
+                }
+
+                // Respawn if fell
+                if (this.mesh.position.y < -50) this.die();
+
+                this.weaponCooldown = Math.max(0, this.weaponCooldown - deltaTime);
+            }
+
+            fire(direction) {
+                if (this.weaponCooldown > 0 || this.currentMag <= 0) return;
+
+                this.weaponCooldown = 1 / this.currentWeapon.fireRate;
+                this.currentMag--;
+
+                const origin = this.mesh.position.add(new BABYLON.Vector3(0, 0.7, 0));
+                const spread = this.currentWeapon.spread * 2;
+                const fireDir = direction.add(new BABYLON.Vector3((Math.random() - 0.5) * spread, (Math.random() - 0.5) * spread * 0.5, (Math.random() - 0.5) * spread));
+                fireDir.normalize();
+
+                const bullet = BABYLON.MeshBuilder.CreateSphere('bullet', { diameter: 0.1 }, scene);
+                bullet.position = origin.add(fireDir.scale(0.5));
+                const bulletMat = new BABYLON.StandardMaterial('bulletMat', scene);
+                bulletMat.emissiveColor = new BABYLON.Color3(1, 0.5, 0);
+                bullet.material = bulletMat;
+
+                bullet.owner = this;
+                bullet.damage = this.currentWeapon.damage;
+                bullet.velocity = fireDir.scale(this.currentWeapon.speed);
+                bullet.life = 10;
+
+                bullets.push(bullet);
+            }
+
+            takeDamage(amount) {
+                if (!this.isAlive) return;
+                this.health -= amount;
+                if (this.health <= 0) this.die();
+            }
+
+            die() {
+                this.isAlive = false;
+                this.deaths++;
+                setTimeout(() => this.respawn(), 2000);
+            }
+
+            respawn() {
+                this.health = this.maxHealth;
+                this.mesh.position = this.spawnPos.clone();
+                this.velocity = new BABYLON.Vector3(0, 0, 0);
+                this.isAlive = true;
+                this.currentMag = this.currentWeapon.mag;
+            }
+
+            addKill() {
+                this.kills++;
+            }
+        }
+
+        // ========== INITIALIZE GAME ==========
+        function initGame() {
+            loading.classList.remove('hidden');
+            menu.classList.add('hidden');
+
+            if (!engine) {
+                engine = new BABYLON.Engine(canvas, true);
+            }
+
             scene = new BABYLON.Scene(engine);
-            scene.clearColor = new BABYLON.Color3(0.06, 0.055, 0.15);
-            scene.gravity = new BABYLON.Vector3(0, -9.81, 0);
+            scene.clearColor = new BABYLON.Color3(0.08, 0.06, 0.15);
             scene.collisionsEnabled = true;
 
-            // Camera
-            const camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, 5, -20));
-            camera.attachControl(canvas, true);
-            camera.inertia = 0.5;
-            camera.speed = 0;
-            scene.activeCamera = camera;
-
             // Lights
-            const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0));
-            light.intensity = 0.9;
-            const sun = new BABYLON.DirectionalLight('sun', new BABYLON.Vector3(-0.5, -1, 0.5));
-            sun.intensity = 0.6;
+            const hlight = new BABYLON.HemisphericLight('hlight', new BABYLON.Vector3(0, 1, 0));
+            hlight.intensity = 0.8;
+            const dlight = new BABYLON.DirectionalLight('dlight', new BABYLON.Vector3(-1, -1, 0.5));
+            dlight.intensity = 0.6;
 
-            // Ground
-            const ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 100, height: 100 }, scene);
-            const groundMat = new BABYLON.StandardMaterial('groundMat', scene);
-            groundMat.diffuse = new BABYLON.Color3(0.4, 0.4, 0.4);
-            ground.material = groundMat;
+            // Build map
+            buildMap();
 
-            // Tower
-            const tower = BABYLON.MeshBuilder.CreateBox('tower', { size: 10 }, scene);
-            tower.position.y = 5;
-            const towerMat = new BABYLON.StandardMaterial('towerMat', scene);
-            towerMat.diffuse = new BABYLON.Color3(0.6, 0.6, 0.6);
-            tower.material = towerMat;
+            // Spawn player
+            player = new Player(scene, new BABYLON.Vector3(-25, 2, -25), 'BLUE');
+            scene.activeCamera = player.camera;
 
-            // Left building
-            const leftBuilding = BABYLON.MeshBuilder.CreateBox('left', { width: 15, height: 8, depth: 20 }, scene);
-            leftBuilding.position = new BABYLON.Vector3(-25, 3, 0);
-            leftBuilding.material = towerMat;
-
-            // Right building
-            const rightBuilding = BABYLON.MeshBuilder.CreateBox('right', { width: 15, height: 8, depth: 20 }, scene);
-            rightBuilding.position = new BABYLON.Vector3(25, 3, 0);
-            rightBuilding.material = towerMat;
-
-            // Add some obstacles
-            for (let i = 0; i < 3; i++) {
-                const box = BABYLON.MeshBuilder.CreateBox(`obs${i}`, { size: 4 }, scene);
-                box.position = new BABYLON.Vector3((Math.random() - 0.5) * 50, 2, (Math.random() - 0.5) * 50);
-                box.material = towerMat;
+            // Spawn bots
+            const botSpawns = [
+                new BABYLON.Vector3(25, 2, 25),
+                new BABYLON.Vector3(30, 2, 20),
+                new BABYLON.Vector3(20, 2, 30)
+            ];
+            for (let pos of botSpawns) {
+                bots.push(new Bot(scene, pos, 'RED'));
             }
 
-            // Add bots (simple spheres)
-            for (let i = 0; i < 3; i++) {
-                const bot = BABYLON.MeshBuilder.CreateSphere(`bot${i}`, { diameter: 2 }, scene);
-                bot.position = new BABYLON.Vector3(20 + i * 5, 2, 20);
-                const botMat = new BABYLON.StandardMaterial(`botMat${i}`, scene);
-                botMat.diffuse = new BABYLON.Color3(1, 0, 0);
-                bot.material = botMat;
-            }
+            gameActive = true;
+            gameStartTime = Date.now();
+            loading.classList.add('hidden');
+            hud.classList.remove('hidden');
 
-            // Game loop
-            let time = 0;
+            // Render loop
             engine.runRenderLoop(() => {
-                time += engine.getDeltaTime() / 1000;
-
-                // Simple camera movement
-                const movement = new BABYLON.Vector3(0, 0, 0);
-                if (keys['w']) movement.z += 0.1;
-                if (keys['s']) movement.z -= 0.1;
-                if (keys['a']) movement.x -= 0.1;
-                if (keys['d']) movement.x += 0.1;
-
-                camera.position.addInPlace(movement);
-
-                // Update HUD
-                const mins = Math.floor((600 - time) / 60);
-                const secs = Math.floor((600 - time) % 60);
-                document.getElementById('score').textContent =
-                    `BLUE 0 - RED 0 | TIME ${mins}:${secs.toString().padStart(2, '0')}`;
-
+                if (gameActive) {
+                    updateGame();
+                }
                 scene.render();
             });
 
             window.addEventListener('resize', () => engine.resize());
         }
 
-        // Input handling
-        const keys = {};
-        window.addEventListener('keydown', (e) => { keys[e.key.toLowerCase()] = true; });
-        window.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
+        // ========== BUILD MAP ==========
+        function buildMap() {
+            // Ground
+            const ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 120, height: 120 }, scene);
+            const groundMat = new BABYLON.StandardMaterial('groundMat', scene);
+            groundMat.diffuse = new BABYLON.Color3(0.35, 0.35, 0.35);
+            ground.material = groundMat;
 
-        // Buttons
-        document.getElementById('playBtn').addEventListener('click', startGame);
+            // Central tower
+            const tower = BABYLON.MeshBuilder.CreateBox('tower', { size: 12 }, scene);
+            tower.position.y = 6;
+            const towerMat = new BABYLON.StandardMaterial('towerMat', scene);
+            towerMat.diffuse = new BABYLON.Color3(0.6, 0.55, 0.5);
+            tower.material = towerMat;
+
+            // Left structure
+            const left = BABYLON.MeshBuilder.CreateBox('left', { width: 20, height: 10, depth: 30 }, scene);
+            left.position = new BABYLON.Vector3(-35, 4, 0);
+            left.material = towerMat;
+
+            // Right structure
+            const right = BABYLON.MeshBuilder.CreateBox('right', { width: 20, height: 10, depth: 30 }, scene);
+            right.position = new BABYLON.Vector3(35, 4, 0);
+            right.material = towerMat;
+
+            // Obstacles
+            for (let i = 0; i < 6; i++) {
+                const obs = BABYLON.MeshBuilder.CreateBox(`obs${i}`, { width: 6, height: 5, depth: 6 }, scene);
+                obs.position = new BABYLON.Vector3(
+                    (Math.random() - 0.5) * 80,
+                    2.5,
+                    (Math.random() - 0.5) * 80
+                );
+                const obsMat = new BABYLON.StandardMaterial(`obsMat${i}`, scene);
+                obsMat.diffuse = new BABYLON.Color3(0.5, 0.5, 0.45);
+                obs.material = obsMat;
+            }
+        }
+
+        // ========== INPUT HANDLING ==========
+        const inputs = {
+            keys: {},
+            mouseX: 0,
+            mouseY: 0,
+            mouseDown: false
+        };
+
+        window.addEventListener('keydown', (e) => {
+            inputs.keys[e.key.toLowerCase()] = true;
+        });
+        window.addEventListener('keyup', (e) => {
+            inputs.keys[e.key.toLowerCase()] = false;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            inputs.mouseX += e.movementX || 0;
+            inputs.mouseY += e.movementY || 0;
+        });
+
+        document.addEventListener('mousedown', () => {
+            inputs.mouseDown = true;
+            document.documentElement.requestPointerLock?.();
+        });
+        document.addEventListener('mouseup', () => {
+            inputs.mouseDown = false;
+        });
+
+        // ========== GAME UPDATE ==========
+        function updateGame() {
+            const deltaTime = engine.getDeltaTime() / 1000;
+
+            // Update player
+            if (player) {
+                player.update(deltaTime, inputs);
+            }
+
+            // Update bots
+            const allPlayers = [player, ...bots].filter(p => p.isAlive);
+            for (let bot of bots) {
+                bot.update(deltaTime, allPlayers);
+            }
+
+            // Update bullets
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                const bullet = bullets[i];
+                bullet.position.addInPlace(bullet.velocity.scale(deltaTime));
+                bullet.life -= deltaTime;
+
+                // Check collisions
+                for (let entity of [player, ...bots]) {
+                    if (entity && entity.isAlive && entity !== bullet.owner) {
+                        const dist = BABYLON.Vector3.Distance(bullet.position, entity.mesh.position);
+                        if (dist < 0.5) {
+                            entity.takeDamage(bullet.damage);
+                            if (bullet.owner && entity.health <= 0) {
+                                bullet.owner.addKill();
+                                if (bullet.owner.team === 'BLUE') {
+                                    blueScore++;
+                                } else {
+                                    redScore++;
+                                }
+                                addKillMsg(`${bullet.owner.team} PLAYER Eliminated ${entity.team}`);
+                            }
+                            bullet.life = -1;
+                            break;
+                        }
+                    }
+                }
+
+                if (bullet.life <= 0) {
+                    bullet.dispose();
+                    bullets.splice(i, 1);
+                }
+            }
+
+            // Update HUD
+            updateHUD();
+
+            // Check win condition
+            if (blueScore >= gameConfig.targetScore || redScore >= gameConfig.targetScore) {
+                endGame();
+            }
+        }
+
+        // ========== HUD UPDATE ==========
+        function updateHUD() {
+            const elapsed = (Date.now() - gameStartTime) / 1000;
+            const remaining = Math.max(0, gameConfig.timeLimit - elapsed);
+            const mins = Math.floor(remaining / 60);
+            const secs = Math.floor(remaining % 60);
+
+            document.getElementById('score').textContent = `BLUE ${blueScore} - RED ${redScore} | TIME ${mins}:${secs.toString().padStart(2, '0')}`;
+            document.getElementById('hpVal').textContent = Math.ceil(player.health);
+            document.getElementById('kills').textContent = `KILLS: ${player.kills}`;
+            document.getElementById('weapon').textContent = `🔫 ${player.weapons[player.currentWeapon].name}`;
+            document.getElementById('magVal').textContent = player.currentMag;
+            document.getElementById('resVal').textContent = player.currentReserve;
+
+            if (player.health <= 0) {
+                document.getElementById('hpVal').parentElement.style.color = '#ff0000';
+            } else if (player.health <= 30) {
+                document.getElementById('hpVal').parentElement.style.color = '#ffaa00';
+            } else {
+                document.getElementById('hpVal').parentElement.style.color = '#00ff00';
+            }
+        }
+
+        function addKillMsg(msg) {
+            const killFeed = document.getElementById('killFeed');
+            const div = document.createElement('div');
+            div.className = 'kill-msg';
+            div.textContent = msg;
+            killFeed.insertBefore(div, killFeed.firstChild);
+            while (killFeed.children.length > 5) {
+                killFeed.removeChild(killFeed.lastChild);
+            }
+        }
+
+        function endGame() {
+            gameActive = false;
+            const winner = blueScore > redScore ? 'BLUE' : 'RED';
+            alert(`GAME OVER!\n${winner} TEAM WINS!\nFinal Score: BLUE ${blueScore} - RED ${redScore}`);
+            location.reload();
+        }
+
+        // ========== BUTTONS ==========
+        document.getElementById('playBtn').addEventListener('click', () => {
+            initGame();
+        });
+
         document.getElementById('quitBtn').addEventListener('click', () => {
             alert('Thanks for playing BULLET OPS!');
         });
-
-        // Auto-start
-        console.log('BULLET OPS loaded. Click PLAY to start.');
     </script>
 </body>
 </html>
