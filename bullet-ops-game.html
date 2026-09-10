@@ -365,11 +365,19 @@
                 // Update spawn shield
                 this.spawnShieldTime = Math.max(0, this.spawnShieldTime - deltaTime);
 
-                // Camera rotation (reduced sensitivity from 0.003 to 0.001)
+                // Camera rotation (reduced sensitivity from 0.003 to 0.001).
+                // this.pitch's own sign convention is "positive = looking up"
+                // (matching the bullet direction formula in fire(), which uses
+                // Math.sin(this.pitch) directly, and the recoil/screen-shake
+                // adjustments below). Babylon's camera.rotation.x uses the
+                // OPPOSITE convention (positive = looking down), so it is
+                // negated only at this one assignment - not anywhere else -
+                // to keep the camera's actual facing direction consistent
+                // with where bullets fire and with mouseY's own sign.
                 this.yaw += inputs.mouseX * 0.001;
                 this.pitch -= inputs.mouseY * 0.001;
                 this.pitch = Math.max(-Math.PI / 2.5, Math.min(Math.PI / 2.5, this.pitch));
-                this.camera.rotation = new BABYLON.Vector3(this.pitch, this.yaw, 0);
+                this.camera.rotation = new BABYLON.Vector3(-this.pitch, this.yaw, 0);
 
                 // Movement (arcade style - responsive)
                 const forward = new BABYLON.Vector3(Math.sin(this.yaw), 0, Math.cos(this.yaw));
