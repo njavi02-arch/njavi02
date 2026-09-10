@@ -192,7 +192,7 @@
             box-shadow: inset 0 0 100px rgba(255, 0, 0, 0);
             transition: box-shadow 0.1s;
         }
-        #pauseMenu {
+        #pauseMenu, #resultsScreen {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(10, 14, 39, 0.85);
@@ -276,6 +276,15 @@
             <div class="menu-title" style="font-size: 2.5rem;">⏸ PAUSED</div>
             <button class="menu-button" id="resumeBtn">▶ RESUME</button>
             <button class="menu-button" id="quitToMenuBtn">✕ QUIT TO MENU</button>
+        </div>
+    </div>
+
+    <div id="resultsScreen" class="hidden">
+        <div style="text-align: center;">
+            <div class="menu-title" id="resultsTitle" style="font-size: 2.2rem;">GAME OVER</div>
+            <div id="resultsScore" style="font-size: 1.3rem; margin-bottom: 1.2rem;"></div>
+            <div id="resultsStats" style="font-size: 0.95rem; line-height: 1.8; margin-bottom: 1.5rem;"></div>
+            <button class="menu-button" id="backToMenuBtn">↩ BACK TO MENU</button>
         </div>
     </div>
 
@@ -2257,6 +2266,10 @@
 
         function endGame() {
             gameActive = false;
+            currentGameState = GameState.ENDED;
+            if (document.pointerLockElement === canvas) {
+                document.exitPointerLock();
+            }
 
             // Calculate statistics
             const gameTime = Math.floor((Date.now() - gameStartTime) / 1000);
@@ -2264,16 +2277,28 @@
             const secs = gameTime % 60;
             const kdr = player.deaths === 0 ? player.kills : (player.kills / player.deaths).toFixed(2);
 
-            let message = '';
+            const titleEl = document.getElementById('resultsTitle');
+            const scoreEl = document.getElementById('resultsScore');
+            const statsEl = document.getElementById('resultsStats');
+
             if (gameMode === 'TDM') {
                 const winner = blueScore > redScore ? 'BLUE' : 'RED';
-                message = `GAME OVER!\n${winner} TEAM WINS!\n\nFinal Score: BLUE ${blueScore} - RED ${redScore}\n\nYour Stats:\nKills: ${player.kills}\nDeaths: ${player.deaths}\nK/D Ratio: ${kdr}\nGame Time: ${mins}:${secs.toString().padStart(2, '0')}`;
+                titleEl.textContent = `🏆 ${winner} TEAM WINS`;
+                titleEl.style.color = winner === 'BLUE' ? '#3399ff' : '#ff4444';
+                scoreEl.textContent = `BLUE ${blueScore} - RED ${redScore}`;
             } else {
-                message = `GAME OVER!\n👤 YOU WIN!\n\nFinal Kills: ${player.kills}\nDeaths: ${player.deaths}\nK/D Ratio: ${kdr}\nGame Time: ${mins}:${secs.toString().padStart(2, '0')}`;
+                titleEl.textContent = '🏆 VICTORY';
+                titleEl.style.color = '#00ff00';
+                scoreEl.textContent = `${player.kills} KILLS`;
             }
-            alert(message);
-            location.reload();
+            statsEl.innerHTML = `KILLS: ${player.kills} &nbsp;|&nbsp; DEATHS: ${player.deaths} &nbsp;|&nbsp; K/D: ${kdr}<br>MATCH TIME: ${mins}:${secs.toString().padStart(2, '0')}`;
+
+            document.getElementById('resultsScreen').classList.remove('hidden');
         }
+
+        document.getElementById('backToMenuBtn').addEventListener('click', () => {
+            location.reload();
+        });
 
         // ========== BUTTONS ==========
         function updateModeDisplay() {
