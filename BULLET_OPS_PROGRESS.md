@@ -146,23 +146,63 @@ Nada quedó a medias. LOADOUT, WEAPONS, OPERATORS y SETTINGS ya son funcionales.
 
 ---
 
-## 📦 ASSETS NECESARIOS (nada de esto bloquea el desarrollo — placeholders funcionando mientras tanto)
+## 📦 INVENTARIO DE ASSETS (nada de esto bloquea el desarrollo — placeholders funcionando mientras tanto)
 
-**PARA ARMAS** (por cada una de las 15 del arsenal, empezando por BO-01 VANGUARD como prioridad):
-- Modelo 3D en primera persona (viewmodel) — **formato GLB**, poli bajo/medio.
-- Animaciones embebidas en el GLB: disparo (recoil del modelo), recarga (normal + desde vacío), equipar.
-- Sonido de disparo real por arma — WAV.
-- Sonido de recarga — WAV/MP3.
-- Textura/material base — PNG.
+### MAPAS — por elemento
 
-**PARA MAPAS** (cuando se retome Fase 4):
-- Concepto o plano 2D con spawns, chokepoints, verticalidad (blockout se construye sin más assets).
-- Fase de pulido posterior: props 3D (GLB), texturas de superficies (PNG/JPG), skybox (HDR o 6 caras JPG).
+Los 3 mapas (`BACKLOT-7`, `INDUSTRIAL-5`, `OUTPOST-9`) comparten exactamente la misma naturaleza: blockout geométrico con primitivas Babylon (cajas/cilindros/plano) y `StandardMaterial` de color plano, sin ningún asset externo. Todos los elementos de abajo aplican igual a los 3 — lo que cambia entre mapas es solo el layout (posiciones/tamaños), no el tipo de asset.
 
-**PARA CAMUFLAJES**:
-- Solo necesarios para camuflajes con patrón: textura tileable PNG. Los sólidos/metálicos/especiales no necesitan ningún asset (son material/shader por código).
+| Elemento | Estado actual | Tipo de asset que falta | Bloquea desarrollo |
+|---|---|---|---|
+| Suelo | ✅ Plano + color plano | Textura de superficie (PNG/JPG tileable) | No |
+| Edificios/bases/torres | ✅ Cajas + color plano | Modelo 3D (GLB) + textura | No |
+| Coberturas (crates, muros, barriles) | ✅ Primitivas + `checkCollisions` | Modelo 3D (GLB) de props | No |
+| Puertas | ❌ No existen (todo son cajas sólidas fijas) | Modelo + animación de apertura | No — nada las requiere aún |
+| Ventanas | ❌ No existen | Modelo/material transparente | No |
+| Iluminación | ✅ 1 luz hemisférica + 1 direccional, fija e idéntica en los 3 mapas | Configuración de iluminación diferenciada por mapa/hora del día | No |
+| Skybox | ❌ Color de fondo plano (`scene.clearColor`) | HDR o 6 caras JPG | No |
+| Sonido ambiente | ✅ **Nuevo esta sesión**: viento sintetizado (ruido filtrado en bucle), igual en los 3 mapas | Variación por mapa (interior/exterior distinto) | No |
+| Props ambientales (vegetación, señalética, escombros) | ❌ No existen | Modelos 3D variados (GLB) | No |
+| Elementos interactivos | ❌ No existen (ninguna puerta/palanca/ascensor) | Diseño + modelo + lógica | No |
+| Optimización (LOD/oclusión) | ❌ No implementada — geometría actual es lo bastante simple para no necesitarlo todavía | N/A por ahora | No |
 
-**Todo lo anterior tiene placeholder funcional ahora mismo** (viewmodel procedural, sonido sintetizado, skins de color sólido + un patrón generado por código) — nada de esto detiene el desarrollo.
+### ARMAS — por arma y elemento (patrón idéntico en las 15)
+
+Las 15 armas (`BO01-BO03` AR, `BO11-BO13` SMG, `BO21-BO22` Shotgun, `BO31-BO32` Sniper, `BO41-BO42` LMG, `BO51-BO53` Pistol) comparten el mismo estado porque usan la misma arquitectura (`WEAPON_CONFIGS` + `buildWeaponViewmodel` + `WeaponController`). Se muestra un resumen por categoría de elemento en vez de repetir 15 filas idénticas; **BO-01 VANGUARD es la prioridad de referencia si solo se puede producir un lote de assets a la vez.**
+
+| Elemento | Estado actual | Asset que falta | Bloquea gameplay |
+|---|---|---|---|
+| Modelo 3D (viewmodel) | ✅ Placeholder procedural, silueta distinta por categoría | Modelo GLB real, poli bajo/medio | No |
+| Material/textura | ✅ Color plano por skin (`SKIN_REGISTRY`) | Textura PNG (solo para skins con patrón) | No |
+| Cargador visible | ✅ Geometría propia por categoría | Modelo detallado | No |
+| Mira/accesorios | ⚠️ Sight solo en AR/Sniper (bloque simple), sin mira real que mirar a través | Mira modelada (red-dot/scope real) | No, pero limita la sensación de ADS (ver nota en Decisiones Técnicas) |
+| Anim. equipar/desequipar | ✅ Transición de "dip" al cambiar de arma (`switchDip`) | Animación real de modelo | No |
+| Anim. disparo (recoil visual) | ✅ Kick de cámara + arma por código | Animación de modelo | No |
+| Anim. recarga (normal/vacía) | ✅ Timing correcto (`reloadTime`/`reloadTimeEmpty`) + sonido, sin animación visual del modelo (el arma no se mueve durante la recarga) | Animación de recarga en el modelo | No |
+| Anim. apuntado/salir de apuntado | ✅ Transición de posición/FOV suavizada | Animación real si el modelo la necesita | No |
+| Anim. sprint con arma | ❌ El arma no reacciona visualmente al sprint más allá del bob de movimiento normal | Pose/anim de sprint | No |
+| Anim. inspección | ❌ No existe | Animación | No |
+| Sonido disparo | ✅ Sintetizado, un perfil por categoría (`GUNSHOT_PROFILES`) | Audio real grabado por arma | No |
+| Sonido disparo por distancia | ❌ No hay variación por distancia | Capas de audio (cerca/lejos) | No |
+| Sonido recarga/cargador | ✅ Sintetizado (mag-out/mag-in/click) | Audio real | No |
+| Sonido equipar/cambiar | ✅ Sintetizado (`playEquip`) | Audio real | No |
+| Sonido impacto | ✅ Partícula + sonido de hitmarker/headshot | Sonido de impacto en superficie (madera/metal/etc.) | No |
+| Sonido casquillos | ❌ No existe | Audio sintetizado o real | No |
+| Daño/cadencia/retroceso/precisión/alcance/capacidad/recarga/movimiento | ✅ **Completo y verificado** — todo dato en `WEAPON_CONFIGS`, todo aplicado de verdad (ver bugs corregidos esta sesión: `headshotMul`, `range`, `sprintToFireDelay`) | — | — |
+| Multiplicador headshot | ✅ **Corregido esta sesión** — antes fijo en 2.0, ahora usa el valor real por arma | — | — |
+
+### JUGADOR — sonidos (elemento nuevo de esta sesión)
+
+| Elemento | Estado |
+|---|---|
+| Pasos | ✅ **Nuevo esta sesión** — sintetizado, cadencia distinta andar/esprintar/agachado |
+| Sprint (transición de sonido) | ✅ Cubierto por la cadencia de pasos más rápida |
+| Agacharse | ⚠️ Sin sonido propio de transición (solo pasos más lentos mientras se mueve agachado) |
+| Slide | ⚠️ Sin sonido propio (el mecanismo de movimiento sí está completo) |
+| Saltos | ✅ **Nuevo esta sesión** |
+| Aterrizajes | ✅ **Nuevo esta sesión** |
+
+**Nada de lo marcado ❌/⚠️ arriba bloquea el desarrollo** — cada sistema tiene su placeholder funcional (geometría procedural, sonido sintetizado, o simplemente "no pasa nada visualmente pero el gameplay ya es correcto") y puede sustituirse por el asset real más adelante sin tocar la arquitectura que ya lo consume (`WeaponController`, `SoundSynth`, `buildWeaponViewmodel`).
 
 ---
 
