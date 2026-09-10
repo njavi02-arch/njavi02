@@ -1924,13 +1924,45 @@
         // Closest point on segment [segA, segB] to `point`. Used for bullet
         // hit detection against the bullet's whole travel path this frame,
         // not just its endpoint (see updateGame).
-        function closestPointOnSegment(point, segA, segB) {
-            const ab = segB.subtract(segA);
-            const abLengthSq = ab.lengthSquared();
-            if (abLengthSq < 1e-8) return segA.clone();
-            let t = BABYLON.Vector3.Dot(point.subtract(segA), ab) / abLengthSq;
-            t = Math.max(0, Math.min(1, t));
-            return segA.add(ab.scale(t));
+        // Closest distance between two line segments (p1,q1) and (p2,q2).
+        // Used for bullet hit detection: comparing the bullet's travel path
+        // this frame against a single point on the target (its mesh pivot)
+        // was the bug behind shots that visually lined up still missing -
+        // the muzzle sits ~0.5 units above the target's pivot even on a
+        // level shot, and a flat point-distance check has no way to know
+        // the target's capsule actually extends well above and below that
+        // pivot. Comparing against the target's own vertical capsule core
+        // segment instead makes hit detection match its actual body extent
+        // (also correctly covers crouching targets, since their capsule is
+        // shorter and lower).
+        function closestDistanceSegmentSegment(p1, q1, p2, q2) {
+            const d1 = q1.subtract(p1);
+            const d2 = q2.subtract(p2);
+            const r = p1.subtract(p2);
+            const a = BABYLON.Vector3.Dot(d1, d1);
+            const e = BABYLON.Vector3.Dot(d2, d2);
+            const f = BABYLON.Vector3.Dot(d2, r);
+            let s, t;
+            if (a <= 1e-8 && e <= 1e-8) {
+                s = 0; t = 0;
+            } else if (a <= 1e-8) {
+                s = 0; t = Math.max(0, Math.min(1, f / e));
+            } else {
+                const c = BABYLON.Vector3.Dot(d1, r);
+                if (e <= 1e-8) {
+                    t = 0; s = Math.max(0, Math.min(1, -c / a));
+                } else {
+                    const b = BABYLON.Vector3.Dot(d1, d2);
+                    const denom = a * e - b * b;
+                    s = denom !== 0 ? Math.max(0, Math.min(1, (b * f - c * e) / denom)) : 0;
+                    t = (b * s + f) / e;
+                    if (t < 0) { t = 0; s = Math.max(0, Math.min(1, -c / a)); }
+                    else if (t > 1) { t = 1; s = Math.max(0, Math.min(1, (b - c) / a)); }
+                }
+            }
+            const c1 = p1.add(d1.scale(s));
+            const c2 = p2.add(d2.scale(t));
+            return { distance: BABYLON.Vector3.Distance(c1, c2), pointOnFirst: c1, pointOnSecond: c2 };
         }
 
         // ========== GAME UPDATE ==========
@@ -1967,19 +1999,30 @@
                 // (up to 900 u/s) can move ~14 units in a single frame, so
                 // testing only the bullet's endpoint each frame lets it tunnel
                 // straight through a target without ever registering as
-                // "close enough" at a sampled instant. Instead test the
-                // closest point on the whole travel segment for this frame
-                // (prevPos -> new position) against the entity.
+                // "close enough" at a sampled instant - the bullet's whole
+                // travel segment for this frame (prevPos -> new position) is
+                // tested instead. That segment is tested against the
+                // entity's own vertical capsule-core segment (not just its
+                // single mesh pivot point): a bullet fired level from the
+                // muzzle's actual height sits noticeably above the target's
+                // pivot even on a dead-on shot, so comparing against only
+                // that one point made level shots miss right at the edge of
+                // the hit radius despite visually lining up perfectly.
                 let hit = false;
                 for (let entity of [player, ...bots]) {
                     if (entity && entity.isAlive && entity !== bullet.owner) {
-                        const impactPoint = closestPointOnSegment(entity.mesh.position, prevPos, bullet.position);
-                        const dist = BABYLON.Vector3.Distance(impactPoint, entity.mesh.position);
-                        if (dist < 0.5) {
+                        const entityHalfHeight = 0.75;
+                        const entityBottom = entity.mesh.position.add(new BABYLON.Vector3(0, -entityHalfHeight, 0));
+                        const entityTop = entity.mesh.position.add(new BABYLON.Vector3(0, entityHalfHeight, 0));
+                        const closest = closestDistanceSegmentSegment(prevPos, bullet.position, entityBottom, entityTop);
+                        if (closest.distance < 0.4) {
+                            const impactPoint = closest.pointOnFirst;
                             bullet.position.copyFrom(impactPoint);
-                            // Check if headshot (top 25% of mesh)
+                            // Headshot = impact landed in the top portion of
+                            // the capsule (the point found on the entity's
+                            // own core segment, not the bullet's height).
                             const headThreshold = entity.mesh.position.y + 0.4;
-                            const isHeadshot = impactPoint.y > headThreshold;
+                            const isHeadshot = closest.pointOnSecond.y > headThreshold;
                             const damageMul = isHeadshot ? 2.0 : 1.0;
                             const totalDamage = bullet.damage * damageMul;
 
