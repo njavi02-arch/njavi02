@@ -19,7 +19,7 @@ Documento vivo de gestión autónoma del proyecto. Se actualiza en cada ciclo de
 | `SoundSynth` (audio 100% sintetizado, sin assets externos) | 🟢 | — | |
 | `SKIN_REGISTRY` / sistema de camuflajes | 🟢 | — | Solo 1 skin real + 1 patrón de prueba, ver FASE 4 |
 | Gestión de memoria (fuga de materiales por disparo) | 🟢 | — | Corregido, materiales compartidos |
-| Auditoría general de rendimiento (draw calls, mallas huérfanas) | 🔴 | P2 | No se ha hecho una pasada dedicada desde la expansión a 35 armas |
+| Auditoría general de rendimiento (draw calls, mallas huérfanas) | 🟢 | — | Sin fugas tras la expansión a 35 armas; mallas/materiales/texturas planos en una partida real de 15s con disparo+cambio de arma continuos; ver `BULLET_OPS_PROGRESS.md` |
 | Organización del código (comentarios, nomenclatura) | 🟢 | — | Mantenido consistente durante toda la sesión |
 
 ## FASE 2 — JUGADOR
@@ -175,7 +175,7 @@ Sin bugs críticos conocidos abiertos en este momento.
 | Fuga de materiales por disparo | 🟢 | — | Corregido |
 | Reutilización de texturas de partículas | 🟢 | — | |
 | Límite de balas en vuelo (`maxBullets`) | 🟢 | — | Ya existía |
-| Auditoría de draw calls / mallas por partida larga | 🔴 | P2 | No hecha desde la expansión a 35 armas (más viewmodels precreados por loadout) |
+| Auditoría de draw calls / mallas por partida larga | 🟢 | — | Ver FASE 1 |
 | LOD | 🔴 | P4 | Geometría actual demasiado simple para necesitarlo aún |
 | Oclusión / culling de mapas | 🔴 | P4 | Mapas pequeños, bajo impacto por ahora |
 
@@ -199,7 +199,8 @@ Revisión continua transversal. Elementos "de prototipo" detectados activamente 
 ~~P2 — Retículas por categoría de arma~~ 🟢 completado.
 ~~P2 — Postprocesado ligero~~ 🟢 completado.
 ~~P2 — Sonido ambiente diferenciado por mapa~~ 🟢 completado.
+~~P2 — Auditoría de rendimiento (draw calls, mallas huérfanas)~~ 🟢 completado. Sin fugas encontradas; ver `BULLET_OPS_PROGRESS.md`.
 
-Hallazgo previo sobre `initGame()` (una sola ejecución por carga de página, sin riesgo de acumulación de escenas/mallas entre partidas) confirmado, pero no sustituye la auditoría de draw calls/mallas huérfanas pendiente (FASE 1/11) — esa sigue abierta como P2, no se ha hecho desde la expansión a 35 armas.
+Ya no quedan tareas P0/P1/P2 abiertas en el índice en este momento. Todo lo restante es P3/P4 o está bloqueado en assets reales (🔒).
 
-**Siguiente**: auditoría de rendimiento — draw calls y mallas huérfanas tras la expansión a 35 armas (FASE 1/11, P2) — cada loadout precrea 3 viewmodels; comprobar que el cambio de arma/loadout no deja mallas o materiales sin liberar. Después: investigar si hay alguna mejora intermedia posible para el ADS placeholder sin modelo real (por ejemplo centrar mejor la geometría de mira placeholder), dado que el modelo real sigue bloqueado en assets.
+**Siguiente**: investigar si hay alguna mejora intermedia posible para el ADS placeholder sin modelo real (por ejemplo centrar mejor la geometría de mira placeholder / reducir el FOV de mira más agresivamente al apuntar con armas de precisión), dado que el modelo real de mira sigue bloqueado en assets (FASE 4, P2 marcado 🔧). Si no hay mejora viable sin modelo, pasar a P3: sonido dedicado de slide (FASE 7), o segundo pase de props/detalle ambiental por mapa (FASE 6).
