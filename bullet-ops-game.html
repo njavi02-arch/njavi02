@@ -210,6 +210,7 @@
                 <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">MAP:</div>
                 <button class="menu-button" id="map1Btn" style="width: 140px; font-size: 0.8rem;">🎮 BACKLOT-7</button>
                 <button class="menu-button" id="map2Btn" style="width: 140px; font-size: 0.8rem;">🏭 INDUSTRIAL-5</button>
+                <button class="menu-button" id="map3Btn" style="width: 140px; font-size: 0.8rem;">🏔 OUTPOST-9</button>
             </div>
 
             <div style="margin: 1rem 0;">
@@ -1526,24 +1527,13 @@
             // Build map
             buildMap();
 
-            // Spawn points based on map
-            const blueSpawns = [
-                new BABYLON.Vector3(-30, 2, -30),
-                new BABYLON.Vector3(-35, 2, -20),
-                new BABYLON.Vector3(-20, 2, -35)
-            ];
-
-            const redSpawns = [
-                new BABYLON.Vector3(30, 2, 30),
-                new BABYLON.Vector3(35, 2, 20),
-                new BABYLON.Vector3(20, 2, 35)
-            ];
-
-            const ffaSpawns = [
-                new BABYLON.Vector3(-30, 2, 30),
-                new BABYLON.Vector3(30, 2, -30),
-                new BABYLON.Vector3(0, 2, -40)
-            ];
+            // Spawn points - map-specific, since each map's layout puts
+            // "open ground near each team's side" in different places (see
+            // MAP_SPAWNS, defined next to the map builders below).
+            const spawns = MAP_SPAWNS[selectedMap] || MAP_SPAWNS['BACKLOT-7'];
+            const blueSpawns = spawns.blue;
+            const redSpawns = spawns.red;
+            const ffaSpawns = spawns.ffa;
 
             // Spawn player
             const playerTeam = gameMode === 'TDM' ? 'BLUE' : 'NEUTRAL';
@@ -1597,10 +1587,33 @@
         function buildMap() {
             if (selectedMap === 'INDUSTRIAL-5') {
                 buildMapIndustrial();
+            } else if (selectedMap === 'OUTPOST-9') {
+                buildMapOutpost();
             } else {
                 buildMapBacklot();
             }
         }
+
+        // Per-map spawn points. BACKLOT-7/INDUSTRIAL-5 both happen to work
+        // with the same diagonal-corner layout (their open ground lines up
+        // there); OUTPOST-9's bases-at-opposite-ends design needs its own.
+        const MAP_SPAWNS = {
+            'BACKLOT-7': {
+                blue: [new BABYLON.Vector3(-30, 2, -30), new BABYLON.Vector3(-35, 2, -20), new BABYLON.Vector3(-20, 2, -35)],
+                red: [new BABYLON.Vector3(30, 2, 30), new BABYLON.Vector3(35, 2, 20), new BABYLON.Vector3(20, 2, 35)],
+                ffa: [new BABYLON.Vector3(-30, 2, 30), new BABYLON.Vector3(30, 2, -30), new BABYLON.Vector3(0, 2, -40)]
+            },
+            'INDUSTRIAL-5': {
+                blue: [new BABYLON.Vector3(-30, 2, -30), new BABYLON.Vector3(-35, 2, -20), new BABYLON.Vector3(-20, 2, -35)],
+                red: [new BABYLON.Vector3(30, 2, 30), new BABYLON.Vector3(35, 2, 20), new BABYLON.Vector3(20, 2, 35)],
+                ffa: [new BABYLON.Vector3(-30, 2, 30), new BABYLON.Vector3(30, 2, -30), new BABYLON.Vector3(0, 2, -40)]
+            },
+            'OUTPOST-9': {
+                blue: [new BABYLON.Vector3(-68, 2, 0), new BABYLON.Vector3(-64, 2, 30), new BABYLON.Vector3(-64, 2, -30)],
+                red: [new BABYLON.Vector3(68, 2, 0), new BABYLON.Vector3(64, 2, 30), new BABYLON.Vector3(64, 2, -30)],
+                ffa: [new BABYLON.Vector3(-64, 2, 30), new BABYLON.Vector3(64, 2, -30), new BABYLON.Vector3(0, 2, 30), new BABYLON.Vector3(0, 2, -30)]
+            }
+        };
 
         function buildMapBacklot() {
             // BACKLOT-7: Urban environment with central tower
@@ -1729,6 +1742,71 @@
                 );
                 barrel.material = barrelMat;
                 barrel.checkCollisions = true;
+            }
+        }
+
+        // OUTPOST-9: original competitive-shooter layout (not copied from
+        // any existing game/map) - mirror-symmetric team bases at opposite
+        // ends of a long play area, connected by three parallel routes
+        // (a contested open center lane with map-control structures, plus
+        // two tighter flank lanes), with gaps left in the flank cover at
+        // the map's midpoints so players can cut between lanes instead of
+        // being stuck in one for the whole run. Blockout only - see
+        // BULLET_OPS_PROGRESS.md for the planned art pass.
+        function buildMapOutpost() {
+            const ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 180, height: 100 }, scene);
+            const groundMat = new BABYLON.StandardMaterial('groundMat3', scene);
+            groundMat.diffuseColor = new BABYLON.Color3(0.3, 0.32, 0.3);
+            ground.material = groundMat;
+
+            const baseMat = new BABYLON.StandardMaterial('outpostBaseMat', scene);
+            baseMat.diffuseColor = new BABYLON.Color3(0.32, 0.4, 0.45);
+            const coverMat = new BABYLON.StandardMaterial('outpostCoverMat', scene);
+            coverMat.diffuseColor = new BABYLON.Color3(0.42, 0.4, 0.36);
+            const towerMat = new BABYLON.StandardMaterial('outpostTowerMat', scene);
+            towerMat.diffuseColor = new BABYLON.Color3(0.5, 0.48, 0.42);
+
+            function addBox(name, size, position, material) {
+                const box = BABYLON.MeshBuilder.CreateBox(name, size, scene);
+                box.position = position;
+                box.material = material;
+                box.checkCollisions = true;
+                return box;
+            }
+
+            // Team bases: open "U" shape facing mid so they give a defensible
+            // spawn without fully enclosing it. BLUE at -x, RED mirrored at +x.
+            for (const side of [-1, 1]) {
+                const mat = baseMat;
+                addBox(`base_back_${side}`, { width: 4, height: 8, depth: 54 }, new BABYLON.Vector3(side * 88, 4, 0), mat);
+                addBox(`base_north_${side}`, { width: 24, height: 8, depth: 4 }, new BABYLON.Vector3(side * 78, 4, 27), mat);
+                addBox(`base_south_${side}`, { width: 24, height: 8, depth: 4 }, new BABYLON.Vector3(side * 78, 4, -27), mat);
+            }
+
+            // Center lane: a contested map-control tower plus a low side
+            // platform, with a couple of crates for close-range cover.
+            addBox('centerTower', { width: 10, height: 10, depth: 10 }, new BABYLON.Vector3(0, 5, 0), towerMat);
+            addBox('centerPlatform', { width: 16, height: 0.5, depth: 8 }, new BABYLON.Vector3(0, 3, 16), towerMat);
+            addBox('watchtower', { width: 4, height: 14, depth: 4 }, new BABYLON.Vector3(14, 7, 0), towerMat);
+            for (const x of [-28, -14, 14, 28]) {
+                addBox(`midCrate_${x}`, { width: 3.5, height: 3.5, depth: 3.5 }, new BABYLON.Vector3(x, 1.75, (x % 28 === 0) ? 6 : -6), coverMat);
+            }
+
+            // Flank lanes: short cover segments along z=+35 (north) and
+            // z=-35 (south), with a gap left at x=0 and x=+/-50 on both so
+            // players can cut across into the center lane or the other
+            // flank instead of being funneled through one corridor.
+            for (const z of [35, -35]) {
+                for (const x of [-60, -20, 20, 60]) {
+                    addBox(`flankCover_${x}_${z}`, { width: 12, height: 3.5, depth: 2 }, new BABYLON.Vector3(x, 1.75, z), coverMat);
+                }
+            }
+
+            // A handful of crates scattered off-lane for extra cover variety.
+            for (let i = 0; i < 6; i++) {
+                const x = (Math.random() - 0.5) * 130;
+                const z = (Math.random() < 0.5 ? 1 : -1) * (10 + Math.random() * 15);
+                addBox(`extraCrate${i}`, { width: 3, height: 3, depth: 3 }, new BABYLON.Vector3(x, 1.5, z), coverMat);
             }
         }
 
@@ -2146,14 +2224,13 @@
 
         function updateMapDisplay() {
             document.getElementById('mapDisplay').textContent = `MAP: ${selectedMap}`;
-            const map1Btn = document.getElementById('map1Btn');
-            const map2Btn = document.getElementById('map2Btn');
-            if (selectedMap === 'BACKLOT-7') {
-                map1Btn.style.boxShadow = '0 0 30px rgba(0, 255, 0, 1)';
-                map2Btn.style.boxShadow = '0 0 15px rgba(0, 255, 0, 0.5)';
-            } else {
-                map2Btn.style.boxShadow = '0 0 30px rgba(0, 255, 0, 1)';
-                map1Btn.style.boxShadow = '0 0 15px rgba(0, 255, 0, 0.5)';
+            const buttons = {
+                'BACKLOT-7': document.getElementById('map1Btn'),
+                'INDUSTRIAL-5': document.getElementById('map2Btn'),
+                'OUTPOST-9': document.getElementById('map3Btn')
+            };
+            for (const [id, btn] of Object.entries(buttons)) {
+                btn.style.boxShadow = id === selectedMap ? '0 0 30px rgba(0, 255, 0, 1)' : '0 0 15px rgba(0, 255, 0, 0.5)';
             }
         }
 
@@ -2178,6 +2255,12 @@
         document.getElementById('map2Btn').addEventListener('click', () => {
             selectedMap = 'INDUSTRIAL-5';
             gameConfig.map = 'INDUSTRIAL-5';
+            updateMapDisplay();
+        });
+
+        document.getElementById('map3Btn').addEventListener('click', () => {
+            selectedMap = 'OUTPOST-9';
+            gameConfig.map = 'OUTPOST-9';
             updateMapDisplay();
         });
 
