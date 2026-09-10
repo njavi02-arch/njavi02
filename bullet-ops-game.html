@@ -870,8 +870,11 @@
             function playHitmarker()   { tone({ freq: 1400, duration: 0.03, type: 'sine', gain: 0.12, decay: 0.03 }); }
             function playHeadshot()    { tone({ freq: 1800, duration: 0.05, type: 'sine', gain: 0.18, decay: 0.05, freqEnd: 900 }); }
             function playKillConfirm() { tone({ freq: 600, duration: 0.12, type: 'triangle', gain: 0.18, decay: 0.12, freqEnd: 1200 }); }
+            function playFootstep(crouched) { noiseBurst({ duration: crouched ? 0.03 : 0.045, filterFreq: crouched ? 700 : 900, gain: crouched ? 0.06 : 0.1, decay: 0.03 }); }
+            function playJump() { tone({ freq: 300, duration: 0.05, type: 'square', gain: 0.12, decay: 0.05, freqEnd: 500 }); }
+            function playLand() { noiseBurst({ duration: 0.06, filterFreq: 600, gain: 0.15, decay: 0.05 }); }
 
-            return { getCtx, setVolume, startAmbient, stopAmbient, playGunshot, playReloadClick, playMagOut, playMagIn, playEmpty, playEquip, playHitmarker, playHeadshot, playKillConfirm };
+            return { getCtx, setVolume, startAmbient, stopAmbient, playGunshot, playReloadClick, playMagOut, playMagIn, playEmpty, playEquip, playHitmarker, playHeadshot, playKillConfirm, playFootstep, playJump, playLand };
         })();
 
         // ========== SKIN / CAMOUFLAGE SYSTEM ==========
@@ -1564,6 +1567,7 @@
                 this.jumpForce = 8;
                 this.isGrounded = false;
                 this.isMoving = false;
+                this.footstepTimer = 0;
 
                 // Slide: Sprint -> (press Crouch) -> Slide -> Recovery. A
                 // burst of speed along the current facing, decaying via
@@ -1609,6 +1613,12 @@
 
             update(deltaTime, inputs) {
                 if (!this.isAlive) return;
+
+                // Captured before the jump/gravity/ground-check logic below
+                // mutates this.isGrounded, so the landing-sound edge trigger
+                // near the end of this method can tell "was airborne, now
+                // grounded" apart from "was already grounded".
+                const groundedAtFrameStart = this.isGrounded;
 
                 // Update spawn shield
                 this.spawnShieldTime = Math.max(0, this.spawnShieldTime - deltaTime);
@@ -1704,6 +1714,7 @@
                 if (this.isGrounded && inputs.keys[' ']) {
                     this.velocity.y = this.jumpForce;
                     this.isGrounded = false;
+                    SoundSynth.playJump();
                 }
                 if (!this.isGrounded) {
                     this.velocity.y -= 9.81 * deltaTime;
@@ -1726,6 +1737,23 @@
                     this.isGrounded = true;
                 } else {
                     this.isGrounded = false;
+                }
+
+                // Footsteps + landing sfx - a simple periodic timer while
+                // grounded and moving (cadence scales with sprint/crouch),
+                // plus a one-shot landing sound on the airborne->grounded
+                // edge (jump's own sound already fired above).
+                if (!groundedAtFrameStart && this.isGrounded) {
+                    SoundSynth.playLand();
+                }
+                if (this.isGrounded && isMoving && !this.isSliding) {
+                    this.footstepTimer -= deltaTime;
+                    if (this.footstepTimer <= 0) {
+                        SoundSynth.playFootstep(this.isCrouching);
+                        this.footstepTimer = this.isCrouching ? 0.5 : (isSprinting ? 0.28 : 0.38);
+                    }
+                } else {
+                    this.footstepTimer = 0;
                 }
 
                 // Drive the whole weapon system (fire/reload/ADS/switch/
@@ -1802,6 +1830,7 @@
                 this.slideTimer = 0;
                 this.wasSprinting = false;
                 this.crouchKeyWasDown = false;
+                this.footstepTimer = 0;
             }
 
             addKill() {
