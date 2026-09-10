@@ -212,7 +212,7 @@
                 <div id="mapDisplay" style="margin-top: 0.3rem;">MAP: BACKLOT-7</div>
                 <div style="margin-top: 0.8rem;">
                     WASD Move • Mouse Look • Click Fire • R Reload<br>
-                    1/2/3 Swap Weapon • Space Jump • Shift Sprint
+                    1/2/3 Swap Weapon • Space Jump • Shift Sprint • C Crouch • ESC Pause
                 </div>
             </div>
         </div>
@@ -307,6 +307,18 @@
                 // Create mesh
                 this.mesh = BABYLON.MeshBuilder.CreateCapsule('player', { height: 1.8, radius: 0.3 }, scene);
                 this.mesh.position = pos.clone();
+                // Collision volume used by moveWithCollisions() below so the
+                // player is blocked by walls/obstacles instead of walking
+                // through them. Ground contact is still handled by the manual
+                // groundLevel snap further down, so the ground mesh itself is
+                // deliberately left without checkCollisions.
+                this.mesh.ellipsoid = new BABYLON.Vector3(0.35, 0.9, 0.35);
+                this.mesh.checkCollisions = true;
+                this.isCrouching = false;
+                this.standGroundLevel = 1;
+                this.crouchGroundLevel = 0.6;
+                this.standEllipsoidY = 0.9;
+                this.crouchEllipsoidY = 0.5;
 
                 // Camera
                 this.camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, 0.6, 0), scene);
@@ -369,11 +381,17 @@
                 if (inputs.keys['d']) moveDir.addInPlace(right);
                 if (inputs.keys['a']) moveDir.addInPlace(right.scale(-1));
 
+                // Crouch (hold C) - slower movement, lower stance/collision volume
+                this.isCrouching = !!inputs.keys['c'];
+                this.mesh.ellipsoid.y = this.isCrouching ? this.crouchEllipsoidY : this.standEllipsoidY;
+
                 // Weapon mobility modifier
                 const weaponMobility = this.currentWeapon === 1 ? 1.15 : (this.currentWeapon === 2 ? 1.1 : 1.0);
-                const baseSpeed = this.moveSpeed * weaponMobility;
-                const baseSprint = this.sprintSpeed * weaponMobility;
-                const speed = inputs.keys['shift'] ? baseSprint : baseSpeed;
+                const crouchMobility = this.isCrouching ? 0.5 : 1.0;
+                const baseSpeed = this.moveSpeed * weaponMobility * crouchMobility;
+                const baseSprint = this.sprintSpeed * weaponMobility * crouchMobility;
+                // Sprint is disabled while crouching (can't sprint-crouch)
+                const speed = (inputs.keys['shift'] && !this.isCrouching) ? baseSprint : baseSpeed;
 
                 if (moveDir.length() > 0) {
                     moveDir.normalize();
@@ -395,13 +413,17 @@
                     this.velocity.y -= 9.81 * deltaTime;
                 }
 
-                // Apply velocity
-                this.mesh.position.addInPlace(this.velocity.scale(deltaTime));
+                // Apply velocity via moveWithCollisions so walls/obstacles marked
+                // checkCollisions=true (see buildMap) actually block the player
+                // instead of being walked through. The ground mesh itself is not
+                // collidable, so vertical rest is still handled by the manual
+                // snap below exactly as before.
+                this.mesh.moveWithCollisions(this.velocity.scale(deltaTime));
 
                 // Ground check - snap to ground level so the player never sinks
                 // through the floor (previous version only clamped velocity, not
                 // position, causing a slow sink through the map every frame).
-                const groundLevel = 1;
+                const groundLevel = this.isCrouching ? this.crouchGroundLevel : this.standGroundLevel;
                 if (this.mesh.position.y <= groundLevel) {
                     this.mesh.position.y = groundLevel;
                     this.velocity.y = 0;
@@ -525,6 +547,10 @@
 
                 this.mesh = BABYLON.MeshBuilder.CreateCapsule('bot', { height: 1.8, radius: 0.3 }, scene);
                 this.mesh.position = pos.clone();
+                // Same collision volume treatment as Player - bots must also be
+                // blocked by walls/obstacles instead of walking through them.
+                this.mesh.ellipsoid = new BABYLON.Vector3(0.35, 0.9, 0.35);
+                this.mesh.checkCollisions = true;
 
                 const mat = new BABYLON.StandardMaterial('botMat' + Math.random(), scene);
                 let color = new BABYLON.Color3(0.2, 0.8, 0.2); // Green for FFA bots
@@ -609,7 +635,7 @@
 
                 // Gravity
                 this.velocity.y -= 9.81 * deltaTime;
-                this.mesh.position.addInPlace(this.velocity.scale(deltaTime));
+                this.mesh.moveWithCollisions(this.velocity.scale(deltaTime));
 
                 // Ground
                 if (this.mesh.position.y < 1) {
@@ -806,21 +832,25 @@
             const tower = BABYLON.MeshBuilder.CreateBox('tower', { size: 12 }, scene);
             tower.position.y = 6;
             tower.material = towerMat;
+            tower.checkCollisions = true;
 
             // Elevated platform
             const platform = BABYLON.MeshBuilder.CreateBox('platform', { width: 25, height: 0.5, depth: 25 }, scene);
             platform.position = new BABYLON.Vector3(0, 3, 0);
             platform.material = towerMat;
+            platform.checkCollisions = true;
 
             // Left base
             const left = BABYLON.MeshBuilder.CreateBox('left', { width: 20, height: 10, depth: 30 }, scene);
             left.position = new BABYLON.Vector3(-40, 4, 0);
             left.material = towerMat;
+            left.checkCollisions = true;
 
             // Right base
             const right = BABYLON.MeshBuilder.CreateBox('right', { width: 20, height: 10, depth: 30 }, scene);
             right.position = new BABYLON.Vector3(40, 4, 0);
             right.material = towerMat;
+            right.checkCollisions = true;
 
             // Walls for cover
             const wallMat = new BABYLON.StandardMaterial('wallMat', scene);
@@ -829,10 +859,12 @@
             const wall1 = BABYLON.MeshBuilder.CreateBox('wall1', { width: 2, height: 4, depth: 30 }, scene);
             wall1.position = new BABYLON.Vector3(-15, 2, 20);
             wall1.material = wallMat;
+            wall1.checkCollisions = true;
 
             const wall2 = BABYLON.MeshBuilder.CreateBox('wall2', { width: 2, height: 4, depth: 30 }, scene);
             wall2.position = new BABYLON.Vector3(15, 2, -20);
             wall2.material = wallMat;
+            wall2.checkCollisions = true;
 
             // Scattered crates
             for (let i = 0; i < 8; i++) {
@@ -843,6 +875,7 @@
                     (Math.random() - 0.5) * 100
                 );
                 crate.material = wallMat;
+                crate.checkCollisions = true;
             }
 
             // Corner structures for flanking
@@ -854,6 +887,7 @@
                     const corner = BABYLON.MeshBuilder.CreateBox(`corner_${x}_${z}`, { size: 8 }, scene);
                     corner.position = new BABYLON.Vector3(x, 3, z);
                     corner.material = cornerMat;
+                    corner.checkCollisions = true;
                 }
             }
         }
@@ -872,15 +906,18 @@
             const factory1 = BABYLON.MeshBuilder.CreateBox('factory1', { width: 30, height: 8, depth: 15 }, scene);
             factory1.position = new BABYLON.Vector3(0, 4, 0);
             factory1.material = metalMat;
+            factory1.checkCollisions = true;
 
             const factory2 = BABYLON.MeshBuilder.CreateBox('factory2', { width: 15, height: 15, depth: 30 }, scene);
             factory2.position = new BABYLON.Vector3(0, 7.5, 35);
             factory2.material = metalMat;
+            factory2.checkCollisions = true;
 
             // Elevated walkway
             const walkway = BABYLON.MeshBuilder.CreateBox('walkway', { width: 60, height: 0.5, depth: 6 }, scene);
             walkway.position = new BABYLON.Vector3(0, 6, -35);
             walkway.material = metalMat;
+            walkway.checkCollisions = true;
 
             // Warehouse corners
             const warehouseMat = new BABYLON.StandardMaterial('warehouseMat', scene);
@@ -891,6 +928,7 @@
                     const warehouse = BABYLON.MeshBuilder.CreateBox(`warehouse_${x}_${z}`, { width: 15, height: 12, depth: 15 }, scene);
                     warehouse.position = new BABYLON.Vector3(x, 6, z);
                     warehouse.material = warehouseMat;
+                    warehouse.checkCollisions = true;
                 }
             }
 
@@ -906,6 +944,7 @@
                     (Math.random() - 0.5) * 120
                 );
                 barrel.material = barrelMat;
+                barrel.checkCollisions = true;
             }
         }
 
