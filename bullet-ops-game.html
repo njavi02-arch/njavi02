@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BULLET OPS - Prototype</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            background: #0a0e27;
+            font-family: 'Arial', sans-serif;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        #menu {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .menu-hidden { display: none !important; }
+        .menu-title {
+            font-size: 3rem;
+            color: #00ff00;
+            text-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+            margin-bottom: 2rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+        }
+        .menu-button {
+            padding: 1rem 2rem;
+            margin: 0.5rem;
+            background: #00ff00;
+            border: 2px solid #00ff00;
+            color: #000;
+            font-size: 1.2rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+            transition: all 0.3s;
+        }
+        .menu-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.8);
+        }
+        #hud {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            font-family: monospace;
+            color: #00ff00;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+        .menu-hidden #hud { display: none; }
+        #score { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-size: 1.2rem; }
+        #health { position: absolute; bottom: 20px; left: 20px; font-size: 1rem; line-height: 1.5; }
+        #ammo { position: absolute; bottom: 20px; right: 20px; font-size: 1rem; }
+        #crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(0, 255, 0, 0.5);
+            border-radius: 50%;
+        }
+        .crosshair-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 4px;
+            height: 4px;
+            background: rgba(0, 255, 0, 0.7);
+            border-radius: 50%;
+        }
+        #info {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00ff00;
+            font-size: 1.5rem;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="menu">
+        <div style="text-align: center;">
+            <div class="menu-title">BULLET OPS</div>
+            <div style="margin: 2rem 0; color: #00ff00; font-size: 1rem;">FPS PROTOTYPE</div>
+            <button class="menu-button" id="playBtn">PLAY</button>
+            <button class="menu-button" id="quitBtn">QUIT</button>
+        </div>
+    </div>
+
+    <div id="hud">
+        <div id="crosshair"><div class="crosshair-dot"></div></div>
+        <div id="score">BLUE 0 - RED 0 | TIME 10:00</div>
+        <div id="health">HP: <span id="hpVal">100</span>/100<br>BO-01 AR</div>
+        <div id="ammo">30 / 120</div>
+    </div>
+
+    <div id="info" style="display: none;">LOADING...</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babylonjs/7.0.0/babylon.min.js"></script>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const menu = document.getElementById('menu');
+        let engine, scene, player;
+
+        function startGame() {
+            menu.classList.add('menu-hidden');
+
+            if (!engine) {
+                try {
+                    engine = new BABYLON.Engine(canvas, true);
+                    initializeGame();
+                } catch (e) {
+                    console.error('Error initializing game:', e);
+                    document.getElementById('info').textContent = 'Error: ' + e.message;
+                    document.getElementById('info').style.display = 'block';
+                }
+            }
+        }
+
+        function initializeGame() {
+            scene = new BABYLON.Scene(engine);
+            scene.clearColor = new BABYLON.Color3(0.06, 0.055, 0.15);
+            scene.gravity = new BABYLON.Vector3(0, -9.81, 0);
+            scene.collisionsEnabled = true;
+
+            // Camera
+            const camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, 5, -20));
+            camera.attachControl(canvas, true);
+            camera.inertia = 0.5;
+            camera.speed = 0;
+            scene.activeCamera = camera;
+
+            // Lights
+            const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0));
+            light.intensity = 0.9;
+            const sun = new BABYLON.DirectionalLight('sun', new BABYLON.Vector3(-0.5, -1, 0.5));
+            sun.intensity = 0.6;
+
+            // Ground
+            const ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 100, height: 100 }, scene);
+            const groundMat = new BABYLON.StandardMaterial('groundMat', scene);
+            groundMat.diffuse = new BABYLON.Color3(0.4, 0.4, 0.4);
+            ground.material = groundMat;
+
+            // Tower
+            const tower = BABYLON.MeshBuilder.CreateBox('tower', { size: 10 }, scene);
+            tower.position.y = 5;
+            const towerMat = new BABYLON.StandardMaterial('towerMat', scene);
+            towerMat.diffuse = new BABYLON.Color3(0.6, 0.6, 0.6);
+            tower.material = towerMat;
+
+            // Left building
+            const leftBuilding = BABYLON.MeshBuilder.CreateBox('left', { width: 15, height: 8, depth: 20 }, scene);
+            leftBuilding.position = new BABYLON.Vector3(-25, 3, 0);
+            leftBuilding.material = towerMat;
+
+            // Right building
+            const rightBuilding = BABYLON.MeshBuilder.CreateBox('right', { width: 15, height: 8, depth: 20 }, scene);
+            rightBuilding.position = new BABYLON.Vector3(25, 3, 0);
+            rightBuilding.material = towerMat;
+
+            // Add some obstacles
+            for (let i = 0; i < 3; i++) {
+                const box = BABYLON.MeshBuilder.CreateBox(`obs${i}`, { size: 4 }, scene);
+                box.position = new BABYLON.Vector3((Math.random() - 0.5) * 50, 2, (Math.random() - 0.5) * 50);
+                box.material = towerMat;
+            }
+
+            // Add bots (simple spheres)
+            for (let i = 0; i < 3; i++) {
+                const bot = BABYLON.MeshBuilder.CreateSphere(`bot${i}`, { diameter: 2 }, scene);
+                bot.position = new BABYLON.Vector3(20 + i * 5, 2, 20);
+                const botMat = new BABYLON.StandardMaterial(`botMat${i}`, scene);
+                botMat.diffuse = new BABYLON.Color3(1, 0, 0);
+                bot.material = botMat;
+            }
+
+            // Game loop
+            let time = 0;
+            engine.runRenderLoop(() => {
+                time += engine.getDeltaTime() / 1000;
+
+                // Simple camera movement
+                const movement = new BABYLON.Vector3(0, 0, 0);
+                if (keys['w']) movement.z += 0.1;
+                if (keys['s']) movement.z -= 0.1;
+                if (keys['a']) movement.x -= 0.1;
+                if (keys['d']) movement.x += 0.1;
+
+                camera.position.addInPlace(movement);
+
+                // Update HUD
+                const mins = Math.floor((600 - time) / 60);
+                const secs = Math.floor((600 - time) % 60);
+                document.getElementById('score').textContent =
+                    `BLUE 0 - RED 0 | TIME ${mins}:${secs.toString().padStart(2, '0')}`;
+
+                scene.render();
+            });
+
+            window.addEventListener('resize', () => engine.resize());
+        }
+
+        // Input handling
+        const keys = {};
+        window.addEventListener('keydown', (e) => { keys[e.key.toLowerCase()] = true; });
+        window.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
+
+        // Buttons
+        document.getElementById('playBtn').addEventListener('click', startGame);
+        document.getElementById('quitBtn').addEventListener('click', () => {
+            alert('Thanks for playing BULLET OPS!');
+        });
+
+        // Auto-start
+        console.log('BULLET OPS loaded. Click PLAY to start.');
+    </script>
+</body>
+</html>
