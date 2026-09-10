@@ -1569,6 +1569,16 @@
                 this.isMoving = false;
                 this.footstepTimer = 0;
 
+                // Camera height (crouch) + head bob. The camera previously
+                // sat at one fixed local height forever - it never lowered
+                // on crouch (only the collision ellipsoid did) and never
+                // bobbed while walking, both explicitly expected of a modern
+                // shooter's camera feel.
+                this.standCameraY = 0.6;
+                this.crouchCameraY = 0.35;
+                this.cameraHeightCurrent = this.standCameraY;
+                this.cameraBobPhase = 0;
+
                 // Slide: Sprint -> (press Crouch) -> Slide -> Recovery. A
                 // burst of speed along the current facing, decaying via
                 // friction toward crouch speed over slideDuration (or ending
@@ -1775,6 +1785,24 @@
                     this.camera.fov *= 1.06;
                 }
 
+                // Camera height (smoothly lerped toward crouch/stand target)
+                // + head bob while walking/sprinting/crouch-walking on the
+                // ground. Bob is dampened while aiming (ADS), matching the
+                // "movement should change slightly under ADS" expectation.
+                const targetCameraY = this.isCrouching ? this.crouchCameraY : this.standCameraY;
+                this.cameraHeightCurrent += (targetCameraY - this.cameraHeightCurrent) * Math.min(1, deltaTime * 10);
+
+                const bobActive = (isMoving && this.isGrounded && !this.isSliding) ? 1 : 0;
+                this.cameraBobPhase += bobActive
+                    ? deltaTime * (isSprinting ? 14 : (this.isCrouching ? 6 : 9))
+                    : deltaTime * 2;
+                const adsBobMul = 1 - this.weaponController.adsAmount * 0.7;
+                const bobAmp = (this.isCrouching ? 0.018 : 0.03) * adsBobMul;
+                const camBobY = Math.abs(Math.sin(this.cameraBobPhase)) * bobAmp * bobActive;
+                const camBobX = Math.sin(this.cameraBobPhase * 0.5) * bobAmp * 0.5 * bobActive;
+                this.camera.position.y = this.cameraHeightCurrent + camBobY;
+                this.camera.position.x = camBobX;
+
                 // Final camera rotation: the player's own raw aim combined
                 // with this frame's recoil kick.
                 const effectivePitch = this.weaponController.getEffectivePitch();
@@ -1831,6 +1859,10 @@
                 this.wasSprinting = false;
                 this.crouchKeyWasDown = false;
                 this.footstepTimer = 0;
+                this.cameraHeightCurrent = this.standCameraY;
+                this.cameraBobPhase = 0;
+                this.camera.position.y = this.standCameraY;
+                this.camera.position.x = 0;
             }
 
             addKill() {
