@@ -1103,12 +1103,22 @@
             // Procedural ambient wind bed - looping filtered noise, no
             // external audio file. Started per-match (initGame) and stopped
             // at endGame() so it doesn't run under the results screen or
-            // stack a second layer on replay.
+            // stack a second layer on replay. Per-map tonal variation (see
+            // MAP_AMBIENCE below) so the 3 maps don't all sound identical:
+            // open backlot vs. enclosed industrial hum vs. exposed outpost.
+            const MAP_AMBIENCE = {
+                'BACKLOT-7': { filterFreq: 550, filterQ: 0.7, gain: 0.045, hum: false },
+                'INDUSTRIAL-5': { filterFreq: 260, filterQ: 1.4, gain: 0.05, hum: true, humFreq: 55 },
+                'OUTPOST-9': { filterFreq: 750, filterQ: 0.5, gain: 0.06, hum: false }
+            };
             let ambientSource = null;
             let ambientGain = null;
-            function startAmbient() {
+            let ambientHum = null;
+            let ambientHumGain = null;
+            function startAmbient(mapId) {
                 const c = getCtx();
                 if (!c || ambientSource) return;
+                const cfg = MAP_AMBIENCE[mapId] || MAP_AMBIENCE['BACKLOT-7'];
                 const bufferSize = c.sampleRate * 2;
                 const buffer = c.createBuffer(1, bufferSize, c.sampleRate);
                 const data = buffer.getChannelData(0);
@@ -1118,14 +1128,30 @@
                 source.loop = true;
                 const filter = c.createBiquadFilter();
                 filter.type = 'lowpass';
-                filter.frequency.value = 450;
+                filter.frequency.value = cfg.filterFreq;
+                filter.Q.value = cfg.filterQ;
                 ambientGain = c.createGain();
-                ambientGain.gain.value = 0.045;
+                ambientGain.gain.value = cfg.gain;
                 source.connect(filter);
                 filter.connect(ambientGain);
                 ambientGain.connect(masterGain);
                 source.start();
                 ambientSource = source;
+
+                // INDUSTRIAL-5 gets a low mechanical hum under the wind bed
+                // (distant machinery/generators) - the other maps stay pure
+                // wind since they're open-air.
+                if (cfg.hum) {
+                    const hum = c.createOscillator();
+                    hum.type = 'sine';
+                    hum.frequency.value = cfg.humFreq || 55;
+                    ambientHumGain = c.createGain();
+                    ambientHumGain.gain.value = 0.02;
+                    hum.connect(ambientHumGain);
+                    ambientHumGain.connect(masterGain);
+                    hum.start();
+                    ambientHum = hum;
+                }
             }
             function stopAmbient() {
                 if (ambientSource) {
@@ -1134,6 +1160,12 @@
                     ambientSource = null;
                 }
                 if (ambientGain) { ambientGain.disconnect(); ambientGain = null; }
+                if (ambientHum) {
+                    try { ambientHum.stop(); } catch (e) { /* already stopped */ }
+                    ambientHum.disconnect();
+                    ambientHum = null;
+                }
+                if (ambientHumGain) { ambientHumGain.disconnect(); ambientHumGain = null; }
             }
 
             function noiseBurst(opts) {
@@ -2665,7 +2697,7 @@
             // Create/resume the Web Audio context as part of this click
             // gesture (browsers block audio from starting without one).
             SoundSynth.getCtx();
-            SoundSynth.startAmbient();
+            SoundSynth.startAmbient(selectedMap);
 
             if (!engine) {
                 engine = new BABYLON.Engine(canvas, true);

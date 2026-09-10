@@ -98,15 +98,15 @@ Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(
 
 | Mapa | Geometría | Iluminación | Sonido ambiente | Props/cobertura | Puertas/ventanas | Optimización |
 |---|---|---|---|---|---|---|
-| BACKLOT-7 | 🟢 blockout | 🟢 propia | 🔧 mismo viento que los otros 2 | 🟢 básico | 🔴 no existen | 🔴 sin LOD/oclusión |
-| INDUSTRIAL-5 | 🟢 blockout | 🟢 propia | 🔧 | 🟢 básico | 🔴 | 🔴 |
-| OUTPOST-9 | 🟢 blockout (3 carriles) | 🟢 propia | 🔧 | 🟢 básico | 🔴 | 🔴 |
+| BACKLOT-7 | 🟢 blockout | 🟢 propia | 🟢 propio (viento abierto, filtro 550Hz) | 🟢 básico | 🔴 no existen | 🔴 sin LOD/oclusión |
+| INDUSTRIAL-5 | 🟢 blockout | 🟢 propia | 🟢 propio (viento sordo 260Hz + zumbido de maquinaria) | 🟢 básico | 🔴 | 🔴 |
+| OUTPOST-9 | 🟢 blockout (3 carriles) | 🟢 propia | 🟢 propio (viento silbante 750Hz) | 🟢 básico | 🔴 | 🔴 |
 
 | Tarea transversal de mapas | Estado | Prioridad |
 |---|---|---|
 | Texturas de superficie reales (ahora color plano) | 🔒 | P3 — bloqueado en assets |
 | Sombras dinámicas | 🟢 | — | Implementado con `ShadowGenerator` por mapa; ver `BULLET_OPS_PROGRESS.md` para el hallazgo de rendimiento en el entorno de pruebas (SwiftShader/software) y por qué no bloqueó la función |
-| Sonido ambiente diferenciado por mapa | 🔴 | P2 |
+| Sonido ambiente diferenciado por mapa | 🟢 | — | `MAP_AMBIENCE`, análogo a `MAP_LIGHTING` |
 | Segundo pase de props/detalle ambiental | 🔴 | P3 |
 | Un cuarto mapa / más contenido | 🔴 | P4 |
 
@@ -187,8 +187,7 @@ Revisión continua transversal. Elementos "de prototipo" detectados activamente 
 - ~~Sin sonido de UI~~ — 🟢 corregido, ver FASE 7/9.
 - ~~Retícula única para 35 armas~~ — 🟢 corregido, ver FASE 5.
 - ~~Sin postprocesado~~ — 🟢 corregido, ver FASE 8.
-- **Retícula única para 35 armas** (FASE 5, P2).
-- **Sin postprocesado** (FASE 8, P2).
+- ~~Mismo sonido ambiente en los 3 mapas~~ — 🟢 corregido, ver FASE 6/7.
 - Resto de "prototipo" visual (texturas planas, modelos de bloques) está correctamente identificado como bloqueado en assets reales, no como negligencia — cada uno tiene ya su placeholder funcional documentado en `BULLET_OPS_PROGRESS.md`.
 
 ---
@@ -199,7 +198,8 @@ Revisión continua transversal. Elementos "de prototipo" detectados activamente 
 ~~P1 — Sonido de UI~~ 🟢 completado.
 ~~P2 — Retículas por categoría de arma~~ 🟢 completado.
 ~~P2 — Postprocesado ligero~~ 🟢 completado.
+~~P2 — Sonido ambiente diferenciado por mapa~~ 🟢 completado.
 
-Ya no quedan tareas P1 ni P2 abiertas de la lista original de esta fase. Auditoría de rendimiento (FASE 1/11) revisada de paso al investigar el coste de las sombras: `initGame()` solo puede ejecutarse una vez por carga de página (las dos rutas de "volver al menú" — resultados y pausa — hacen `location.reload()`), así que no existe riesgo de acumulación de escenas/mallas entre partidas; no se encontró ninguna fuga nueva. Sin más hallazgos de rendimiento que abordar por ahora.
+Hallazgo previo sobre `initGame()` (una sola ejecución por carga de página, sin riesgo de acumulación de escenas/mallas entre partidas) confirmado, pero no sustituye la auditoría de draw calls/mallas huérfanas pendiente (FASE 1/11) — esa sigue abierta como P2, no se ha hecho desde la expansión a 35 armas.
 
-**Siguiente**: sonido ambiente diferenciado por mapa (FASE 6/7, P2) — los 3 mapas usan exactamente el mismo bucle de viento. Se implementa a continuación en este mismo ciclo. Después: ADS real "a través de la mira" (bloqueado en modelo real — revisar si hay alguna mejora intermedia posible sin modelo, por ejemplo centrar mejor el placeholder).
+**Siguiente**: auditoría de rendimiento — draw calls y mallas huérfanas tras la expansión a 35 armas (FASE 1/11, P2) — cada loadout precrea 3 viewmodels; comprobar que el cambio de arma/loadout no deja mallas o materiales sin liberar. Después: investigar si hay alguna mejora intermedia posible para el ADS placeholder sin modelo real (por ejemplo centrar mejor la geometría de mira placeholder), dado que el modelo real sigue bloqueado en assets.
