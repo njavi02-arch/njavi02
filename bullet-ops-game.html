@@ -1209,6 +1209,12 @@
                 this.kickOffset = new BABYLON.Vector3(0, 0, 0);
                 this.kickRotX = 0;
 
+                // Smoothed 0-1 blend toward a sprint pose (weapon pulled
+                // down/in, canted) in updateViewmodelTransform() - previously
+                // sprinting only sped up the walk bob, the weapon never
+                // visibly reacted to sprinting at all.
+                this.sprintAmount = 0;
+
                 // Sprint-to-fire recovery: counts down cfg.sprintToFireDelay
                 // once sprinting stops, firing is locked out until it hits 0.
                 this.sprintRecoveryTimer = 0;
@@ -1447,6 +1453,16 @@
                 const basePos = BABYLON.Vector3.Lerp(HIP_POS, ADS_POS, t);
                 const baseRot = BABYLON.Vector3.Lerp(HIP_ROT, ADS_ROT, t);
 
+                // Sprint pose - weapon pulls down/in and cants, blended in
+                // smoothly rather than snapping (and smoothly back out the
+                // instant sprint stops, e.g. to fire - ADS is already
+                // mutually exclusive with sprinting via WeaponController's
+                // own isADS check, so this never fights the ADS pose above).
+                const sprintTarget = movementState.sprinting ? 1 : 0;
+                this.sprintAmount += (sprintTarget - this.sprintAmount) * Math.min(1, deltaTime * 8);
+                const SPRINT_POS_OFFSET = new BABYLON.Vector3(0.05, -0.08, -0.16);
+                const SPRINT_ROT_OFFSET = new BABYLON.Vector3(0.35, 0.45, -0.3);
+
                 // Idle sway - weapon lags slightly behind mouse movement.
                 const swaySpeed = cfg.sway.speed;
                 const swayTargetX = -inputs.mouseX * cfg.sway.amount * 0.004;
@@ -1472,8 +1488,12 @@
                     switchDip = Math.sin(progress * Math.PI) * 0.35;
                 }
 
-                root.position = basePos.add(new BABYLON.Vector3(this.swayX + bobX, this.swayY + bobY - switchDip, this.kickOffset.z));
-                root.rotation = baseRot.add(new BABYLON.Vector3(this.kickRotX, 0, 0));
+                root.position = basePos
+                    .add(new BABYLON.Vector3(this.swayX + bobX, this.swayY + bobY - switchDip, this.kickOffset.z))
+                    .add(SPRINT_POS_OFFSET.scale(this.sprintAmount));
+                root.rotation = baseRot
+                    .add(new BABYLON.Vector3(this.kickRotX, 0, 0))
+                    .add(SPRINT_ROT_OFFSET.scale(this.sprintAmount));
             }
         }
 
