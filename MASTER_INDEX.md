@@ -86,7 +86,7 @@ Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(
 | ADS (transición FOV/posición/sensibilidad) | 🟢 | — | |
 | ADS "a través de la mira" real | 🔧 | P2 | Limitado por geometría placeholder sin mira modelada — documentado, requiere modelo real |
 | Retícula reactiva a movimiento/disparo/ADS | 🟢 | — | Corregido bug: no reaccionaba a movimiento |
-| Retículas diferentes por arma/categoría | 🔴 | P2 | Ahora mismo 1 sola retícula para las 35 armas |
+| Retículas diferentes por arma/categoría | 🟢 | — | Círculo/cuadrado/diamante/solo-punto según categoría, tamaño sigue siendo reactivo al spread real |
 | Sensibilidad configurable | 🟢 | — | |
 | Invertir eje Y | 🟢 | — | |
 | Volumen general | 🟢 | — | |
@@ -185,6 +185,7 @@ Revisión continua transversal. Elementos "de prototipo" detectados activamente 
 - ~~Sin sombras~~ — 🟢 corregido, ver FASE 6/8.
 - ~~Brillo especular no deseado en superficies de mapa~~ — 🟢 corregido de paso al implementar sombras.
 - ~~Sin sonido de UI~~ — 🟢 corregido, ver FASE 7/9.
+- ~~Retícula única para 35 armas~~ — 🟢 corregido, ver FASE 5.
 - **Retícula única para 35 armas** (FASE 5, P2).
 - **Sin postprocesado** (FASE 8, P2).
 - Resto de "prototipo" visual (texturas planas, modelos de bloques) está correctamente identificado como bloqueado en assets reales, no como negligencia — cada uno tiene ya su placeholder funcional documentado en `BULLET_OPS_PROGRESS.md`.
@@ -195,7 +196,8 @@ Revisión continua transversal. Elementos "de prototipo" detectados activamente 
 
 ~~P1 — Sombras dinámicas~~ 🟢 completado.
 ~~P1 — Sonido de UI~~ 🟢 completado.
+~~P2 — Retículas por categoría de arma~~ 🟢 completado.
 
-Ya no quedan tareas P1 abiertas. **P2 — retículas por categoría de arma** (FASE 5): las 35 armas comparten una única retícula circular. Se implementa a continuación en este mismo ciclo.
+Ya no quedan tareas P1 abiertas. **P2 — postprocesado ligero** (FASE 8): la escena nunca configuró ningún pipeline de postprocesado. Se implementa a continuación en este mismo ciclo.
 
-Después: **P2 — postprocesado ligero** (FASE 8), luego auditoría de rendimiento (FASE 1/11), luego sonido ambiente diferenciado por mapa (FASE 6/7, P2).
+Después: auditoría de rendimiento (FASE 1/11), luego sonido ambiente diferenciado por mapa (FASE 6/7, P2), luego ADS real "a través de la mira" (bloqueado en modelo real, revisar si hay alguna mejora intermedia posible sin modelo).

@@ -3467,9 +3467,25 @@
             }, 100);
         }
 
+        // All 35 weapons previously shared one identical circular reticle -
+        // gives each category its own silhouette (shape + whether the
+        // center dot shows) on top of the existing spread-reactive sizing,
+        // so a shotgun reads as a wide blunt weapon and a sniper/pistol as
+        // a precise one at a glance, not just by the numbers in the catalog.
+        const CROSSHAIR_STYLE_BY_CATEGORY = {
+            [WEAPON_CATEGORY.SHOTGUN]: { shape: 'square', dot: false },
+            [WEAPON_CATEGORY.SNIPER]: { shape: 'diamond', dot: true },
+            [WEAPON_CATEGORY.PISTOL]: { shape: 'dot-only', dot: true },
+            [WEAPON_CATEGORY.MELEE]: { shape: 'dot-only', dot: true },
+            [WEAPON_CATEGORY.ROCKET]: { shape: 'square', dot: true },
+            [WEAPON_CATEGORY.SPECIAL]: { shape: 'diamond', dot: true }
+            // AR / SMG / LMG fall through to the 'circle' default below.
+        };
+
         function updateCrosshairSize() {
             if (!player) return;
             const crosshair = document.getElementById('crosshair');
+            const dot = document.querySelector('.crosshair-dot');
             const wc = player.weaponController;
             // Reflects the weapon's actual current effective spread (hip/ADS/
             // moving/bloom all included), not just a static per-weapon value,
@@ -3479,8 +3495,28 @@
             // actually widened while walking/sprinting/sliding.
             const spread = wc.getEffectiveSpread({ moving: player.isMoving, crouching: player.isCrouching });
             const spreadSize = 22 + spread * 700;
-            crosshair.style.width = spreadSize + 'px';
-            crosshair.style.height = spreadSize + 'px';
+
+            const style = CROSSHAIR_STYLE_BY_CATEGORY[wc.currentConfig.category] || { shape: 'circle', dot: true };
+            if (style.shape === 'dot-only') {
+                // No outer ring at all - just the center dot, for weapons
+                // where hip spread isn't the primary way you aim (pistols
+                // are precise enough hip-fire that a big ring reads wrong;
+                // melee doesn't have a spread ring to show in the first
+                // place).
+                crosshair.style.width = '0px';
+                crosshair.style.height = '0px';
+                crosshair.style.border = 'none';
+            } else {
+                crosshair.style.width = spreadSize + 'px';
+                crosshair.style.height = spreadSize + 'px';
+                crosshair.style.border = '2px solid rgba(0, 255, 0, 0.4)';
+                crosshair.style.borderRadius = style.shape === 'circle' ? '50%' : '3px';
+                crosshair.style.transform = style.shape === 'diamond'
+                    ? 'translate(-50%, -50%) rotate(45deg)'
+                    : 'translate(-50%, -50%)';
+            }
+            if (dot) dot.style.display = style.dot ? 'block' : 'none';
+
             // Fades out while aiming down sights, since the sight itself
             // (once a real one exists) is the aiming reference then.
             crosshair.style.opacity = String(1 - wc.adsAmount);
