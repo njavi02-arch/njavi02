@@ -1,0 +1,20 @@
+{
+  "name": "bullet-ops",
+  "version": "0.1.0",
+  "description": "BULLET OPS - Competitive Arcade FPS",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "babylonjs": "^7.0.0",
+    "babylonjs-materials": "^7.0.0",
+    "babylonjs-loaders": "^7.0.0",
+    "cannon-es": "^0.20.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
