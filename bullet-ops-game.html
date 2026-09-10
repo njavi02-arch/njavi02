@@ -192,7 +192,7 @@
             box-shadow: inset 0 0 100px rgba(255, 0, 0, 0);
             transition: box-shadow 0.1s;
         }
-        #pauseMenu, #resultsScreen, #loadoutScreen, #weaponsScreen {
+        #pauseMenu, #resultsScreen, #loadoutScreen, #weaponsScreen, #operatorsScreen {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(10, 14, 39, 0.85);
@@ -237,7 +237,7 @@
             <div style="margin: 0.6rem 0;">
                 <button class="menu-button" id="loadoutBtn">🎒 LOADOUT</button>
                 <button class="menu-button" id="weaponsBtn">🔫 WEAPONS</button>
-                <button class="menu-button locked" disabled title="Próximamente">🧑 OPERATORS</button>
+                <button class="menu-button" id="operatorsBtn">🧑 OPERATORS</button>
                 <button class="menu-button locked" disabled title="Próximamente">🎨 CUSTOMIZE</button>
                 <button class="menu-button locked" disabled title="Próximamente">⚙ SETTINGS</button>
             </div>
@@ -294,6 +294,22 @@
             <div style="font-size: 0.7rem; color: #00aa00; margin-bottom: 1rem;">Elige 3 armas de las 15 disponibles</div>
             <div id="loadoutSlots"></div>
             <button class="menu-button" id="loadoutBackBtn" style="margin-top: 1rem;">↩ BACK</button>
+        </div>
+    </div>
+
+    <div id="operatorsScreen" class="hidden">
+        <div style="text-align: center;">
+            <div class="menu-title" style="font-size: 2rem;">🧑 OPERATORS</div>
+            <div style="font-size: 0.7rem; color: #00aa00; margin-bottom: 1rem;">Callsign visible en el killfeed · color real en FFA</div>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+                <button class="menu-button" id="operatorPrevBtn" style="padding: 0.5rem 0.9rem;">◀</button>
+                <div style="width: 220px;">
+                    <div id="operatorSwatch" style="width: 60px; height: 60px; margin: 0 auto 0.6rem; border: 2px solid #00ff00; box-shadow: 0 0 15px rgba(0,255,0,0.4);"></div>
+                    <div id="operatorName" style="font-size: 1.1rem; letter-spacing: 2px;"></div>
+                </div>
+                <button class="menu-button" id="operatorNextBtn" style="padding: 0.5rem 0.9rem;">▶</button>
+            </div>
+            <button class="menu-button" id="operatorsBackBtn" style="margin-top: 1.5rem;">↩ BACK</button>
         </div>
     </div>
 
@@ -655,6 +671,33 @@
         })();
         function saveLoadout() {
             try { localStorage.setItem('bulletOpsLoadout', JSON.stringify(currentLoadout)); } catch (e) { /* private mode etc - loadout just won't persist */ }
+        }
+
+        // ========== OPERATORS (Fase 7) ==========
+        // No 3D character models exist, so rather than a fake "select a
+        // skin" screen that changes nothing, an operator here is a genuine
+        // identity: a callsign (used in the kill feed instead of a generic
+        // "YOU") and a capsule color actually applied in-game. TDM keeps
+        // team color for readability (can't have players unable to tell
+        // BLUE from RED at a glance); FFA currently gives every player the
+        // same flat neutral yellow with no way to tell the player's own
+        // capsule from a bot's, so that's exactly where this becomes real,
+        // not cosmetic.
+        const OPERATOR_REGISTRY = {
+            renegade: { id: 'renegade', name: 'RENEGADE', color: new BABYLON.Color3(0.9, 0.45, 0.1) },
+            ghost: { id: 'ghost', name: 'GHOST', color: new BABYLON.Color3(0.75, 0.78, 0.8) },
+            viper: { id: 'viper', name: 'VIPER', color: new BABYLON.Color3(0.15, 0.75, 0.25) },
+            wraith: { id: 'wraith', name: 'WRAITH', color: new BABYLON.Color3(0.55, 0.2, 0.75) },
+            titan: { id: 'titan', name: 'TITAN', color: new BABYLON.Color3(0.3, 0.45, 0.6) },
+            blaze: { id: 'blaze', name: 'BLAZE', color: new BABYLON.Color3(0.9, 0.2, 0.15) }
+        };
+        let currentOperator = 'renegade';
+        try {
+            const savedOp = localStorage.getItem('bulletOpsOperator');
+            if (savedOp && OPERATOR_REGISTRY[savedOp]) currentOperator = savedOp;
+        } catch (e) { /* ignore - keep default */ }
+        function saveOperator() {
+            try { localStorage.setItem('bulletOpsOperator', currentOperator); } catch (e) { /* ignore */ }
         }
 
         // ========== SOUND SYSTEM ==========
@@ -1419,11 +1462,18 @@
                 this.spawnShieldTime = 0;
                 this.spawnShieldDuration = 3; // 3 seconds of protection
 
-                // Material
+                // Callsign shown in the kill feed instead of a generic "YOU".
+                this.callsign = (OPERATOR_REGISTRY[currentOperator] || OPERATOR_REGISTRY.renegade).name;
+
+                // Material. Team color always wins in TDM (readability - a
+                // BLUE/RED player must be tellable at a glance); the chosen
+                // operator's own color is what actually distinguishes the
+                // player in FFA, where every capsule was previously the
+                // same flat neutral yellow.
                 const mat = new BABYLON.StandardMaterial('playerMat', scene);
                 if (team === 'BLUE') mat.diffuseColor = new BABYLON.Color3(0, 0.3, 1);
                 else if (team === 'RED') mat.diffuseColor = new BABYLON.Color3(1, 0.2, 0.2);
-                else mat.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.1); // NEUTRAL (FFA)
+                else mat.diffuseColor = (OPERATOR_REGISTRY[currentOperator] || OPERATOR_REGISTRY.renegade).color;
                 this.mesh.material = mat;
             }
 
@@ -2377,10 +2427,13 @@
                                     }
                                 }
 
-                                // Killstreak messages
+                                // Killstreak messages. In FFA the player's
+                                // chosen operator callsign is used instead of
+                                // a generic "YOU" - see OPERATOR_REGISTRY.
                                 let msg = '';
                                 if (gameMode === 'FFA') {
-                                    msg = `${bullet.owner === player ? '👤 YOU' : 'BOT'} eliminated opponent`;
+                                    const killerName = bullet.owner === player ? `👤 ${player.callsign}` : 'BOT';
+                                    msg = `${killerName} eliminated opponent`;
                                 } else {
                                     msg = `${bullet.owner.team} PLAYER Eliminated ${entity.team}`;
                                 }
@@ -2726,6 +2779,35 @@
 
         document.getElementById('weaponsBackBtn').addEventListener('click', () => {
             document.getElementById('weaponsScreen').classList.add('hidden');
+            menu.classList.remove('hidden');
+        });
+
+        // ========== OPERATORS SCREEN ==========
+        function renderOperatorsScreen() {
+            const op = OPERATOR_REGISTRY[currentOperator];
+            document.getElementById('operatorName').textContent = op.name;
+            const c = op.color;
+            document.getElementById('operatorSwatch').style.background =
+                `rgb(${Math.round(c.r * 255)}, ${Math.round(c.g * 255)}, ${Math.round(c.b * 255)})`;
+        }
+        function cycleOperator(dir) {
+            const ids = Object.keys(OPERATOR_REGISTRY);
+            let idx = ids.indexOf(currentOperator);
+            idx = (idx + dir + ids.length) % ids.length;
+            currentOperator = ids[idx];
+            saveOperator();
+            renderOperatorsScreen();
+        }
+
+        document.getElementById('operatorsBtn').addEventListener('click', () => {
+            renderOperatorsScreen();
+            menu.classList.add('hidden');
+            document.getElementById('operatorsScreen').classList.remove('hidden');
+        });
+        document.getElementById('operatorPrevBtn').addEventListener('click', () => cycleOperator(-1));
+        document.getElementById('operatorNextBtn').addEventListener('click', () => cycleOperator(1));
+        document.getElementById('operatorsBackBtn').addEventListener('click', () => {
+            document.getElementById('operatorsScreen').classList.add('hidden');
             menu.classList.remove('hidden');
         });
 

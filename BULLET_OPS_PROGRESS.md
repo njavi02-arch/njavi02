@@ -67,8 +67,20 @@ Añadidas `BO-21 BREACHER` (Shotgun), `BO-31 LONGSHOT` (Sniper), `BO-41 JUGGERNA
 
 ---
 
-### FASE 7 — Menús (arrancada)
-Menú principal ampliado con las 5 secciones del roadmap (LOADOUT/WEAPONS/OPERATORS/CUSTOMIZE/SETTINGS) como botones **genuinamente deshabilitados** (atributo `disabled`, no solo con estilo de bloqueado), marcados "🔒 Próximamente" — un click no hace absolutamente nada, no aparentan funcionar. Verificado que no interfieren con PLAY ni con el resto del menú.
+### FASE 7 — Menús (en curso: LOADOUT, WEAPONS y OPERATORS funcionales; quedan CUSTOMIZE/SETTINGS)
+Menú principal ampliado con las 5 secciones del roadmap (LOADOUT/WEAPONS/OPERATORS/CUSTOMIZE/SETTINGS) como botones **genuinamente deshabilitados** (atributo `disabled`, no solo con estilo de bloqueado), marcados "🔒 Próximamente" — un click no hace absolutamente nada, no aparentan funcionar. Verificado que no interfieren con PLAY ni con el resto del menú. Desde entonces LOADOUT, WEAPONS y OPERATORS se fueron habilitando uno a uno (ver más abajo); CUSTOMIZE y SETTINGS siguen bloqueados.
+
+### FASE 7 — Pantalla WEAPONS (catálogo de las 15 armas, completa)
+Botón WEAPONS (antes bloqueado) ahora abre un catálogo con scroll: `renderWeaponsScreen()` agrupa `WEAPON_CONFIGS` por categoría en orden fijo (AR/SMG/Shotgun/Sniper/LMG/Pistol), con cabecera por categoría y una fila por arma mostrando DMG/RoF/MAG/RNG leídos directamente de la config — cero datos duplicados a mano. Probado con Playwright: las 15 armas aparecen, agrupadas correctamente, y los valores mostrados coinciden con `WEAPON_CONFIGS`.
+
+### FASE 7 — Pantalla OPERATORS (identidad de jugador, completa)
+Sin modelos 3D de personajes disponibles todavía, OPERATORS se implementó como sistema de identidad **funcional**, no cosmético falso: `OPERATOR_REGISTRY` (6 operadores, cada uno con `callsign` + color propio), pantalla con selector ◀/▶, swatch de color y nombre, elección persistida en `localStorage` (`bulletOpsOperator`) igual que el loadout. El callsign se usa en el killfeed de FFA; el color se aplica al material de la cápsula del jugador **solo en FFA/sin equipo** — en TDM el color de equipo (azul/rojo) sigue teniendo prioridad absoluta por legibilidad, tal como ya ocurría antes.
+
+Probado de extremo a extremo con Playwright, verificando el criterio explícito de "cambiar de operador cambia de verdad el color en partida":
+- Ciclar con ◀/▶ actualiza nombre y swatch en pantalla, y persiste en `localStorage` (confirmado tras recargar la página, el operador elegido se recarga correctamente al arrancar).
+- Iniciando una partida FFA real, `player.mesh.material.diffuseColor` coincide exactamente con el color del operador elegido (antes todos los jugadores FFA eran del mismo amarillo plano) y `player.callsign` coincide con el nombre del operador.
+- Regresión TDM: con el mismo operador elegido, una partida TDM sigue asignando el color de equipo (azul/rojo) al material, no el color del operador — confirma que la prioridad de equipo no se rompió.
+- Cero errores de consola durante todo el flujo.
 
 ### FASE 6 — Pantalla de resultados (pulido)
 `endGame()` usaba `alert()` nativo (bloquea toda la página hasta que se cierra) para mostrar resultados. Sustituido por una pantalla `#resultsScreen` propia (mismo estilo visual que el menú de pausa): título con ganador/color de equipo o "VICTORY" en FFA, marcador final, kills/deaths/K/D/tiempo de partida, botón "Back to Menu". Cursor liberado al mostrarla. Empezado a usar `GameState.ENDED`, que existía en el enum pero nunca se usaba. Probado en TDM y FFA con captura de pantalla — sin diálogo bloqueante, formato correcto en ambos modos.
@@ -82,13 +94,16 @@ Las 9 armas que faltaban añadidas a `WEAPON_CONFIGS`, cada una con rol distinto
 ### FASE 9 — Selección de Loadout (completa)
 El botón LOADOUT (antes bloqueado) ahora es funcional de verdad: pantalla con 3 slots, cada uno cicla entre las 15 armas del catálogo. Elección guardada en `localStorage`, sobrevive a recargar la página. `Player` ahora construye su `WeaponController` con `currentLoadout` en vez de un array fijo. Probado de extremo a extremo: elegir un Sniper en el slot 1 → recargar página → la elección persiste → empezar partida → el arma equipada en la ranura 1 es el Sniper elegido → pulsar "1" en partida efectivamente la equipa.
 
+### Optimización — fuga de materiales por disparo (corregida)
+Cada bala (jugador y bot) y cada muzzle flash creaba su propio `StandardMaterial` nuevo con `dispose()` del mesh al final de su vida — pero `mesh.dispose()` **no libera su material** por defecto, así que cada disparo dejaba uno o dos materiales huérfanos en memoria para siempre (crítico de cara a partidas largas o multijugador). Corregido con tres materiales compartidos y creados de forma perezosa (`getSharedBulletMaterial` para bala de jugador/bot, `getSharedMuzzleFlashMaterial`), reutilizados en cada disparo en vez de crear uno nuevo cada vez. Verificado contando materiales vivos en el motor con Playwright: antes del fix crecían sin límite disparo a disparo; después, el conteo se estabiliza tras la primera creación perezosa (14→17 en 20 disparos, atribuible solo a la creación única de los 3 compartidos; 14→15 tras 10s de combate continuo con varios bots). De paso se descartó una hipótesis alternativa (que `ParticleSystem.dispose()` pudiera liberar la textura compartida de partículas) tras confirmar empíricamente que la textura sigue siendo válida después de 15 ciclos de dispose.
+
 ---
 
 ## 🔧 SIGUIENTE PASO (para retomar la sesión)
 
-Nada quedó a medias. Todo lo que estaba en la lista anterior ("siguiente paso") está terminado y probado. Por orden de prioridad según el roadmap original, lo que sigue:
+Nada quedó a medias. Todo lo que estaba en la lista anterior ("siguiente paso") está terminado y probado — WEAPONS y OPERATORS, que eran el punto 1, ya están hechos. Por orden de prioridad según el roadmap original, lo que sigue:
 
-1. **Fase 7 (Menús)**: quedan 4 secciones bloqueadas (WEAPONS/OPERATORS/CUSTOMIZE/SETTINGS) — LOADOUT ya es funcional. La más natural para seguir es WEAPONS (catálogo/inspección de las 15 armas), ya que el catálogo de datos ya existe completo.
+1. **Fase 7 (Menús)**: quedan 2 secciones bloqueadas (CUSTOMIZE/SETTINGS) — LOADOUT, WEAPONS y OPERATORS ya son funcionales. SETTINGS es la más natural de seguir (sensibilidad de ratón, volumen, invertir eje Y) porque no depende de ningún asset. CUSTOMIZE (combinar skin + operador visualmente) tiene más sentido una vez haya más de un skin real por arma.
 2. **Fase 10 (Multiplayer)**: explícitamente "solo cuando el prototipo offline sea estable" — dado que Fases 0-2, 4-9 están sólidas y probadas, es razonable empezar a planificar la arquitectura cliente/red sin tocar lo existente.
 3. **Mapas**: un segundo mapa original si se prioriza más contenido, o pase de arte sobre los 3 existentes cuando haya assets reales.
 4. **Attachments**: la arquitectura (`ATTACHMENT_SLOTS`, `getEffectiveWeaponStats()`) está lista pero vacía — implementarlos requiere decidir su representación visual, que a su vez depende de tener modelos 3D reales (no tiene sentido un attachment procedural sobre un arma procedural).
