@@ -1693,6 +1693,12 @@
                         this.currentIndex = this.pendingIndex;
                         this.currentViewmodel.root.setEnabled(true);
                         this.switchSwapped = true;
+                        // playEquip() existed in SoundSynth from the start
+                        // but was never actually called anywhere - the
+                        // switch animation ran silently. Timed to the
+                        // moment the new weapon actually becomes visible,
+                        // not when the switch starts.
+                        SoundSynth.playEquip();
                     }
                     if (this.switchTimer <= 0) {
                         this.state = 'IDLE';

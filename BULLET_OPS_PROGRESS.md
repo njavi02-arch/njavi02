@@ -196,6 +196,9 @@ Nueva redirección explícita del usuario a mitad de sesión: sistema de armas "
 
 **Nota sobre metodología de prueba**: la primera versión de la prueba de cuerpo a cuerpo dio un falso negativo (sin daño) por invocar `WeaponController.update()` manualmente en un bucle síncrono apretado sin dejar que el motor recalculara las matrices de transformación reales entre llamadas — corregido disparando a través del `inputs` global real y dejando que el bucle de renderizado auténtico (que ya corre vía `engine.runRenderLoop`) resolviera el disparo con transformaciones correctas, como ocurre en el juego real.
 
+### Bug: sonido de equipar arma nunca sonaba (corregido)
+`SoundSynth.playEquip()` existía desde el principio de la sesión (parte del sistema de sonido original) pero nunca se llamaba desde ningún sitio — el cambio de arma era completamente silencioso. Corregido llamándolo en el momento exacto en que el viewmodel nuevo se hace visible durante la transición de cambio de arma (`switchSwapped`), no al iniciar el cambio. Probado con Playwright interceptando la función: cambiar de arma (tecla 2) disparó la llamada exactamente 1 vez. Cero errores de consola.
+
 ### PENDIENTE — asset inventory de las 20 armas nuevas
 Mismo patrón que las 15 originales (ver tabla de inventario más abajo, que aplica igual por categoría): modelo procedural ✅, sonido sintetizado ✅ (incluye 2 nuevos: `rocket`/`special` en `GUNSHOT_PROFILES`, más `playMeleeSwing`/`playMeleeHit`/`playExplosion`), animaciones de disparo/recarga/cambio ✅ vía el mismo `WeaponController` — nada específico de las 20 armas nuevas queda pendiente que no estuviera ya pendiente para las 15 originales (modelos 3D reales, mira real, animación de inspección).
 
