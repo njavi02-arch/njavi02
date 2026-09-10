@@ -199,6 +199,11 @@ Nueva redirección explícita del usuario a mitad de sesión: sistema de armas "
 ### Bug: sonido de equipar arma nunca sonaba (corregido)
 `SoundSynth.playEquip()` existía desde el principio de la sesión (parte del sistema de sonido original) pero nunca se llamaba desde ningún sitio — el cambio de arma era completamente silencioso. Corregido llamándolo en el momento exacto en que el viewmodel nuevo se hace visible durante la transición de cambio de arma (`switchSwapped`), no al iniciar el cambio. Probado con Playwright interceptando la función: cambiar de arma (tecla 2) disparó la llamada exactamente 1 vez. Cero errores de consola.
 
+### IA de bots — combate cuerpo a cuerpo y explosivo (completa)
+Primer ítem de la lista de "siguiente paso" tras la expansión del arsenal. `Bot.fire()` ahora se ramifica por `projectileType` igual que `WeaponController.fire()` del jugador: para melee no descuenta munición y usa el `bulletSpeed`/`range` ya configurados en el arma (que se fijaron deliberadamente iguales a `meleeSpeed`/`meleeRange` al diseñar las 3 armas melee, así que no hizo falta añadir campos aparte para bots); para explosivas etiqueta la bala con `isExplosive`/`splashRadius` para que pase por el mismo `triggerExplosion()` que ya usa el jugador. La lógica de disparo del bot en `update()` distingue melee: solo intenta golpear cuando está dentro de `meleeRange` (con alta probabilidad, 60-70%, en vez del 10-30% de un arma a distancia) — el movimiento de persecución ya existente lo acerca al objetivo sin necesitar un comportamiento de "carga" aparte. `pickRandomBotLoadout()` ya no excluye ninguna categoría: los bots pueden recibir cualquiera de las 35 armas.
+
+Probado con Playwright: un bot con `BO71` (melee) colocado a 1.5u del jugador lo mató a base de golpes sin gastar nunca su munición (se quedó en 1). Un bot con `BO61` (cohete) a 10u del jugador lo mató por splash casi de inmediato — confirmado comprobando `player.isAlive`/`deaths` **antes** de que expirase el temporizador de respawn de 3s (una primera versión de esta prueba dio un falso negativo porque comprobaba la salud del jugador *después* de que ya hubiera respawneado, ocultando la muerte real). Cero errores de consola.
+
 ### Nueva animación: inspección de arma (completa)
 "Inspección" estaba en la lista explícita de animaciones pedidas y no existía en absoluto. Añadido un nuevo estado `INSPECTING` a `WeaponController` (misma familia que `RELOADING`/`SWITCHING`): pulsar `I` en estado `IDLE` inicia una floritura puramente cosmética de 1.4s (giro + inclinación con envolvente seno que entra y sale suavemente, más un ligero acercamiento a cámara) que bloquea disparo/recarga/ADS durante su duración exactamente igual que cualquier otro estado no-`IDLE` ya bloqueaba — cambiar de arma sigue pudiendo interrumpirla, igual que ya interrumpía una recarga en curso. De paso se aprovechó para documentar en pantalla el mecanismo de **Slide** (nunca se había mencionado en los controles del menú principal, pese a llevar implementado desde antes en esta misma fase) junto a la nueva tecla `I`.
 
@@ -215,14 +220,13 @@ Mismo patrón que las 15 originales (ver tabla de inventario más abajo, que apl
 1. Fase visual/jugable — mapas, movimiento (sprint/crouch/slide), ADS, retícula, cámara. **Completada** (ver secciones "FASE FINAL" arriba: slide, pasos/salto/aterrizaje, sonido ambiente, iluminación por mapa, fix de retícula, cámara con altura de crouch + head bob, pose de sprint del arma).
 2. **Prioridad especial actual: sistema de armas grande y escalable.** Roster ampliado de 15 a 35 armas, 3 categorías nuevas (Rocket/Melee/Special) sobre una arquitectura `projectileType` (`bullet`/`melee`/`explosive`) que permite añadir armas nuevas casi solo con datos, sin tocar `WeaponController`. Ver sección "PRIORIDAD ESPECIAL" arriba para el detalle completo y las pruebas.
 
-Dentro de la prioridad de armas, ya cubierto: arquitectura de proyectiles, splash damage con caída por distancia y sin auto-daño, sonidos/efectos propios por categoría nueva, animación de inspección (`I`), sonido de equipar (bug de "definido pero nunca llamado", mismo patrón que `sprintToFireDelay`/`range`/`headshotMul` corregidos antes). Lo que queda, en orden de valor:
+Dentro de la prioridad de armas, ya cubierto: arquitectura de proyectiles, splash damage con caída por distancia y sin auto-daño, sonidos/efectos propios por categoría nueva, animación de inspección (`I`), sonido de equipar (bug de "definido pero nunca llamado", mismo patrón que `sprintToFireDelay`/`range`/`headshotMul` corregidos antes), **e IA de bots para cuerpo a cuerpo/explosivos** (los bots ya usan las 35 armas, no solo las de bala). Lo que queda, en orden de valor:
 
-1. **IA de bots con cuerpo a cuerpo/explosivos**: por ahora los bots solo usan armas `projectileType:'bullet'` (decisión documentada, no bloqueo) — darles lógica de rush cuerpo a cuerpo o de disparo con arco/splash es la extensión natural siguiente si se quiere más variedad en el combate contra bots.
-2. **Mapas — pulido restante**: props de cobertura procedurales adicionales, variación del sonido ambiente por mapa (interior/exterior, ahora mismo el mismo viento en los 3).
-3. **ADS real "a través de la mira"**: sigue bloqueado por la geometría placeholder sin mira modelada (documentado en Decisiones Técnicas) — aplica igual a las 35 armas, no es específico de ninguna nueva.
-4. **Attachments**: arquitectura lista (`ATTACHMENT_SLOTS`/`getEffectiveWeaponStats()`), sigue bloqueada en modelos 3D reales — ahora con 35 armas a las que aplicar attachments en cuanto haya assets.
-5. **Fase 7 (Menús)**: solo CUSTOMIZE sigue bloqueado.
-6. **Fase 10 (Multiplayer)**: pausado, sin cambios desde la redirección de prioridad.
+1. **Mapas — pulido restante**: props de cobertura procedurales adicionales, variación del sonido ambiente por mapa (interior/exterior, ahora mismo el mismo viento en los 3).
+2. **ADS real "a través de la mira"**: sigue bloqueado por la geometría placeholder sin mira modelada (documentado en Decisiones Técnicas) — aplica igual a las 35 armas, no es específico de ninguna nueva.
+3. **Attachments**: arquitectura lista (`ATTACHMENT_SLOTS`/`getEffectiveWeaponStats()`), sigue bloqueada en modelos 3D reales — ahora con 35 armas a las que aplicar attachments en cuanto haya assets.
+4. **Fase 7 (Menús)**: solo CUSTOMIZE sigue bloqueado.
+5. **Fase 10 (Multiplayer)**: pausado, sin cambios desde la redirección de prioridad.
 
 ---
 

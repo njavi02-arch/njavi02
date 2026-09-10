@@ -2341,16 +2341,11 @@
         // weapon (including the 9 added after the original fixed 3-bot
         // loadout) has an equal chance of showing up.
         function pickRandomBotLoadout() {
-            // Bot.fire() only ever builds a plain ranged bullet (it doesn't
-            // branch on projectileType the way WeaponController.fire() does
-            // for the player) - melee/explosive weapons would visually fire
-            // ordinary bullets instead of swinging/exploding, so bots draw
-            // only from the ranged-bullet categories for now. The player can
-            // still equip any of the 35 weapons via the Loadout screen.
-            const ids = Object.keys(WEAPON_CONFIGS).filter(id => {
-                const t = WEAPON_CONFIGS[id].projectileType || 'bullet';
-                return t === 'bullet';
-            });
+            // Bot.fire() now branches on projectileType same as the
+            // player's WeaponController.fire() (melee rush-and-swing,
+            // explosive splash tagging), so bots draw from the full 35-
+            // weapon roster - no category is off-limits to them anymore.
+            const ids = Object.keys(WEAPON_CONFIGS);
             for (let i = ids.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [ids[i], ids[j]] = [ids[j], ids[i]];
@@ -2460,8 +2455,12 @@
                             this.velocity.x = toCover.x * this.moveSpeed;
                             this.velocity.z = toCover.z * this.moveSpeed;
                             // Still returns fire while retreating (unless
-                            // mid-reload, when it obviously can't).
-                            if (!reloading && closestDist < 50 && Math.random() < 0.12) {
+                            // mid-reload, when it obviously can't) - a melee
+                            // bot can't swing while retreating at range, so
+                            // it only gets a chance once back within reach.
+                            const isMeleeWeapon = this.currentWeapon.projectileType === 'melee';
+                            const inMeleeRange = isMeleeWeapon && closestDist <= (this.currentWeapon.meleeRange || 2.2);
+                            if (!reloading && (inMeleeRange || (!isMeleeWeapon && closestDist < 50)) && Math.random() < (isMeleeWeapon ? 0.6 : 0.12)) {
                                 const fireDir = this.target.mesh.position.subtract(this.mesh.position);
                                 fireDir.y = 0;
                                 if (fireDir.length() > 0) {
@@ -2488,8 +2487,19 @@
                             this.velocity.x = dir.x * this.moveSpeed;
                             this.velocity.z = dir.z * this.moveSpeed;
 
-                            // Fire more aggressively at close range (difficulty affects accuracy)
-                            if (closestDist < 50) {
+                            // Fire more aggressively at close range (difficulty
+                            // affects accuracy). A melee weapon has no real
+                            // "fire from range" - it only ever swings once the
+                            // bot has actually closed to meleeRange, at which
+                            // point it swings almost every chance it gets
+                            // (the normal chase movement above already rushes
+                            // it straight at the target, so this doesn't need
+                            // its own separate rush behavior).
+                            if (this.currentWeapon.projectileType === 'melee') {
+                                if (closestDist <= (this.currentWeapon.meleeRange || 2.2) && Math.random() < 0.7) {
+                                    this.fire(dir);
+                                }
+                            } else if (closestDist < 50) {
                                 let fireChance = closestDist < 15 ? 0.3 : 0.1;
                                 if (this.difficulty === 'hard') {
                                     fireChance *= 1.5; // Hard bots are more aggressive
@@ -2551,30 +2561,44 @@
                 if (this.weaponCooldown > 0 || this.currentMag <= 0) return;
 
                 this.weaponCooldown = 1 / this.currentWeapon.fireRate;
-                this.currentMag--;
+                const isMelee = this.currentWeapon.projectileType === 'melee';
+                const isExplosive = this.currentWeapon.projectileType === 'explosive';
+                // Melee never consumes ammo - same rule as the player's
+                // WeaponController.fire().
+                if (!isMelee) this.currentMag--;
 
                 const origin = this.mesh.position.add(new BABYLON.Vector3(0, 0.7, 0));
                 // Hard bots have better accuracy. Bots always fire from the
                 // hip (no ADS), so the weapon's hip spread is the base here.
+                // Melee doesn't miss on spread - it's a fixed-reach swing.
                 const spreadMul = this.difficulty === 'hard' ? 1.2 : 2;
-                const spread = this.currentWeapon.spread.hip * spreadMul;
+                const spread = isMelee ? 0 : this.currentWeapon.spread.hip * spreadMul;
                 const fireDir = direction.add(new BABYLON.Vector3((Math.random() - 0.5) * spread, (Math.random() - 0.5) * spread * 0.5, (Math.random() - 0.5) * spread));
                 fireDir.normalize();
 
-                const bullet = BABYLON.MeshBuilder.CreateSphere('bullet', { diameter: 0.1 }, scene);
-                bullet.position = origin.add(fireDir.scale(0.5));
+                const bullet = BABYLON.MeshBuilder.CreateSphere('bullet', { diameter: isMelee ? 0.02 : (isExplosive ? 0.16 : 0.1) }, scene);
+                bullet.position = origin.add(fireDir.scale(isMelee ? 0.1 : 0.5));
                 bullet.material = getSharedBulletMaterial(scene, false);
 
                 bullet.owner = this;
                 bullet.damage = this.currentWeapon.damage;
                 bullet.headshotMul = this.currentWeapon.headshotMul;
+                // bulletSpeed/range already double as meleeSpeed/meleeRange
+                // in every melee weapon's config (see WEAPON_CONFIGS), so no
+                // separate melee-only fields are needed here.
                 bullet.velocity = fireDir.scale(this.currentWeapon.bulletSpeed);
                 bullet.life = 10;
                 bullet.maxRange = this.currentWeapon.range;
                 bullet.distanceTraveled = 0;
+                bullet.isExplosive = isExplosive;
+                bullet.splashRadius = this.currentWeapon.splashRadius || 0;
 
                 bullets.push(bullet);
-                SoundSynth.playGunshot(this.currentWeapon.soundProfile);
+                if (isMelee) {
+                    SoundSynth.playMeleeSwing();
+                } else {
+                    SoundSynth.playGunshot(this.currentWeapon.soundProfile);
+                }
             }
 
             takeDamage(amount) {
