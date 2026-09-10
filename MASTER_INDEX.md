@@ -122,7 +122,7 @@ Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(
 | Impactos (normal/headshot/explosión) | 🟢 | — |
 | Ambiente de mapa | 🟢 | — |
 | Sonido dedicado de slide | 🔴 | P3 |
-| Sonido de la UI/menús (click, hover, back) | 🔴 | **P1** — ningún botón del menú suena, se nota de inmediato |
+| Sonido de la UI/menús (click, hover, back) | 🟢 | — | Listener delegado, cubre las 7 pantallas de menú incl. botones dinámicos |
 | Música de menú/partida | 🔴 | P4 |
 
 ## FASE 8 — GRÁFICOS Y VISUAL
@@ -152,7 +152,7 @@ Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(
 | Pantalla de carga | 🔧 | P4 — solo texto, sin barra de progreso ni animación |
 | Pantalla de resultados | 🟢 | — |
 | CUSTOMIZE (combinar skin + operador) | 🔒 | P4 — bloqueado en tener más de 1 skin real |
-| Sonido de UI | 🔴 | **P1** — ver FASE 7 |
+| Sonido de UI | 🟢 | — | Ver FASE 7 |
 
 ## FASE 10 — TESTING
 
@@ -184,7 +184,7 @@ Sin bugs críticos conocidos abiertos en este momento.
 Revisión continua transversal. Elementos "de prototipo" detectados activamente y priorizados en las fases de arriba:
 - ~~Sin sombras~~ — 🟢 corregido, ver FASE 6/8.
 - ~~Brillo especular no deseado en superficies de mapa~~ — 🟢 corregido de paso al implementar sombras.
-- **Sin sonido de UI** (FASE 7/9, P1) — se nota en cada click de menú.
+- ~~Sin sonido de UI~~ — 🟢 corregido, ver FASE 7/9.
 - **Retícula única para 35 armas** (FASE 5, P2).
 - **Sin postprocesado** (FASE 8, P2).
 - Resto de "prototipo" visual (texturas planas, modelos de bloques) está correctamente identificado como bloqueado en assets reales, no como negligencia — cada uno tiene ya su placeholder funcional documentado en `BULLET_OPS_PROGRESS.md`.
@@ -194,7 +194,8 @@ Revisión continua transversal. Elementos "de prototipo" detectados activamente 
 ## 🎯 PRÓXIMA TAREA (según este índice, sin esperar instrucción)
 
 ~~P1 — Sombras dinámicas~~ 🟢 completado.
+~~P1 — Sonido de UI~~ 🟢 completado.
 
-**P1 — Sonido de UI** (FASE 7/9): ningún botón de menú suena. Es el siguiente ítem de mayor prioridad sin bloqueo de assets. Se implementa a continuación en este mismo ciclo.
+Ya no quedan tareas P1 abiertas. **P2 — retículas por categoría de arma** (FASE 5): las 35 armas comparten una única retícula circular. Se implementa a continuación en este mismo ciclo.
 
-Después: **P2 — retículas por categoría de arma**, luego **P2 — postprocesado ligero**, luego auditoría de rendimiento (FASE 1/11).
+Después: **P2 — postprocesado ligero** (FASE 8), luego auditoría de rendimiento (FASE 1/11), luego sonido ambiente diferenciado por mapa (FASE 6/7, P2).

@@ -1209,13 +1209,15 @@
             function playJump() { tone({ freq: 300, duration: 0.05, type: 'square', gain: 0.12, decay: 0.05, freqEnd: 500 }); }
             function playLand() { noiseBurst({ duration: 0.06, filterFreq: 600, gain: 0.15, decay: 0.05 }); }
             function playMeleeSwing() { noiseBurst({ duration: 0.08, filterFreq: 2200, gain: 0.18, decay: 0.07 }); }
+            function playUIClick() { tone({ freq: 750, duration: 0.03, type: 'sine', gain: 0.14, decay: 0.03, freqEnd: 550 }); }
+            function playUIHover() { tone({ freq: 950, duration: 0.02, type: 'sine', gain: 0.06, decay: 0.02 }); }
             function playMeleeHit() { tone({ freq: 180, duration: 0.06, type: 'square', gain: 0.25, decay: 0.06, freqEnd: 80 }); }
             function playExplosion() {
                 noiseBurst({ duration: 0.35, filterFreq: 500, gain: 0.8, decay: 0.3 });
                 tone({ freq: 60, duration: 0.3, type: 'sine', gain: 0.5, decay: 0.28, freqEnd: 25 });
             }
 
-            return { getCtx, setVolume, startAmbient, stopAmbient, playGunshot, playReloadClick, playMagOut, playMagIn, playEmpty, playEquip, playHitmarker, playHeadshot, playKillConfirm, playFootstep, playJump, playLand, playMeleeSwing, playMeleeHit, playExplosion };
+            return { getCtx, setVolume, startAmbient, stopAmbient, playGunshot, playReloadClick, playMagOut, playMagIn, playEmpty, playEquip, playHitmarker, playHeadshot, playKillConfirm, playFootstep, playJump, playLand, playMeleeSwing, playMeleeHit, playExplosion, playUIClick, playUIHover };
         })();
 
         // ========== SKIN / CAMOUFLAGE SYSTEM ==========
@@ -3759,6 +3761,31 @@
 
         document.getElementById('quitBtn').addEventListener('click', () => {
             alert('Thanks for playing BULLET OPS!');
+        });
+
+        // ========== UI SOUND FEEDBACK ==========
+        // A single delegated listener instead of wiring a sound call into
+        // every individual button handler across every menu screen (main
+        // menu, pause, loadout, weapons catalog, operators, settings,
+        // results) - also automatically covers the loadout/operator cycle
+        // buttons those screens build dynamically at render time, since
+        // they reuse the same .menu-button class. Disabled buttons (e.g.
+        // the still-locked CUSTOMIZE) never dispatch a click event at all,
+        // so no extra exclusion is needed for those.
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.menu-button')) SoundSynth.playUIClick();
+        });
+        // Tracks the last-hovered button so moving the mouse across a
+        // button's inner text/spans doesn't re-fire the hover sound on
+        // every sub-element boundary crossing - only a genuine change of
+        // which button is hovered plays it.
+        let lastHoveredButton = null;
+        document.addEventListener('mouseover', (e) => {
+            const btn = e.target.closest('.menu-button');
+            if (btn && !btn.disabled && btn !== lastHoveredButton) {
+                SoundSynth.playUIHover();
+            }
+            lastHoveredButton = btn || null;
         });
 
         // Initialize displays
