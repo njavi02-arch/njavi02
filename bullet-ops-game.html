@@ -976,6 +976,12 @@
             const key = e.key.toLowerCase();
             inputs.keys[key] = true;
             if (GAME_KEYS.has(key)) e.preventDefault();
+            // Escape pauses directly. This is a fallback for when pointer lock
+            // was never actually acquired (denied by the browser, so the
+            // 'pointerlockchange' handler below would never fire on its own);
+            // pauseGame() is idempotent outside PLAYING so this never conflicts
+            // with the normal lock-release-driven pause path.
+            if (key === 'escape') pauseGame();
         });
         window.addEventListener('keyup', (e) => {
             const key = e.key.toLowerCase();
@@ -1048,14 +1054,6 @@
         });
         document.addEventListener('pointerlockerror', () => {
             console.warn('BULLET OPS: pointer lock request was denied by the browser.');
-        });
-
-        // Explicit fallback: if the lock request itself was denied (so no
-        // native pointer-lock-exit will ever fire) Escape still has to pause.
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && currentGameState === GameState.PLAYING) {
-                pauseGame();
-            }
         });
 
         document.getElementById('resumeBtn').addEventListener('click', () => {
