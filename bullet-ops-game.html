@@ -124,6 +124,13 @@
             font-size: 1.5rem;
             text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
         }
+        #healthVignette {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            box-shadow: inset 0 0 100px rgba(255, 0, 0, 0);
+            transition: box-shadow 0.1s;
+        }
     </style>
 </head>
 <body>
@@ -136,8 +143,14 @@
 
             <div style="margin: 1.5rem 0;">
                 <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">GAME MODE:</div>
-                <button class="menu-button" id="tdmBtn" style="width: 120px;">🎯 TEAM DEATHMATCH</button>
-                <button class="menu-button" id="ffaBtn" style="width: 120px;">⚔ FREE FOR ALL</button>
+                <button class="menu-button" id="tdmBtn" style="width: 140px; font-size: 0.8rem;">🎯 TDM</button>
+                <button class="menu-button" id="ffaBtn" style="width: 140px; font-size: 0.8rem;">⚔ FFA</button>
+            </div>
+
+            <div style="margin: 0.8rem 0;">
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">MAP:</div>
+                <button class="menu-button" id="map1Btn" style="width: 140px; font-size: 0.8rem;">🎮 BACKLOT-7</button>
+                <button class="menu-button" id="map2Btn" style="width: 140px; font-size: 0.8rem;">🏭 INDUSTRIAL-5</button>
             </div>
 
             <div style="margin: 1rem 0;">
@@ -145,17 +158,19 @@
                 <button class="menu-button" id="quitBtn">✕ QUIT</button>
             </div>
 
-            <div style="margin-top: 1.5rem; font-size: 0.8rem; color: #00aa00;">
+            <div style="margin-top: 1rem; font-size: 0.75rem; color: #00aa00;">
                 <div id="modeDisplay">MODE: TEAM DEATHMATCH</div>
-                <div style="margin-top: 1rem;">
+                <div id="mapDisplay" style="margin-top: 0.3rem;">MAP: BACKLOT-7</div>
+                <div style="margin-top: 0.8rem;">
                     WASD Move • Mouse Look • Click Fire • R Reload<br>
-                    1/2 Swap Weapon • Space Jump • Shift Sprint
+                    1/2/3 Swap Weapon • Space Jump • Shift Sprint
                 </div>
             </div>
         </div>
     </div>
 
     <div id="hud" class="hidden">
+        <div id="healthVignette"></div>
         <div id="crosshair"><div class="crosshair-dot"></div></div>
         <div id="hitmarker"></div>
         <div id="score">BLUE 0 - RED 0 | TIME 10:00</div>
@@ -181,11 +196,13 @@
         let blueScore = 0, redScore = 0;
         let killstreakMessages = [];
         let gameMode = 'TDM'; // 'TDM' or 'FFA'
+        let selectedMap = 'BACKLOT-7'; // 'BACKLOT-7' or 'INDUSTRIAL-5'
         const gameConfig = {
             targetScore: 10,
             timeLimit: 600,
             botCount: 3,
-            gameMode: 'TDM'
+            gameMode: 'TDM',
+            map: 'BACKLOT-7'
         };
 
         // ========== WEAPONS CONFIG ==========
@@ -379,6 +396,11 @@
             takeDamage(amount) {
                 if (!this.isAlive) return;
                 this.health -= amount;
+                // Screen shake on damage
+                if (this === player && this.health > 0) {
+                    this.pitch += (Math.random() - 0.5) * 0.1;
+                    this.yaw += (Math.random() - 0.5) * 0.1;
+                }
                 if (this.health <= 0) this.die();
             }
 
@@ -618,7 +640,15 @@
 
         // ========== BUILD MAP ==========
         function buildMap() {
-            // Ground
+            if (selectedMap === 'INDUSTRIAL-5') {
+                buildMapIndustrial();
+            } else {
+                buildMapBacklot();
+            }
+        }
+
+        function buildMapBacklot() {
+            // BACKLOT-7: Urban environment with central tower
             const ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 120, height: 120 }, scene);
             const groundMat = new BABYLON.StandardMaterial('groundMat', scene);
             groundMat.diffuse = new BABYLON.Color3(0.35, 0.35, 0.35);
@@ -680,6 +710,57 @@
                     corner.position = new BABYLON.Vector3(x, 3, z);
                     corner.material = cornerMat;
                 }
+            }
+        }
+
+        function buildMapIndustrial() {
+            // INDUSTRIAL-5: Factory with tight corridors and multi-level areas
+            const ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 140, height: 140 }, scene);
+            const groundMat = new BABYLON.StandardMaterial('groundMat2', scene);
+            groundMat.diffuse = new BABYLON.Color3(0.25, 0.25, 0.25);
+            ground.material = groundMat;
+
+            const metalMat = new BABYLON.StandardMaterial('metalMat', scene);
+            metalMat.diffuse = new BABYLON.Color3(0.4, 0.4, 0.45);
+
+            // Central factory structure
+            const factory1 = BABYLON.MeshBuilder.CreateBox('factory1', { width: 30, height: 8, depth: 15 }, scene);
+            factory1.position = new BABYLON.Vector3(0, 4, 0);
+            factory1.material = metalMat;
+
+            const factory2 = BABYLON.MeshBuilder.CreateBox('factory2', { width: 15, height: 15, depth: 30 }, scene);
+            factory2.position = new BABYLON.Vector3(0, 7.5, 35);
+            factory2.material = metalMat;
+
+            // Elevated walkway
+            const walkway = BABYLON.MeshBuilder.CreateBox('walkway', { width: 60, height: 0.5, depth: 6 }, scene);
+            walkway.position = new BABYLON.Vector3(0, 6, -35);
+            walkway.material = metalMat;
+
+            // Warehouse corners
+            const warehouseMat = new BABYLON.StandardMaterial('warehouseMat', scene);
+            warehouseMat.diffuse = new BABYLON.Color3(0.3, 0.3, 0.3);
+
+            for (let x of [-40, 40]) {
+                for (let z of [-40, 40]) {
+                    const warehouse = BABYLON.MeshBuilder.CreateBox(`warehouse_${x}_${z}`, { width: 15, height: 12, depth: 15 }, scene);
+                    warehouse.position = new BABYLON.Vector3(x, 6, z);
+                    warehouse.material = warehouseMat;
+                }
+            }
+
+            // Scattered barrels and cover
+            const barrelMat = new BABYLON.StandardMaterial('barrelMat', scene);
+            barrelMat.diffuse = new BABYLON.Color3(0.5, 0.3, 0.1);
+
+            for (let i = 0; i < 10; i++) {
+                const barrel = BABYLON.MeshBuilder.CreateCylinder(`barrel${i}`, { height: 2, diameter: 1.5 }, scene);
+                barrel.position = new BABYLON.Vector3(
+                    (Math.random() - 0.5) * 120,
+                    1,
+                    (Math.random() - 0.5) * 120
+                );
+                barrel.material = barrelMat;
             }
         }
 
@@ -826,6 +907,13 @@
             document.getElementById('health').style.color = healthColor;
             document.getElementById('hpVal').textContent = Math.max(0, Math.ceil(player.health));
 
+            // Health vignette effect (red screen when low health)
+            let vignetteIntensity = 0;
+            if (player.health > 0 && player.health < 35) {
+                vignetteIntensity = (35 - player.health) / 35 * 0.4;
+            }
+            document.getElementById('healthVignette').style.boxShadow = `inset 0 0 100px rgba(255, 0, 0, ${vignetteIntensity})`;
+
             // Kills and deaths
             document.getElementById('kills').textContent = `KILLS: ${player.kills} | DEATHS: ${player.deaths}`;
 
@@ -843,6 +931,9 @@
             } else {
                 document.getElementById('ammo').style.color = '#00ff00';
             }
+
+            // Update crosshair size based on weapon
+            updateCrosshairSize();
         }
 
         function addKillMsg(msg) {
@@ -859,9 +950,20 @@
         function showHitmarker() {
             const hitmarker = document.getElementById('hitmarker');
             hitmarker.style.opacity = '1';
+            hitmarker.style.borderColor = '#00ff00';
             setTimeout(() => {
                 hitmarker.style.opacity = '0';
             }, 100);
+        }
+
+        function updateCrosshairSize() {
+            if (!player) return;
+            const crosshair = document.getElementById('crosshair');
+            const weapon = player.weapons[player.currentWeapon];
+            // Size increases with firing rate (spread indicator)
+            const spreadSize = 30 + (weapon.fireRate * 2);
+            crosshair.style.width = spreadSize + 'px';
+            crosshair.style.height = spreadSize + 'px';
         }
 
         function endGame() {
@@ -892,6 +994,19 @@
             }
         }
 
+        function updateMapDisplay() {
+            document.getElementById('mapDisplay').textContent = `MAP: ${selectedMap}`;
+            const map1Btn = document.getElementById('map1Btn');
+            const map2Btn = document.getElementById('map2Btn');
+            if (selectedMap === 'BACKLOT-7') {
+                map1Btn.style.boxShadow = '0 0 30px rgba(0, 255, 0, 1)';
+                map2Btn.style.boxShadow = '0 0 15px rgba(0, 255, 0, 0.5)';
+            } else {
+                map2Btn.style.boxShadow = '0 0 30px rgba(0, 255, 0, 1)';
+                map1Btn.style.boxShadow = '0 0 15px rgba(0, 255, 0, 0.5)';
+            }
+        }
+
         document.getElementById('tdmBtn').addEventListener('click', () => {
             gameMode = 'TDM';
             gameConfig.gameMode = 'TDM';
@@ -904,6 +1019,18 @@
             updateModeDisplay();
         });
 
+        document.getElementById('map1Btn').addEventListener('click', () => {
+            selectedMap = 'BACKLOT-7';
+            gameConfig.map = 'BACKLOT-7';
+            updateMapDisplay();
+        });
+
+        document.getElementById('map2Btn').addEventListener('click', () => {
+            selectedMap = 'INDUSTRIAL-5';
+            gameConfig.map = 'INDUSTRIAL-5';
+            updateMapDisplay();
+        });
+
         document.getElementById('playBtn').addEventListener('click', () => {
             initGame();
         });
@@ -912,8 +1039,9 @@
             alert('Thanks for playing BULLET OPS!');
         });
 
-        // Initialize mode display
+        // Initialize displays
         updateModeDisplay();
+        updateMapDisplay();
     </script>
 </body>
 </html>
