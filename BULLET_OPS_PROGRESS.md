@@ -246,6 +246,17 @@ El slide no tenía efecto propio — sonaba en silencio salvo por lo que ya estu
 
 Probado con Playwright interceptando `SoundSynth.playSlide` para contar invocaciones durante un slide real disparado con inputs reales (`W`+`Shift` para esprintar, luego `C` para deslizar): exactamente 1 llamada registrada al iniciar el slide, y ninguna llamada adicional mientras `isSliding` seguía activo ni después de que terminara. Cero errores de consola.
 
+### Segundo pase de props/detalle por mapa (P3 del índice maestro, completo)
+Los 3 mapas solo tenían cajas/barriles repetidos como props — leía como "cajas sobre un plano". Añadida una segunda pasada de variedad manteniendo el estilo blockout-de-primitivas (sin depender de assets nuevos):
+
+- **BACKLOT-7**: contenedores de basura (`dumpster`, cajas bajas y anchas, color verde oscuro, 4 unidades) y pilas de palés (`palletStack`, cajas cuadradas marrones, 5 unidades) como cobertura extra de silueta distinta a las cajas existentes; farolas (`lamp`, cilindros finos, 6 unidades) como detalle vertical no colisionable — son demasiado finas para ser un obstáculo de juego significativo, así que se dejaron con `checkCollisions = false` en vez de arriesgar que el jugador se enganche en algo cuyo grosor no puede juzgar a simple vista.
+- **INDUSTRIAL-5**: tanques de almacenamiento (`tank`, cilindros grandes, 4 unidades, color oxidado) como cobertura grande distinta de los barriles finos; contenedores de carga (`container`, cajas largas y bajas, 4 unidades, rotación aleatoria) distintos en silueta de los bloques de almacén altos existentes; tuberías elevadas (`pipe`, cilindros horizontales, 2 unidades) como detalle aéreo no colisionable.
+- **OUTPOST-9**: muros de sacos de arena (`sandbag`, cajas bajas y anchas tono tierra, 5 unidades cerca de cada base) como cobertura de perfil bajo distinta de las cajas de cobertura existentes; rocas (`rock`, esferas aplanadas con tamaño aleatorizado, 7 unidades) como cobertura de terreno natural disperso; una antena de radio (`antenna`, cono fino no colisionable) como referencia visual a distancia.
+
+Todos los materiales nuevos fijan `specularColor = Black()` explícitamente en línea (el bucle de sombras ya lo corrige retroactivamente para cualquier `StandardMaterial`, pero se dejó explícito por claridad de intención).
+
+Probado con Playwright cargando los 3 mapas por separado: confirmado el incremento esperado de mallas en cada uno (BACKLOT-7 +15, INDUSTRIAL-5 +10, OUTPOST-9 +13, coincidiendo exactamente con el recuento de props añadidos), y un paseo real con input W/A tras cada carga para confirmar que el jugador no queda atascado en ninguno de los props nuevos cerca del área de spawn (`playerAlive` se mantuvo `true` y la posición cambió con normalidad en los 3 mapas). Cero errores de consola en INDUSTRIAL-5/OUTPOST-9; el único mensaje en BACKLOT-7 fue un 404 de favicon, no relacionado.
+
 ### Mejora del ADS placeholder sin modelo real (P2 del índice maestro, completo)
 El bloqueo documentado era: sin un modelo de mira real, ADS solo podía ofrecer el zoom de FOV + un ligero desplazamente del arma placeholder, lo cual se leía débil especialmente en las 3 armas SNIPER (el caso donde más importa transmitir "estoy mirando por una mira"). Investigado qué mejora es viable puramente en pantalla (CSS/HUD), sin tocar geometría 3D:
 

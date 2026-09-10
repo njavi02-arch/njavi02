@@ -107,7 +107,7 @@ Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(
 | Texturas de superficie reales (ahora color plano) | 🔒 | P3 — bloqueado en assets |
 | Sombras dinámicas | 🟢 | — | Implementado con `ShadowGenerator` por mapa; ver `BULLET_OPS_PROGRESS.md` para el hallazgo de rendimiento en el entorno de pruebas (SwiftShader/software) y por qué no bloqueó la función |
 | Sonido ambiente diferenciado por mapa | 🟢 | — | `MAP_AMBIENCE`, análogo a `MAP_LIGHTING` |
-| Segundo pase de props/detalle ambiental | 🔴 | P3 |
+| Segundo pase de props/detalle ambiental | 🟢 | — | Ver `BULLET_OPS_PROGRESS.md`: dumpsters/palés/farolas, tanques/contenedores/tuberías, sacos de arena/rocas/antena por mapa |
 | Un cuarto mapa / más contenido | 🔴 | P4 |
 
 ## FASE 7 — AUDIO
@@ -224,7 +224,8 @@ Sección permanente, actualizada cada vez que se evalúa o conecta una herramien
 ~~P2 — Auditoría de rendimiento (draw calls, mallas huérfanas)~~ 🟢 completado. Sin fugas encontradas; ver `BULLET_OPS_PROGRESS.md`.
 ~~P2 — ADS "a través de la mira" (mejora sin modelo real)~~ 🟢 completado. Overlay de círculo de mira + retícula para SNIPER, viñeta para el resto.
 ~~P3 — Sonido dedicado de slide~~ 🟢 completado.
+~~P3 — Segundo pase de props/detalle por mapa~~ 🟢 completado.
 
-Ya no quedan tareas P0/P1/P2 abiertas en el índice en este momento. Todo lo restante es P3/P4 o está bloqueado en assets reales (🔒).
+Ya no quedan tareas P0/P1/P2/P3 abiertas en el índice en este momento. Todo lo restante es P4 o está bloqueado en assets reales (🔒).
 
-**Siguiente**: segundo pase de props/detalle ambiental por mapa (FASE 6, P3) — los 3 mapas tienen cobertura básica pero podrían beneficiarse de más variedad de props dispersos (no solo cajas/barriles repetidos) para romper la monotonía visual. Después: revisar candidatos P4 restantes (pantalla de carga con barra real, configuración gráfica, 4º mapa).
+**Siguiente**: revisar candidatos P4 restantes — pantalla de carga con barra de progreso real (hoy solo texto estático), menú de configuración gráfica (calidad/resolución), un 4º mapa. Ninguno es urgente; se evaluará cuál aporta más antes de implementar. Fase 10 multijugador sigue en pausa según la redirección de prioridad del usuario.
