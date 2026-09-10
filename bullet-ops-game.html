@@ -833,6 +833,39 @@
             return sharedParticleTexture;
         }
 
+        // Shared, reused materials for bullets and muzzle flashes. Every
+        // shot used to create a brand-new StandardMaterial and never
+        // disposed it (mesh.dispose() alone does not free its material),
+        // leaking one orphaned material object per bullet and per muzzle
+        // flash - with an LMG firing 12 rounds/sec or several bots shooting
+        // continuously, a long match could accumulate thousands of these.
+        // Created lazily once and reused instead.
+        let sharedBulletMatPlayer = null;
+        let sharedBulletMatBot = null;
+        let sharedMuzzleFlashMat = null;
+        function getSharedBulletMaterial(scene, isPlayerOwned) {
+            if (isPlayerOwned) {
+                if (!sharedBulletMatPlayer) {
+                    sharedBulletMatPlayer = new BABYLON.StandardMaterial('bulletMat_player', scene);
+                    sharedBulletMatPlayer.emissiveColor = new BABYLON.Color3(1, 1, 0);
+                }
+                return sharedBulletMatPlayer;
+            }
+            if (!sharedBulletMatBot) {
+                sharedBulletMatBot = new BABYLON.StandardMaterial('bulletMat_bot', scene);
+                sharedBulletMatBot.emissiveColor = new BABYLON.Color3(1, 0.5, 0);
+            }
+            return sharedBulletMatBot;
+        }
+        function getSharedMuzzleFlashMaterial(scene) {
+            if (!sharedMuzzleFlashMat) {
+                sharedMuzzleFlashMat = new BABYLON.StandardMaterial('flashMat_shared', scene);
+                sharedMuzzleFlashMat.emissiveColor = new BABYLON.Color3(1, 0.75, 0.25);
+                sharedMuzzleFlashMat.disableLighting = true;
+            }
+            return sharedMuzzleFlashMat;
+        }
+
         // ========== PROCEDURAL WEAPON VIEWMODEL ==========
         // Placeholder first-person weapon geometry built from primitives,
         // since no 3D weapon model exists yet. Distinct blocky silhouettes
@@ -933,10 +966,7 @@
             flash.position = position.add(direction.scale(0.05));
             flash.renderingGroupId = 1;
             flash.isPickable = false;
-            const mat = new BABYLON.StandardMaterial('flashMat_' + Math.random(), scene);
-            mat.emissiveColor = new BABYLON.Color3(1, 0.75, 0.25);
-            mat.disableLighting = true;
-            flash.material = mat;
+            flash.material = getSharedMuzzleFlashMaterial(scene);
             setTimeout(() => flash.dispose(), 45);
 
             const ps = new BABYLON.ParticleSystem('muzzleSparks_' + Math.random(), 14, scene);
@@ -1167,9 +1197,7 @@
 
                 const bullet = BABYLON.MeshBuilder.CreateSphere('bullet', { diameter: 0.1 }, this.scene);
                 bullet.position = muzzleWorldPos.add(direction.scale(0.3));
-                const bulletMat = new BABYLON.StandardMaterial('bulletMat_' + Math.random(), this.scene);
-                bulletMat.emissiveColor = new BABYLON.Color3(1, 1, 0);
-                bullet.material = bulletMat;
+                bullet.material = getSharedBulletMaterial(this.scene, true);
                 bullet.owner = this.player;
                 bullet.damage = cfg.damage;
                 bullet.velocity = direction.scale(cfg.bulletSpeed);
@@ -1744,9 +1772,7 @@
 
                 const bullet = BABYLON.MeshBuilder.CreateSphere('bullet', { diameter: 0.1 }, scene);
                 bullet.position = origin.add(fireDir.scale(0.5));
-                const bulletMat = new BABYLON.StandardMaterial('bulletMat', scene);
-                bulletMat.emissiveColor = new BABYLON.Color3(1, 0.5, 0);
-                bullet.material = bulletMat;
+                bullet.material = getSharedBulletMaterial(scene, false);
 
                 bullet.owner = this;
                 bullet.damage = this.currentWeapon.damage;
