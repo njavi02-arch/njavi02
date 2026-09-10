@@ -182,8 +182,25 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: #00ff00;
-            font-size: 1.5rem;
+            text-align: center;
             text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+        #loadingText {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        #loadingBarContainer {
+            width: 320px;
+            height: 10px;
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.4);
+        }
+        #loadingBarFill {
+            height: 100%;
+            width: 0%;
+            background: #00ff00;
+            box-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
+            transition: width 0.12s ease-out;
         }
         #healthVignette {
             position: absolute;
@@ -320,7 +337,10 @@
         <div id="killFeed"></div>
     </div>
 
-    <div id="loading" class="hidden">LOADING GAME...</div>
+    <div id="loading" class="hidden">
+        <div id="loadingText">LOADING GAME...</div>
+        <div id="loadingBarContainer"><div id="loadingBarFill"></div></div>
+    </div>
 
     <div id="pauseMenu" class="hidden">
         <div style="text-align: center;">
@@ -2754,9 +2774,27 @@
         };
 
         // ========== INITIALIZE GAME ==========
-        function initGame() {
+        // Yields one frame so the browser actually paints whatever was just
+        // written to the DOM (the loading bar fill/text) before the next
+        // synchronous setup chunk runs - without this, every stage below
+        // would still complete in the time it takes, but the browser would
+        // never get a chance to draw the intermediate states, so the bar
+        // would just jump straight to 100% (dishonest feedback that claims
+        // stages nothing was ever shown for).
+        function nextFrame() {
+            return new Promise((resolve) => requestAnimationFrame(resolve));
+        }
+        function setLoadingProgress(percent, label) {
+            const fill = document.getElementById('loadingBarFill');
+            const text = document.getElementById('loadingText');
+            if (fill) fill.style.width = percent + '%';
+            if (text) text.textContent = label;
+        }
+        async function initGame() {
             loading.classList.remove('hidden');
             menu.classList.add('hidden');
+            setLoadingProgress(5, 'INITIALIZING...');
+            await nextFrame();
             // Create/resume the Web Audio context as part of this click
             // gesture (browsers block audio from starting without one).
             SoundSynth.getCtx();
@@ -2824,6 +2862,9 @@
             // depth-pass cost.
             shadowGenerator.getShadowMap().refreshRate = BABYLON.RenderTargetTexture.REFRESHRATE_RENDER_ONEVERYTWOFRAMES;
 
+            setLoadingProgress(30, 'BUILDING MAP...');
+            await nextFrame();
+
             // Build map
             buildMap();
             // Every solid map mesh (checkCollisions=true - the same flag
@@ -2856,6 +2897,9 @@
                 }
             }
 
+            setLoadingProgress(70, 'DEPLOYING OPERATORS...');
+            await nextFrame();
+
             // Spawn points - map-specific, since each map's layout puts
             // "open ground near each team's side" in different places (see
             // MAP_SPAWNS, defined next to the map builders below).
@@ -2882,6 +2926,9 @@
                     bots.push(new Bot(scene, ffaSpawns[i % ffaSpawns.length], `BOT${i}`));
                 }
             }
+
+            setLoadingProgress(100, 'READY');
+            await nextFrame();
 
             currentGameState = GameState.PLAYING;
             gameActive = true;

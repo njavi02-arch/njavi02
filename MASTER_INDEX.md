@@ -149,7 +149,7 @@ Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(
 | Operadores (identidad visual) | 🟢 | — |
 | Configuración (sensibilidad, volumen, invertir Y) | 🟢 | — |
 | Configuración gráfica (calidad, resolución) | 🔴 | P4 |
-| Pantalla de carga | 🔧 | P4 — solo texto, sin barra de progreso ni animación |
+| Pantalla de carga | 🟢 | — | Barra de progreso real (no falsa) por etapa de `initGame()`; ver `BULLET_OPS_PROGRESS.md` |
 | Pantalla de resultados | 🟢 | — |
 | CUSTOMIZE (combinar skin + operador) | 🔒 | P4 — bloqueado en tener más de 1 skin real |
 | Sonido de UI | 🟢 | — | Ver FASE 7 |
@@ -225,7 +225,8 @@ Sección permanente, actualizada cada vez que se evalúa o conecta una herramien
 ~~P2 — ADS "a través de la mira" (mejora sin modelo real)~~ 🟢 completado. Overlay de círculo de mira + retícula para SNIPER, viñeta para el resto.
 ~~P3 — Sonido dedicado de slide~~ 🟢 completado.
 ~~P3 — Segundo pase de props/detalle por mapa~~ 🟢 completado.
+~~P4 — Barra de progreso de carga real~~ 🟢 completado.
 
 Ya no quedan tareas P0/P1/P2/P3 abiertas en el índice en este momento. Todo lo restante es P4 o está bloqueado en assets reales (🔒).
 
-**Siguiente**: revisar candidatos P4 restantes — pantalla de carga con barra de progreso real (hoy solo texto estático), menú de configuración gráfica (calidad/resolución), un 4º mapa. Ninguno es urgente; se evaluará cuál aporta más antes de implementar. Fase 10 multijugador sigue en pausa según la redirección de prioridad del usuario.
+**Siguiente**: revisar candidatos P4 restantes — menú de configuración gráfica (calidad/resolución), un 4º mapa, música de menú/partida. Ninguno es urgente; se evaluará cuál aporta más antes de implementar. Fase 10 multijugador sigue en pausa según la redirección de prioridad del usuario.
