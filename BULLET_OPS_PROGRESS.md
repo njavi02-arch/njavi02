@@ -119,6 +119,13 @@ Cada bala (jugador y bot) y cada muzzle flash creaba su propio `StandardMaterial
 
 ---
 
+### FASE FINAL: Movimiento — SLIDE (Sprint → Crouch → Slide → Recovery, completo)
+Redirección explícita de prioridad a mitad de sesión: pasar a una fase de "base visual y jugable sólida" con el movimiento como prioridad máxima tras las armas. El slide no existía en absoluto. Implementado en `Player`: pulsar Crouch (C) recién (flanco, no mantenido) mientras se está esprintando, en el suelo y moviéndose dispara un slide — un impulso de velocidad (16 u/s, por encima de los 14 u/s del sprint) fijado a la dirección de movimiento en el instante de activación (no dirigible con WASD durante el slide, para que se sienta como un movimiento comprometido y no un "crouch-walk rápido"), que decae por fricción (`slideFriction=3.2`) hacia un suelo de 5 u/s; el slide termina quien llegue primero entre el timer (`slideDuration=0.55s`) o tocar ese suelo, y a partir de ahí el jugador queda agachado (si sigue pulsando C) o se levanta (si lo soltó) con la desaceleración normal ya existente. Reutiliza la altura de cápsula/elipsoide de crouch ya existente (sin geometría de colisión nueva). Aplica un ligero ensanchamiento de FOV (×1.06) mientras dura el slide para dar sensación de velocidad, aplicado después del FOV que ya controla `WeaponController` por ADS para no pelearse con el zoom de apuntado.
+
+Probado con Playwright llamando directamente a `player.update()` con inputs controlados: tras 3 frames de sprint (`velLen=14`, `wasSprinting=true`), pulsar C dispara el slide con `slideSpeed` decayendo exactamente según la fórmula de fricción esperada dentro del mismo frame (16 → 14.976, coincide con el cálculo exacto), `isCrouching=true`, elipsoide ya en altura de crouch, y FOV en `0.8 × 1.06 = 0.848` (coincide exacto con `baseFov`). Pasos siguientes muestran la velocidad decayendo suavemente frame a frame hasta tocar el suelo de 5 u/s, momento en el que `isSliding` pasa a `false` y el jugador queda agachado (C seguía pulsada) con la desaceleración normal tomando el relevo. Cero errores de consola.
+
+---
+
 ## 🔧 SIGUIENTE PASO (para retomar la sesión)
 
 Nada quedó a medias. LOADOUT, WEAPONS, OPERATORS y SETTINGS ya son funcionales. Por orden de prioridad según el roadmap original, lo que sigue:

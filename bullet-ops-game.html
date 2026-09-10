@@ -1528,6 +1528,23 @@
                 this.jumpForce = 8;
                 this.isGrounded = false;
 
+                // Slide: Sprint -> (press Crouch) -> Slide -> Recovery. A
+                // burst of speed along the current facing, decaying via
+                // friction toward crouch speed over slideDuration (or ending
+                // early if the decay hits slideMinSpeed first), then settling
+                // into a normal crouch/stand depending on whether Crouch is
+                // still held.
+                this.wasSprinting = false;
+                this.crouchKeyWasDown = false;
+                this.isSliding = false;
+                this.slideTimer = 0;
+                this.slideDuration = 0.55;
+                this.slideDir = new BABYLON.Vector3(0, 0, 0);
+                this.slideSpeed = 0;
+                this.slideStartSpeed = 16;
+                this.slideFriction = 3.2;
+                this.slideMinSpeed = 5;
+
                 // Weapon system - see WeaponController for the full state
                 // machine (fire/reload/ADS/switch/recoil/viewmodel). Uses
                 // whatever loadout was chosen on the Loadout screen (Fase 9),
@@ -1584,12 +1601,38 @@
                 if (inputs.keys['d']) moveDir.addInPlace(right);
                 if (inputs.keys['a']) moveDir.addInPlace(right.scale(-1));
 
-                // Crouch (hold C) - slower movement, lower stance/collision volume
-                this.isCrouching = !!inputs.keys['c'];
+                // Crouch (hold C) - slower movement, lower stance/collision
+                // volume. Pressing C fresh while sprinting (grounded and
+                // moving) triggers a slide instead of an instant crouch.
+                const crouchKeyDown = !!inputs.keys['c'];
+                const crouchJustPressed = crouchKeyDown && !this.crouchKeyWasDown;
+                this.crouchKeyWasDown = crouchKeyDown;
+
+                if (!this.isSliding && crouchJustPressed && this.wasSprinting && this.isGrounded && moveDir.length() > 0) {
+                    this.isSliding = true;
+                    this.slideTimer = this.slideDuration;
+                    this.slideDir = moveDir.clone().normalize();
+                    this.slideSpeed = this.slideStartSpeed;
+                }
+
+                if (this.isSliding) {
+                    this.slideTimer -= deltaTime;
+                    // Exponential-ish decay toward slideMinSpeed, then the
+                    // slide ends (by timer or by decaying past the floor,
+                    // whichever comes first) and control returns to a normal
+                    // crouch (or a stand, if Crouch was released mid-slide).
+                    this.slideSpeed = Math.max(this.slideMinSpeed, this.slideSpeed - this.slideFriction * this.slideSpeed * deltaTime);
+                    if (this.slideTimer <= 0 || this.slideSpeed <= this.slideMinSpeed + 0.05) {
+                        this.isSliding = false;
+                    }
+                }
+
+                this.isCrouching = this.isSliding || crouchKeyDown;
                 this.mesh.ellipsoid.y = this.isCrouching ? this.crouchEllipsoidY : this.standEllipsoidY;
 
-                const isMoving = moveDir.length() > 0;
-                const isSprinting = !!inputs.keys['shift'] && !this.isCrouching && isMoving && !this.weaponController.isADS;
+                const isMoving = this.isSliding || moveDir.length() > 0;
+                const isSprinting = !this.isSliding && !!inputs.keys['shift'] && !this.isCrouching && isMoving && !this.weaponController.isADS;
+                this.wasSprinting = isSprinting;
 
                 // Weapon mobility modifier now comes from the equipped
                 // weapon's own config (hip vs ADS, see WEAPON_CONFIGS)
@@ -1600,7 +1643,13 @@
                 const baseSprint = this.sprintSpeed * weaponMobility * crouchMobility;
                 const speed = isSprinting ? baseSprint : baseSpeed;
 
-                if (isMoving) {
+                if (this.isSliding) {
+                    // Locked to the direction the slide started in - not
+                    // WASD-steerable - so it reads as a committed burst
+                    // rather than just "crouch-walking fast".
+                    this.velocity.x = this.slideDir.x * this.slideSpeed;
+                    this.velocity.z = this.slideDir.z * this.slideSpeed;
+                } else if (isMoving) {
                     moveDir.normalize();
                     // Instant acceleration (arcade)
                     this.velocity.x = moveDir.x * speed;
@@ -1650,6 +1699,13 @@
                     crouching: this.isCrouching,
                     grounded: this.isGrounded
                 });
+
+                // Slight FOV widen while sliding for a speed sensation -
+                // applied after WeaponController's own ADS-driven FOV so it
+                // layers on top instead of fighting the ADS zoom.
+                if (this.isSliding) {
+                    this.camera.fov *= 1.06;
+                }
 
                 // Final camera rotation: the player's own raw aim combined
                 // with this frame's recoil kick.
@@ -1701,6 +1757,11 @@
                 wc.spreadBloom = 0;
                 wc.sprintRecoveryTimer = 0;
                 this.camera.fov = wc.baseFov;
+
+                this.isSliding = false;
+                this.slideTimer = 0;
+                this.wasSprinting = false;
+                this.crouchKeyWasDown = false;
             }
 
             addKill() {
