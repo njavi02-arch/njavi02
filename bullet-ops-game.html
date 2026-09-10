@@ -481,9 +481,12 @@
                 this.stateTimer = 0;
                 this.difficulty = Math.random() < 0.5 ? 'normal' : 'hard'; // Random difficulty
 
-                this.currentWeapon = WEAPONS.BO01;
+                this.weapons = [WEAPONS.BO01, WEAPONS.BO41, WEAPONS.BO11];
+                this.currentWeaponIdx = Math.floor(Math.random() * 3);
+                this.currentWeapon = this.weapons[this.currentWeaponIdx];
                 this.weaponCooldown = 0;
                 this.currentMag = this.currentWeapon.mag;
+                this.reloadCooldown = 0;
             }
 
             update(deltaTime, allPlayers) {
@@ -559,6 +562,25 @@
                 if (this.mesh.position.y < -50) this.die();
 
                 this.weaponCooldown = Math.max(0, this.weaponCooldown - deltaTime);
+                this.reloadCooldown = Math.max(0, this.reloadCooldown - deltaTime);
+
+                // Tactical weapon switching
+                if (this.currentMag <= 0 && this.reloadCooldown <= 0) {
+                    // Out of ammo - switch weapon or reload
+                    if (Math.random() < 0.7) {
+                        // Switch to another weapon if available
+                        const newIdx = (this.currentWeaponIdx + 1) % this.weapons.length;
+                        if (this.weapons[newIdx].mag > 0) {
+                            this.currentWeaponIdx = newIdx;
+                            this.currentWeapon = this.weapons[this.currentWeaponIdx];
+                            this.currentMag = this.currentWeapon.mag;
+                        }
+                    } else if (this.currentMag < this.currentWeapon.mag) {
+                        // Reload
+                        this.currentMag = this.currentWeapon.mag;
+                        this.reloadCooldown = this.currentWeapon.reload;
+                    }
+                }
             }
 
             fire(direction) {
@@ -635,27 +657,41 @@
             // Build map
             buildMap();
 
+            // Spawn points based on map
+            const blueSpawns = [
+                new BABYLON.Vector3(-30, 2, -30),
+                new BABYLON.Vector3(-35, 2, -20),
+                new BABYLON.Vector3(-20, 2, -35)
+            ];
+
+            const redSpawns = [
+                new BABYLON.Vector3(30, 2, 30),
+                new BABYLON.Vector3(35, 2, 20),
+                new BABYLON.Vector3(20, 2, 35)
+            ];
+
+            const ffaSpawns = [
+                new BABYLON.Vector3(-30, 2, 30),
+                new BABYLON.Vector3(30, 2, -30),
+                new BABYLON.Vector3(0, 2, -40)
+            ];
+
             // Spawn player
             const playerTeam = gameMode === 'TDM' ? 'BLUE' : 'NEUTRAL';
-            player = new Player(scene, new BABYLON.Vector3(-25, 2, -25), playerTeam);
+            const playerSpawn = gameMode === 'TDM' ? blueSpawns[0] : ffaSpawns[0];
+            player = new Player(scene, playerSpawn, playerTeam);
             scene.activeCamera = player.camera;
 
             // Spawn bots
-            const botSpawns = [
-                new BABYLON.Vector3(25, 2, 25),
-                new BABYLON.Vector3(30, 2, 20),
-                new BABYLON.Vector3(20, 2, 30)
-            ];
-
             if (gameMode === 'TDM') {
-                // Team Deathmatch: bots are RED team
-                for (let pos of botSpawns) {
-                    bots.push(new Bot(scene, pos, 'RED'));
+                // Team Deathmatch: bots spawn on RED side
+                for (let i = 0; i < gameConfig.botCount; i++) {
+                    bots.push(new Bot(scene, redSpawns[i % redSpawns.length], 'RED'));
                 }
             } else {
-                // Free for All: all bots are independent
-                for (let i = 0; i < botSpawns.length; i++) {
-                    bots.push(new Bot(scene, botSpawns[i], `BOT${i}`));
+                // Free for All: bots spawn at distributed points
+                for (let i = 0; i < gameConfig.botCount; i++) {
+                    bots.push(new Bot(scene, ffaSpawns[i % ffaSpawns.length], `BOT${i}`));
                 }
             }
 
@@ -1040,12 +1076,19 @@
 
         function endGame() {
             gameActive = false;
+
+            // Calculate statistics
+            const gameTime = Math.floor((Date.now() - gameStartTime) / 1000);
+            const mins = Math.floor(gameTime / 60);
+            const secs = gameTime % 60;
+            const kdr = player.deaths === 0 ? player.kills : (player.kills / player.deaths).toFixed(2);
+
             let message = '';
             if (gameMode === 'TDM') {
                 const winner = blueScore > redScore ? 'BLUE' : 'RED';
-                message = `GAME OVER!\n${winner} TEAM WINS!\nFinal Score: BLUE ${blueScore} - RED ${redScore}`;
+                message = `GAME OVER!\n${winner} TEAM WINS!\n\nFinal Score: BLUE ${blueScore} - RED ${redScore}\n\nYour Stats:\nKills: ${player.kills}\nDeaths: ${player.deaths}\nK/D Ratio: ${kdr}\nGame Time: ${mins}:${secs.toString().padStart(2, '0')}`;
             } else {
-                message = `GAME OVER!\n👤 YOU WIN!\nFinal Kills: ${player.kills}\nDeaths: ${player.deaths}`;
+                message = `GAME OVER!\n👤 YOU WIN!\n\nFinal Kills: ${player.kills}\nDeaths: ${player.deaths}\nK/D Ratio: ${kdr}\nGame Time: ${mins}:${secs.toString().padStart(2, '0')}`;
             }
             alert(message);
             location.reload();
