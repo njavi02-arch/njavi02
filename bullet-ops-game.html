@@ -192,7 +192,7 @@
             box-shadow: inset 0 0 100px rgba(255, 0, 0, 0);
             transition: box-shadow 0.1s;
         }
-        #pauseMenu, #resultsScreen {
+        #pauseMenu, #resultsScreen, #loadoutScreen {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(10, 14, 39, 0.85);
@@ -235,7 +235,7 @@
                  look locked), so a click literally does nothing - the game
                  never claims a feature works when it doesn't. -->
             <div style="margin: 0.6rem 0;">
-                <button class="menu-button locked" disabled title="Próximamente">🎒 LOADOUT</button>
+                <button class="menu-button" id="loadoutBtn">🎒 LOADOUT</button>
                 <button class="menu-button locked" disabled title="Próximamente">🔫 WEAPONS</button>
                 <button class="menu-button locked" disabled title="Próximamente">🧑 OPERATORS</button>
                 <button class="menu-button locked" disabled title="Próximamente">🎨 CUSTOMIZE</button>
@@ -285,6 +285,15 @@
             <div id="resultsScore" style="font-size: 1.3rem; margin-bottom: 1.2rem;"></div>
             <div id="resultsStats" style="font-size: 0.95rem; line-height: 1.8; margin-bottom: 1.5rem;"></div>
             <button class="menu-button" id="backToMenuBtn">↩ BACK TO MENU</button>
+        </div>
+    </div>
+
+    <div id="loadoutScreen" class="hidden">
+        <div style="text-align: center;">
+            <div class="menu-title" style="font-size: 2rem;">🎒 LOADOUT</div>
+            <div style="font-size: 0.7rem; color: #00aa00; margin-bottom: 1rem;">Elige 3 armas de las 15 disponibles</div>
+            <div id="loadoutSlots"></div>
+            <button class="menu-button" id="loadoutBackBtn" style="margin-top: 1rem;">↩ BACK</button>
         </div>
     </div>
 
@@ -619,6 +628,25 @@
         // numeric stats (damage/fireRate/mag/reserve/spread/speed), so it
         // keeps working unmodified against the richer config objects.
         const WEAPONS = WEAPON_CONFIGS;
+
+        // ========== LOADOUT (Fase 9) ==========
+        // Which 3 of the 15 catalog weapons the player actually spawns
+        // with. Persisted in localStorage so a choice survives a reload;
+        // falls back to the default trio if nothing was saved yet, or if a
+        // saved id no longer exists in the catalog (defensive against a
+        // future roster change removing a weapon someone had equipped).
+        let currentLoadout = ['BO01', 'BO11', 'BO51'];
+        (function loadSavedLoadout() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('bulletOpsLoadout') || 'null');
+                if (Array.isArray(saved) && saved.length === 3 && saved.every(id => WEAPON_CONFIGS[id])) {
+                    currentLoadout = saved;
+                }
+            } catch (e) { /* ignore - keep default */ }
+        })();
+        function saveLoadout() {
+            try { localStorage.setItem('bulletOpsLoadout', JSON.stringify(currentLoadout)); } catch (e) { /* private mode etc - loadout just won't persist */ }
+        }
 
         // ========== SOUND SYSTEM ==========
         // Every sound below is synthesized at runtime via the Web Audio API
@@ -1345,8 +1373,10 @@
                 this.isGrounded = false;
 
                 // Weapon system - see WeaponController for the full state
-                // machine (fire/reload/ADS/switch/recoil/viewmodel).
-                this.weaponController = new WeaponController(this, scene, ['BO01', 'BO11', 'BO51']);
+                // machine (fire/reload/ADS/switch/recoil/viewmodel). Uses
+                // whatever loadout was chosen on the Loadout screen (Fase 9),
+                // not a fixed trio.
+                this.weaponController = new WeaponController(this, scene, currentLoadout);
 
                 // Respawn shield
                 this.spawnShieldTime = 0;
@@ -2578,6 +2608,47 @@
             selectedMap = 'OUTPOST-9';
             gameConfig.map = 'OUTPOST-9';
             updateMapDisplay();
+        });
+
+        // ========== LOADOUT SCREEN ==========
+        function renderLoadoutScreen() {
+            const container = document.getElementById('loadoutSlots');
+            const ids = Object.keys(WEAPON_CONFIGS);
+            container.innerHTML = '';
+            for (let slot = 0; slot < 3; slot++) {
+                const cfg = WEAPON_CONFIGS[currentLoadout[slot]];
+                const row = document.createElement('div');
+                row.style.cssText = 'display:flex; align-items:center; justify-content:center; gap:0.7rem; margin:0.5rem 0;';
+                row.innerHTML =
+                    `<span style="width:60px; font-size:0.75rem; color:#00aa00;">SLOT ${slot + 1}</span>` +
+                    `<button class="menu-button" style="padding:0.4rem 0.7rem; font-size:0.9rem;" data-slot="${slot}" data-dir="-1">◀</button>` +
+                    `<span style="width:250px; font-size:0.85rem;">${cfg.name}<br><span style="color:#00aa00; font-size:0.65rem;">${cfg.category}</span></span>` +
+                    `<button class="menu-button" style="padding:0.4rem 0.7rem; font-size:0.9rem;" data-slot="${slot}" data-dir="1">▶</button>`;
+                container.appendChild(row);
+            }
+            container.querySelectorAll('button[data-slot]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const slot = parseInt(btn.dataset.slot, 10);
+                    const dir = parseInt(btn.dataset.dir, 10);
+                    const weaponIds = Object.keys(WEAPON_CONFIGS);
+                    let idx = weaponIds.indexOf(currentLoadout[slot]);
+                    idx = (idx + dir + weaponIds.length) % weaponIds.length;
+                    currentLoadout[slot] = weaponIds[idx];
+                    saveLoadout();
+                    renderLoadoutScreen();
+                });
+            });
+        }
+
+        document.getElementById('loadoutBtn').addEventListener('click', () => {
+            renderLoadoutScreen();
+            menu.classList.add('hidden');
+            document.getElementById('loadoutScreen').classList.remove('hidden');
+        });
+
+        document.getElementById('loadoutBackBtn').addEventListener('click', () => {
+            document.getElementById('loadoutScreen').classList.add('hidden');
+            menu.classList.remove('hidden');
         });
 
         document.getElementById('playBtn').addEventListener('click', () => {
