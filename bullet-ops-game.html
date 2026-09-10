@@ -248,7 +248,8 @@
                 <div id="mapDisplay" style="margin-top: 0.3rem;">MAP: BACKLOT-7</div>
                 <div style="margin-top: 0.8rem;">
                     WASD Move • Mouse Look • Click Fire • Right-Click ADS • R Reload<br>
-                    1/2/3 Swap Weapon • Space Jump • Shift Sprint • C Crouch • ESC Pause
+                    1/2/3 Swap Weapon • Space Jump • Shift Sprint • C Crouch (hold while sprinting to Slide)<br>
+                    I Inspect Weapon • ESC Pause
                 </div>
             </div>
         </div>
@@ -1568,11 +1569,13 @@
                     this.ammo[id] = { mag: cfg.mag, reserve: cfg.reserve };
                 }
 
-                this.state = 'IDLE'; // IDLE | RELOADING | SWITCHING
+                this.state = 'IDLE'; // IDLE | RELOADING | SWITCHING | INSPECTING
                 this.fireCooldown = 0;
                 this.reloadTimer = 0;
                 this.reloadDuration = 0;
                 this.wasEmptyReload = false;
+                this.inspectTimer = 0;
+                this.inspectDuration = 1.4;
                 this.switchTimer = 0;
                 this.switchDuration = 0.35;
                 this.pendingIndex = null;
@@ -1707,10 +1710,13 @@
                 } else if (this.state === 'RELOADING') {
                     this.reloadTimer -= deltaTime;
                     if (this.reloadTimer <= 0) this.finishReload();
+                } else if (this.state === 'INSPECTING') {
+                    this.inspectTimer -= deltaTime;
+                    if (this.inspectTimer <= 0) this.state = 'IDLE';
                 }
 
                 // --- ADS (right mouse), disabled mid-switch or while sprinting ---
-                this.isADS = !!inputs.adsDown && this.state !== 'SWITCHING' && !movementState.sprinting;
+                this.isADS = !!inputs.adsDown && this.state !== 'SWITCHING' && this.state !== 'INSPECTING' && !movementState.sprinting;
                 const adsTarget = this.isADS ? 1 : 0;
                 const adsSpeed = 1 / Math.max(0.01, this.currentConfig.ads.time);
                 this.adsAmount += (adsTarget - this.adsAmount) * Math.min(1, deltaTime * adsSpeed * 4);
@@ -1721,6 +1727,14 @@
                 const isMelee = cfg.projectileType === 'melee';
                 if (!isMelee && inputs.keys['r'] && this.state === 'IDLE' && this.currentAmmo.mag < cfg.mag && this.currentAmmo.reserve > 0) {
                     this.startReload();
+                }
+
+                // --- Inspect (I), a cosmetic flourish with no gameplay
+                // effect beyond blocking fire/reload/ADS for its duration,
+                // same as any other non-IDLE state already does. ---
+                if (inputs.keys['i'] && this.state === 'IDLE') {
+                    this.state = 'INSPECTING';
+                    this.inspectTimer = this.inspectDuration;
                 }
 
                 // --- Firing --- (also gated on sprintRecoveryTimer above)
@@ -1904,12 +1918,28 @@
                     switchDip = Math.sin(progress * Math.PI) * 0.35;
                 }
 
+                // Inspect flourish (I key) - a purely cosmetic tilt/turn that
+                // eases in and back out over inspectDuration via a sine
+                // envelope (0 at start/end, peak at the midpoint), plus a
+                // small pull-toward-camera so the weapon reads as being
+                // looked over rather than just twitching in place.
+                let inspectPos = BABYLON.Vector3.Zero();
+                let inspectRot = BABYLON.Vector3.Zero();
+                if (this.state === 'INSPECTING') {
+                    const progress = 1 - Math.max(0, this.inspectTimer) / this.inspectDuration;
+                    const envelope = Math.sin(progress * Math.PI);
+                    inspectRot = new BABYLON.Vector3(0, envelope * 0.9, envelope * 0.15);
+                    inspectPos = new BABYLON.Vector3(-0.05 * envelope, 0.03 * envelope, -0.08 * envelope);
+                }
+
                 root.position = basePos
                     .add(new BABYLON.Vector3(this.swayX + bobX, this.swayY + bobY - switchDip, this.kickOffset.z))
-                    .add(SPRINT_POS_OFFSET.scale(this.sprintAmount));
+                    .add(SPRINT_POS_OFFSET.scale(this.sprintAmount))
+                    .add(inspectPos);
                 root.rotation = baseRot
                     .add(new BABYLON.Vector3(this.kickRotX, 0, 0))
-                    .add(SPRINT_ROT_OFFSET.scale(this.sprintAmount));
+                    .add(SPRINT_ROT_OFFSET.scale(this.sprintAmount))
+                    .add(inspectRot);
             }
         }
 
@@ -2925,7 +2955,7 @@
         // Keys the game itself handles. Space in particular must not be
         // allowed to fall through to the browser's default "scroll page"
         // behavior, and none of these should trigger other page shortcuts.
-        const GAME_KEYS = new Set(['w', 'a', 's', 'd', ' ', 'shift', 'r', '1', '2', '3', 'c', 'escape']);
+        const GAME_KEYS = new Set(['w', 'a', 's', 'd', ' ', 'shift', 'r', '1', '2', '3', 'c', 'i', 'escape']);
 
         window.addEventListener('keydown', (e) => {
             const key = e.key.toLowerCase();
