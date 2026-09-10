@@ -1321,6 +1321,14 @@
                 bullet.damage = cfg.damage;
                 bullet.velocity = direction.scale(cfg.bulletSpeed);
                 bullet.life = 10;
+                // cfg.range existed per-weapon from the start but was never
+                // enforced - every bullet traveled identically far regardless
+                // of weapon, so a Sniper's 200-unit range and an SMG's 55-unit
+                // range meant nothing. Bullets now expire silently (no hit
+                // effects, just gone) once they've traveled their weapon's
+                // configured range.
+                bullet.maxRange = cfg.range;
+                bullet.distanceTraveled = 0;
                 bullets.push(bullet);
 
                 // Recoil: pattern kick on aim/accuracy (decays per
@@ -1923,6 +1931,8 @@
                 bullet.damage = this.currentWeapon.damage;
                 bullet.velocity = fireDir.scale(this.currentWeapon.bulletSpeed);
                 bullet.life = 10;
+                bullet.maxRange = this.currentWeapon.range;
+                bullet.distanceTraveled = 0;
 
                 bullets.push(bullet);
                 SoundSynth.playGunshot(this.currentWeapon.soundProfile);
@@ -2452,6 +2462,10 @@
                 const prevPos = bullet.position.clone();
                 bullet.position.addInPlace(bullet.velocity.scale(deltaTime));
                 bullet.life -= deltaTime;
+                bullet.distanceTraveled += BABYLON.Vector3.Distance(prevPos, bullet.position);
+                // Expire silently (no hit effects) once past the weapon's
+                // configured range - see bullet.maxRange at creation.
+                if (bullet.distanceTraveled > bullet.maxRange) bullet.life = -1;
 
                 // Check collisions (limited to alive entities). Fast weapons
                 // (up to 900 u/s) can move ~14 units in a single frame, so
