@@ -105,7 +105,7 @@ Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(
 | Tarea transversal de mapas | Estado | Prioridad |
 |---|---|---|
 | Texturas de superficie reales (ahora color plano) | 🔒 | P3 — bloqueado en assets |
-| Sombras dinámicas | 🔴 | **P1** — ninguna luz proyecta sombra en todo el juego, alto impacto visual, sin bloqueo de assets |
+| Sombras dinámicas | 🟢 | — | Implementado con `ShadowGenerator` por mapa; ver `BULLET_OPS_PROGRESS.md` para el hallazgo de rendimiento en el entorno de pruebas (SwiftShader/software) y por qué no bloqueó la función |
 | Sonido ambiente diferenciado por mapa | 🔴 | P2 |
 | Segundo pase de props/detalle ambiental | 🔴 | P3 |
 | Un cuarto mapa / más contenido | 🔴 | P4 |
@@ -130,7 +130,7 @@ Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(
 | Tarea | Estado | Prioridad |
 |---|---|---|
 | Iluminación diferenciada por mapa | 🟢 | — | |
-| Sombras dinámicas | 🔴 | **P1** | Ver FASE 6 — mismo ítem, afecta a todos los mapas |
+| Sombras dinámicas | 🟢 | — | Ver FASE 6 |
 | Partículas (muzzle flash, impacto, explosión) | 🟢 | — | |
 | Postprocesado (tone mapping, vignette, bloom sutil) | 🔴 | P2 | Nunca configurado, la escena usa el pipeline por defecto |
 | Texturas/materiales reales | 🔒 | P3 | Bloqueado en assets |
@@ -182,7 +182,8 @@ Sin bugs críticos conocidos abiertos en este momento.
 ## FASE 12 — PULIDO FINAL
 
 Revisión continua transversal. Elementos "de prototipo" detectados activamente y priorizados en las fases de arriba:
-- **Sin sombras** (FASE 6/8, P1) — el más notable.
+- ~~Sin sombras~~ — 🟢 corregido, ver FASE 6/8.
+- ~~Brillo especular no deseado en superficies de mapa~~ — 🟢 corregido de paso al implementar sombras.
 - **Sin sonido de UI** (FASE 7/9, P1) — se nota en cada click de menú.
 - **Retícula única para 35 armas** (FASE 5, P2).
 - **Sin postprocesado** (FASE 8, P2).
@@ -192,6 +193,8 @@ Revisión continua transversal. Elementos "de prototipo" detectados activamente 
 
 ## 🎯 PRÓXIMA TAREA (según este índice, sin esperar instrucción)
 
-**P1 — Sombras dinámicas** (FASE 6/8): ninguna luz del juego proyecta sombra, en los 3 mapas. Es el ítem de mayor prioridad sin bloqueo de assets. Se implementa a continuación en este mismo ciclo.
+~~P1 — Sombras dinámicas~~ 🟢 completado.
 
-Después: **P1 — Sonido de UI** (FASE 7/9), luego **P2 — retículas por categoría de arma**, luego **P2 — postprocesado ligero**, luego auditoría de rendimiento (FASE 1/11).
+**P1 — Sonido de UI** (FASE 7/9): ningún botón de menú suena. Es el siguiente ítem de mayor prioridad sin bloqueo de assets. Se implementa a continuación en este mismo ciclo.
+
+Después: **P2 — retículas por categoría de arma**, luego **P2 — postprocesado ligero**, luego auditoría de rendimiento (FASE 1/11).

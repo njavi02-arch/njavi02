@@ -365,6 +365,11 @@
         let currentGameState = GameState.MENU;
 
         let engine, scene, gameActive = false, gameStartTime = 0;
+        // Shadow generator for the current match's directional light - null
+        // until initGame() creates it, so Player/Bot constructors (which run
+        // afterward, once per match) can register their own capsule as a
+        // shadow caster the moment they're built.
+        let shadowGenerator = null;
         let player = null, bots = [], bullets = [];
         let blueScore = 0, redScore = 0;
         let killstreakMessages = [];
@@ -2001,6 +2006,7 @@
                 // deliberately left without checkCollisions.
                 this.mesh.ellipsoid = new BABYLON.Vector3(0.35, 0.9, 0.35);
                 this.mesh.checkCollisions = true;
+                if (shadowGenerator) shadowGenerator.addShadowCaster(this.mesh);
                 this.isCrouching = false;
                 this.standGroundLevel = 1;
                 this.crouchGroundLevel = 0.6;
@@ -2371,6 +2377,7 @@
                 // blocked by walls/obstacles instead of walking through them.
                 this.mesh.ellipsoid = new BABYLON.Vector3(0.35, 0.9, 0.35);
                 this.mesh.checkCollisions = true;
+                if (shadowGenerator) shadowGenerator.addShadowCaster(this.mesh);
 
                 const mat = new BABYLON.StandardMaterial('botMat' + Math.random(), scene);
                 let color = new BABYLON.Color3(0.2, 0.8, 0.2); // Green for FFA bots
@@ -2680,9 +2687,59 @@
             const dlight = new BABYLON.DirectionalLight('dlight', lighting.dir.direction);
             dlight.intensity = lighting.dir.intensity;
             dlight.diffuse = lighting.dir.color;
+            // Auto-fits the shadow frustum to the scene's actual bounds each
+            // frame instead of a hand-tuned min/max Z, which would need
+            // separate tuning per map given how different their sizes are
+            // (BACKLOT-7 vs. the much longer OUTPOST-9).
+            dlight.autoCalcShadowZBounds = true;
+
+            // Shadows: nothing in the game previously cast or received a
+            // shadow at all, which is one of the biggest "this looks like a
+            // prototype" tells - flat lighting with everything floating.
+            // Kept deliberately cheap (no PCF/blur, modest resolution,
+            // throttled refresh, only larger structures as casters below) -
+            // an early pass with a bigger map + PCF filtering measured a
+            // severe frame-time hit in this project's headless test
+            // environment.
+            shadowGenerator = new BABYLON.ShadowGenerator(1024, dlight);
+            shadowGenerator.bias = 0.003;
+            // Shadows only need to look right, not update every single
+            // frame - halving the refresh rate is imperceptible for slow-
+            // moving capsules and static structures, and roughly halves the
+            // depth-pass cost.
+            shadowGenerator.getShadowMap().refreshRate = BABYLON.RenderTargetTexture.REFRESHRATE_RENDER_ONEVERYTWOFRAMES;
 
             // Build map
             buildMap();
+            // Every solid map mesh (checkCollisions=true - the same flag
+            // that already marks "this blocks movement") both casts and
+            // receives shadows; the ground only receives (it has no
+            // checkCollisions itself, see buildMap's own comments on why).
+            // At this point in the sequence scene.meshes only contains map
+            // geometry (player/bots are built after this), so this loop is
+            // naturally scoped to map materials only.
+            for (const mesh of scene.meshes) {
+                if (mesh.name === 'ground') {
+                    mesh.receiveShadows = true;
+                } else if (mesh.checkCollisions) {
+                    mesh.receiveShadows = true;
+                    // Only the larger structures cast a shadow - small
+                    // decorative props (barrels, scattered crates) add
+                    // per-caster depth-pass cost for almost no visual
+                    // payoff at this scale, so they're skipped by size.
+                    const half = mesh.getBoundingInfo().boundingBox.extendSizeWorld;
+                    const isSizable = Math.max(half.x, half.y, half.z) > 2;
+                    if (shadowGenerator && isSizable) shadowGenerator.addShadowCaster(mesh);
+                }
+                // None of the map's flat/matte surfaces should have a
+                // specular highlight - every buildMap* material left it at
+                // StandardMaterial's shiny white default, producing a
+                // visible glare hotspot from the directional light that was
+                // easy to miss before shadows made lighting more prominent.
+                if (mesh.material instanceof BABYLON.StandardMaterial) {
+                    mesh.material.specularColor = BABYLON.Color3.Black();
+                }
+            }
 
             // Spawn points - map-specific, since each map's layout puts
             // "open ground near each team's side" in different places (see
