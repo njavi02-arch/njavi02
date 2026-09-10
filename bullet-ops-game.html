@@ -192,7 +192,7 @@
             box-shadow: inset 0 0 100px rgba(255, 0, 0, 0);
             transition: box-shadow 0.1s;
         }
-        #pauseMenu, #resultsScreen, #loadoutScreen {
+        #pauseMenu, #resultsScreen, #loadoutScreen, #weaponsScreen {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(10, 14, 39, 0.85);
@@ -236,7 +236,7 @@
                  never claims a feature works when it doesn't. -->
             <div style="margin: 0.6rem 0;">
                 <button class="menu-button" id="loadoutBtn">🎒 LOADOUT</button>
-                <button class="menu-button locked" disabled title="Próximamente">🔫 WEAPONS</button>
+                <button class="menu-button" id="weaponsBtn">🔫 WEAPONS</button>
                 <button class="menu-button locked" disabled title="Próximamente">🧑 OPERATORS</button>
                 <button class="menu-button locked" disabled title="Próximamente">🎨 CUSTOMIZE</button>
                 <button class="menu-button locked" disabled title="Próximamente">⚙ SETTINGS</button>
@@ -294,6 +294,15 @@
             <div style="font-size: 0.7rem; color: #00aa00; margin-bottom: 1rem;">Elige 3 armas de las 15 disponibles</div>
             <div id="loadoutSlots"></div>
             <button class="menu-button" id="loadoutBackBtn" style="margin-top: 1rem;">↩ BACK</button>
+        </div>
+    </div>
+
+    <div id="weaponsScreen" class="hidden">
+        <div style="text-align: center; max-height: 90vh; display: flex; flex-direction: column;">
+            <div class="menu-title" style="font-size: 2rem; flex-shrink: 0;">🔫 WEAPONS</div>
+            <div style="font-size: 0.7rem; color: #00aa00; margin-bottom: 0.6rem; flex-shrink: 0;">Catálogo completo — 15 armas</div>
+            <div id="weaponsList" style="overflow-y: auto; padding: 0 1rem; flex: 1;"></div>
+            <button class="menu-button" id="weaponsBackBtn" style="margin-top: 1rem; flex-shrink: 0;">↩ BACK</button>
         </div>
     </div>
 
@@ -2674,6 +2683,49 @@
 
         document.getElementById('loadoutBackBtn').addEventListener('click', () => {
             document.getElementById('loadoutScreen').classList.add('hidden');
+            menu.classList.remove('hidden');
+        });
+
+        // ========== WEAPONS CATALOG SCREEN ==========
+        function renderWeaponsScreen() {
+            const list = document.getElementById('weaponsList');
+            list.innerHTML = '';
+            const byCategory = {};
+            for (const id of Object.keys(WEAPON_CONFIGS)) {
+                const cfg = WEAPON_CONFIGS[id];
+                (byCategory[cfg.category] = byCategory[cfg.category] || []).push(cfg);
+            }
+            // Stable category display order matching the roster ranges.
+            const order = [WEAPON_CATEGORY.AR, WEAPON_CATEGORY.SMG, WEAPON_CATEGORY.SHOTGUN, WEAPON_CATEGORY.SNIPER, WEAPON_CATEGORY.LMG, WEAPON_CATEGORY.PISTOL];
+            for (const category of order) {
+                const weapons = byCategory[category];
+                if (!weapons) continue;
+                const header = document.createElement('div');
+                header.textContent = category.toUpperCase();
+                header.style.cssText = 'color:#00ff00; font-size:0.8rem; margin:0.8rem 0 0.3rem; text-align:left; border-bottom:1px solid #1a3a1a; padding-bottom:2px;';
+                list.appendChild(header);
+                for (const cfg of weapons) {
+                    const row = document.createElement('div');
+                    row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#88bb88; padding:3px 0; text-align:left;';
+                    row.innerHTML =
+                        `<span style="color:#cceecc; width:170px;">${cfg.name}</span>` +
+                        `<span style="width:70px;">DMG ${cfg.damage}</span>` +
+                        `<span style="width:60px;">RoF ${cfg.fireRate}</span>` +
+                        `<span style="width:60px;">MAG ${cfg.mag}</span>` +
+                        `<span style="width:70px;">RNG ${cfg.range}</span>`;
+                    list.appendChild(row);
+                }
+            }
+        }
+
+        document.getElementById('weaponsBtn').addEventListener('click', () => {
+            renderWeaponsScreen();
+            menu.classList.add('hidden');
+            document.getElementById('weaponsScreen').classList.remove('hidden');
+        });
+
+        document.getElementById('weaponsBackBtn').addEventListener('click', () => {
+            document.getElementById('weaponsScreen').classList.add('hidden');
             menu.classList.remove('hidden');
         });
 
