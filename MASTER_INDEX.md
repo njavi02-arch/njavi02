@@ -84,7 +84,7 @@ Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(
 | Tarea | Estado | Prioridad | Notas |
 |---|---|---|---|
 | ADS (transición FOV/posición/sensibilidad) | 🟢 | — | |
-| ADS "a través de la mira" real | 🔧 | P2 | Limitado por geometría placeholder sin mira modelada — documentado, requiere modelo real |
+| ADS "a través de la mira" real | 🟢 | — | Sin modelo 3D real: resuelto vía overlay de pantalla — círculo de mira + retícula mil-dot para SNIPER, viñeta sutil para el resto; sincronizado con `adsAmount` real. Ver `BULLET_OPS_PROGRESS.md` |
 | Retícula reactiva a movimiento/disparo/ADS | 🟢 | — | Corregido bug: no reaccionaba a movimiento |
 | Retículas diferentes por arma/categoría | 🟢 | — | Círculo/cuadrado/diamante/solo-punto según categoría, tamaño sigue siendo reactivo al spread real |
 | Sensibilidad configurable | 🟢 | — | |
@@ -200,7 +200,8 @@ Revisión continua transversal. Elementos "de prototipo" detectados activamente 
 ~~P2 — Postprocesado ligero~~ 🟢 completado.
 ~~P2 — Sonido ambiente diferenciado por mapa~~ 🟢 completado.
 ~~P2 — Auditoría de rendimiento (draw calls, mallas huérfanas)~~ 🟢 completado. Sin fugas encontradas; ver `BULLET_OPS_PROGRESS.md`.
+~~P2 — ADS "a través de la mira" (mejora sin modelo real)~~ 🟢 completado. Overlay de círculo de mira + retícula para SNIPER, viñeta para el resto.
 
 Ya no quedan tareas P0/P1/P2 abiertas en el índice en este momento. Todo lo restante es P3/P4 o está bloqueado en assets reales (🔒).
 
-**Siguiente**: investigar si hay alguna mejora intermedia posible para el ADS placeholder sin modelo real (por ejemplo centrar mejor la geometría de mira placeholder / reducir el FOV de mira más agresivamente al apuntar con armas de precisión), dado que el modelo real de mira sigue bloqueado en assets (FASE 4, P2 marcado 🔧). Si no hay mejora viable sin modelo, pasar a P3: sonido dedicado de slide (FASE 7), o segundo pase de props/detalle ambiental por mapa (FASE 6).
+**Siguiente**: sonido dedicado de slide (FASE 7, P3) — actualmente el slide no tiene su propio efecto de audio (reutiliza el resto del set de sonidos de movimiento). Después: segundo pase de props/detalle ambiental por mapa (FASE 6, P3).

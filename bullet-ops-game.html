@@ -192,6 +192,47 @@
             box-shadow: inset 0 0 100px rgba(255, 0, 0, 0);
             transition: box-shadow 0.1s;
         }
+        /* ADS visual feedback without a modeled sight - see updateHUD().
+           adsVignette gives every weapon a soft edge-darken while aiming;
+           scopeOverlay/scopeReticle add the classic circular scope mask +
+           reticle (many shooters draw this over a modeled scope too) for
+           SNIPER-category weapons specifically, since those are the ones
+           where "just move the placeholder gun closer" reads weakest. */
+        #adsVignette {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            box-shadow: inset 0 0 0 rgba(0, 0, 0, 0);
+        }
+        #scopeOverlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            background: radial-gradient(circle, transparent 0, transparent 26vmin, #000 28vmin);
+            opacity: 0;
+        }
+        #scopeReticle {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            opacity: 0;
+        }
+        .scope-line {
+            position: absolute;
+            background: rgba(0, 255, 0, 0.75);
+        }
+        .scope-line-top { top: calc(50% - 13vmin); left: 50%; width: 1px; height: 9vmin; transform: translateX(-50%); }
+        .scope-line-bottom { bottom: calc(50% - 13vmin); left: 50%; width: 1px; height: 9vmin; transform: translateX(-50%); }
+        .scope-line-left { left: calc(50% - 13vmin); top: 50%; height: 1px; width: 9vmin; transform: translateY(-50%); }
+        .scope-line-right { right: calc(50% - 13vmin); top: 50%; height: 1px; width: 9vmin; transform: translateY(-50%); }
+        .scope-dot {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 2px; height: 2px;
+            background: rgba(0, 255, 0, 0.9);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
         #pauseMenu, #resultsScreen, #loadoutScreen, #weaponsScreen, #operatorsScreen, #settingsScreen {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -257,7 +298,16 @@
 
     <div id="hud" class="hidden">
         <div id="healthVignette"></div>
+        <div id="adsVignette"></div>
         <div id="crosshair"><div class="crosshair-dot"></div></div>
+        <div id="scopeOverlay"></div>
+        <div id="scopeReticle">
+            <div class="scope-line scope-line-top"></div>
+            <div class="scope-line scope-line-bottom"></div>
+            <div class="scope-line scope-line-left"></div>
+            <div class="scope-line scope-line-right"></div>
+            <div class="scope-dot"></div>
+        </div>
         <div id="hitmarker"></div>
         <div id="streakDisplay"></div>
         <div id="shieldIndicator">🛡 SPAWN SHIELD</div>
@@ -3483,6 +3533,22 @@
             // ADS indicator (subtle - the FOV zoom itself is the main feedback)
             const adsDisplay = document.getElementById('adsIndicator');
             if (adsDisplay) adsDisplay.style.opacity = wc.adsAmount > 0.4 ? '1' : '0';
+
+            // ADS screen effects (see CSS comment above #adsVignette) - a
+            // soft edge-darken for every weapon, plus a circular scope
+            // mask + reticle for SNIPER weapons specifically since they're
+            // the ones the placeholder-gun offset reads weakest for.
+            const adsVignetteEl = document.getElementById('adsVignette');
+            if (adsVignetteEl) {
+                adsVignetteEl.style.boxShadow = `inset 0 0 ${120 * wc.adsAmount}px rgba(0, 0, 0, ${0.35 * wc.adsAmount})`;
+            }
+            const scopeOverlayEl = document.getElementById('scopeOverlay');
+            const scopeReticleEl = document.getElementById('scopeReticle');
+            if (scopeOverlayEl && scopeReticleEl) {
+                const scopeAmount = weapon.category === WEAPON_CATEGORY.SNIPER ? wc.adsAmount : 0;
+                scopeOverlayEl.style.opacity = String(scopeAmount);
+                scopeReticleEl.style.opacity = String(scopeAmount);
+            }
 
             // Update crosshair size based on weapon
             updateCrosshairSize();
