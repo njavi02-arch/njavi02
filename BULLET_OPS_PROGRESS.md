@@ -39,6 +39,12 @@ Arquitectura completa y funcional, construida y probada en este orden:
 
 **Ajuste de diseño durante esta fase**: la posición de ADS inicial centraba completamente el arma frente a la cámara, y al ser geometría de bloques sin mira real, tapaba casi toda la pantalla (confirmado con captura: pantalla negra). Se ajustó para que quede ligeramente descentrada (como en la mayoría de shooters arcade) dejando que el zoom de FOV aporte la sensación de apuntado — es una limitación conocida del placeholder, se resolverá con un modelo real con mira modelada.
 
+### Arsenal — plantilla validada en las 6 categorías
+Añadidas `BO-21 BREACHER` (Shotgun), `BO-31 LONGSHOT` (Sniper), `BO-41 JUGGERNAUT` (LMG) a `WEAPON_CONFIGS`, cada una con personalidad propia (Shotgun: alto daño/corto alcance/spread amplio; Sniper: casi un solo tiro, ADS lentísimo con FOV muy reducido, **recoil fuerte pero lento** tal como se pidió explícitamente — recoverySpeed 2.5 vs. 7 del AR; LMG: cargador de 75, movilidad reducida). Probado con un `WeaponController` temporal equipando las 6 armas a la vez: todas disparan, generan su propio viewmodel (con nº de meshes distinto por categoría), consumen su propia munición y aplican su propio recoil sin ningún cambio de código adicional — confirma que la arquitectura escala. Aún no forman parte del loadout de 3 armas por defecto (eso es Fase 9, selección de loadout).
+
+### FASE 4 — Mapas (arrancada)
+`OUTPOST-9`: mapa original de filosofía competitiva (bases enfrentadas simétricas, 3 carriles — centro con torre de control/atalaya, dos flancos — con huecos para rutas alternativas entre carriles). Blockout con las mismas primitivas/`checkCollisions` ya probadas. Tercer botón de mapa en el menú. Probado: colisión exacta contra la pared de la base, navegación libre por el carril central, bots activos sin errores durante 6s, captura de pantalla verificada visualmente.
+
 ---
 
 ## 🐛 BUGS ENCONTRADOS Y SOLUCIONADOS (esta sesión completa)
@@ -55,12 +61,15 @@ Arquitectura completa y funcional, construida y probada en este orden:
 | Viewmodel del arma invisible | `camera.minZ=1` recortaba el arma (a 0.3-0.5u) | `camera.minZ=0.05` |
 | ADS tapaba toda la pantalla (negro) | Arma centrada sin mira real, geometría de bloque | Posición ligeramente descentrada + más distancia |
 | 2 listeners `keydown` duplicados | Redundancia de una corrección anterior | Consolidados en uno |
+| **Disparos nivelados a un objetivo estático a la misma altura fallaban** (a veces) | El cañón dispara desde Y≈1.5 (altura de cámara), pero el chequeo de impacto comparaba contra `entity.mesh.position` (Y=1, un único punto) con radio fijo 0.5 — la distancia real era 0.5006, justo por encima del umbral. El chequeo nunca modelaba la extensión vertical real de la cápsula (0.1 a 1.9) | Comparar el segmento recorrido por la bala contra el **segmento vertical (núcleo) de la cápsula del objetivo**, no contra un punto único — arreglo correcto (no solo agrandar el radio), también mejora headshots y objetivos agachados |
+
+**Nota sobre el bug de hit detection**: no fue introducido por el nuevo sistema de armas — el mismo hueco vertical (origen de bala ~0.7 por encima del punto de referencia) ya existía en el `fire()` original, simplemente ninguna prueba anterior había disparado un tiro nivelado de verdad contra un objetivo inmóvil a distancia normal para revelarlo. Se encontró en una pasada de regresión amplia sobre TODO el juego (no solo lo nuevo de esta sesión), siguiendo la regla de "corrige antes de añadir".
 
 ---
 
 ## 🔧 EN PROGRESO / SIGUIENTE PASO
 
-Nada en progreso activo ahora mismo entre commits — cada bloque se cerró probado y funcionando antes de seguir. **Siguiente paso concreto**: duplicar la plantilla `WeaponController`/`WEAPON_CONFIGS` para poblar el resto del arsenal (2 AR más, 3 SMG total, 2 shotgun, 2 sniper, 2 LMG, 3 pistolas) usando BO-01 VANGUARD como plantilla ya validada, ajustando solo los números de stats y el perfil de sonido/recoil por categoría — la arquitectura ya soporta esto sin cambios estructurales.
+Nada en progreso activo ahora mismo entre commits — cada bloque se cerró probado y funcionando antes de seguir, incluyendo una pasada de regresión completa tras el sistema de armas que encontró y corrigió el bug de hit detection de arriba. **Siguiente paso concreto**: duplicar la plantilla `WeaponController`/`WEAPON_CONFIGS` para poblar el resto del arsenal (2 AR más, 3 SMG total, 2 shotgun, 2 sniper, 2 LMG, 3 pistolas) usando BO-01 VANGUARD como plantilla ya validada, ajustando solo los números de stats y el perfil de sonido/recoil por categoría — la arquitectura ya soporta esto sin cambios estructurales. También: mapa OUTPOST-9 (Fase 4, blockout) ya añadido y probado; siguiente en mapas sería la fase de arte/detalle cuando haya assets, o un segundo mapa original si se prioriza más contenido antes que arte.
 
 ---
 
