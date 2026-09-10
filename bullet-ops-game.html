@@ -68,6 +68,19 @@
         #ammo { position: absolute; bottom: 10px; right: 10px; }
         #weapon { position: absolute; bottom: 50px; right: 10px; }
         #kills { position: absolute; top: 50px; right: 10px; }
+        #streakDisplay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            color: #ff6600;
+            text-shadow: 0 0 20px rgba(255, 102, 0, 0.8);
+            opacity: 0;
+            pointer-events: none;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
         #crosshair {
             position: absolute;
             top: 50%;
@@ -98,10 +111,24 @@
         }
         .kill-msg {
             color: #ff0000;
-            font-size: 0.8rem;
-            margin-bottom: 3px;
+            font-size: 0.75rem;
+            margin-bottom: 4px;
+            padding: 2px 4px;
             opacity: 1;
             transition: opacity 0.3s;
+            background: rgba(255, 0, 0, 0.1);
+            border-left: 2px solid #ff0000;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
         #hitmarker {
             position: absolute;
@@ -173,6 +200,7 @@
         <div id="healthVignette"></div>
         <div id="crosshair"><div class="crosshair-dot"></div></div>
         <div id="hitmarker"></div>
+        <div id="streakDisplay"></div>
         <div id="score">BLUE 0 - RED 0 | TIME 10:00</div>
         <div id="kills">KILLS: 0</div>
         <div id="health">❤ HP: <span id="hpVal">100</span></div>
@@ -197,12 +225,14 @@
         let killstreakMessages = [];
         let gameMode = 'TDM'; // 'TDM' or 'FFA'
         let selectedMap = 'BACKLOT-7'; // 'BACKLOT-7' or 'INDUSTRIAL-5'
+        let bulletPoolSize = 0;
         const gameConfig = {
             targetScore: 10,
             timeLimit: 600,
             botCount: 3,
             gameMode: 'TDM',
-            map: 'BACKLOT-7'
+            map: 'BACKLOT-7',
+            maxBullets: 200 // Performance limit
         };
 
         // ========== WEAPONS CONFIG ==========
@@ -816,13 +846,14 @@
                 bot.update(deltaTime, allPlayers);
             }
 
-            // Update bullets
+            // Update bullets with performance limits
             for (let i = bullets.length - 1; i >= 0; i--) {
                 const bullet = bullets[i];
                 bullet.position.addInPlace(bullet.velocity.scale(deltaTime));
                 bullet.life -= deltaTime;
 
-                // Check collisions
+                // Check collisions (limited to alive entities)
+                let hit = false;
                 for (let entity of [player, ...bots]) {
                     if (entity && entity.isAlive && entity !== bullet.owner) {
                         const dist = BABYLON.Vector3.Distance(bullet.position, entity.mesh.position);
@@ -842,6 +873,11 @@
                             }
                             if (bullet.owner && entity.health <= 0) {
                                 bullet.owner.addKill();
+
+                                // Show streak message for player
+                                if (bullet.owner === player) {
+                                    showStreakMessage(player.kills);
+                                }
 
                                 // Score system (TDM vs FFA)
                                 if (gameMode === 'TDM') {
@@ -869,15 +905,25 @@
                                 addKillMsg(msg);
                             }
                             bullet.life = -1;
+                            hit = true;
                             break;
                         }
                     }
                 }
 
-                if (bullet.life <= 0) {
+                if (bullet.life <= 0 || hit) {
                     bullet.dispose();
                     bullets.splice(i, 1);
+                    bulletPoolSize--;
                 }
+            }
+
+            // Cull bullets if too many exist (performance safety)
+            if (bullets.length > gameConfig.maxBullets) {
+                for (let i = 0; i < bullets.length - gameConfig.maxBullets; i++) {
+                    bullets[i].dispose();
+                }
+                bullets.splice(0, bullets.length - gameConfig.maxBullets);
             }
 
             // Update HUD
@@ -973,6 +1019,23 @@
             const spreadSize = 30 + (weapon.fireRate * 2);
             crosshair.style.width = spreadSize + 'px';
             crosshair.style.height = spreadSize + 'px';
+        }
+
+        function showStreakMessage(kills) {
+            const streakDisplay = document.getElementById('streakDisplay');
+            let message = '';
+            if (kills === 3) message = '🔥 SPREE!';
+            else if (kills === 5) message = '⚡ RAMPAGE!';
+            else if (kills === 7) message = '💀 UNSTOPPABLE!';
+            else if (kills === 10) message = '👑 DOMINATING!';
+
+            if (message) {
+                streakDisplay.textContent = message;
+                streakDisplay.style.opacity = '1';
+                setTimeout(() => {
+                    streakDisplay.style.opacity = '0';
+                }, 1500);
+            }
         }
 
         function endGame() {
