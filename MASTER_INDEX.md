@@ -401,11 +401,16 @@ El usuario estableció que, antes de cualquier arma/menú/funcionalidad nueva, K
 | **Props** | 🟢 | Coches, barriles, rubble, cajas — pasada de detalle ya hecha, 2 props reposicionados en esta auditoría por solapamiento |
 | **Jugabilidad** | 🟡 EN PROGRESO | Auditoría de líneas de visión con raycasts reales completada para las rutas principales — encontrado y corregido un pasillo de tiro casi despejado (144/182 unidades) entre los dos spawns principales, reducido a 85 con nueva cobertura de altura real (las "macetas" existentes no cortaban líneas a altura de ojos). Pendiente: revisión de cuellos de botella/flancos/zonas inútiles |
 | **Spawns** | 🟢 CORREGIDO Y PROBADO | Los 12 puntos verificados libres de toda geometría colisionable tras la corrección |
-| **Optimización** | 🔴 PENDIENTE | Sin medir todavía en este mapa específicamente (sí se hizo una auditoría general de draw calls antes en la sesión, no específica de KRYPTOS-URBAN) |
-| **Testing** | 🟡 EN PROGRESO | Movimiento/combate/interiores/spawns probados con Playwright en esta auditoría; sightlines/cobertura/rendimiento pendientes |
-| **Pulido final** | 🔴 PENDIENTE | Bloqueado hasta cerrar los puntos anteriores |
+| **Optimización** | 🟡 medido, sin acción pendiente clara | 167 mallas totales, solo 22 activas/visibles en un punto de prueba típico (el culling por frustum de Babylon ya funciona), 36 materiales y 14 texturas compartidas (disciplina de reutilización ya aplicada, no un material nuevo por malla). **FPS no medible de forma fiable en este entorno**: el sandbox de pruebas renderiza por software (SwiftShader, sin GPU real — confirmado por la cadena del renderer), un límite del entorno ya documentado antes en la sesión, no del juego — cualquier número de FPS medido aquí no representa el rendimiento real en un navegador con GPU |
+| **Testing** | 🟢 sustancial | Movimiento/combate/interiores/spawns/límites de mapa/solapamientos/sightlines probados con Playwright en esta auditoría, todos con evidencia concreta antes/después |
+| **Pulido final** | 🔴 PENDIENTE | Sigue bloqueado — ver huecos explícitos abajo |
 
-**Próximo paso de esta prioridad**: continuar la auditoría con iluminación (zonas oscuras) y diseño FPS (líneas de visión/coberturas/flancos), luego pasar a la mejora profunda de texturas (variación de desgaste) solo una vez la base estructural esté 100% sólida — siguiendo el orden de prioridad explícito del usuario (colisiones antes que estética).
+**Balance honesto contra el checklist de finalización del propio usuario** (no se marca el mapa como terminado solo porque ya no tiene bugs conocidos — quedan puntos reales abiertos):
+- ✅ Paredes/suelos/techos con colisión, puertas funcionan, no se atraviesa geometría, no se cae fuera del mapa, no hay zonas donde quedar atrapado, no hay objetos flotando/atravesados (verificado con barrido automatizado), armas y proyectiles interactúan correctamente con las paredes, spawns funcionan, hay rutas de ataque/flanqueo (3 rutas + auditoría de sightlines), iluminación funciona, ha sido probado jugando de verdad (no solo capturas).
+- 🟡 Texturas/materiales: mejorados de forma real (normales + desgaste) pero sin AO dedicado ni reflejos de entorno.
+- 🔴 Abierto explícitamente, no oculto: solo 6 de los ~20 edificios del mapa tienen interior real (el resto siguen siendo bloques sólidos — coherente y sin bugs, pero no "todos los edificios son explorables"); rendimiento real no medible en este entorno; sin errores de consola conocidos pero sin una sesión de estrés prolongada (partida completa de 10 minutos) todavía.
+
+**Próximo paso de esta prioridad**: seguir ampliando la cobertura de interiores reales (es el hueco más grande y visible que queda) y, cuando el usuario pueda confirmar rendimiento en un navegador real, ajustar según haga falta. El resto del checklist de colisiones/iluminación/diseño FPS/texturas de esta pasada ya está cerrado y verificado.
 
 ---
 
