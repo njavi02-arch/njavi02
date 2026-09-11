@@ -473,6 +473,19 @@ Catálogo de armas confirma los 4 nombres nuevos bajo DMR y SNIPER; total de `WE
 
 Probado con Playwright aplicando ambas lecciones de metodología de esta sesión desde el principio (viewmodel de prueba parentado a `player.camera`, bot reposicionado justo antes de disparar): BO-26 SAWTOOTH impactó a un bot a 3 unidades de distancia en el primer intento (100→28 HP, mag 2→1). Catálogo confirma los 4 nombres bajo LMG y SHOTGUN; total de `WEAPON_CONFIGS` confirmado en 53. Cero errores de consola nuevos.
 
+### Ampliación de roster: Pistola y Rocket/Launcher (4/6→6/6 cada una)
+
+Ambas categorías llegan a completar su objetivo de roster (6/6) con este pase. 4 armas nuevas:
+
+- **BO-58 TEMPEST** (Pistola, `subcategory: 'Machine Pistol'`, `fireMode: 'full-auto'`): la primera pistola totalmente automática (cadencia 18, cercana al terreno de un SMG) — ninguna de las 4 pistolas existentes era de fuego selectivo.
+- **BO-59 GHOSTGRIP** (Pistola, `subcategory: 'Suppressed Pistol'`): una pistola equilibrada de perfil discreto — ni la más rápida (VIPER/ECHO) ni la más precisa (DUELIST), un "arma de respaldo silenciosa" que llena el hueco intermedio.
+- **BO-65 STINGRAY** (Rocket, `subcategory: 'Rapid Rocket Launcher'`): cargador de 3 con la cadencia más alta de cualquier arma explosiva del juego (1.2) — el lanzador de seguimiento más rápido, entre DEVASTATOR (un solo golpe pesado) y BREACHPOINT (lanzagranadas de área).
+- **BO-66 CATACLYSM** (Rocket, `subcategory: 'Breaching Charge Launcher'`): el radio de salpicadura más grande del juego (9.5) pero el alcance más corto de cualquier lanzador (35) — un arma de "despeje de habitación" a corta distancia, opuesta en concepto a BO-64 LONGARM (alcance 100, el mayor del juego).
+
+Con este pase, la arquitectura de IDs por decena queda así: Pistola usa 51/53/54/55/58/59 (Revolver ocupó 52/56/57 dentro de la misma decena 51-59); Rocket usa 61-66 completo.
+
+Probado con Playwright: las 4 configs verificadas; catálogo confirma los 4 nombres bajo PISTOL y ROCKET LAUNCHER; total de `WEAPON_CONFIGS` confirmado en 57. BO-58 TEMPEST disparado en ráfaga real (200ms de `inputs.mouseDown`) contra un bot a 5 unidades, con viewmodel parentado a `player.camera` y bot reposicionado justo antes de abrir fuego: impacto confirmado (100→80 HP, mag decrementado). Pase de regresión del camino dorado completo (disparo → cambio de arma → recarga) tras el cambio: sin errores, `totalWeapons: 57`. Cero errores de consola nuevos.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.

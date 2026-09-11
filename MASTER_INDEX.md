@@ -5,7 +5,7 @@ Documento vivo de gestión autónoma del proyecto. Se actualiza en cada ciclo de
 **Leyenda de estado:** 🔴 Pendiente · 🟡 En progreso · 🟢 Completado · 🔧 Funciona pero necesita mejora · 🔒 Bloqueado (requiere intervención del usuario) · ⚠️ Tiene errores conocidos
 **Leyenda de prioridad:** P0 Crítico · P1 Muy importante · P2 Importante · P3 Pulido · P4 Opcional
 
-Última actualización: sesión autónoma en curso (sistema de armas como prioridad principal; roster 53/82, ver `BULLET_OPS_PROGRESS.md`).
+Última actualización: sesión autónoma en curso (sistema de armas como prioridad principal; roster 57/82, ver `BULLET_OPS_PROGRESS.md`).
 
 ---
 
@@ -14,7 +14,7 @@ Documento vivo de gestión autónoma del proyecto. Se actualiza en cada ciclo de
 | Tarea | Estado | Prioridad | Notas |
 |---|---|---|---|
 | Arquitectura de archivo único (sin build step, compatible con Artifact) | 🟢 | — | Decisión técnica estable, no revisar sin motivo de peso |
-| `WEAPON_CONFIGS` como fuente única de datos de armas | 🟢 | — | 53 armas (objetivo 82), escalable por config |
+| `WEAPON_CONFIGS` como fuente única de datos de armas | 🟢 | — | 57 armas (objetivo 82), escalable por config |
 | `WeaponController` (estado IDLE/RELOADING/SWITCHING/INSPECTING) | 🟢 | — | |
 | `SoundSynth` (audio 100% sintetizado, sin assets externos) | 🟢 | — | |
 | `SKIN_REGISTRY` / sistema de camuflajes | 🟢 | — | Solo 1 skin real + 1 patrón de prueba, ver FASE 4 |
@@ -82,12 +82,12 @@ Cifras de BF4/BFV/BF2042 son aproximadas (rosters base, sin DLC/temporadas — v
 | DMR (fusil de marcador) | ~5 | ~4 (autocargante) | 3 | 8 | 🟡 5/8 |
 | Francotiradores (Sniper, cerrojo) | ~6 | ~6 (cerrojo) | 3 | 8 | 🟡 5/8 |
 | Escopetas | ~5 | ~4 | 2 | 8 | 🟡 6/8 |
-| Pistolas | ~8 | ~6 | 3 | 6 | 🟡 4/6 |
+| Pistolas | ~8 | ~6 | 3 | 6 | 🟢 6/6 |
 | Revólveres | (dentro de Pistolas en BF4/BFV) | (íd.) | (íd.) | 4 | 🟡 3/4 |
-| Lanzadores | ~4 | ~3 | ~3 | 6 | 🟡 4/6 |
+| Lanzadores | ~4 | ~3 | ~3 | 6 | 🟢 6/6 |
 | Especiales/balísticos | — (no existe como categoría en ninguna entrega — decisión propia para armas futuristas/no convencionales) | — | — | 6 | 🟡 5/6 |
 | Cuerpo a cuerpo (cuchillos + contundentes) | 1 (cuchillo genérico) | 1 | 1 | 6 | 🟡 5/6 |
-| **Total** | ~65 (sin melee/gadgets) | ~48 | ~23 (base) | **82** | **53/82 (65%)** |
+| **Total** | ~65 (sin melee/gadgets) | ~48 | ~23 (base) | **82** | **57/82 (70%)** |
 
 El objetivo de 82 no es un techo — es la primera meta ambiciosa de una arquitectura ya probada para escalar a "cientos de armas" (cada arma nueva es una entrada de datos en `WEAPON_CONFIGS`, sin tocar `WeaponController`/`Bot`/HUD/crosshair). Cuando 82 esté cerca, se revisará si ampliar más aporta valor real de gameplay o solo relleno.
 
@@ -115,7 +115,7 @@ No es una copia de ninguna entrega — es la síntesis tras comparar las tres (v
 
 Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(🟢 código) → animaciones(🟢 procedurales: equipar/disparo/recarga/ADS/sprint/inspección) → disparo(🟢) → recarga(🟢) → sonidos(🟢 sintetizados) → retroceso(🟢) → ADS(🟢) → estadísticas(🟢) → efectos(🟢) → testing(🟢) → subcategory/ammoType/fireMode(🟡 2/35, resto pendiente de backfill). **Ninguna arma nueva necesita trabajo de gameplay** — lo único pendiente en las 35 (salvo el backfill de metadatos) es el mismo bloqueo de siempre: modelos 3D/texturas reales.
 
-### Roster actual por categoría (53 armas · 11 categorías)
+### Roster actual por categoría (57 armas · 11 categorías)
 
 - **AR** (5/12): BO-01 VANGUARD, BO-02 PREDATOR, BO-03 STORMCALLER, BO-04 SENTINEL, BO-05 OUTLAW
 - **SMG** (5/10): BO-11 RAZORBACK, BO-12 WHISPER, BO-13 ENFORCER, BO-14 VIPERBITE, BO-15 UNDERTOW
@@ -123,9 +123,9 @@ Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(
 - **Sniper** (5/8): BO-31 LONGSHOT, BO-33 WRAITHFANG, BO-34 DEADEYE, BO-91 WHISPER-9, BO-92 COLOSSUS
 - **DMR** (5/8): BO-32 PHANTOM, BO-35 RIDGELINE, BO-36 QUICKSILVER, BO-37 FALCONER, BO-38 IRONCLAD
 - **LMG** (6/8): BO-41 JUGGERNAUT, BO-42 RAMPART, BO-43 OVERLORD, BO-44 VANDAL, BO-45 SIEGEBREAKER, BO-46 WHIRLWIND
-- **Pistol** (4/6): BO-51 SIDEARM, BO-53 VIPER, BO-54 ECHO, BO-55 DUELIST
+- **Pistol** (6/6): BO-51 SIDEARM, BO-53 VIPER, BO-54 ECHO, BO-55 DUELIST, BO-58 TEMPEST, BO-59 GHOSTGRIP
 - **Revolver** (3/4): BO-52 MAGNUM, BO-56 PEACEMAKER, BO-57 SNAKEEYE
-- **Rocket** (4/6): BO-61 DEVASTATOR, BO-62 SKYFALL, BO-63 BREACHPOINT, BO-64 LONGARM
+- **Rocket** (6/6): BO-61 DEVASTATOR, BO-62 SKYFALL, BO-63 BREACHPOINT, BO-64 LONGARM, BO-65 STINGRAY, BO-66 CATACLYSM
 - **Melee** (5/6): BO-71 FANG, BO-72 KARAMBIT, BO-73 CLEAVER, BO-74 WRECKER, BO-75 TALONS
 - **Special** (5/6): BO-81 SILENTBOLT, BO-82 THUMPER, BO-83 HORNET, BO-84 RAILDRIVER, BO-85 WASP
 
@@ -298,4 +298,6 @@ Sección permanente, actualizada cada vez que se evalúa o conecta una herramien
 
 ~~P2 — Ampliación LMG/Shotgun (4/8→6/8 cada una)~~ 🟢 completado. BO-45 SIEGEBREAKER + BO-46 WHIRLWIND (LMG), BO-25 RIOT-12 + BO-26 SAWTOOTH (Shotgun).
 
-**Siguiente**: seguir la ampliación de roster (FASE 4, P2) por la categoría más vacía en cada ciclo — tras este pase, Pistolas/Lanzadores (4/6 cada una) son las más cortas, seguidas de AR/SMG (5/12, 5/10). Reutilizar la plantilla ya validada (config +, si la categoría lo necesita, una rama de viewmodel nueva). El resto de items P4 (4º mapa, música de menú/partida, CUSTOMIZE bloqueado en skins) y Fase 10 multijugador siguen en pausa mientras dure esta prioridad.
+~~P2 — Ampliación Pistola/Rocket (4/6→6/6 cada una)~~ 🟢 completado. BO-58 TEMPEST + BO-59 GHOSTGRIP (Pistola), BO-65 STINGRAY + BO-66 CATACLYSM (Rocket). **Pistola y Rocket alcanzan su objetivo de 6/6 — completas.**
+
+**Siguiente**: seguir la ampliación de roster (FASE 4, P2) por la categoría más vacía en cada ciclo — tras este pase, Revolver (3/4) es la más corta en proporción, seguida de Melee/Special/Sniper/DMR (todas 5/8 o 5/6). Después de Revolver, AR/SMG (5/12, 5/10) son las más grandes en volumen absoluto pendiente. Reutilizar la plantilla ya validada (config +, si la categoría lo necesita, una rama de viewmodel nueva). El resto de items P4 (4º mapa, música de menú/partida, CUSTOMIZE bloqueado en skins) y Fase 10 multijugador siguen en pausa mientras dure esta prioridad.

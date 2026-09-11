@@ -1205,6 +1205,43 @@
                 soundProfile: 'pistol', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             },
+            // Pistol roster expansion (4/6 -> 6/6): none of the existing 4
+            // was full-auto - adds a machine pistol (fastest fire rate of
+            // any sidearm, close to SMG territory) and a suppressed
+            // pistol (a quiet, balanced backup distinct from VIPER/ECHO's
+            // raw speed and DUELIST's precision).
+            BO58: {
+                id: 'BO58', name: 'BO-58 TEMPEST', category: WEAPON_CATEGORY.PISTOL,
+                subcategory: 'Machine Pistol', ammoType: '9mm', fireMode: 'full-auto',
+                damage: 16, headshotMul: 1.25,
+                fireRate: 18, mag: 30, reserve: 150,
+                reloadTime: 1.5, reloadTimeEmpty: 1.8,
+                spread: { hip: 0.034, ads: 0.013, moving: 0.017 },
+                range: 30, bulletSpeed: 440,
+                ads: { time: 0.13, fovMul: 0.88, sensitivityMul: 0.8 },
+                movement: { hipMul: 1.2, adsMul: 0.82 },
+                sprintToFireDelay: 0.05,
+                recoil: { vertical: 0.008, horizontal: 0.016, cameraKick: 0.007, recoverySpeed: 14 },
+                sway: { amount: 0.022, speed: 2.4, bobAmount: 0.026, bobSpeed: 12.5 },
+                soundProfile: 'pistol', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO59: {
+                id: 'BO59', name: 'BO-59 GHOSTGRIP', category: WEAPON_CATEGORY.PISTOL,
+                subcategory: 'Suppressed Pistol', ammoType: '9mm Subsonic', fireMode: 'semi-auto',
+                damage: 26, headshotMul: 1.6,
+                fireRate: 8, mag: 16, reserve: 80,
+                reloadTime: 1.3, reloadTimeEmpty: 1.6,
+                spread: { hip: 0.018, ads: 0.005, moving: 0.009 },
+                range: 42, bulletSpeed: 490,
+                ads: { time: 0.16, fovMul: 0.85, sensitivityMul: 0.76 },
+                movement: { hipMul: 1.12, adsMul: 0.82 },
+                sprintToFireDelay: 0.07,
+                recoil: { vertical: 0.016, horizontal: 0.007, cameraKick: 0.013, recoverySpeed: 9.5 },
+                sway: { amount: 0.017, speed: 2.1, bobAmount: 0.021, bobSpeed: 10.5 },
+                soundProfile: 'pistol', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
             // ----- ROCKET (new category): explosive projectileType, splash
             // damage via splashRadius (see triggerExplosion). -----
             BO61: {
@@ -1275,6 +1312,45 @@
                 sprintToFireDelay: 0.45,
                 recoil: { vertical: 0.06, horizontal: 0.018, cameraKick: 0.05, recoverySpeed: 3.2 },
                 sway: { amount: 0.028, speed: 0.9, bobAmount: 0.026, bobSpeed: 6.5 },
+                soundProfile: 'rocket', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            // Rocket/Launcher roster expansion (4/6 -> 6/6): a 3-round
+            // rapid launcher (fastest follow-up of any explosive weapon)
+            // and a short-range breaching charge (the biggest splash
+            // radius in the game, but the shortest launcher range - room-
+            // clearing rather than LONGARM's long-range anti-materiel role).
+            BO65: {
+                id: 'BO65', name: 'BO-65 STINGRAY', category: WEAPON_CATEGORY.ROCKET,
+                subcategory: 'Rapid Rocket Launcher', ammoType: 'Micro-Rocket', fireMode: 'semi-auto',
+                projectileType: 'explosive', splashRadius: 5,
+                damage: 75, headshotMul: 1.0,
+                fireRate: 1.2, mag: 3, reserve: 9,
+                reloadTime: 2.4, reloadTimeEmpty: 2.8,
+                spread: { hip: 0.025, ads: 0.007, moving: 0.016 },
+                range: 60, bulletSpeed: 75,
+                ads: { time: 0.24, fovMul: 0.87, sensitivityMul: 0.72 },
+                movement: { hipMul: 0.9, adsMul: 0.68 },
+                sprintToFireDelay: 0.24,
+                recoil: { vertical: 0.032, horizontal: 0.011, cameraKick: 0.028, recoverySpeed: 5.2 },
+                sway: { amount: 0.019, speed: 1.3, bobAmount: 0.019, bobSpeed: 8 },
+                soundProfile: 'rocket', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO66: {
+                id: 'BO66', name: 'BO-66 CATACLYSM', category: WEAPON_CATEGORY.ROCKET,
+                subcategory: 'Breaching Charge Launcher', ammoType: 'Thermobaric Charge', fireMode: 'single-shot',
+                projectileType: 'explosive', splashRadius: 9.5,
+                damage: 95, headshotMul: 1.0,
+                fireRate: 0.7, mag: 1, reserve: 5,
+                reloadTime: 2.9, reloadTimeEmpty: 2.9,
+                spread: { hip: 0.028, ads: 0.009, moving: 0.018 },
+                range: 35, bulletSpeed: 60,
+                ads: { time: 0.28, fovMul: 0.9, sensitivityMul: 0.78 },
+                movement: { hipMul: 0.9, adsMul: 0.68 },
+                sprintToFireDelay: 0.24,
+                recoil: { vertical: 0.038, horizontal: 0.013, cameraKick: 0.032, recoverySpeed: 4.8 },
+                sway: { amount: 0.021, speed: 1.2, bobAmount: 0.021, bobSpeed: 7.5 },
                 soundProfile: 'rocket', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             },
@@ -1455,7 +1531,7 @@
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             }
             // Full roster: 5 AR, 5 SMG, 6 Shotgun, 5 Sniper, 5 DMR, 6 LMG,
-            // 4 Pistol, 3 Revolver, 4 Rocket, 5 Melee, 5 Special = 53 total.
+            // 6 Pistol, 3 Revolver, 6 Rocket, 5 Melee, 5 Special = 57 total.
         };
         // Backwards-compatible alias: Bot AI only ever reads the plain
         // numeric stats (damage/fireRate/mag/reserve/spread/speed), so it
