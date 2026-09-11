@@ -843,6 +843,12 @@ Cuarto edificio del hueco declarado de la directiva P0, mismo patrón de 4 pared
 
 **Balance de la directiva P0 tras esta tanda**: los 4 mapas del proyecto tienen ahora al menos un edificio con interior real y transitable — BACKLOT-7 (torre), INDUSTRIAL-5 (factory1), KRYPTOS-URBAN (Office Building + Apartment Block, planta baja). Sigue habiendo estructuras sólidas sin interior en cada mapa (documentadas como alcance futuro, no ocultas): pisos superiores del Apartment Block, Destroyed Shop/Cafe/Maintenance Shed/Warehouse de KRYPTOS-URBAN, factory2/almacenes de INDUSTRIAL-5, bases/torre de vigilancia de OUTPOST-9.
 
+### Quinto interior real: Destroyed Shop de KRYPTOS-URBAN
+
+Continuación de la expansión de cobertura de interiores, mismo patrón de 4 paredes ya probado 4 veces. El Destroyed Shop (entre el Apartment Block y el Destroyed Cafe en la ruta izquierda) gana puerta e interior real — norte/este/oeste sólidas, sur con hueco de puerta de 3 unidades, situada junto al prop de escombros (`destroyedShop_rubble`) ya existente, que ahora lee narrativamente como debris salido de la entrada volada.
+
+**Probado con Playwright** (aproximación recta pre-alineada fotograma a fotograma desde el principio, siguiendo la disciplina ya establecida tras los dos hallazgos de metodología anteriores): el jugador entra por la puerta sur y llega hasta z=20.85, dentro de la sala. La pared este (sin puerta) bloquea correctamente desde fuera. Captura de pantalla confirma visualmente un interior de ladrillo cerrado. 68 armas intactas, sin errores nuevos de consola.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.
