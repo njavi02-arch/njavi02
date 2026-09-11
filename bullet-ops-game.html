@@ -685,6 +685,7 @@
             <button class="menu-button" id="map1Btn">🎮 BACKLOT-7</button>
             <button class="menu-button" id="map2Btn">🏭 INDUSTRIAL-5</button>
             <button class="menu-button" id="map3Btn">🏔 OUTPOST-9</button>
+            <button class="menu-button" id="map4Btn">🏙 KRYPTOS URBAN</button>
             <div class="panel-label" id="modeDisplay">MODE: TEAM DEATHMATCH</div>
             <div class="panel-label" id="mapDisplay" style="margin-top:-0.2rem;">MAP: BACKLOT-7</div>
             <div style="margin-top: 0.8rem;">
@@ -917,6 +918,136 @@
             mesh.metadata.impactMaterial = material;
             IMPACT_SURFACES.push(mesh);
         }
+        // Procedural PBR materials for KRYPTOS-URBAN (the one map using real
+        // BABYLON.PBRMaterial + generated albedo textures instead of every
+        // other map's flat StandardMaterial diffuse color). No texture/
+        // normal-map asset files exist in this project - a single-file
+        // Artifact with no build step or asset pipeline - so each texture
+        // here is hand-drawn at runtime onto a DynamicTexture, the same
+        // "procedurally generated, not a placeholder standing in for a
+        // real one" approach already used for the Digital Mesh weapon
+        // skin, just applied to PBR surfaces. No environment/reflection
+        // texture is set up, so specular response comes from the scene's
+        // existing directional/hemispheric lights rather than image-based
+        // lighting - real reflections are a further increment, not
+        // attempted here. Call once per surface type and reuse the
+        // returned material across every matching mesh (same shared-
+        // material discipline as getCharacterMaterial()'s cache).
+        function makePBRConcrete(scene) {
+            const mat = new BABYLON.PBRMaterial('pbrConcrete_' + Math.random(), scene);
+            const size = 128;
+            const tex = new BABYLON.DynamicTexture('texConcrete_' + Math.random(), size, scene, false);
+            const ctx = tex.getContext();
+            ctx.fillStyle = '#6e6e68';
+            ctx.fillRect(0, 0, size, size);
+            for (let i = 0; i < 700; i++) {
+                const g = 90 + Math.random() * 50;
+                ctx.fillStyle = `rgba(${g},${g},${g - 5},${0.08 + Math.random() * 0.18})`;
+                ctx.fillRect(Math.random() * size, Math.random() * size, 1 + Math.random() * 3, 1 + Math.random() * 3);
+            }
+            ctx.strokeStyle = 'rgba(30,30,28,0.4)';
+            for (let i = 0; i < 4; i++) {
+                let x = Math.random() * size, y = Math.random() * size;
+                ctx.beginPath(); ctx.moveTo(x, y);
+                for (let j = 0; j < 5; j++) { x += (Math.random() - 0.5) * 30; y += (Math.random() - 0.5) * 30; ctx.lineTo(x, y); }
+                ctx.stroke();
+            }
+            tex.update();
+            tex.wrapU = tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+            mat.albedoTexture = tex;
+            mat.metallic = 0; mat.roughness = 0.92;
+            return mat;
+        }
+        function makePBRBrick(scene) {
+            const mat = new BABYLON.PBRMaterial('pbrBrick_' + Math.random(), scene);
+            const size = 128;
+            const tex = new BABYLON.DynamicTexture('texBrick_' + Math.random(), size, scene, false);
+            const ctx = tex.getContext();
+            ctx.fillStyle = '#8a5a44';
+            ctx.fillRect(0, 0, size, size);
+            ctx.strokeStyle = 'rgba(40,25,18,0.6)'; ctx.lineWidth = 2;
+            const rowH = 16, brickW = 32;
+            for (let row = 0, y = 0; y < size; row++, y += rowH) {
+                const offset = (row % 2) * (brickW / 2);
+                for (let x = -brickW; x < size + brickW; x += brickW) ctx.strokeRect(x + offset, y, brickW, rowH);
+            }
+            for (let i = 0; i < 40; i++) {
+                const shade = Math.random() * 30 - 15;
+                ctx.fillStyle = `rgba(${138 + shade},${90 + shade},${68 + shade},0.35)`;
+                ctx.fillRect(Math.random() * size, Math.random() * size, brickW * 0.8, rowH * 0.8);
+            }
+            tex.update();
+            tex.wrapU = tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+            tex.uScale = 3; tex.vScale = 2;
+            mat.albedoTexture = tex;
+            mat.metallic = 0; mat.roughness = 0.85;
+            return mat;
+        }
+        function makePBRMetal(scene, tint) {
+            const mat = new BABYLON.PBRMaterial('pbrMetal_' + Math.random(), scene);
+            const size = 128;
+            const tex = new BABYLON.DynamicTexture('texMetal_' + Math.random(), size, scene, false);
+            const ctx = tex.getContext();
+            ctx.fillStyle = tint || '#4a4d52';
+            ctx.fillRect(0, 0, size, size);
+            ctx.strokeStyle = 'rgba(20,20,22,0.5)';
+            for (let y = 0; y < size; y += 24) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(size, y); ctx.stroke(); }
+            for (let i = 0; i < 10; i++) {
+                ctx.fillStyle = `rgba(110,60,30,${0.1 + Math.random() * 0.15})`;
+                ctx.fillRect(Math.random() * size, Math.random() * size, 2 + Math.random() * 4, 10 + Math.random() * 20);
+            }
+            tex.update();
+            tex.wrapU = tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+            mat.albedoTexture = tex;
+            mat.metallic = 0.8; mat.roughness = 0.45;
+            return mat;
+        }
+        function makePBRAsphalt(scene) {
+            const mat = new BABYLON.PBRMaterial('pbrAsphalt_' + Math.random(), scene);
+            const size = 128;
+            const tex = new BABYLON.DynamicTexture('texAsphalt_' + Math.random(), size, scene, false);
+            const ctx = tex.getContext();
+            ctx.fillStyle = '#2b2b2e';
+            ctx.fillRect(0, 0, size, size);
+            for (let i = 0; i < 1000; i++) {
+                const g = 30 + Math.random() * 30;
+                ctx.fillStyle = `rgba(${g},${g},${g + 2},${0.1 + Math.random() * 0.2})`;
+                ctx.fillRect(Math.random() * size, Math.random() * size, 1, 1);
+            }
+            // Faded lane-line hint.
+            ctx.strokeStyle = 'rgba(200,190,150,0.15)';
+            ctx.setLineDash([6, 6]); ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(size / 2, 0); ctx.lineTo(size / 2, size); ctx.stroke();
+            tex.update();
+            tex.wrapU = tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+            mat.albedoTexture = tex;
+            mat.metallic = 0; mat.roughness = 0.95;
+            return mat;
+        }
+        function makePBRWood(scene) {
+            const mat = new BABYLON.PBRMaterial('pbrWood_' + Math.random(), scene);
+            const size = 128;
+            const tex = new BABYLON.DynamicTexture('texWood_' + Math.random(), size, scene, false);
+            const ctx = tex.getContext();
+            ctx.fillStyle = '#6b4a30';
+            ctx.fillRect(0, 0, size, size);
+            for (let x = 0; x < size; x += 6) {
+                ctx.strokeStyle = `rgba(50,32,18,${0.2 + Math.random() * 0.2})`;
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, size); ctx.stroke();
+            }
+            tex.update();
+            tex.wrapU = tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+            mat.albedoTexture = tex;
+            mat.metallic = 0; mat.roughness = 0.8;
+            return mat;
+        }
+        function makePBRGlass(scene) {
+            const mat = new BABYLON.PBRMaterial('pbrGlass_' + Math.random(), scene);
+            mat.albedoColor = new BABYLON.Color3(0.6, 0.75, 0.8);
+            mat.metallic = 0; mat.roughness = 0.05; mat.alpha = 0.35;
+            return mat;
+        }
+
         let blueScore = 0, redScore = 0;
         let killstreakMessages = [];
         let gameMode = 'TDM'; // 'TDM' or 'FFA'
@@ -1536,6 +1667,51 @@
                 soundProfile: 'ar', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             },
+            // AR roster expansion (9/12 -> 11/12). The 01-09 decade is full,
+            // so these use the 9x overflow range (same convention already
+            // used for Sniper's 91/92 and Revolver's 93 - see
+            // WEAPON_CATEGORY's comment on id ranges).
+            BO94: {
+                id: 'BO94', name: 'BO-94 HAILSTORM', category: WEAPON_CATEGORY.AR,
+                // Suppression/LMG-hybrid AR: by far the largest magazine of
+                // any AR (every other one tops out at 36) traded for the
+                // lowest damage in the category - a "hose the doorway and
+                // never reload" niche none of the other 9 covers.
+                subcategory: 'Suppression AR', ammoType: '5.56mm', fireMode: 'full-auto',
+                damage: 19, headshotMul: 1.3,
+                fireRate: 11, mag: 50, reserve: 150,
+                reloadTime: 2.8, reloadTimeEmpty: 3.4,
+                spread: { hip: 0.024, ads: 0.007, moving: 0.015 },
+                range: 90, bulletSpeed: 870,
+                ads: { time: 0.26, fovMul: 0.82, sensitivityMul: 0.6 },
+                movement: { hipMul: 0.9, adsMul: 0.5 },
+                sprintToFireDelay: 0.2,
+                recoil: { vertical: 0.019, horizontal: 0.013, cameraKick: 0.016, recoverySpeed: 6 },
+                sway: { amount: 0.017, speed: 1.3, bobAmount: 0.023, bobSpeed: 8 },
+                soundProfile: 'ar', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO95: {
+                id: 'BO95', name: 'BO-95 JUDGMENT', category: WEAPON_CATEGORY.AR,
+                // Full-auto battle rifle: the hardest-hitting and
+                // longest-range AR of any of the 11 (even ahead of
+                // LANCER's 38/120), paid for with the slowest fire rate
+                // and smallest magazine - a full-auto weapon that still
+                // has to be fired in short, deliberate bursts.
+                subcategory: 'Battle Rifle', ammoType: '7.62mm', fireMode: 'full-auto',
+                damage: 42, headshotMul: 1.7,
+                fireRate: 5, mag: 18, reserve: 90,
+                reloadTime: 2.4, reloadTimeEmpty: 2.9,
+                spread: { hip: 0.013, ads: 0.0022, moving: 0.009 },
+                range: 130, bulletSpeed: 980,
+                ads: { time: 0.26, fovMul: 0.72, sensitivityMul: 0.55 },
+                movement: { hipMul: 0.92, adsMul: 0.48 },
+                sprintToFireDelay: 0.2,
+                recoil: { vertical: 0.03, horizontal: 0.012, cameraKick: 0.024, recoverySpeed: 5.5 },
+                sway: { amount: 0.015, speed: 1.3, bobAmount: 0.016, bobSpeed: 7.5 },
+                soundProfile: 'ar', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
             BO14: {
                 id: 'BO14', name: 'BO-14 VIPERBITE', category: WEAPON_CATEGORY.SMG,
                 damage: 15, headshotMul: 1.2,
@@ -1599,6 +1775,49 @@
                 sprintToFireDelay: 0.07,
                 recoil: { vertical: 0.01, horizontal: 0.008, cameraKick: 0.008, recoverySpeed: 12 },
                 sway: { amount: 0.014, speed: 2.0, bobAmount: 0.018, bobSpeed: 10 },
+                soundProfile: 'smg', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            // SMG roster expansion (7/10 -> 9/10).
+            BO18: {
+                id: 'BO18', name: 'BO-18 THREEPOINT', category: WEAPON_CATEGORY.SMG,
+                // The category's first burst-fire weapon (every other SMG
+                // is full-auto) - real mechanics via burstCount/
+                // burstInterval, not just a fireMode label. A controlled,
+                // higher-per-hit alternative to spraying, closer to a
+                // precision sidearm than the rest of the SMG roster.
+                subcategory: 'Burst SMG', ammoType: '9mm', fireMode: 'burst-3',
+                burstCount: 3, burstInterval: 0.05,
+                damage: 18, headshotMul: 1.35,
+                fireRate: 4, mag: 21, reserve: 147,
+                reloadTime: 1.4, reloadTimeEmpty: 1.7,
+                spread: { hip: 0.015, ads: 0.004, moving: 0.008 },
+                range: 50, bulletSpeed: 420,
+                ads: { time: 0.13, fovMul: 0.85, sensitivityMul: 0.75 },
+                movement: { hipMul: 1.1, adsMul: 0.76 },
+                sprintToFireDelay: 0.07,
+                recoil: { vertical: 0.012, horizontal: 0.009, cameraKick: 0.01, recoverySpeed: 11 },
+                sway: { amount: 0.016, speed: 2.0, bobAmount: 0.02, bobSpeed: 10.5 },
+                soundProfile: 'smg', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO19: {
+                id: 'BO19', name: 'BO-19 DELUGE', category: WEAPON_CATEGORY.SMG,
+                // Drum-mag spray SMG: the biggest magazine and fastest
+                // fire rate of the category (every other SMG tops out at
+                // 35 mag / 24 RoF), paid for with the lowest damage and
+                // shortest range - pure sustained close-range volume.
+                subcategory: 'Drum-Mag SMG', ammoType: '9mm', fireMode: 'full-auto',
+                damage: 14, headshotMul: 1.15,
+                fireRate: 26, mag: 50, reserve: 200,
+                reloadTime: 2.0, reloadTimeEmpty: 2.5,
+                spread: { hip: 0.032, ads: 0.014, moving: 0.02 },
+                range: 35, bulletSpeed: 370,
+                ads: { time: 0.12, fovMul: 0.88, sensitivityMul: 0.8 },
+                movement: { hipMul: 1.1, adsMul: 0.78 },
+                sprintToFireDelay: 0.05,
+                recoil: { vertical: 0.008, horizontal: 0.017, cameraKick: 0.007, recoverySpeed: 13 },
+                sway: { amount: 0.022, speed: 2.4, bobAmount: 0.026, bobSpeed: 12.5 },
                 soundProfile: 'smg', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             },
@@ -2176,8 +2395,8 @@
                 soundProfile: 'special', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             }
-            // Full roster: 9 AR, 7 SMG, 6 Shotgun, 5 Sniper, 5 DMR, 6 LMG,
-            // 6 Pistol, 4 Revolver, 6 Rocket, 5 Melee, 5 Special = 64 total.
+            // Full roster: 11 AR, 9 SMG, 6 Shotgun, 5 Sniper, 5 DMR, 6 LMG,
+            // 6 Pistol, 4 Revolver, 6 Rocket, 5 Melee, 5 Special = 68 total.
         };
         // Backwards-compatible alias: Bot AI only ever reads the plain
         // numeric stats (damage/fireRate/mag/reserve/spread/speed), so it
@@ -2281,7 +2500,8 @@
             const MAP_AMBIENCE = {
                 'BACKLOT-7': { filterFreq: 550, filterQ: 0.7, gain: 0.045, hum: false },
                 'INDUSTRIAL-5': { filterFreq: 260, filterQ: 1.4, gain: 0.05, hum: true, humFreq: 55 },
-                'OUTPOST-9': { filterFreq: 750, filterQ: 0.5, gain: 0.06, hum: false }
+                'OUTPOST-9': { filterFreq: 750, filterQ: 0.5, gain: 0.06, hum: false },
+                'KRYPTOS-URBAN': { filterFreq: 420, filterQ: 0.9, gain: 0.055, hum: false }
             };
             let ambientSource = null;
             let ambientGain = null;
@@ -4442,6 +4662,15 @@
             'OUTPOST-9': {
                 hemi: { intensity: 0.7, color: new BABYLON.Color3(1, 0.9, 0.75) },
                 dir: { intensity: 0.75, color: new BABYLON.Color3(1, 0.7, 0.4), direction: new BABYLON.Vector3(-1, -0.35, 0.3) }
+            },
+            // KRYPTOS-URBAN: warm low-sun combat-zone light matching the
+            // reference video's mood (hazy, slightly overexposed highlights,
+            // long soft shadows) - closest in spirit to OUTPOST-9's dusk
+            // preset but a touch brighter/hazier (higher hemi, warmer dir
+            // color) to read as daytime smoke/dust haze rather than dusk.
+            'KRYPTOS-URBAN': {
+                hemi: { intensity: 0.8, color: new BABYLON.Color3(1, 0.93, 0.82) },
+                dir: { intensity: 0.7, color: new BABYLON.Color3(1, 0.85, 0.6), direction: new BABYLON.Vector3(-0.6, -0.55, 0.4) }
             }
         };
 
@@ -4649,6 +4878,8 @@
                 buildMapIndustrial();
             } else if (selectedMap === 'OUTPOST-9') {
                 buildMapOutpost();
+            } else if (selectedMap === 'KRYPTOS-URBAN') {
+                buildMapKryptos();
             } else {
                 buildMapBacklot();
             }
@@ -4672,6 +4903,20 @@
                 blue: [new BABYLON.Vector3(-68, 2, 0), new BABYLON.Vector3(-64, 2, 30), new BABYLON.Vector3(-64, 2, -30)],
                 red: [new BABYLON.Vector3(68, 2, 0), new BABYLON.Vector3(64, 2, 30), new BABYLON.Vector3(64, 2, -30)],
                 ffa: [new BABYLON.Vector3(-64, 2, 30), new BABYLON.Vector3(64, 2, -30), new BABYLON.Vector3(0, 2, 30), new BABYLON.Vector3(0, 2, -30)]
+            },
+            // KRYPTOS-URBAN: Team A (BLUE) west at x=-90 (primary + the
+            // "Back Alley Flank" secondary spawn from the blueprint),
+            // Team B (RED) east at x=90 (primary + secondary near the
+            // Yard/Office side) - mirrors the blueprint's west-to-east
+            // Team A -> routes -> Team B flow. Both sides sit well outside
+            // the nearest route cover, so a spawning player isn't dropped
+            // into an active sightline (the existing spawnShieldTime grace
+            // period on top of that is the same anti-spawn-kill mechanic
+            // every map already has).
+            'KRYPTOS-URBAN': {
+                blue: [new BABYLON.Vector3(-90, 2, 0), new BABYLON.Vector3(-90, 2, 9), new BABYLON.Vector3(-90, 2, -9), new BABYLON.Vector3(-84, 2, -38)],
+                red: [new BABYLON.Vector3(90, 2, -25), new BABYLON.Vector3(90, 2, -16), new BABYLON.Vector3(90, 2, -34), new BABYLON.Vector3(88, 2, 26)],
+                ffa: [new BABYLON.Vector3(-90, 2, 0), new BABYLON.Vector3(90, 2, -25), new BABYLON.Vector3(-10, 2, 32), new BABYLON.Vector3(55, 2, 28)]
             }
         };
 
@@ -4994,6 +5239,184 @@
             antenna.position = new BABYLON.Vector3(0, 11, -16);
             antenna.material = antennaMat;
             antenna.checkCollisions = false;
+        }
+
+        // KRYPTOS-URBAN: built from a user-provided tactical blueprint
+        // (geometry/layout authority) plus a reference video (visual
+        // style/mood authority) of a destroyed-city combat zone - neither
+        // asset is a real game to copy assets from, just direction for an
+        // original layout/look. Blueprint layout, left to right:
+        // TEAM A RESPAWN (+ a secondary "Back Alley Flank" spawn) -> LEFT
+        // ROUTE (CQB/flank: Apartment Block, Narrow Alley, Destroyed Shop,
+        // 2x Destroyed Cafe, Courtyard, Maintenance Shed) -> CENTER ROUTE
+        // (objective/mid: Control Tower with an accessible roof, Central
+        // Plaza/Hardpoint zone, a second Hardpoint zone south of it) ->
+        // RIGHT ROUTE (mixed/long: Parking Lot, Warehouse with stairs,
+        // Office Building, Yard) -> TEAM B RESPAWN (+ secondary). The 3
+        // hardpoint markers from the blueprint (A near the parking lot, B
+        // at the central plaza, the unlabeled southern one) are built as
+        // real positioned beacons - the actual Domination/Hardpoint/Kill
+        // Confirmed/Search&Destroy game-mode LOGIC to rotate/contest them
+        // is a deliberately separate next increment (this map already
+        // plays TDM/FFA like the other 3). PBR materials (see
+        // makePBRConcrete/Brick/Metal/Asphalt/Wood/Glass above) replace
+        // every other map's flat StandardMaterial for a real visual step
+        // up toward the video's worn/weathered look - true normal-map bump
+        // detail and environment reflections are further increments, not
+        // attempted here (no texture/HDR asset files exist in this
+        // project to source them from).
+        function buildMapKryptos() {
+            const concreteMat = makePBRConcrete(scene);
+            const brickMat = makePBRBrick(scene);
+            const metalMat = makePBRMetal(scene);
+            const metalMatDark = makePBRMetal(scene, '#33363b');
+            const asphaltMat = makePBRAsphalt(scene);
+            const woodMat = makePBRWood(scene);
+            const glassMat = makePBRGlass(scene);
+
+            const ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 210, height: 130 }, scene);
+            ground.material = asphaltMat;
+            tagImpactMaterial(ground, 'concrete');
+
+            function addBox(name, size, position, material, impactMat, rotY) {
+                const box = BABYLON.MeshBuilder.CreateBox(name, size, scene);
+                box.position = position;
+                box.material = material;
+                box.checkCollisions = true;
+                if (rotY) box.rotation.y = rotY;
+                if (impactMat) tagImpactMaterial(box, impactMat);
+                return box;
+            }
+            // Exterior fire-escape-style staircase - the blueprint marks
+            // several ("Control Tower accessible roof", "Warehouse
+            // stairs"), and the video's buildings are full of them. A
+            // shallow run of flat steps wide enough to walk up without
+            // needing real stair-stepping physics (matches how every other
+            // ramp/elevation in this project's maps already works).
+            function addStairs(name, base, width, topY, dir) {
+                const steps = 10;
+                for (let i = 0; i < steps; i++) {
+                    const t = i / (steps - 1);
+                    addBox(`${name}_${i}`, { width: width, height: 0.3, depth: 1.1 },
+                        new BABYLON.Vector3(base.x + dir.x * t * (steps * 0.55), base.y + t * topY, base.z + dir.z * t * (steps * 0.55)),
+                        metalMatDark, 'metal');
+                }
+            }
+            // Simple wrecked/parked car - a blocky silhouette (body + cabin
+            // step), enough to read as "car" and block sightlines/provide
+            // cover without needing real vehicle geometry.
+            function addCar(x, z, rotY, tint) {
+                const mat = new BABYLON.PBRMaterial('carMat_' + Math.random(), scene);
+                mat.albedoColor = tint; mat.metallic = 0.6; mat.roughness = 0.5;
+                addBox(`car_body_${x}_${z}`, { width: 4.2, height: 1.1, depth: 1.9 }, new BABYLON.Vector3(x, 0.55, z), mat, 'metal', rotY);
+                addBox(`car_cabin_${x}_${z}`, { width: 2.2, height: 0.7, depth: 1.7 }, new BABYLON.Vector3(x, 1.45, z), mat, 'metal', rotY);
+            }
+
+            // ===== TEAM A RESPAWN (primary + secondary/flank) =====
+            addBox('teamA_back', { width: 3, height: 6, depth: 20 }, new BABYLON.Vector3(-98, 3, 0), concreteMat, 'concrete');
+            addBox('teamA_side1', { width: 16, height: 6, depth: 3 }, new BABYLON.Vector3(-90, 3, 9), concreteMat, 'concrete');
+            addBox('teamA_side2', { width: 16, height: 6, depth: 3 }, new BABYLON.Vector3(-90, 3, -9), concreteMat, 'concrete');
+            addBox('teamA_flank_wall', { width: 3, height: 5, depth: 14 }, new BABYLON.Vector3(-84, 2.5, -40), brickMat, 'brick');
+
+            // ===== LEFT ROUTE (CQB/flank) =====
+            // Apartment Block - the tallest structure on this side, a
+            // multi-"floor" silhouette via stacked ledges.
+            addBox('apartmentBlock', { width: 14, height: 16, depth: 14 }, new BABYLON.Vector3(-78, 8, 25), brickMat, 'brick');
+            addBox('apartmentBlock_ledge1', { width: 15, height: 0.4, depth: 15 }, new BABYLON.Vector3(-78, 5.5, 25), concreteMat, 'concrete');
+            addBox('apartmentBlock_ledge2', { width: 15, height: 0.4, depth: 15 }, new BABYLON.Vector3(-78, 11, 25), concreteMat, 'concrete');
+            // Destroyed Shop.
+            addBox('destroyedShop', { width: 12, height: 7, depth: 11 }, new BABYLON.Vector3(-63, 3.5, 16), brickMat, 'brick');
+            addBox('destroyedShop_rubble', { width: 5, height: 1, depth: 4 }, new BABYLON.Vector3(-58, 0.5, 10), concreteMat, 'concrete');
+            // Destroyed Cafe (upper) + Destroyed Cafe (lower)/Alleyways gap
+            // between them for the "Alleyways" flank cut-through.
+            addBox('destroyedCafe_upper', { width: 11, height: 6, depth: 10 }, new BABYLON.Vector3(-52, 3, 27), brickMat, 'brick');
+            addBox('destroyedCafe_lower', { width: 11, height: 6, depth: 10 }, new BABYLON.Vector3(-52, 3, 3), brickMat, 'brick');
+            // Courtyard - a walled-but-open yard (low walls, no roof) for
+            // close fights, not a solid building.
+            addBox('courtyard_wall_n', { width: 16, height: 3, depth: 1.5 }, new BABYLON.Vector3(-58, 1.5, -13), concreteMat, 'concrete');
+            addBox('courtyard_wall_w', { width: 1.5, height: 3, depth: 14 }, new BABYLON.Vector3(-66, 1.5, -22), concreteMat, 'concrete');
+            addBox('courtyard_wall_s', { width: 10, height: 3, depth: 1.5 }, new BABYLON.Vector3(-60, 1.5, -29), concreteMat, 'concrete');
+            // Maintenance Shed - small, near the boundary into center.
+            addBox('maintenanceShed', { width: 8, height: 5, depth: 8 }, new BABYLON.Vector3(-38, 2.5, 34), metalMat, 'metal');
+            // Narrow Alley: the gap between Apartment Block and Destroyed
+            // Shop IS the alley - no separate mesh, just deliberate
+            // spacing (matches the blueprint's own "Narrow Alley" label
+            // sitting in that gap).
+
+            // ===== CENTER ROUTE (objective/mid) =====
+            // Control Tower with an accessible roof (exterior stairs up to
+            // a flat platform - the blueprint's own callout).
+            addBox('controlTower', { width: 12, height: 11, depth: 12 }, new BABYLON.Vector3(-10, 5.5, 32), concreteMat, 'concrete');
+            addBox('controlTower_roof', { width: 13, height: 0.5, depth: 13 }, new BABYLON.Vector3(-10, 11.2, 32), concreteMat, 'concrete');
+            addStairs('controlTower_stairs', new BABYLON.Vector3(-16, 0, 26), 2.4, 11, new BABYLON.Vector3(1, 0, 1));
+            // Central Plaza - open flat ground, Hardpoint B beacon.
+            const beaconB = BABYLON.MeshBuilder.CreateCylinder('beaconB', { diameterTop: 0.15, diameterBottom: 0.4, height: 2.4 }, scene);
+            beaconB.position = new BABYLON.Vector3(0, 1.2, 2);
+            const beaconBMat = new BABYLON.PBRMaterial('beaconBMat', scene);
+            beaconBMat.albedoColor = new BABYLON.Color3(0.9, 0.15, 0.1); beaconBMat.emissiveColor = new BABYLON.Color3(0.6, 0.05, 0.02);
+            beaconB.material = beaconBMat;
+            // A second Hardpoint zone south of the plaza, near the
+            // crosswalk (unlabeled letter in the blueprint - kept as a
+            // plain beacon rather than guessing a letter).
+            const beaconSouth = beaconB.clone('beaconSouth');
+            beaconSouth.position = new BABYLON.Vector3(0, 1.2, -28);
+            // Central plaza cover: a couple of low blocks/planters, kept
+            // open enough that it still reads as a wide contested plaza.
+            addBox('plaza_cover1', { width: 3, height: 1, depth: 3 }, new BABYLON.Vector3(-6, 0.5, -4), concreteMat, 'concrete');
+            addBox('plaza_cover2', { width: 3, height: 1, depth: 3 }, new BABYLON.Vector3(7, 0.5, 8), concreteMat, 'concrete');
+
+            // ===== RIGHT ROUTE (mixed/long) =====
+            // Parking Lot - flat marked pad + Hardpoint A beacon + parked
+            // cars for cover/sightline breaks.
+            addBox('parkingLot_pad', { width: 22, height: 0.15, depth: 20 }, new BABYLON.Vector3(55, 0.08, 28), asphaltMat, 'concrete');
+            const beaconA = beaconB.clone('beaconA');
+            beaconA.position = new BABYLON.Vector3(55, 1.2, 22);
+            addCar(48, 32, 0, new BABYLON.Color3(0.55, 0.1, 0.08));
+            addCar(48, 26, 0, new BABYLON.Color3(0.15, 0.15, 0.18));
+            addCar(62, 32, Math.PI, new BABYLON.Color3(0.5, 0.42, 0.1));
+            // Warehouse - two-level box with exterior stairs to an upper
+            // yard/walkway, matching the blueprint's stair icons.
+            addBox('warehouse', { width: 22, height: 9, depth: 16 }, new BABYLON.Vector3(72, 4.5, 2), metalMat, 'metal');
+            addBox('warehouse_walkway', { width: 22, height: 0.4, depth: 4 }, new BABYLON.Vector3(72, 9.2, -8), metalMatDark, 'metal');
+            addStairs('warehouse_stairs', new BABYLON.Vector3(84, 0, -4), 2.2, 9, new BABYLON.Vector3(-0.6, 0, -0.8));
+            addBox('warehouse_door', { width: 6, height: 5, depth: 0.3 }, new BABYLON.Vector3(72, 2.5, -6), metalMatDark, 'metal');
+            // Office Building - has a couple of glazed openings (PBR glass)
+            // instead of being a solid block.
+            addBox('officeBuilding', { width: 12, height: 8, depth: 10 }, new BABYLON.Vector3(55, 4, -25), concreteMat, 'concrete');
+            addBox('officeBuilding_glass', { width: 11, height: 3, depth: 0.2 }, new BABYLON.Vector3(55, 5, -19.9), glassMat);
+            // Yard - open ground between Warehouse and Office Building,
+            // just cover props, no walls of its own.
+            addBox('yard_crate1', { width: 2, height: 2, depth: 2 }, new BABYLON.Vector3(66, 1, -15), woodMat, 'wood');
+            addBox('yard_crate2', { width: 2, height: 2, depth: 2 }, new BABYLON.Vector3(69, 1, -13), woodMat, 'wood');
+
+            // ===== TEAM B RESPAWN (primary + secondary) =====
+            addBox('teamB_back', { width: 3, height: 6, depth: 20 }, new BABYLON.Vector3(98, 3, -25), concreteMat, 'concrete');
+            addBox('teamB_side1', { width: 16, height: 6, depth: 3 }, new BABYLON.Vector3(90, 3, -16), concreteMat, 'concrete');
+            addBox('teamB_side2', { width: 16, height: 6, depth: 3 }, new BABYLON.Vector3(90, 3, -34), concreteMat, 'concrete');
+            addBox('teamB_secondary_wall', { width: 3, height: 5, depth: 14 }, new BABYLON.Vector3(88, 2.5, 30), brickMat, 'brick');
+
+            // ===== Scattered debris/rubble along the routes, matching the
+            // video's damaged-city look - kept sparse (a handful, not a
+            // field of them) per "no llenes el mapa de objetos inútiles". =====
+            const rubbleMat = new BABYLON.PBRMaterial('rubbleMat', scene);
+            rubbleMat.albedoColor = new BABYLON.Color3(0.42, 0.4, 0.37); rubbleMat.metallic = 0; rubbleMat.roughness = 0.95;
+            for (const [x, z] of [[-70, 20], [-45, -10], [-20, 15], [30, 10], [62, -20], [40, -30]]) {
+                const rubble = BABYLON.MeshBuilder.CreateBox(`rubble_${x}_${z}`, { width: 1.5 + Math.random(), height: 0.5 + Math.random() * 0.5, depth: 1.5 + Math.random() }, scene);
+                rubble.position = new BABYLON.Vector3(x, 0.3, z);
+                rubble.rotation.y = Math.random() * Math.PI;
+                rubble.material = rubbleMat;
+                rubble.checkCollisions = false;
+            }
+
+            // Barrels (route-side cover, small footprint) - reuses the
+            // same cylinder + PBR-metal pattern as everything else here.
+            for (const [x, z] of [[-30, -5], [15, 20], [40, 28], [-85, 15]]) {
+                const barrel = BABYLON.MeshBuilder.CreateCylinder(`barrel_${x}_${z}`, { diameter: 1.3, height: 1.6 }, scene);
+                barrel.position = new BABYLON.Vector3(x, 0.8, z);
+                barrel.material = metalMatDark;
+                barrel.checkCollisions = true;
+                tagImpactMaterial(barrel, 'metal');
+            }
         }
 
         // ========== INPUT HANDLING ==========
@@ -5794,7 +6217,8 @@
             const buttons = {
                 'BACKLOT-7': document.getElementById('map1Btn'),
                 'INDUSTRIAL-5': document.getElementById('map2Btn'),
-                'OUTPOST-9': document.getElementById('map3Btn')
+                'OUTPOST-9': document.getElementById('map3Btn'),
+                'KRYPTOS-URBAN': document.getElementById('map4Btn')
             };
             for (const [id, btn] of Object.entries(buttons)) {
                 btn.style.boxShadow = id === selectedMap ? '0 0 30px rgba(0, 255, 0, 1)' : '0 0 15px rgba(0, 255, 0, 0.5)';
@@ -5828,6 +6252,12 @@
         document.getElementById('map3Btn').addEventListener('click', () => {
             selectedMap = 'OUTPOST-9';
             gameConfig.map = 'OUTPOST-9';
+            updateMapDisplay();
+        });
+
+        document.getElementById('map4Btn').addEventListener('click', () => {
+            selectedMap = 'KRYPTOS-URBAN';
+            gameConfig.map = 'KRYPTOS-URBAN';
             updateMapDisplay();
         });
 
