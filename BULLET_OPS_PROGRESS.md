@@ -935,6 +935,14 @@ Continuación de la ampliación de cobertura de interiores (el mayor hueco hones
 
 **Balance de interiores reales tras esta pasada**: 7 de ~20 edificios del mapa (BACKLOT-7: torre; INDUSTRIAL-5: factory1 + un almacén de esquina; KRYPTOS-URBAN: Office Building, Apartment Block planta baja, Destroyed Shop, Warehouse).
 
+### Octavo interior real: Maintenance Shed de KRYPTOS-URBAN
+
+Continuación directa de la ampliación de interiores, mismo patrón de 4 paredes. El Maintenance Shed (pequeño edificio metálico cerca del límite entre la ruta izquierda y el centro) gana puerta e interior real — norte/este/oeste sólidas, sur con hueco de puerta de 2.5 unidades hacia la ruta central.
+
+**Probado con Playwright**: entrada por la puerta confirmada, pared este bloquea correctamente desde fuera. Barrido de solapamiento: solo las 4 uniones de esquina normales, mismo patrón benigno que los otros 7 interiores. Los 12 spawns siguen completamente libres. 68 armas intactas.
+
+**Balance de interiores reales tras esta pasada**: 8 de ~20 edificios del mapa.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.

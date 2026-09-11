@@ -6144,7 +6144,29 @@
             addBox('courtyard_wall_w', { width: 1.5, height: 3, depth: 14 }, new BABYLON.Vector3(-66, 1.5, -22), concreteMat, 'concrete');
             addBox('courtyard_wall_s', { width: 10, height: 3, depth: 1.5 }, new BABYLON.Vector3(-60, 1.5, -29), concreteMat, 'concrete');
             // Maintenance Shed - small, near the boundary into center.
-            addBox('maintenanceShed', { width: 8, height: 5, depth: 8 }, new BABYLON.Vector3(-38, 2.5, 34), metalMat, 'metal');
+            // Maintenance Shed - real interior instead of a solid block,
+            // same 4-wall pattern used 7 times this session. Door on the
+            // south face, toward the center route/plaza.
+            const shedWallH = 5, shedWallT = 0.6, shedDoorGap = 2.5;
+            function shedWall(name, size, position) {
+                const w = BABYLON.MeshBuilder.CreateBox(name, size, scene);
+                w.position = position;
+                w.material = metalMat;
+                w.checkCollisions = true;
+                tagImpactMaterial(w, 'metal');
+                return w;
+            }
+            shedWall('maintenanceShed_wallN', { width: 8, height: shedWallH, depth: shedWallT }, new BABYLON.Vector3(-38, shedWallH / 2, 38));
+            shedWall('maintenanceShed_wallE', { width: shedWallT, height: shedWallH, depth: 8 }, new BABYLON.Vector3(-34, shedWallH / 2, 34));
+            shedWall('maintenanceShed_wallW', { width: shedWallT, height: shedWallH, depth: 8 }, new BABYLON.Vector3(-42, shedWallH / 2, 34));
+            const shedSouthSegW = (8 - shedDoorGap) / 2;
+            shedWall('maintenanceShed_wallS1', { width: shedSouthSegW, height: shedWallH, depth: shedWallT }, new BABYLON.Vector3(-42 + shedSouthSegW / 2, shedWallH / 2, 30));
+            shedWall('maintenanceShed_wallS2', { width: shedSouthSegW, height: shedWallH, depth: shedWallT }, new BABYLON.Vector3(-34 - shedSouthSegW / 2, shedWallH / 2, 30));
+            const shedRoof = BABYLON.MeshBuilder.CreateBox('maintenanceShed_roof', { width: 8.6, height: 0.5, depth: 8.6 }, scene);
+            shedRoof.position = new BABYLON.Vector3(-38, shedWallH + 0.25, 34);
+            shedRoof.material = metalMat;
+            shedRoof.checkCollisions = true;
+            tagImpactMaterial(shedRoof, 'metal');
             // Narrow Alley: the gap between Apartment Block and Destroyed
             // Shop IS the alley - no separate mesh, just deliberate
             // spacing (matches the blueprint's own "Narrow Alley" label
