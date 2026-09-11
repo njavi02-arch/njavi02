@@ -964,6 +964,43 @@
                 soundProfile: 'ar', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             },
+            // AR roster expansion (5/12 -> 7/12): none of the existing 5
+            // pushed toward a designated-marksman role or best-in-class
+            // mobility - adds a slow, hard-hitting precision AR (highest
+            // AR damage, tightest spread) and a compact/bullpup AR (best
+            // AR mobility, shortest range).
+            BO06: {
+                id: 'BO06', name: 'BO-06 LANCER', category: WEAPON_CATEGORY.AR,
+                subcategory: 'Designated Marksman AR', ammoType: '5.56mm', fireMode: 'semi-auto',
+                damage: 38, headshotMul: 1.8,
+                fireRate: 6, mag: 24, reserve: 96,
+                reloadTime: 2.4, reloadTimeEmpty: 2.9,
+                spread: { hip: 0.009, ads: 0.0018, moving: 0.006 },
+                range: 120, bulletSpeed: 980,
+                ads: { time: 0.26, fovMul: 0.72, sensitivityMul: 0.55 },
+                movement: { hipMul: 0.92, adsMul: 0.48 },
+                sprintToFireDelay: 0.18,
+                recoil: { vertical: 0.026, horizontal: 0.008, cameraKick: 0.021, recoverySpeed: 6 },
+                sway: { amount: 0.011, speed: 1.3, bobAmount: 0.016, bobSpeed: 8 },
+                soundProfile: 'ar', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO07: {
+                id: 'BO07', name: 'BO-07 SKIRMISH', category: WEAPON_CATEGORY.AR,
+                subcategory: 'Compact/Bullpup AR', ammoType: '5.56mm', fireMode: 'full-auto',
+                damage: 22, headshotMul: 1.35,
+                fireRate: 12, mag: 28, reserve: 112,
+                reloadTime: 1.7, reloadTimeEmpty: 2.1,
+                spread: { hip: 0.02, ads: 0.006, moving: 0.01 },
+                range: 75, bulletSpeed: 830,
+                ads: { time: 0.16, fovMul: 0.85, sensitivityMul: 0.72 },
+                movement: { hipMul: 1.12, adsMul: 0.68 },
+                sprintToFireDelay: 0.1,
+                recoil: { vertical: 0.016, horizontal: 0.012, cameraKick: 0.013, recoverySpeed: 8.5 },
+                sway: { amount: 0.015, speed: 1.8, bobAmount: 0.02, bobSpeed: 10 },
+                soundProfile: 'ar', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
             BO14: {
                 id: 'BO14', name: 'BO-14 VIPERBITE', category: WEAPON_CATEGORY.SMG,
                 damage: 15, headshotMul: 1.2,
@@ -991,6 +1028,42 @@
                 sprintToFireDelay: 0.11,
                 recoil: { vertical: 0.013, horizontal: 0.011, cameraKick: 0.01, recoverySpeed: 10.5 },
                 sway: { amount: 0.017, speed: 1.8, bobAmount: 0.019, bobSpeed: 9.8 },
+                soundProfile: 'smg', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            // SMG roster expansion (5/10 -> 7/10): a heavy PDW (highest
+            // SMG damage, slowest SMG fire rate - trading spray for punch)
+            // and a suppressed control SMG (tightest SMG spread, lowest
+            // recoil, distinct from ENFORCER's higher-damage approach).
+            BO16: {
+                id: 'BO16', name: 'BO-16 PDW-9', category: WEAPON_CATEGORY.SMG,
+                subcategory: 'Heavy PDW', ammoType: '9mm+P', fireMode: 'full-auto',
+                damage: 30, headshotMul: 1.5,
+                fireRate: 10, mag: 22, reserve: 132,
+                reloadTime: 1.6, reloadTimeEmpty: 2.0,
+                spread: { hip: 0.02, ads: 0.007, moving: 0.011 },
+                range: 60, bulletSpeed: 440,
+                ads: { time: 0.19, fovMul: 0.82, sensitivityMul: 0.68 },
+                movement: { hipMul: 1.0, adsMul: 0.7 },
+                sprintToFireDelay: 0.09,
+                recoil: { vertical: 0.018, horizontal: 0.01, cameraKick: 0.015, recoverySpeed: 9 },
+                sway: { amount: 0.016, speed: 1.7, bobAmount: 0.02, bobSpeed: 9.5 },
+                soundProfile: 'smg', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO17: {
+                id: 'BO17', name: 'BO-17 HUSH', category: WEAPON_CATEGORY.SMG,
+                subcategory: 'Suppressed SMG', ammoType: '9mm Subsonic', fireMode: 'full-auto',
+                damage: 19, headshotMul: 1.3,
+                fireRate: 16, mag: 26, reserve: 156,
+                reloadTime: 1.5, reloadTimeEmpty: 1.8,
+                spread: { hip: 0.017, ads: 0.005, moving: 0.009 },
+                range: 45, bulletSpeed: 400,
+                ads: { time: 0.14, fovMul: 0.86, sensitivityMul: 0.76 },
+                movement: { hipMul: 1.08, adsMul: 0.75 },
+                sprintToFireDelay: 0.07,
+                recoil: { vertical: 0.01, horizontal: 0.008, cameraKick: 0.008, recoverySpeed: 12 },
+                sway: { amount: 0.014, speed: 2.0, bobAmount: 0.018, bobSpeed: 10 },
                 soundProfile: 'smg', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             },
@@ -1553,8 +1626,8 @@
                 soundProfile: 'special', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             }
-            // Full roster: 5 AR, 5 SMG, 6 Shotgun, 5 Sniper, 5 DMR, 6 LMG,
-            // 6 Pistol, 4 Revolver, 6 Rocket, 5 Melee, 5 Special = 58 total.
+            // Full roster: 7 AR, 7 SMG, 6 Shotgun, 5 Sniper, 5 DMR, 6 LMG,
+            // 6 Pistol, 4 Revolver, 6 Rocket, 5 Melee, 5 Special = 62 total.
         };
         // Backwards-compatible alias: Bot AI only ever reads the plain
         // numeric stats (damage/fireRate/mag/reserve/spread/speed), so it

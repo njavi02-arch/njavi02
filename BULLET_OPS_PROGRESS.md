@@ -506,6 +506,17 @@ Resultado — pico de retroceso real: COLOSSUS 0.0645 > PEACEMAKER 0.0574 > VANG
 
 **Conclusión: las 5 armas se sienten genuinamente distintas en partida real, no solo sobre el papel — el LMG de supresión dispara rápido con retroceso mínimo, el revólver pesado dispara lento con fuerte patada, el sniper más pesado casi no dispara pero cada tiro golpea la cámara con fuerza.** No se encontró nada plano ni redundante; no se necesitó ningún cambio de código, solo esta verificación.
 
+### Ampliación de roster: AR y SMG (5/12→7/12, 5/10→7/10)
+
+Retomada la ampliación de roster (categorías con más hueco absoluto tras completar Pistola/Revolver/Rocket). 4 armas nuevas:
+
+- **BO-06 LANCER** (AR, `subcategory: 'Designated Marksman AR'`): el mayor daño de cualquier AR (38) con la cadencia más lenta (6) y el spread de cadera más ajustado (0.009) — un AR de precisión que ninguna de las 5 existentes cubría.
+- **BO-07 SKIRMISH** (AR, `subcategory: 'Compact/Bullpup AR'`): la mejor movilidad de cualquier AR (`hipMul: 1.12`) y el alcance más corto (75) — un AR compacto para combate cercano.
+- **BO-16 PDW-9** (SMG, `subcategory: 'Heavy PDW'`): el mayor daño de cualquier SMG (30) con la cadencia más lenta de la categoría (10) — un SMG que prioriza el golpe sobre el volumen de fuego.
+- **BO-17 HUSH** (SMG, `subcategory: 'Suppressed SMG'`): el spread de cadera más ajustado de cualquier SMG (0.017) y el menor retroceso vertical (0.01) — control por encima de daño o cadencia.
+
+Probado con Playwright (viewmodel parentado, bot reposicionado justo antes de disparar): BO-06 LANCER impactó a un bot a 10 unidades en el primer intento (100→31.6 HP = 38 de daño base × 1.8 de multiplicador de headshot, mag 24→23). Catálogo confirma los 4 nombres bajo ASSAULT RIFLE y SMG. Total de `WEAPON_CONFIGS` confirmado en 62. Pase de regresión del camino dorado completo (disparo → cambio de arma → recarga): sin errores, `totalWeapons: 62`. Cero errores de consola nuevos.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.
