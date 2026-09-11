@@ -3673,6 +3673,43 @@
             parts.shoulder_right.rotation.x = (swing * 0.6 + crouchBend * 0.3) * aimDamp;
         }
 
+        // Death pose - a blockout "ragdoll": no physics engine is loaded in
+        // this project (single-file Artifact, no build step to pull one
+        // in), so this is a fixed collapsed pose applied once on death
+        // instead of a simulated one, randomized a little per death so
+        // repeated kills at the same spot don't all look identical. The
+        // corpse stays visible, fallen over, at the death location for the
+        // whole respawn delay (2-3s, already existed) - respawn() calling
+        // resetDeathPose() and Player/Bot.respawn() already teleporting
+        // entity.mesh back to a spawn point is what "cleans up" the corpse
+        // automatically, with no separate object lifecycle to manage.
+        function playDeathPose(entity) {
+            const root = entity.characterRoot, parts = entity.characterParts;
+            if (!root || !parts) return;
+            const fallDir = Math.random() < 0.5 ? 1 : -1;
+            root.rotation.x = fallDir * (Math.PI / 2 + (Math.random() - 0.5) * 0.3);
+            root.rotation.z = (Math.random() - 0.5) * 0.6;
+            parts.leftThigh.rotation.x = (Math.random() - 0.5) * 0.8;
+            parts.rightThigh.rotation.x = (Math.random() - 0.5) * 0.8;
+            parts.leftShin.rotation.x = Math.random() * 0.6;
+            parts.rightShin.rotation.x = Math.random() * 0.6;
+            parts.shoulder_left.rotation.x = (Math.random() - 0.5) * 1.2;
+            parts.shoulder_right.rotation.x = (Math.random() - 0.5) * 1.2;
+            parts.shoulder_left.rotation.z = (Math.random() - 0.5) * 0.8;
+            parts.shoulder_right.rotation.z = (Math.random() - 0.5) * 0.8;
+        }
+        function resetDeathPose(entity) {
+            const root = entity.characterRoot, parts = entity.characterParts;
+            if (!root || !parts) return;
+            root.rotation.set(0, 0, 0);
+            parts.leftThigh.rotation.set(0, 0, 0);
+            parts.rightThigh.rotation.set(0, 0, 0);
+            parts.leftShin.rotation.set(0, 0, 0);
+            parts.rightShin.rotation.set(0, 0, 0);
+            parts.shoulder_left.rotation.set(0, 0, 0);
+            parts.shoulder_right.rotation.set(0, 0, 0);
+        }
+
         // Attaches a full humanoid body to an entity (Player or Bot) that
         // already has its collision capsule (entity.mesh) built. The
         // capsule itself stays exactly as it was - still the thing every
@@ -3699,6 +3736,7 @@
             if (palette.vestScale) character.parts.vest.scaling.copyFrom(palette.vestScale);
             entity.mesh.isVisible = false;
             entity.characterParts = character.parts;
+            entity.characterRoot = character.root;
             if (shadowGenerator) {
                 // A representative subset, not every limb - full per-part
                 // shadow casters across every player/bot would scale shadow
@@ -4031,6 +4069,7 @@
             die() {
                 this.isAlive = false;
                 this.deaths++;
+                playDeathPose(this);
                 setTimeout(() => this.respawn(), 3000);
             }
 
@@ -4039,6 +4078,7 @@
                 this.mesh.position = this.spawnPos.clone();
                 this.velocity = new BABYLON.Vector3(0, 0, 0);
                 this.isAlive = true;
+                resetDeathPose(this);
                 this.spawnShieldTime = this.spawnShieldDuration; // Activate spawn shield
 
                 // Clear any in-progress reload/switch/ADS/recoil left over
@@ -4364,6 +4404,7 @@
             die() {
                 this.isAlive = false;
                 this.deaths++;
+                playDeathPose(this);
                 setTimeout(() => this.respawn(), 2000);
             }
 
@@ -4372,6 +4413,7 @@
                 this.mesh.position = this.spawnPos.clone();
                 this.velocity = new BABYLON.Vector3(0, 0, 0);
                 this.isAlive = true;
+                resetDeathPose(this);
                 this.currentMag = this.currentWeapon.mag;
                 this.seekingCover = false;
                 this.coverPoint = null;
