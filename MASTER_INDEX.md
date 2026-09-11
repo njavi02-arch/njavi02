@@ -5,7 +5,7 @@ Documento vivo de gestión autónoma del proyecto. Se actualiza en cada ciclo de
 **Leyenda de estado:** 🔴 Pendiente · 🟡 En progreso · 🟢 Completado · 🔧 Funciona pero necesita mejora · 🔒 Bloqueado (requiere intervención del usuario) · ⚠️ Tiene errores conocidos
 **Leyenda de prioridad:** P0 Crítico · P1 Muy importante · P2 Importante · P3 Pulido · P4 Opcional
 
-Última actualización: sesión autónoma en curso (sistema de armas como prioridad principal; roster 64/82, ver `BULLET_OPS_PROGRESS.md`).
+Última actualización: sesión autónoma en curso (roster de armas 68/82; prioridad actual: directiva del usuario sobre edificios/paredes/colisiones/balística, ver `BULLET_OPS_PROGRESS.md`).
 
 ---
 
@@ -76,8 +76,8 @@ Cifras de BF4/BFV/BF2042 son aproximadas (rosters base, sin DLC/temporadas — v
 
 | Categoría (nuestra) | BF4 | BFV | BF2042 | Objetivo del proyecto | Estado actual |
 |---|---|---|---|---|---|
-| Fusiles de asalto (AR) | ~10 | ~8 | 2 (base) | 12 | 🟡 9/12 |
-| Subfusiles (SMG) | ~9 | ~6 | 4 | 10 | 🟡 7/10 |
+| Fusiles de asalto (AR) | ~10 | ~8 | 2 (base) | 12 | 🟡 11/12 |
+| Subfusiles (SMG) | ~9 | ~6 | 4 | 10 | 🟡 9/10 |
 | LMG | ~6 | ~5 | 2 | 8 | 🟡 6/8 |
 | DMR (fusil de marcador) | ~5 | ~4 (autocargante) | 3 | 8 | 🟡 5/8 |
 | Francotiradores (Sniper, cerrojo) | ~6 | ~6 (cerrojo) | 3 | 8 | 🟡 5/8 |
@@ -87,7 +87,7 @@ Cifras de BF4/BFV/BF2042 son aproximadas (rosters base, sin DLC/temporadas — v
 | Lanzadores | ~4 | ~3 | ~3 | 6 | 🟢 6/6 |
 | Especiales/balísticos | — (no existe como categoría en ninguna entrega — decisión propia para armas futuristas/no convencionales) | — | — | 6 | 🟡 5/6 |
 | Cuerpo a cuerpo (cuchillos + contundentes) | 1 (cuchillo genérico) | 1 | 1 | 6 | 🟡 5/6 |
-| **Total** | ~65 (sin melee/gadgets) | ~48 | ~23 (base) | **82** | **64/82 (78%)** |
+| **Total** | ~65 (sin melee/gadgets) | ~48 | ~23 (base) | **82** | **68/82 (83%)** |
 
 El objetivo de 82 no es un techo — es la primera meta ambiciosa de una arquitectura ya probada para escalar a "cientos de armas" (cada arma nueva es una entrada de datos en `WEAPON_CONFIGS`, sin tocar `WeaponController`/`Bot`/HUD/crosshair). Cuando 82 esté cerca, se revisará si ampliar más aporta valor real de gameplay o solo relleno.
 
@@ -117,8 +117,8 @@ Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(
 
 ### Roster actual por categoría (64 armas · 11 categorías)
 
-- **AR** (9/12): BO-01 VANGUARD, BO-02 PREDATOR, BO-03 STORMCALLER, BO-04 SENTINEL, BO-05 OUTLAW, BO-06 LANCER, BO-07 SKIRMISH, BO-08 TRIBURST, BO-09 DUALSTRIKE
-- **SMG** (7/10): BO-11 RAZORBACK, BO-12 WHISPER, BO-13 ENFORCER, BO-14 VIPERBITE, BO-15 UNDERTOW, BO-16 PDW-9, BO-17 HUSH
+- **AR** (11/12): BO-01 VANGUARD, BO-02 PREDATOR, BO-03 STORMCALLER, BO-04 SENTINEL, BO-05 OUTLAW, BO-06 LANCER, BO-07 SKIRMISH, BO-08 TRIBURST, BO-09 DUALSTRIKE, BO-94 HAILSTORM, BO-95 JUDGMENT
+- **SMG** (9/10): BO-11 RAZORBACK, BO-12 WHISPER, BO-13 ENFORCER, BO-14 VIPERBITE, BO-15 UNDERTOW, BO-16 PDW-9, BO-17 HUSH, BO-18 THREEPOINT, BO-19 DELUGE
 - **Shotgun** (6/8): BO-21 BREACHER, BO-22 SCATTERGUN, BO-23 WIDOWMAKER, BO-24 SLUGSTORM, BO-25 RIOT-12, BO-26 SAWTOOTH
 - **Sniper** (5/8): BO-31 LONGSHOT, BO-33 WRAITHFANG, BO-34 DEADEYE, BO-91 WHISPER-9, BO-92 COLOSSUS
 - **DMR** (5/8): BO-32 PHANTOM, BO-35 RIDGELINE, BO-36 QUICKSILVER, BO-37 FALCONER, BO-38 IRONCLAD
@@ -136,7 +136,7 @@ Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(
 | Sonido de casquillos | 🔴 | P4 |
 | Sonido de disparo con variación por distancia | 🔴 | P4 |
 | Backfill subcategory/ammoType/fireMode en las 35 armas restantes | 🔴 | P3 |
-| Ampliación de roster hacia el objetivo de 82 (ver tabla maestra) | 🔴 | P2 — prioridad principal actual, ver PRÓXIMA TAREA |
+| Ampliación de roster hacia el objetivo de 82 (ver tabla maestra) | 🟡 68/82 (83%) — en pausa mientras la directiva P0 de edificios/balística esté activa | |
 | Burst fire / modos de disparo múltiples por arma | 🟢 | — | Mecánica real implementada (no solo metadato), ver sección siguiente |
 
 ### Alineación con la directiva de escala BF4 (redirección del usuario, sesión actual)
@@ -146,7 +146,7 @@ El usuario pidió convertir el sistema de armas en un shooter completo/profesion
 **Ya satisfecho:**
 - Arquitectura 100% data-driven (`WEAPON_CONFIGS`), cero duplicación de código por arma.
 - Taxonomía de 11 categorías (AR/SMG/Shotgun/Sniper/DMR/LMG/Pistol/Revolver/Rocket/Melee/Special), con convención de rangos de id documentada.
-- Tabla de escala referenciada en BF4/BFV/BF2042 (objetivo 82 armas), roster actual 64/82 (78%).
+- Tabla de escala referenciada en BF4/BFV/BF2042 (objetivo 82 armas), roster actual 68/82 (83%).
 - Menú de armas moderno (nombre/categoría/imagen/daño/precisión/cadencia/movilidad/control/cargador/descripción).
 - Slots de attachment (arquitectura declarada en `attachmentSlots`, sin poblar — bloqueado en modelos reales, correcto dejarlo así).
 - Testing por Playwright contra el juego real tras cada bloque de armas, con dos lecciones de metodología documentadas (parenting de viewmodel, drift de IA de bots).
@@ -369,6 +369,8 @@ Sección permanente, actualizada cada vez que se evalúa o conecta una herramien
 ~~P2 — Revisión de sensación de armas en partida real~~ 🟢 completado. Cadencia real y pico de retroceso medidos con Playwright en 5 armas extremas (VANGUARD/IRONCLAD/COLOSSUS/WHIRLWIND/PEACEMAKER) vía `inputs.mouseDown` real — ambos órdenes coinciden exactamente con la configuración, confirmando distinción real en juego, no solo en datos. Nada plano encontrado, sin cambios de código necesarios. Ver `BULLET_OPS_PROGRESS.md`.
 
 ~~P2 — Ampliación AR (7/12→9/12)~~ 🟢 completado. BO-08 TRIBURST + BO-09 DUALSTRIKE. Roster global 62/82 (76%)→64/82 (78%).
+
+~~P2 — Ampliación AR/SMG (9/12→11/12 AR, 7/10→9/10 SMG)~~ 🟢 completado y probado. BO-94 HAILSTORM + BO-95 JUDGMENT (AR), BO-18 THREEPOINT (primera SMG con ráfaga real, 3 tiros) + BO-19 DELUGE (SMG). Roster global 64/82 (78%)→68/82 (83%). Ver `BULLET_OPS_PROGRESS.md` para la verificación por Playwright.
 
 ~~P1 — Redirección del usuario: sistema de armas a escala BF4 (mecánica real, no solo metadatos)~~ 🟢 Primera mecánica real implementada esta sesión: **ráfaga de disparo real** (`burstCount`/`burstInterval`, máquina de estados `burstRemaining`/`burstTimer` en `WeaponController`), estrenada en BO-08 (3 tiros) y BO-09 (2 tiros), verificado por Playwright sin afectar a las 62 armas preexistentes. Ver sección "Alineación con la directiva de escala BF4" arriba en FASE 4 para el balance completo de lo satisfecho vs. lo pendiente.
 
