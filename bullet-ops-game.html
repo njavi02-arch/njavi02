@@ -2808,6 +2808,223 @@
             return best;
         }
 
+        // ========== CHARACTER SYSTEM ==========
+        // Third-person humanoid body: head/torso/arms/legs/boots plus a
+        // simple gear silhouette (vest/helmet/backpack/gloves), built from
+        // primitives (blockout quality, same "placeholder now, real model
+        // later" pattern already used for weapon viewmodels/maps in this
+        // project - no 3D model import pipeline exists here, and the game
+        // is a single-file Artifact with no asset-loading step).
+        //
+        // Architecture (BASE -> TEAM -> SKIN -> VARIANT, as requested):
+        // buildHumanoidCharacter() is the BASE (geometry only, unaware of
+        // faction). CHARACTER_PALETTES below are the TEAM/SKIN layer - a
+        // flat color+material spec per body part, swappable without
+        // touching geometry. A future VARIANT (desert/urban/night/etc.)
+        // is just another palette entry, not a new geometry builder - so
+        // adding one is a data change, not a code change, the same
+        // scalability contract as WEAPON_CONFIGS.
+        //
+        // The humanoid root is parented to entity.mesh (the existing
+        // collision capsule), which stays exactly as-is and invisible -
+        // every hit-detection/collision code path already reads
+        // entity.mesh.position and the capsule's own half-height, and none
+        // of that changes. This is purely an additive visual layer.
+        const CHARACTER_PALETTES = {
+            // Team 1 - Military: olive/tan/desert tactical, matches a
+            // modern military unit's silhouette. Deliberately NOT a clone
+            // of any real game's exact uniform - original color scheme.
+            MILITARY: {
+                uniform: new BABYLON.Color3(0.29, 0.33, 0.19),
+                vest: new BABYLON.Color3(0.22, 0.24, 0.15),
+                helmet: new BABYLON.Color3(0.24, 0.26, 0.17),
+                gloves: new BABYLON.Color3(0.15, 0.15, 0.13),
+                boots: new BABYLON.Color3(0.13, 0.12, 0.1),
+                backpack: new BABYLON.Color3(0.27, 0.28, 0.18),
+                skin: new BABYLON.Color3(0.75, 0.57, 0.44),
+                accent: new BABYLON.Color3(0.55, 0.45, 0.15)
+            },
+            // Team 2 - SWAT/tactical: dark navy/black, modern tactical-unit
+            // silhouette (not a police-department logo/insignia, just the
+            // color language of "dark tactical operator").
+            SWAT: {
+                uniform: new BABYLON.Color3(0.13, 0.14, 0.17),
+                vest: new BABYLON.Color3(0.08, 0.09, 0.11),
+                helmet: new BABYLON.Color3(0.1, 0.1, 0.12),
+                gloves: new BABYLON.Color3(0.06, 0.06, 0.07),
+                boots: new BABYLON.Color3(0.05, 0.05, 0.06),
+                backpack: new BABYLON.Color3(0.11, 0.12, 0.14),
+                skin: new BABYLON.Color3(0.75, 0.57, 0.44),
+                accent: new BABYLON.Color3(0.1, 0.35, 0.55)
+            }
+        };
+
+        // FFA has no team - falls back to a neutral tactical palette, with
+        // the player's chosen operator color still applied as an accent
+        // (shoulder/helmet trim) so individual players stay distinguishable
+        // exactly like the old flat-capsule-color behavior did.
+        const CHARACTER_PALETTE_NEUTRAL = {
+            uniform: new BABYLON.Color3(0.24, 0.24, 0.24),
+            vest: new BABYLON.Color3(0.18, 0.18, 0.18),
+            helmet: new BABYLON.Color3(0.2, 0.2, 0.2),
+            gloves: new BABYLON.Color3(0.13, 0.13, 0.13),
+            boots: new BABYLON.Color3(0.11, 0.11, 0.11),
+            backpack: new BABYLON.Color3(0.21, 0.21, 0.21),
+            skin: new BABYLON.Color3(0.75, 0.57, 0.44),
+            accent: new BABYLON.Color3(0.8, 0.8, 0.2)
+        };
+
+        function paletteForTeam(team, operatorColor) {
+            if (team === 'BLUE') return CHARACTER_PALETTES.SWAT;
+            if (team === 'RED') return CHARACTER_PALETTES.MILITARY;
+            const p = Object.assign({}, CHARACTER_PALETTE_NEUTRAL);
+            if (operatorColor) p.accent = operatorColor;
+            return p;
+        }
+
+        // Shared material cache keyed by palette+part so 2 teams x ~7 parts
+        // = ~14 materials total get reused across every player/bot instance
+        // instead of one StandardMaterial per body part per character (the
+        // same leak/bloat class of bug already fixed once for bullets/
+        // muzzle flashes - see the material-leak entry in FASE 3).
+        const characterMaterialCache = {};
+        function getCharacterMaterial(scene, color, key) {
+            if (!characterMaterialCache[key]) {
+                const mat = new BABYLON.StandardMaterial('charMat_' + key, scene);
+                mat.diffuseColor = color;
+                mat.specularColor = new BABYLON.Color3(0.05, 0.05, 0.05);
+                characterMaterialCache[key] = mat;
+            }
+            return characterMaterialCache[key];
+        }
+
+        // Builds one humanoid body (blockout proportions, ~1.8 units tall
+        // to match the existing collision capsule) as a TransformNode with
+        // named child meshes, so a future animation pass can target each
+        // part (arms for aim/reload, legs for walk/run/crouch) without
+        // rebuilding this function. Returns { root, parts }.
+        function buildHumanoidCharacter(scene, palette, paletteKey) {
+            const root = new BABYLON.TransformNode('character_' + paletteKey + '_' + Math.random().toString(36).slice(2), scene);
+            const parts = {};
+            const mat = (part) => getCharacterMaterial(scene, palette[part], paletteKey + '_' + part);
+
+            function box(name, w, h, d, part, parent) {
+                const m = BABYLON.MeshBuilder.CreateBox(name, { width: w, height: h, depth: d }, scene);
+                m.material = mat(part);
+                m.parent = parent;
+                m.isPickable = false; // hit detection uses the capsule, not these parts
+                return m;
+            }
+            function cyl(name, diamTop, diamBottom, h, part, parent) {
+                const m = BABYLON.MeshBuilder.CreateCylinder(name, { diameterTop: diamTop, diameterBottom: diamBottom, height: h, tessellation: 8 }, scene);
+                m.material = mat(part);
+                m.parent = parent;
+                m.isPickable = false;
+                return m;
+            }
+
+            // Legs: boots -> shins -> thighs, hips at local y=0.
+            parts.leftBoot = box('leftBoot', 0.16, 0.14, 0.26, 'boots', root);
+            parts.leftBoot.position.set(-0.11, -0.83, 0.03);
+            parts.rightBoot = box('rightBoot', 0.16, 0.14, 0.26, 'boots', root);
+            parts.rightBoot.position.set(0.11, -0.83, 0.03);
+            parts.leftShin = cyl('leftShin', 0.14, 0.12, 0.42, 'uniform', root);
+            parts.leftShin.position.set(-0.11, -0.55, 0);
+            parts.rightShin = cyl('rightShin', 0.14, 0.12, 0.42, 'uniform', root);
+            parts.rightShin.position.set(0.11, -0.55, 0);
+            parts.leftThigh = cyl('leftThigh', 0.17, 0.15, 0.38, 'uniform', root);
+            parts.leftThigh.position.set(-0.11, -0.18, 0);
+            parts.rightThigh = cyl('rightThigh', 0.17, 0.15, 0.38, 'uniform', root);
+            parts.rightThigh.position.set(0.11, -0.18, 0);
+
+            // Torso + vest (chest/back armor plates read as tactical vest
+            // silhouette without needing real cloth geometry) + backpack.
+            parts.torso = box('torso', 0.42, 0.52, 0.24, 'uniform', root);
+            parts.torso.position.set(0, 0.24, 0);
+            parts.vest = box('vest', 0.44, 0.34, 0.27, 'vest', root);
+            parts.vest.position.set(0, 0.3, 0.01);
+            parts.backpack = box('backpack', 0.3, 0.34, 0.14, 'backpack', root);
+            parts.backpack.position.set(0, 0.28, -0.19);
+            // Shoulder accent patches - the one part of the uniform that
+            // always uses the accent color (operator color in FFA, a
+            // brighter team-tint otherwise), so a teammate/enemy reads at
+            // a glance even from behind where team-palette alone (military
+            // olive vs SWAT navy, both dark) can be harder to tell apart
+            // at a distance or in low light.
+            parts.leftShoulder = box('leftShoulder', 0.1, 0.08, 0.16, 'accent', root);
+            parts.leftShoulder.position.set(-0.24, 0.46, 0);
+            parts.rightShoulder = box('rightShoulder', 0.1, 0.08, 0.16, 'accent', root);
+            parts.rightShoulder.position.set(0.24, 0.46, 0);
+
+            // Arms: upper arm -> forearm -> glove (hand). Parented to the
+            // torso (not root) so a future shoulder-pivot animation can
+            // rotate a whole arm from one joint.
+            function buildArm(side) {
+                const sign = side === 'left' ? -1 : 1;
+                const shoulder = new BABYLON.TransformNode('shoulder_' + side, scene);
+                shoulder.parent = root;
+                shoulder.position.set(sign * 0.24, 0.44, 0);
+                const upper = cyl('upperArm_' + side, 0.12, 0.11, 0.3, 'uniform', shoulder);
+                upper.position.set(0, -0.15, 0);
+                const forearm = cyl('forearm_' + side, 0.1, 0.09, 0.28, 'uniform', shoulder);
+                forearm.position.set(0, -0.42, 0);
+                const glove = box('glove_' + side, 0.11, 0.12, 0.11, 'gloves', shoulder);
+                glove.position.set(0, -0.58, 0);
+                parts['shoulder_' + side] = shoulder;
+                parts['upperArm_' + side] = upper;
+                parts['forearm_' + side] = forearm;
+                parts['glove_' + side] = glove;
+            }
+            buildArm('left');
+            buildArm('right');
+
+            // Head + helmet. Helmet is a slightly larger shell offset up so
+            // it reads as worn headgear rather than a solid block - "casco
+            // cuando corresponda" is satisfied here by always equipping one
+            // in this blockout pass (per-skin toggling is a SKIN-layer
+            // concern, not a BASE-layer one).
+            parts.head = BABYLON.MeshBuilder.CreateSphere('head', { diameter: 0.26, segments: 8 }, scene);
+            parts.head.material = mat('skin');
+            parts.head.parent = root;
+            parts.head.position.set(0, 0.63, 0);
+            parts.head.isPickable = false;
+            parts.helmet = BABYLON.MeshBuilder.CreateSphere('helmet', { diameter: 0.3, segments: 8, slice: 0.62 }, scene);
+            parts.helmet.material = mat('helmet');
+            parts.helmet.parent = root;
+            parts.helmet.position.set(0, 0.68, 0);
+            parts.helmet.rotation.x = Math.PI;
+            parts.helmet.isPickable = false;
+
+            return { root, parts };
+        }
+
+        // Attaches a full humanoid body to an entity (Player or Bot) that
+        // already has its collision capsule (entity.mesh) built. The
+        // capsule itself stays exactly as it was - still the thing every
+        // hit-detection/collision/moveWithCollisions call reads - just
+        // hidden, with the visible humanoid parented on top of it so it
+        // inherits the capsule's position (and, for the player, its
+        // camera-driven rotation) automatically.
+        function attachCharacterVisual(entity, scene, team, accentColor, shadowGenerator) {
+            const palette = paletteForTeam(team, accentColor);
+            const paletteKey = team === 'BLUE' ? 'SWAT' : team === 'RED' ? 'MILITARY' : 'NEUTRAL_' + (accentColor ? accentColor.toHexString() : 'default');
+            const character = buildHumanoidCharacter(scene, palette, paletteKey);
+            character.root.parent = entity.mesh;
+            entity.mesh.isVisible = false;
+            entity.characterParts = character.parts;
+            if (shadowGenerator) {
+                // A representative subset, not every limb - full per-part
+                // shadow casters across every player/bot would scale shadow
+                // cost with (players x body parts), the exact class of
+                // growth the LOW graphics-quality setting exists to avoid.
+                shadowGenerator.addShadowCaster(character.parts.torso);
+                shadowGenerator.addShadowCaster(character.parts.head);
+                shadowGenerator.addShadowCaster(character.parts.leftThigh);
+                shadowGenerator.addShadowCaster(character.parts.rightThigh);
+            }
+            return character;
+        }
+
         // ========== PLAYER CLASS ==========
         class Player {
             constructor(scene, pos, team) {
@@ -2909,12 +3126,10 @@
                 // BLUE/RED player must be tellable at a glance); the chosen
                 // operator's own color is what actually distinguishes the
                 // player in FFA, where every capsule was previously the
-                // same flat neutral yellow.
-                const mat = new BABYLON.StandardMaterial('playerMat', scene);
-                if (team === 'BLUE') mat.diffuseColor = new BABYLON.Color3(0, 0.3, 1);
-                else if (team === 'RED') mat.diffuseColor = new BABYLON.Color3(1, 0.2, 0.2);
-                else mat.diffuseColor = (OPERATOR_REGISTRY[currentOperator] || OPERATOR_REGISTRY.renegade).color;
-                this.mesh.material = mat;
+                // same flat neutral yellow - now carried as the accent
+                // color on the humanoid body instead of a flat capsule tint.
+                const operatorColor = (OPERATOR_REGISTRY[currentOperator] || OPERATOR_REGISTRY.renegade).color;
+                attachCharacterVisual(this, scene, team, operatorColor, shadowGenerator);
             }
 
             update(deltaTime, inputs) {
@@ -3202,14 +3417,12 @@
                 // blocked by walls/obstacles instead of walking through them.
                 this.mesh.ellipsoid = new BABYLON.Vector3(0.35, 0.9, 0.35);
                 this.mesh.checkCollisions = true;
-                if (shadowGenerator) shadowGenerator.addShadowCaster(this.mesh);
 
-                const mat = new BABYLON.StandardMaterial('botMat' + Math.random(), scene);
-                let color = new BABYLON.Color3(0.2, 0.8, 0.2); // Green for FFA bots
-                if (team === 'BLUE') color = new BABYLON.Color3(0, 0.2, 0.8);
-                else if (team === 'RED') color = new BABYLON.Color3(0.8, 0.1, 0.1);
-                mat.diffuseColor = color;
-                this.mesh.material = mat;
+                // Bots have no operator identity, so FFA bots fall back to a
+                // fixed green accent (was previously the whole capsule's
+                // flat color) instead of an operator color.
+                const botAccent = team ? null : new BABYLON.Color3(0.2, 0.8, 0.2);
+                attachCharacterVisual(this, scene, team, botAccent, shadowGenerator);
 
                 this.velocity = new BABYLON.Vector3(0, 0, 0);
                 this.moveSpeed = 6;
