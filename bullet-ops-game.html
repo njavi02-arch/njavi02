@@ -5344,7 +5344,18 @@
             'KRYPTOS-URBAN': {
                 blue: [new BABYLON.Vector3(-90, 2, 0), new BABYLON.Vector3(-90, 2, 9), new BABYLON.Vector3(-90, 2, -9), new BABYLON.Vector3(-84, 2, -38)],
                 red: [new BABYLON.Vector3(90, 2, -25), new BABYLON.Vector3(90, 2, -16), new BABYLON.Vector3(90, 2, -34), new BABYLON.Vector3(88, 2, 26)],
-                ffa: [new BABYLON.Vector3(-90, 2, 0), new BABYLON.Vector3(90, 2, -25), new BABYLON.Vector3(-10, 2, 32), new BABYLON.Vector3(55, 2, 28)]
+                // ffa[2] was originally (-10, 2, 32) - literally inside the
+                // solid Control Tower footprint (x:[-16,-4], z:[26,38]),
+                // found in the full-map collision audit and confirmed the
+                // same walk-through-solid-geometry bug as the team spawns
+                // above. An initial fix to (-10,2,20) turned out to still be
+                // inside the controlTower_ramp's bounding box (the ramp's
+                // sloped surface sits well above y=2 at that z) - confirmed
+                // with an exhaustive Playwright check against every
+                // checkCollisions mesh on the map, not just the obviously
+                // nearby ones. Moved further out to (0,2,15), clear of both
+                // the tower (x:[-16,-4]) and the ramp (x:[-14,-8]).
+                ffa: [new BABYLON.Vector3(-90, 2, 0), new BABYLON.Vector3(90, 2, -25), new BABYLON.Vector3(0, 2, 15), new BABYLON.Vector3(55, 2, 28)]
             }
         };
 
@@ -5897,10 +5908,25 @@
             }
 
             // ===== TEAM A RESPAWN (primary + secondary/flank) =====
-            addBox('teamA_back', { width: 3, height: 6, depth: 20 }, new BABYLON.Vector3(-98, 3, 0), concreteMat, 'concrete');
-            addBox('teamA_side1', { width: 16, height: 6, depth: 3 }, new BABYLON.Vector3(-90, 3, 9), concreteMat, 'concrete');
-            addBox('teamA_side2', { width: 16, height: 6, depth: 3 }, new BABYLON.Vector3(-90, 3, -9), concreteMat, 'concrete');
-            addBox('teamA_flank_wall', { width: 3, height: 5, depth: 14 }, new BABYLON.Vector3(-84, 2.5, -40), brickMat, 'brick');
+            // BUG FIX (found in the full-map collision audit): these walls
+            // were originally centered on the exact same coordinates as
+            // their paired MAP_SPAWNS point (see below), so a player
+            // spawning there landed with their capsule already embedded
+            // inside solid geometry - moveWithCollisions() never catches an
+            // already-interpenetrating capsule, so they could freely walk
+            // straight through the wall until clearing its far edge,
+            // confirmed with Playwright (walked clean through from x=-90 to
+            // x=-82.4). Fixed by shifting each wall a few units away from
+            // its spawn point (still nearby, still reads as spawn cover)
+            // instead of dead-centered on it. teamA_back's depth is 27, not
+            // 20, so it overlaps teamA_side1/side2's new z-position instead
+            // of leaving a gap at the corner (also found in the audit,
+            // confirmed with Playwright: a player could slip through that
+            // corner into a pocket behind the spawn wall).
+            addBox('teamA_back', { width: 3, height: 6, depth: 27 }, new BABYLON.Vector3(-98, 3, 0), concreteMat, 'concrete');
+            addBox('teamA_side1', { width: 16, height: 6, depth: 3 }, new BABYLON.Vector3(-90, 3, 13), concreteMat, 'concrete');
+            addBox('teamA_side2', { width: 16, height: 6, depth: 3 }, new BABYLON.Vector3(-90, 3, -13), concreteMat, 'concrete');
+            addBox('teamA_flank_wall', { width: 3, height: 5, depth: 14 }, new BABYLON.Vector3(-84, 2.5, -48), brickMat, 'brick');
 
             // ===== LEFT ROUTE (CQB/flank) =====
             // Apartment Block - the tallest structure on this side, a
@@ -5911,7 +5937,11 @@
             // (out of scope here, same as BACKLOT-7's upper platform),
             // with the ledge itself doubling as this room's ceiling, same
             // trick already used for BACKLOT-7's tower roof.
-            const apartWallH = 5, apartWallT = 0.6, apartDoorGap = 3;
+            // apartWallH=5.3 (not 5) so the wall tops touch the ceiling
+            // ledge's underside (y=5.3) exactly - found in the audit as a
+            // real 0.3-unit visual seam/gap that let a sliver of the
+            // outside show through at the top of the room.
+            const apartWallH = 5.3, apartWallT = 0.6, apartDoorGap = 3;
             function apartWall(name, size, position) {
                 const w = BABYLON.MeshBuilder.CreateBox(name, size, scene);
                 w.position = position;
@@ -5956,7 +5986,11 @@
             shopRoof.material = brickMat;
             shopRoof.checkCollisions = true;
             tagImpactMaterial(shopRoof, 'brick');
-            addBox('destroyedShop_rubble', { width: 5, height: 1, depth: 4 }, new BABYLON.Vector3(-58, 0.5, 10), concreteMat, 'concrete');
+            // Repositioned/resized in the audit - was clipping 3.5 units
+            // into destroyedShop_wallS2 (found by an automated pairwise
+            // AABB overlap scan). Now centered on the door gap, sized to
+            // sit cleanly in front of it instead of inside the wall.
+            addBox('destroyedShop_rubble', { width: 2.5, height: 1, depth: 3 }, new BABYLON.Vector3(-63, 0.5, 8), concreteMat, 'concrete');
             // Destroyed Cafe (upper) + Destroyed Cafe (lower)/Alleyways gap
             // between them for the "Alleyways" flank cut-through.
             addBox('destroyedCafe_upper', { width: 11, height: 6, depth: 10 }, new BABYLON.Vector3(-52, 3, 27), brickMat, 'brick');
@@ -6045,10 +6079,13 @@
             addBox('yard_crate2', { width: 2, height: 2, depth: 2 }, new BABYLON.Vector3(69, 1, -13), woodMat, 'wood');
 
             // ===== TEAM B RESPAWN (primary + secondary) =====
-            addBox('teamB_back', { width: 3, height: 6, depth: 20 }, new BABYLON.Vector3(98, 3, -25), concreteMat, 'concrete');
-            addBox('teamB_side1', { width: 16, height: 6, depth: 3 }, new BABYLON.Vector3(90, 3, -16), concreteMat, 'concrete');
-            addBox('teamB_side2', { width: 16, height: 6, depth: 3 }, new BABYLON.Vector3(90, 3, -34), concreteMat, 'concrete');
-            addBox('teamB_secondary_wall', { width: 3, height: 5, depth: 14 }, new BABYLON.Vector3(88, 2.5, 30), brickMat, 'brick');
+            // Same spawn-inside-wall bug fix as Team A above - shifted away
+            // from the exact spawn coordinates, back wall depth widened to
+            // 27 (not 20) to overlap the moved side walls with no corner gap.
+            addBox('teamB_back', { width: 3, height: 6, depth: 27 }, new BABYLON.Vector3(98, 3, -25), concreteMat, 'concrete');
+            addBox('teamB_side1', { width: 16, height: 6, depth: 3 }, new BABYLON.Vector3(90, 3, -12), concreteMat, 'concrete');
+            addBox('teamB_side2', { width: 16, height: 6, depth: 3 }, new BABYLON.Vector3(90, 3, -38), concreteMat, 'concrete');
+            addBox('teamB_secondary_wall', { width: 3, height: 5, depth: 14 }, new BABYLON.Vector3(88, 2.5, 36), brickMat, 'brick');
 
             // ===== Scattered debris/rubble along the routes, matching the
             // video's damaged-city look - kept sparse (a handful, not a
@@ -6065,13 +6102,36 @@
 
             // Barrels (route-side cover, small footprint) - reuses the
             // same cylinder + PBR-metal pattern as everything else here.
-            for (const [x, z] of [[-30, -5], [15, 20], [40, 28], [-85, 15]]) {
+            // (-85,15) -> (-85,17): the audit's spawn-wall fix moved
+            // teamA_side1 to z=13, which put this barrel's old z=15
+            // position clipping 0.15 units into the wall's new footprint.
+            for (const [x, z] of [[-30, -5], [15, 20], [40, 28], [-85, 17]]) {
                 const barrel = BABYLON.MeshBuilder.CreateCylinder(`barrel_${x}_${z}`, { diameter: 1.3, height: 1.6 }, scene);
                 barrel.position = new BABYLON.Vector3(x, 0.8, z);
                 barrel.material = metalMatDark;
                 barrel.checkCollisions = true;
                 tagImpactMaterial(barrel, 'metal');
             }
+
+            // Invisible map-boundary walls (audit finding: this map had no
+            // boundary at all - only the y<-50 "respawn if fell" safety net
+            // in Player/Bot.update(), which only catches a player AFTER
+            // they've already walked off the 210x130 ground plane's edge
+            // and are falling through empty space, a visibly broken
+            // experience). Tall (20 units - clears any jump), thin,
+            // isVisible=false, placed 1 unit inside the true ground edge so
+            // a player is stopped before reaching it, not clipped on it.
+            function boundaryWall(name, size, position) {
+                const w = BABYLON.MeshBuilder.CreateBox(name, size, scene);
+                w.position = position;
+                w.checkCollisions = true;
+                w.isVisible = false;
+                return w;
+            }
+            boundaryWall('boundary_N', { width: 212, height: 20, depth: 2 }, new BABYLON.Vector3(0, 10, 64));
+            boundaryWall('boundary_S', { width: 212, height: 20, depth: 2 }, new BABYLON.Vector3(0, 10, -64));
+            boundaryWall('boundary_E', { width: 2, height: 20, depth: 132 }, new BABYLON.Vector3(104, 10, 0));
+            boundaryWall('boundary_W', { width: 2, height: 20, depth: 132 }, new BABYLON.Vector3(-104, 10, 0));
         }
 
         // ========== INPUT HANDLING ==========

@@ -385,6 +385,30 @@ Sección permanente, actualizada cada vez que se evalúa o conecta una herramien
 
 ~~FASE 13, fases 8-10 — HUD/crosshair clásico/minimapa~~ 🟢 completado. Minimapa circular inferior izquierdo (jugador centrado, mapa gira bajo una flecha fija, compañeros de equipo en TDM), crosshair clásico de 4 líneas para la mayoría de categorías (anillo para armas de patrón ancho, punto para sidearms de precisión), hitmarker con variante visual real de headshot, y feedback de daño direccional (flash + flecha hacia el origen del daño). Bug real encontrado y corregido durante esta tarea: una multiplicación `px * px` inválida en el CSS `calc()` del crosshair colapsaba las 4 líneas en una esquina en vez de repartirlas alrededor del centro — detectado por captura de pantalla, corregido, re-verificado. También corregida una colisión de layout real entre `#health` y el nuevo minimapa. Ver `BULLET_OPS_PROGRESS.md`.
 
+---
+
+## 🎯 PRIORIDAD ABSOLUTA DEL USUARIO: KRYPTOS-URBAN A NIVEL DE PRODUCCIÓN
+
+El usuario estableció que, antes de cualquier arma/menú/funcionalidad nueva, KRYPTOS-URBAN (el mapa construido desde el blueprint táctico + vídeo que proporcionó) debe llevarse a calidad de producción completa: jugable, sólido, sin bugs conocidos, colisiones correctas, sin atravesar paredes, sin caer fuera del mapa, sin zonas rotas, sin objetos flotando/atravesándose, coberturas funcionales, buena iluminación, texturas realistas, materiales correctos, rendimiento razonable, preparado para combate FPS, visualmente atractivo, coherente y creíble. Solo entonces se continúa con armas/jugadores/animaciones/VFX/audio/UI.
+
+| Elemento | Estado | Notas |
+|---|---|---|
+| **Geometría** | 🟡 EN PROGRESO | Estructura base completa (3 rutas, 2 respawns, plaza central, 6 interiores reales, 3 rampas). Auditoría de huecos/costuras en curso — 1 encontrado y corregido (techo del Apartment Block) |
+| **Colisiones** | 🟡 EN PROGRESO — bloque crítico ya resuelto | **7 de 12 spawns estaban dentro de geometría sólida (bug crítico, corregido y probado)**. Límite de contorno del mapa añadido (no existía, corregido). Auditoría automatizada de solapamiento de las 57 mallas colisionables completada (2 errores reales encontrados y corregidos, 25 uniones normales descartadas). Ver `BULLET_OPS_PROGRESS.md` para el detalle completo |
+| **Texturas** | 🟡 PENDIENTE DE MEJORA | PBR real ya existe (concreto/ladrillo/metal/asfalto/madera/cristal) pero sin variación de desgaste/suciedad/manchas todavía — siguiente fase tras cerrar colisiones |
+| **Materiales** | 🟢 base sólida | 6 `makePBR*()` con metallic/roughness reales, sin mapa de normales/AO (limitación real del proyecto, sin pipeline de assets) |
+| **Iluminación** | 🔴 NECESITA REVISIÓN | Preset propio existente (`MAP_LIGHTING['KRYPTOS-URBAN']`), pendiente auditar zonas oscuras/interiores sin luz propia |
+| **Props** | 🟢 | Coches, barriles, rubble, cajas — pasada de detalle ya hecha, 2 props reposicionados en esta auditoría por solapamiento |
+| **Jugabilidad** | 🔴 PENDIENTE | Líneas de visión/coberturas/flancos no auditados sistemáticamente todavía |
+| **Spawns** | 🟢 CORREGIDO Y PROBADO | Los 12 puntos verificados libres de toda geometría colisionable tras la corrección |
+| **Optimización** | 🔴 PENDIENTE | Sin medir todavía en este mapa específicamente (sí se hizo una auditoría general de draw calls antes en la sesión, no específica de KRYPTOS-URBAN) |
+| **Testing** | 🟡 EN PROGRESO | Movimiento/combate/interiores/spawns probados con Playwright en esta auditoría; sightlines/cobertura/rendimiento pendientes |
+| **Pulido final** | 🔴 PENDIENTE | Bloqueado hasta cerrar los puntos anteriores |
+
+**Próximo paso de esta prioridad**: continuar la auditoría con iluminación (zonas oscuras) y diseño FPS (líneas de visión/coberturas/flancos), luego pasar a la mejora profunda de texturas (variación de desgaste) solo una vez la base estructural esté 100% sólida — siguiendo el orden de prioridad explícito del usuario (colisiones antes que estética).
+
+---
+
 ~~FASE 13, fase 11 — Impactos por material~~ 🟢 completado. `spawnMaterialImpactEffect()` (5 perfiles) + primera colisión real bala-vs-entorno del juego (antes las balas atravesaban toda la geometría del mapa). Verificado con un raycast de control determinista (10/11 superficies etiquetadas acertadas exactamente, el único fallo un caso geométrico degenerado de la propia prueba) y una regresión completa de combate sin obstáculos (daño exacto, sin cambios). Ver `BULLET_OPS_PROGRESS.md`.
 
 ---
