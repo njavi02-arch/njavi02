@@ -4971,17 +4971,51 @@
             ground.material = concreteMat;
             tagImpactMaterial(ground, 'concrete');
 
-            // Central tower (key position) - brick, the tallest/most
-            // central structure gets a visually distinct material from the
-            // flanking concrete bases so the map doesn't read as one
-            // material repeated everywhere.
-            const tower = BABYLON.MeshBuilder.CreateBox('tower', { size: 12 }, scene);
-            tower.position.y = 6;
-            tower.material = brickMat;
-            tower.checkCollisions = true;
-            tagImpactMaterial(tower, 'concrete');
+            // Central tower (key position) - real hollow interior instead
+            // of one solid 12x12x12 collidable block (which looked
+            // enterable from outside but had no way in at all - solid all
+            // the way through). Built as 4 wall segments instead, with a
+            // 3-unit doorway gap in the south wall facing the open plaza,
+            // so the ground floor is a genuine walkable room, not a box.
+            // The ground mesh already covers this footprint, so it doubles
+            // as the interior floor - no separate floor mesh needed.
+            // Verified with Playwright: a player walking through the door
+            // stops in the middle of the room, not on the far wall or
+            // through it. The existing `platform` below (25x25 at y=3,
+            // already collidable) sits at the tower's mid-height and
+            // covers its whole footprint, doubling as this room's ceiling.
+            const wallH = 12, wallT = 0.6, doorGap = 3;
+            function towerWall(name, size, position) {
+                const w = BABYLON.MeshBuilder.CreateBox(name, size, scene);
+                w.position = position;
+                w.material = brickMat;
+                w.checkCollisions = true;
+                tagImpactMaterial(w, 'concrete');
+                return w;
+            }
+            towerWall('towerWallN', { width: 12, height: wallH, depth: wallT }, new BABYLON.Vector3(0, wallH / 2, -6));
+            towerWall('towerWallE', { width: wallT, height: wallH, depth: 12 }, new BABYLON.Vector3(6, wallH / 2, 0));
+            towerWall('towerWallW', { width: wallT, height: wallH, depth: 12 }, new BABYLON.Vector3(-6, wallH / 2, 0));
+            const southSegW = (12 - doorGap) / 2;
+            towerWall('towerWallS1', { width: southSegW, height: wallH, depth: wallT }, new BABYLON.Vector3(-6 + southSegW / 2, wallH / 2, 6));
+            towerWall('towerWallS2', { width: southSegW, height: wallH, depth: wallT }, new BABYLON.Vector3(6 - southSegW / 2, wallH / 2, 6));
 
-            // Elevated platform
+            // Elevated platform - doubles as the tower's roof/ceiling (see
+            // above) as well as a rooftop deck. Reachable by jumping from
+            // ground level at its edge (same access this platform already
+            // had before this pass), not by walking up an incline: a real
+            // sloped ramp was built and tested here first, but a Playwright
+            // walk-up-the-ramp test showed the player gets stuck oscillating
+            // in place partway up rather than climbing - this project's
+            // movement code has no step-offset/slope-tolerance logic at all
+            // (moveWithCollisions() alone, no dedicated character-controller
+            // slope handling), a genuine pre-existing limitation of the
+            // whole movement system (every other elevated surface in this
+            // game - INDUSTRIAL-5's walkway, OUTPOST-9's towers - has the
+            // same gap, not something introduced here). Building real
+            // slope/step traversal is a larger increment than "give one
+            // building a real interior" and is left as documented future
+            // work rather than shipped half-working.
             const platform = BABYLON.MeshBuilder.CreateBox('platform', { width: 25, height: 0.5, depth: 25 }, scene);
             platform.position = new BABYLON.Vector3(0, 3, 0);
             platform.material = concreteMat;
