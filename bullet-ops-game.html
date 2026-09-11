@@ -1036,6 +1036,17 @@
             mesh.metadata.impactMaterial = material;
             IMPACT_SURFACES.push(mesh);
         }
+        // Elevated walkable surfaces (ramps/stairs/platform tops) opted into
+        // the player's step-offset ground raycast (see Player.update()) -
+        // deliberately separate from the base flat ground plane, which keeps
+        // using its own hardcoded groundLevel snap unchanged. Only meshes
+        // tagged here are ever considered "ground you can stand on above the
+        // base plane", so untagged geometry (walls, decorative props) can't
+        // accidentally catch the player mid-air.
+        let WALKABLE_SURFACES = [];
+        function tagWalkable(mesh) {
+            WALKABLE_SURFACES.push(mesh);
+        }
         // Procedural PBR materials for KRYPTOS-URBAN (the one map using real
         // BABYLON.PBRMaterial + generated albedo textures instead of every
         // other map's flat StandardMaterial diffuse color). No texture/
@@ -4586,6 +4597,37 @@
                     this.mesh.position.y = groundLevel;
                     this.velocity.y = 0;
                     this.isGrounded = true;
+                } else if (this.velocity.y <= 0.01) {
+                    // Above the base flat ground plane and not actively rising
+                    // from a jump - check for a walkable elevated surface
+                    // (ramp/stairs/platform, see tagWalkable()) directly below
+                    // via a downward raycast. moveWithCollisions() above can
+                    // already slide the player up a sloped mesh's surface on
+                    // contact, but without this the player was left at
+                    // whatever height that collision response produced with no
+                    // way to then rest on it - gravity pulled them straight
+                    // back down into the slope every following frame,
+                    // producing the oscillate-in-place failure documented in
+                    // BULLET_OPS_PROGRESS.md. STEP_TOLERANCE bounds how much
+                    // height difference gets auto-snapped in one frame (both
+                    // up and down), so a real wall/unclimbable ledge still
+                    // blocks normally instead of yanking the player through it.
+                    const STEP_TOLERANCE = 0.6;
+                    const rayOrigin = this.mesh.position.add(new BABYLON.Vector3(0, 1.5, 0));
+                    const groundHit = this.scene.pickWithRay(new BABYLON.Ray(rayOrigin, BABYLON.Vector3.Down(), 8), (m) => WALKABLE_SURFACES.includes(m));
+                    if (groundHit && groundHit.pickedPoint) {
+                        const targetY = groundHit.pickedPoint.y + groundLevel;
+                        const heightDiff = targetY - this.mesh.position.y;
+                        if (heightDiff >= -STEP_TOLERANCE && heightDiff <= STEP_TOLERANCE) {
+                            this.mesh.position.y = targetY;
+                            this.velocity.y = 0;
+                            this.isGrounded = true;
+                        } else {
+                            this.isGrounded = false;
+                        }
+                    } else {
+                        this.isGrounded = false;
+                    }
                 } else {
                     this.isGrounded = false;
                 }
@@ -5360,26 +5402,38 @@
             towerWall('towerWallS2', { width: southSegW, height: wallH, depth: wallT }, new BABYLON.Vector3(6 - southSegW / 2, wallH / 2, 6));
 
             // Elevated platform - doubles as the tower's roof/ceiling (see
-            // above) as well as a rooftop deck. Reachable by jumping from
-            // ground level at its edge (same access this platform already
-            // had before this pass), not by walking up an incline: a real
-            // sloped ramp was built and tested here first, but a Playwright
-            // walk-up-the-ramp test showed the player gets stuck oscillating
-            // in place partway up rather than climbing - this project's
-            // movement code has no step-offset/slope-tolerance logic at all
-            // (moveWithCollisions() alone, no dedicated character-controller
-            // slope handling), a genuine pre-existing limitation of the
-            // whole movement system (every other elevated surface in this
-            // game - INDUSTRIAL-5's walkway, OUTPOST-9's towers - has the
-            // same gap, not something introduced here). Building real
-            // slope/step traversal is a larger increment than "give one
-            // building a real interior" and is left as documented future
-            // work rather than shipped half-working.
+            // above) as well as a rooftop deck. A sloped ramp built and
+            // tested here earlier this session failed (the player got stuck
+            // oscillating in place instead of climbing) because the ground
+            // check back then snapped to a single hardcoded flat height every
+            // frame, fighting any elevation the ramp's collision gave the
+            // player. That root cause is now fixed (see Player.update()'s
+            // WALKABLE_SURFACES raycast ground check) and re-verified with an
+            // isolated Playwright test before touching real map geometry, so
+            // the ramp below is the real, working connector - reachable by
+            // walking up it, not jumping.
             const platform = BABYLON.MeshBuilder.CreateBox('platform', { width: 25, height: 0.5, depth: 25 }, scene);
             platform.position = new BABYLON.Vector3(0, 3, 0);
             platform.material = concreteMat;
             platform.checkCollisions = true;
             tagImpactMaterial(platform, 'concrete');
+            tagWalkable(platform);
+
+            // Ramp up to the rooftop deck - approaches from the north (the
+            // tower's solid wall side, clear of the south doorway) so it
+            // never blocks door traffic. Rises from ground (y=0) to the
+            // platform's top surface (y=3.25) over a 10-unit run, an ~18deg
+            // incline matching the one verified in isolation.
+            const rampRise = 3.25, rampRun = 10;
+            const rampAngle = Math.atan2(rampRise, rampRun);
+            const rampLen = Math.sqrt(rampRise * rampRise + rampRun * rampRun);
+            const backlotRamp = BABYLON.MeshBuilder.CreateBox('backlotRamp', { width: 6, height: 0.6, depth: rampLen }, scene);
+            backlotRamp.position = new BABYLON.Vector3(0, rampRise / 2, -17.5);
+            backlotRamp.rotation.x = -rampAngle;
+            backlotRamp.material = concreteMat;
+            backlotRamp.checkCollisions = true;
+            tagImpactMaterial(backlotRamp, 'concrete');
+            tagWalkable(backlotRamp);
 
             // Left base
             const left = BABYLON.MeshBuilder.CreateBox('left', { width: 20, height: 10, depth: 30 }, scene);
