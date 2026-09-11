@@ -4949,56 +4949,76 @@
 
         function buildMapBacklot() {
             // BACKLOT-7: Urban environment with central tower
+            // Real PBR materials (the same makePBR* helpers KRYPTOS-URBAN
+            // introduced - hand-drawn DynamicTexture albedo + tuned
+            // metallic/roughness, no flat StandardMaterial diffuse color)
+            // extended to this map per the user's directive that every
+            // building/wall use varied real materials, not one repeated
+            // flat color. Called once per material and reused across every
+            // matching mesh below, same shared-material discipline as
+            // buildMapKryptos(). Structures that were visually generic grey
+            // before but had no impact-material tag at all (tower/platform/
+            // left/right bases, corner structures, dumpsters, pallets) get
+            // one now too - a real functional gap this pass also closes,
+            // not just a visual one: previously a bullet hitting any of
+            // those just silently expired with no impact effect at all.
+            const concreteMat = makePBRConcrete(scene);
+            const brickMat = makePBRBrick(scene);
+            const metalMat = makePBRMetal(scene, '#3a3d42');
+            const woodMat = makePBRWood(scene);
+
             const ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 120, height: 120 }, scene);
-            const groundMat = new BABYLON.StandardMaterial('groundMat', scene);
-            groundMat.diffuseColor = new BABYLON.Color3(0.35, 0.35, 0.35);
-            ground.material = groundMat;
+            ground.material = concreteMat;
             tagImpactMaterial(ground, 'concrete');
 
-            const towerMat = new BABYLON.StandardMaterial('towerMat', scene);
-            towerMat.diffuseColor = new BABYLON.Color3(0.6, 0.55, 0.5);
-
-            // Central tower (key position)
+            // Central tower (key position) - brick, the tallest/most
+            // central structure gets a visually distinct material from the
+            // flanking concrete bases so the map doesn't read as one
+            // material repeated everywhere.
             const tower = BABYLON.MeshBuilder.CreateBox('tower', { size: 12 }, scene);
             tower.position.y = 6;
-            tower.material = towerMat;
+            tower.material = brickMat;
             tower.checkCollisions = true;
+            tagImpactMaterial(tower, 'concrete');
 
             // Elevated platform
             const platform = BABYLON.MeshBuilder.CreateBox('platform', { width: 25, height: 0.5, depth: 25 }, scene);
             platform.position = new BABYLON.Vector3(0, 3, 0);
-            platform.material = towerMat;
+            platform.material = concreteMat;
             platform.checkCollisions = true;
+            tagImpactMaterial(platform, 'concrete');
 
             // Left base
             const left = BABYLON.MeshBuilder.CreateBox('left', { width: 20, height: 10, depth: 30 }, scene);
             left.position = new BABYLON.Vector3(-40, 4, 0);
-            left.material = towerMat;
+            left.material = concreteMat;
             left.checkCollisions = true;
+            tagImpactMaterial(left, 'concrete');
 
             // Right base
             const right = BABYLON.MeshBuilder.CreateBox('right', { width: 20, height: 10, depth: 30 }, scene);
             right.position = new BABYLON.Vector3(40, 4, 0);
-            right.material = towerMat;
+            right.material = concreteMat;
             right.checkCollisions = true;
+            tagImpactMaterial(right, 'concrete');
 
             // Walls for cover
-            const wallMat = new BABYLON.StandardMaterial('wallMat', scene);
-            wallMat.diffuseColor = new BABYLON.Color3(0.45, 0.45, 0.4);
-
             const wall1 = BABYLON.MeshBuilder.CreateBox('wall1', { width: 2, height: 4, depth: 30 }, scene);
             wall1.position = new BABYLON.Vector3(-15, 2, 20);
-            wall1.material = wallMat;
+            wall1.material = concreteMat;
             wall1.checkCollisions = true;
             tagImpactMaterial(wall1, 'concrete');
 
             const wall2 = BABYLON.MeshBuilder.CreateBox('wall2', { width: 2, height: 4, depth: 30 }, scene);
             wall2.position = new BABYLON.Vector3(15, 2, -20);
-            wall2.material = wallMat;
+            wall2.material = concreteMat;
             wall2.checkCollisions = true;
             tagImpactMaterial(wall2, 'concrete');
 
-            // Scattered crates
+            // Scattered crates - real wood material now, instead of
+            // sharing the walls' grey concrete look while still being
+            // tagged 'wood' for impact purposes (a visual/material
+            // mismatch this pass also fixes).
             for (let i = 0; i < 8; i++) {
                 const crate = BABYLON.MeshBuilder.CreateBox(`crate${i}`, { width: 4, height: 4, depth: 4 }, scene);
                 crate.position = new BABYLON.Vector3(
@@ -5006,21 +5026,19 @@
                     2,
                     (Math.random() - 0.5) * 100
                 );
-                crate.material = wallMat;
+                crate.material = woodMat;
                 crate.checkCollisions = true;
                 tagImpactMaterial(crate, 'wood');
             }
 
             // Corner structures for flanking
-            const cornerMat = new BABYLON.StandardMaterial('cornerMat', scene);
-            cornerMat.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.45);
-
             for (let x of [-50, 50]) {
                 for (let z of [-50, 50]) {
                     const corner = BABYLON.MeshBuilder.CreateBox(`corner_${x}_${z}`, { size: 8 }, scene);
                     corner.position = new BABYLON.Vector3(x, 3, z);
-                    corner.material = cornerMat;
+                    corner.material = concreteMat;
                     corner.checkCollisions = true;
+                    tagImpactMaterial(corner, 'concrete');
                 }
             }
 
@@ -5031,25 +5049,22 @@
             // distinct silhouettes/colors from the crates), plus thin
             // non-collidable lamp posts so distant sightlines don't read
             // as completely bare.
-            const dumpsterMat = new BABYLON.StandardMaterial('dumpsterMat', scene);
-            dumpsterMat.diffuseColor = new BABYLON.Color3(0.25, 0.35, 0.22);
-            dumpsterMat.specularColor = BABYLON.Color3.Black();
+            const dumpsterMat = makePBRMetal(scene, '#2e3a28');
             for (let i = 0; i < 4; i++) {
                 const dumpster = BABYLON.MeshBuilder.CreateBox(`dumpster${i}`, { width: 3.5, height: 1.6, depth: 1.8 }, scene);
                 dumpster.position = new BABYLON.Vector3((Math.random() - 0.5) * 90, 0.8, (Math.random() - 0.5) * 90);
                 dumpster.rotation.y = Math.random() * Math.PI;
                 dumpster.material = dumpsterMat;
                 dumpster.checkCollisions = true;
+                tagImpactMaterial(dumpster, 'metal');
             }
 
-            const palletMat = new BABYLON.StandardMaterial('palletMat', scene);
-            palletMat.diffuseColor = new BABYLON.Color3(0.5, 0.38, 0.22);
-            palletMat.specularColor = BABYLON.Color3.Black();
             for (let i = 0; i < 5; i++) {
                 const pallet = BABYLON.MeshBuilder.CreateBox(`palletStack${i}`, { width: 2.4, height: 1.4, depth: 2.4 }, scene);
                 pallet.position = new BABYLON.Vector3((Math.random() - 0.5) * 95, 0.7, (Math.random() - 0.5) * 95);
-                pallet.material = palletMat;
+                pallet.material = woodMat;
                 pallet.checkCollisions = true;
+                tagImpactMaterial(pallet, 'wood');
             }
 
             const lampMat = new BABYLON.StandardMaterial('lampMat', scene);
@@ -5067,15 +5082,19 @@
         }
 
         function buildMapIndustrial() {
-            // INDUSTRIAL-5: Factory with tight corridors and multi-level areas
-            const ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 140, height: 140 }, scene);
-            const groundMat = new BABYLON.StandardMaterial('groundMat2', scene);
-            groundMat.diffuseColor = new BABYLON.Color3(0.25, 0.25, 0.25);
-            ground.material = groundMat;
-            tagImpactMaterial(ground, 'concrete');
+            // INDUSTRIAL-5: Factory with tight corridors and multi-level
+            // areas. Real PBR materials (see the comment on buildMapBacklot()
+            // above) instead of flat StandardMaterial diffuse colors -
+            // metal for the factory/machinery structures, concrete for the
+            // ground and tilt-up warehouse walls, so the map reads as more
+            // than one grey repeated everywhere.
+            const concreteMat = makePBRConcrete(scene);
+            const metalMat = makePBRMetal(scene, '#3d4147');
+            const metalMatRust = makePBRMetal(scene, '#5a3018');
 
-            const metalMat = new BABYLON.StandardMaterial('metalMat', scene);
-            metalMat.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.45);
+            const ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 140, height: 140 }, scene);
+            ground.material = concreteMat;
+            tagImpactMaterial(ground, 'concrete');
 
             // Central factory structure
             const factory1 = BABYLON.MeshBuilder.CreateBox('factory1', { width: 30, height: 8, depth: 15 }, scene);
@@ -5097,23 +5116,21 @@
             walkway.checkCollisions = true;
             tagImpactMaterial(walkway, 'metal');
 
-            // Warehouse corners
-            const warehouseMat = new BABYLON.StandardMaterial('warehouseMat', scene);
-            warehouseMat.diffuseColor = new BABYLON.Color3(0.3, 0.3, 0.3);
-
+            // Warehouse corners - concrete tilt-up walls, visually distinct
+            // from the metal factory core, and now tagged for impact
+            // effects (previously had none at all).
             for (let x of [-40, 40]) {
                 for (let z of [-40, 40]) {
                     const warehouse = BABYLON.MeshBuilder.CreateBox(`warehouse_${x}_${z}`, { width: 15, height: 12, depth: 15 }, scene);
                     warehouse.position = new BABYLON.Vector3(x, 6, z);
-                    warehouse.material = warehouseMat;
+                    warehouse.material = concreteMat;
                     warehouse.checkCollisions = true;
+                    tagImpactMaterial(warehouse, 'concrete');
                 }
             }
 
-            // Scattered barrels and cover
-            const barrelMat = new BABYLON.StandardMaterial('barrelMat', scene);
-            barrelMat.diffuseColor = new BABYLON.Color3(0.5, 0.3, 0.1);
-
+            // Scattered barrels and cover - rusted metal drums, also now
+            // tagged for impact (previously untagged).
             for (let i = 0; i < 10; i++) {
                 const barrel = BABYLON.MeshBuilder.CreateCylinder(`barrel${i}`, { height: 2, diameter: 1.5 }, scene);
                 barrel.position = new BABYLON.Vector3(
@@ -5121,8 +5138,9 @@
                     1,
                     (Math.random() - 0.5) * 120
                 );
-                barrel.material = barrelMat;
+                barrel.material = metalMatRust;
                 barrel.checkCollisions = true;
+                tagImpactMaterial(barrel, 'metal');
             }
 
             // Second detail pass (P3, master index) - a factory floor with
@@ -5131,24 +5149,19 @@
             // shipping containers (long low cover, distinct silhouette
             // from the tall warehouse blocks), plus overhead pipes as
             // non-collidable detail so upward sightlines aren't bare.
-            const tankMat = new BABYLON.StandardMaterial('tankMat', scene);
-            tankMat.diffuseColor = new BABYLON.Color3(0.45, 0.42, 0.15);
-            tankMat.specularColor = BABYLON.Color3.Black();
             for (const [x, z] of [[-55, 10], [55, -10], [-15, 55], [15, -55]]) {
                 const tank = BABYLON.MeshBuilder.CreateCylinder(`tank_${x}_${z}`, { diameter: 6, height: 9 }, scene);
                 tank.position = new BABYLON.Vector3(x, 4.5, z);
-                tank.material = tankMat;
+                tank.material = metalMat;
                 tank.checkCollisions = true;
+                tagImpactMaterial(tank, 'metal');
             }
 
-            const containerMat = new BABYLON.StandardMaterial('containerMat', scene);
-            containerMat.diffuseColor = new BABYLON.Color3(0.55, 0.2, 0.15);
-            containerMat.specularColor = BABYLON.Color3.Black();
             for (let i = 0; i < 4; i++) {
                 const container = BABYLON.MeshBuilder.CreateBox(`container${i}`, { width: 12, height: 3, depth: 3.5 }, scene);
                 container.position = new BABYLON.Vector3((Math.random() - 0.5) * 110, 1.5, (Math.random() - 0.5) * 110);
                 container.rotation.y = Math.random() * Math.PI;
-                container.material = containerMat;
+                container.material = metalMatRust;
                 container.checkCollisions = true;
                 tagImpactMaterial(container, 'metal');
             }
@@ -5174,18 +5187,20 @@
         // being stuck in one for the whole run. Blockout only - see
         // BULLET_OPS_PROGRESS.md for the planned art pass.
         function buildMapOutpost() {
+            // Real PBR materials (see the comment on buildMapBacklot()
+            // above) - concrete for the ground/bases/tower, wood for
+            // crate-style cover, instead of the flat StandardMaterial
+            // diffuse colors this map used before.
+            const concreteMat = makePBRConcrete(scene);
+            const woodMat = makePBRWood(scene);
+
             const ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 180, height: 100 }, scene);
-            const groundMat = new BABYLON.StandardMaterial('groundMat3', scene);
-            groundMat.diffuseColor = new BABYLON.Color3(0.3, 0.32, 0.3);
-            ground.material = groundMat;
+            ground.material = concreteMat;
             tagImpactMaterial(ground, 'concrete');
 
-            const baseMat = new BABYLON.StandardMaterial('outpostBaseMat', scene);
-            baseMat.diffuseColor = new BABYLON.Color3(0.32, 0.4, 0.45);
-            const coverMat = new BABYLON.StandardMaterial('outpostCoverMat', scene);
-            coverMat.diffuseColor = new BABYLON.Color3(0.42, 0.4, 0.36);
-            const towerMat = new BABYLON.StandardMaterial('outpostTowerMat', scene);
-            towerMat.diffuseColor = new BABYLON.Color3(0.5, 0.48, 0.42);
+            const baseMat = concreteMat;
+            const coverMat = woodMat;
+            const towerMat = concreteMat;
 
             function addBox(name, size, position, material, impactMat) {
                 const box = BABYLON.MeshBuilder.CreateBox(name, size, scene);
@@ -5228,7 +5243,7 @@
             for (let i = 0; i < 6; i++) {
                 const x = (Math.random() - 0.5) * 130;
                 const z = (Math.random() < 0.5 ? 1 : -1) * (10 + Math.random() * 15);
-                addBox(`extraCrate${i}`, { width: 3, height: 3, depth: 3 }, new BABYLON.Vector3(x, 1.5, z), coverMat);
+                addBox(`extraCrate${i}`, { width: 3, height: 3, depth: 3 }, new BABYLON.Vector3(x, 1.5, z), coverMat, 'wood');
             }
 
             // Second detail pass (P3, master index) - military-outpost
@@ -5257,6 +5272,10 @@
                 rock.scaling.y = 0.6;
                 rock.material = rockMat;
                 rock.checkCollisions = true;
+                // First real use of the 'dirt' impact profile - it existed
+                // since the material-impacts pass but had no tagged
+                // surface anywhere in the game until now.
+                tagImpactMaterial(rock, 'dirt');
             }
 
             const antennaMat = new BABYLON.StandardMaterial('antennaMat', scene);
