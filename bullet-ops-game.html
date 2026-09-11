@@ -5606,6 +5606,7 @@
             // effects (previously had none at all).
             for (let x of [-40, 40]) {
                 for (let z of [-40, 40]) {
+                    if (x === -40 && z === -40) continue; // real interior below instead
                     const warehouse = BABYLON.MeshBuilder.CreateBox(`warehouse_${x}_${z}`, { width: 15, height: 12, depth: 15 }, scene);
                     warehouse.position = new BABYLON.Vector3(x, 6, z);
                     warehouse.material = concreteMat;
@@ -5613,6 +5614,31 @@
                     tagImpactMaterial(warehouse, 'concrete');
                 }
             }
+
+            // Warehouse corner (-40,-40) - real interior instead of a solid
+            // block, same 4-wall pattern proven 5 times this session so
+            // far. Door on the east face (toward the map's central factory,
+            // where player traffic naturally flows from).
+            const wh1WallH = 12, wh1WallT = 0.6, wh1DoorGap = 4;
+            function wh1Wall(name, size, position) {
+                const w = BABYLON.MeshBuilder.CreateBox(name, size, scene);
+                w.position = position;
+                w.material = concreteMat;
+                w.checkCollisions = true;
+                tagImpactMaterial(w, 'concrete');
+                return w;
+            }
+            wh1Wall('warehouseNW_wallN', { width: 15, height: wh1WallH, depth: wh1WallT }, new BABYLON.Vector3(-40, wh1WallH / 2, -47.5));
+            wh1Wall('warehouseNW_wallS', { width: 15, height: wh1WallH, depth: wh1WallT }, new BABYLON.Vector3(-40, wh1WallH / 2, -32.5));
+            wh1Wall('warehouseNW_wallW', { width: wh1WallT, height: wh1WallH, depth: 15 }, new BABYLON.Vector3(-47.5, wh1WallH / 2, -40));
+            const wh1EastSegD = (15 - wh1DoorGap) / 2;
+            wh1Wall('warehouseNW_wallE1', { width: wh1WallT, height: wh1WallH, depth: wh1EastSegD }, new BABYLON.Vector3(-32.5, wh1WallH / 2, -47.5 + wh1EastSegD / 2));
+            wh1Wall('warehouseNW_wallE2', { width: wh1WallT, height: wh1WallH, depth: wh1EastSegD }, new BABYLON.Vector3(-32.5, wh1WallH / 2, -32.5 - wh1EastSegD / 2));
+            const wh1Roof = BABYLON.MeshBuilder.CreateBox('warehouseNW_roof', { width: 15.6, height: 0.5, depth: 15.6 }, scene);
+            wh1Roof.position = new BABYLON.Vector3(-40, wh1WallH + 0.25, -40);
+            wh1Roof.material = concreteMat;
+            wh1Roof.checkCollisions = true;
+            tagImpactMaterial(wh1Roof, 'concrete');
 
             // Scattered barrels and cover - rusted metal drums, also now
             // tagged for impact (previously untagged).

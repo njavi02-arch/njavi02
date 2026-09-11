@@ -849,6 +849,12 @@ Continuación de la expansión de cobertura de interiores, mismo patrón de 4 pa
 
 **Probado con Playwright** (aproximación recta pre-alineada fotograma a fotograma desde el principio, siguiendo la disciplina ya establecida tras los dos hallazgos de metodología anteriores): el jugador entra por la puerta sur y llega hasta z=20.85, dentro de la sala. La pared este (sin puerta) bloquea correctamente desde fuera. Captura de pantalla confirma visualmente un interior de ladrillo cerrado. 68 armas intactas, sin errores nuevos de consola.
 
+### Sexto interior real: esquina noroeste de los almacenes de INDUSTRIAL-5
+
+Continuación de la expansión de cobertura, mismo patrón de 4 paredes. Este mapa tenía 4 almacenes idénticos en las esquinas (`warehouse_${x}_${z}`, generados en un bucle); se saca el de (-40,-40) del bucle y se reconstruye con un interior real — norte/sur/oeste sólidas, este con hueco de puerta de 4 unidades, orientada hacia el centro del mapa (por donde fluye naturalmente el tráfico de jugadores desde la fábrica central). Los otros 3 almacenes de esquina se quedan como bloques sólidos, sin cambios — alcance deliberado de esta pasada, no un descuido.
+
+**Probado con Playwright**: entrada por la puerta este confirmada (aproximación recta pre-alineada fotograma a fotograma). La pared norte (sin puerta) bloquea correctamente desde fuera. Captura de pantalla confirma visualmente un interior de hormigón cerrado y oscuro (sin ventanas, coherente con un almacén industrial). 68 armas intactas, sin errores nuevos de consola.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.
