@@ -5562,6 +5562,23 @@
             walkway.material = metalMat;
             walkway.checkCollisions = true;
             tagImpactMaterial(walkway, 'metal');
+            tagWalkable(walkway);
+
+            // Ramp up to the walkway, approached from the open north field
+            // (clear of factory1/factory2) - same working pattern as
+            // BACKLOT-7's tower ramp (see Player.update()'s WALKABLE_SURFACES
+            // ground check for why this now actually works). Rises from
+            // ground (y=0) to the walkway's top (y=6.25) over a 20-unit run.
+            const walkwayRampRise = 6.25, walkwayRampRun = 20;
+            const walkwayRampAngle = Math.atan2(walkwayRampRise, walkwayRampRun);
+            const walkwayRampLen = Math.sqrt(walkwayRampRise * walkwayRampRise + walkwayRampRun * walkwayRampRun);
+            const walkwayRamp = BABYLON.MeshBuilder.CreateBox('walkwayRamp', { width: 6, height: 0.6, depth: walkwayRampLen }, scene);
+            walkwayRamp.position = new BABYLON.Vector3(0, walkwayRampRise / 2, -48);
+            walkwayRamp.rotation.x = -walkwayRampAngle;
+            walkwayRamp.material = metalMat;
+            walkwayRamp.checkCollisions = true;
+            tagImpactMaterial(walkwayRamp, 'metal');
+            tagWalkable(walkwayRamp);
 
             // Warehouse corners - concrete tilt-up walls, visually distinct
             // from the metal factory core, and now tagged for impact
@@ -5670,8 +5687,26 @@
             // Center lane: a contested map-control tower plus a low side
             // platform, with a couple of crates for close-range cover.
             addBox('centerTower', { width: 10, height: 10, depth: 10 }, new BABYLON.Vector3(0, 5, 0), towerMat, 'concrete');
-            addBox('centerPlatform', { width: 16, height: 0.5, depth: 8 }, new BABYLON.Vector3(0, 3, 16), towerMat, 'concrete');
+            const centerPlatform = addBox('centerPlatform', { width: 16, height: 0.5, depth: 8 }, new BABYLON.Vector3(0, 3, 16), towerMat, 'concrete');
+            tagWalkable(centerPlatform);
             addBox('watchtower', { width: 4, height: 14, depth: 4 }, new BABYLON.Vector3(14, 7, 0), towerMat, 'concrete');
+
+            // Ramp up to centerPlatform, approached from its far (north)
+            // edge - the open field between it and the z=35 flank cover,
+            // clear of centerTower. Rises from ground (y=0) to the
+            // platform's top (y=3.25) over a 10-unit run, climbing in the
+            // -z direction (toward the tower), same working pattern as
+            // BACKLOT-7/INDUSTRIAL-5's ramps.
+            const outpostRampRise = 3.25, outpostRampRun = 10;
+            const outpostRampAngle = Math.atan2(outpostRampRise, outpostRampRun);
+            const outpostRampLen = Math.sqrt(outpostRampRise * outpostRampRise + outpostRampRun * outpostRampRun);
+            const outpostRamp = BABYLON.MeshBuilder.CreateBox('outpostRamp', { width: 6, height: 0.6, depth: outpostRampLen }, scene);
+            outpostRamp.position = new BABYLON.Vector3(0, outpostRampRise / 2, 25);
+            outpostRamp.rotation.x = outpostRampAngle;
+            outpostRamp.material = towerMat;
+            outpostRamp.checkCollisions = true;
+            tagImpactMaterial(outpostRamp, 'concrete');
+            tagWalkable(outpostRamp);
             for (const x of [-28, -14, 14, 28]) {
                 addBox(`midCrate_${x}`, { width: 3.5, height: 3.5, depth: 3.5 }, new BABYLON.Vector3(x, 1.75, (x % 28 === 0) ? 6 : -6), coverMat, 'wood');
             }
