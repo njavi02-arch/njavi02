@@ -5923,10 +5923,29 @@
             // east of the yard crates, climbing to the walkway's south edge.
             addRampZ('warehouse_ramp', 9.4, 30, 78, -10, 1, metalMatDark, 'metal');
             addBox('warehouse_door', { width: 6, height: 5, depth: 0.3 }, new BABYLON.Vector3(72, 2.5, -6), metalMatDark, 'metal');
-            // Office Building - has a couple of glazed openings (PBR glass)
-            // instead of being a solid block.
-            addBox('officeBuilding', { width: 12, height: 8, depth: 10 }, new BABYLON.Vector3(55, 4, -25), concreteMat, 'concrete');
-            addBox('officeBuilding_glass', { width: 11, height: 3, depth: 0.2 }, new BABYLON.Vector3(55, 5, -19.9), glassMat);
+            // Office Building - real accessible interior instead of one
+            // solid block, same 4-wall-segment pattern already proven in
+            // BACKLOT-7's tower. North face (facing the Yard) is a
+            // floor-to-ceiling glass window instead of a wall - bullets can
+            // penetrate it (PENETRATION_PROFILES) with the usual reduced
+            // damage, so it reads as a real glazed opening, not decoration.
+            // Door gap on the south face (away from the busiest routes).
+            const officeWallH = 8, officeWallT = 0.6, officeDoorGap = 3;
+            function officeWall(name, size, position) {
+                const w = BABYLON.MeshBuilder.CreateBox(name, size, scene);
+                w.position = position;
+                w.material = concreteMat;
+                w.checkCollisions = true;
+                tagImpactMaterial(w, 'concrete');
+                return w;
+            }
+            officeWall('officeBuilding_wallW', { width: officeWallT, height: officeWallH, depth: 10 }, new BABYLON.Vector3(49, officeWallH / 2, -25));
+            officeWall('officeBuilding_wallE', { width: officeWallT, height: officeWallH, depth: 10 }, new BABYLON.Vector3(61, officeWallH / 2, -25));
+            const officeSouthSegW = (12 - officeDoorGap) / 2;
+            officeWall('officeBuilding_wallS1', { width: officeSouthSegW, height: officeWallH, depth: officeWallT }, new BABYLON.Vector3(49 + officeSouthSegW / 2, officeWallH / 2, -30));
+            officeWall('officeBuilding_wallS2', { width: officeSouthSegW, height: officeWallH, depth: officeWallT }, new BABYLON.Vector3(61 - officeSouthSegW / 2, officeWallH / 2, -30));
+            const officeGlass = addBox('officeBuilding_glass', { width: 11, height: 7, depth: 0.2 }, new BABYLON.Vector3(55, 4, -20), glassMat, 'glass');
+            const officeRoof = addBox('officeBuilding_roof', { width: 12.6, height: 0.5, depth: 10.6 }, new BABYLON.Vector3(55, 8.25, -25), concreteMat, 'concrete');
             // Yard - open ground between Warehouse and Office Building,
             // just cover props, no walls of its own.
             addBox('yard_crate1', { width: 2, height: 2, depth: 2 }, new BABYLON.Vector3(66, 1, -15), woodMat, 'wood');

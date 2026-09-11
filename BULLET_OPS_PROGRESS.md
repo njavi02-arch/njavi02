@@ -819,6 +819,14 @@ Al revisar qué más podía beneficiarse del controlador de movimiento corregido
 
 **Probado con Playwright**: las dos rampas permiten un ascenso limpio y monótono hasta la altura exacta esperada (torre: y=12.45 ≈ techo 11.45+1; warehouse: y=10.4 ≈ walkway 9.4+1), con `onTowerRoof`/`onWalkway` confirmados, y la caída posterior al cruzar cada plataforma sin barandilla es el mismo comportamiento físico esperado ya visto en los otros 3 mapas. 68 armas intactas, sin errores nuevos de consola.
 
+### Segundo interior real: Office Building de KRYPTOS-URBAN
+
+Siguiente incremento del hueco declarado de la directiva P0: más interiores reales en más edificios, usando el mismo patrón de 4 segmentos de pared ya probado en la torre de BACKLOT-7. El Office Building (antes una caja sólida de 12x8x10 con un panel de cristal decorativo pegado a su cara norte) gana un interior genuinamente accesible.
+
+**Arquitectura**: 4 paredes reales (`officeWall()`, mismo patrón que `towerWall()` de BACKLOT-7) — oeste y este sólidas, sur dividida en dos tramos con un hueco de puerta de 3 unidades, y la cara norte (la que da al Yard) convertida en una ventana de cristal real de suelo a techo (antes solo cubría 3 de las 8 unidades de altura del edificio, ahora 7) en vez de una pared sólida — las balas pueden atravesarla con el mismo sistema de penetración por material ya usado en los otros 3 mapas (daño reducido, no bloqueo total). Techo nuevo (`officeBuilding_roof`) cierra la sala por arriba; el suelo del mapa ya cubre esta zona, sirve de piso interior sin malla aparte.
+
+**Probado con Playwright**: el jugador entra por la puerta sur y queda dentro de la sala (confirmado por posición final dentro del footprint interior). La pared oeste sigue bloqueando correctamente desde fuera (se detiene a x=48.35, justo antes del muro). Un disparo desde dentro de la oficina hacia un bot situado al norte, atravesando la ventana de cristal, hace 36.96 de daño — exactamente `42 × (1 - 0.12)`, la misma pérdida de daño por cristal ya verificada en los otros 3 mapas, confirmando que la integración con `PENETRATION_PROFILES` es correcta también aquí. Captura de pantalla confirma visualmente la vista desde dentro de la oficina a través de la ventana. 68 armas intactas, sin errores nuevos de consola.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.
