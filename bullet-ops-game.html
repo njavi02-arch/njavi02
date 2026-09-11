@@ -592,6 +592,9 @@
             // but they're fully playable already if added to a loadout.
             BO21: {
                 id: 'BO21', name: 'BO-21 BREACHER', category: WEAPON_CATEGORY.SHOTGUN,
+                // Standard buckshot: 9 pellets, ~63 total at point-blank if
+                // every pellet connects (damage falls off fast per range).
+                pelletCount: 9, pelletDamage: 7, pelletSpread: 0.05,
                 damage: 55, headshotMul: 1.3,
                 fireRate: 1.3, mag: 6, reserve: 30,
                 reloadTime: 2.6, reloadTimeEmpty: 3.2,
@@ -706,6 +709,9 @@
             },
             BO22: {
                 id: 'BO22', name: 'BO-22 SCATTERGUN', category: WEAPON_CATEGORY.SHOTGUN,
+                // More pellets, less damage each, than BREACHER - matches
+                // its higher fire rate/lower per-shot niche.
+                pelletCount: 10, pelletDamage: 4.2, pelletSpread: 0.055,
                 damage: 38, headshotMul: 1.2,
                 fireRate: 2.4, mag: 8, reserve: 40,
                 reloadTime: 2.2, reloadTimeEmpty: 2.8,
@@ -1111,6 +1117,10 @@
             },
             BO23: {
                 id: 'BO23', name: 'BO-23 WIDOWMAKER', category: WEAPON_CATEGORY.SHOTGUN,
+                // Double-barrel: the most pellets and the highest total
+                // point-blank damage of any shotgun - matches its 2-round
+                // mag/high-damage-per-shot niche.
+                pelletCount: 12, pelletDamage: 6.5, pelletSpread: 0.06,
                 damage: 70, headshotMul: 1.15,
                 fireRate: 1.0, mag: 2, reserve: 16,
                 reloadTime: 3.2, reloadTimeEmpty: 3.6,
@@ -1126,6 +1136,10 @@
             },
             BO24: {
                 id: 'BO24', name: 'BO-24 SLUGSTORM', category: WEAPON_CATEGORY.SHOTGUN,
+                // Deliberately NOT a pellet weapon: fires a single slug, the
+                // shotgun-category exception - hence the longer range and
+                // tighter spread than every buckshot config below, and no
+                // pelletCount here.
                 damage: 45, headshotMul: 1.6,
                 fireRate: 2.0, mag: 7, reserve: 35,
                 reloadTime: 2.4, reloadTimeEmpty: 3.0,
@@ -1148,6 +1162,9 @@
             BO25: {
                 id: 'BO25', name: 'BO-25 RIOT-12', category: WEAPON_CATEGORY.SHOTGUN,
                 subcategory: 'Automatic Shotgun', ammoType: '12 Gauge Buckshot', fireMode: 'full-auto',
+                // Fewer pellets/lower per-pellet damage than the others -
+                // spam-fire niche relies on fire rate, not shell power.
+                pelletCount: 8, pelletDamage: 3.6, pelletSpread: 0.045,
                 damage: 28, headshotMul: 1.1,
                 fireRate: 4.5, mag: 12, reserve: 48,
                 reloadTime: 2.8, reloadTimeEmpty: 3.2,
@@ -1164,6 +1181,10 @@
             BO26: {
                 id: 'BO26', name: 'BO-26 SAWTOOTH', category: WEAPON_CATEGORY.SHOTGUN,
                 subcategory: 'Sawed-Off Shotgun', ammoType: '12 Gauge Buckshot', fireMode: 'break-action',
+                // Widest pellet pattern of any shotgun (matches its
+                // shortest range/worst accuracy) but still a devastating
+                // total at true point-blank range.
+                pelletCount: 14, pelletDamage: 4.3, pelletSpread: 0.09,
                 damage: 60, headshotMul: 1.2,
                 fireRate: 1.4, mag: 2, reserve: 20,
                 reloadTime: 2.0, reloadTimeEmpty: 2.0,
@@ -2538,38 +2559,58 @@
 
                 const pitch = this.getEffectivePitch();
                 const yaw = this.getEffectiveYaw();
-                const direction = new BABYLON.Vector3(Math.sin(yaw), Math.sin(pitch), Math.cos(yaw));
+                const baseDirection = new BABYLON.Vector3(Math.sin(yaw), Math.sin(pitch), Math.cos(yaw));
                 // Melee doesn't use hip/ADS spread - it's a fixed-range swing,
                 // not an aimed projectile.
                 const spread = isMelee ? 0 : this.getEffectiveSpread(movementState);
-                if (spread > 0) {
-                    direction.addInPlace(new BABYLON.Vector3((Math.random() - 0.5) * spread, (Math.random() - 0.5) * spread, (Math.random() - 0.5) * spread));
-                }
-                direction.normalize();
 
                 const muzzleWorldPos = this.currentViewmodel.muzzle.getAbsolutePosition();
 
-                const bullet = BABYLON.MeshBuilder.CreateSphere('bullet', { diameter: isMelee ? 0.02 : (isExplosive ? 0.16 : 0.1) }, this.scene);
-                bullet.position = muzzleWorldPos.add(direction.scale(isMelee ? 0.05 : 0.3));
-                bullet.material = getSharedBulletMaterial(this.scene, true);
-                bullet.owner = this.player;
-                bullet.damage = cfg.damage;
-                bullet.headshotMul = cfg.headshotMul;
-                bullet.velocity = direction.scale(isMelee ? (cfg.meleeSpeed || 40) : cfg.bulletSpeed);
-                bullet.life = 10;
-                // cfg.range existed per-weapon from the start but was never
-                // enforced - every bullet traveled identically far regardless
-                // of weapon, so a Sniper's 200-unit range and an SMG's 55-unit
-                // range meant nothing. Bullets now expire silently (no hit
-                // effects, just gone) once they've traveled their weapon's
-                // configured range - for melee, cfg.range doubles as the
-                // swing's reach.
-                bullet.maxRange = isMelee ? (cfg.meleeRange || 2.2) : cfg.range;
-                bullet.distanceTraveled = 0;
-                bullet.isExplosive = isExplosive;
-                bullet.splashRadius = cfg.splashRadius || 0;
-                bullets.push(bullet);
+                // Shotguns (pelletCount > 1) fire a real pellet pattern: N
+                // independent bullets per trigger pull, each with its own
+                // random deviation within the shot pattern (pelletSpread, on
+                // top of the normal aim spread) and a fraction of the
+                // weapon's damage (pelletDamage) - so range/aim genuinely
+                // determine how many pellets connect, instead of one
+                // hitscan-style projectile standing in for a whole shell.
+                // Every other weapon keeps firing exactly one bullet with
+                // cfg.damage, unchanged.
+                const pelletCount = (!isMelee && cfg.pelletCount > 1) ? cfg.pelletCount : 1;
+                for (let p = 0; p < pelletCount; p++) {
+                    const direction = baseDirection.clone();
+                    if (spread > 0) {
+                        direction.addInPlace(new BABYLON.Vector3((Math.random() - 0.5) * spread, (Math.random() - 0.5) * spread, (Math.random() - 0.5) * spread));
+                    }
+                    if (pelletCount > 1) {
+                        const ps = cfg.pelletSpread || 0;
+                        direction.addInPlace(new BABYLON.Vector3((Math.random() - 0.5) * ps, (Math.random() - 0.5) * ps, (Math.random() - 0.5) * ps));
+                    }
+                    direction.normalize();
 
+                    const bullet = BABYLON.MeshBuilder.CreateSphere('bullet', { diameter: isMelee ? 0.02 : (isExplosive ? 0.16 : 0.1) }, this.scene);
+                    bullet.position = muzzleWorldPos.add(direction.scale(isMelee ? 0.05 : 0.3));
+                    bullet.material = getSharedBulletMaterial(this.scene, true);
+                    bullet.owner = this.player;
+                    bullet.damage = pelletCount > 1 ? cfg.pelletDamage : cfg.damage;
+                    bullet.headshotMul = cfg.headshotMul;
+                    bullet.velocity = direction.scale(isMelee ? (cfg.meleeSpeed || 40) : cfg.bulletSpeed);
+                    bullet.life = 10;
+                    // cfg.range existed per-weapon from the start but was never
+                    // enforced - every bullet traveled identically far regardless
+                    // of weapon, so a Sniper's 200-unit range and an SMG's 55-unit
+                    // range meant nothing. Bullets now expire silently (no hit
+                    // effects, just gone) once they've traveled their weapon's
+                    // configured range - for melee, cfg.range doubles as the
+                    // swing's reach.
+                    bullet.maxRange = isMelee ? (cfg.meleeRange || 2.2) : cfg.range;
+                    bullet.distanceTraveled = 0;
+                    bullet.isExplosive = isExplosive;
+                    bullet.splashRadius = cfg.splashRadius || 0;
+                    bullets.push(bullet);
+                }
+
+                // Recoil/muzzle flash/sound fire once per trigger pull, not
+                // once per pellet.
                 // Recoil: pattern kick on aim/accuracy (decays per
                 // recoverySpeed) + a separate fast visual kick on the
                 // viewmodel itself + temporary accuracy bloom.
@@ -2582,7 +2623,7 @@
                 if (isMelee) {
                     SoundSynth.playMeleeSwing();
                 } else {
-                    spawnMuzzleFlash(this.scene, muzzleWorldPos, direction);
+                    spawnMuzzleFlash(this.scene, muzzleWorldPos, baseDirection);
                     SoundSynth.playGunshot(cfg.soundProfile);
                 }
             }
@@ -3343,27 +3384,38 @@
                 // Melee doesn't miss on spread - it's a fixed-reach swing.
                 const spreadMul = this.difficulty === 'hard' ? 1.2 : 2;
                 const spread = isMelee ? 0 : this.currentWeapon.spread.hip * spreadMul;
-                const fireDir = direction.add(new BABYLON.Vector3((Math.random() - 0.5) * spread, (Math.random() - 0.5) * spread * 0.5, (Math.random() - 0.5) * spread));
-                fireDir.normalize();
 
-                const bullet = BABYLON.MeshBuilder.CreateSphere('bullet', { diameter: isMelee ? 0.02 : (isExplosive ? 0.16 : 0.1) }, scene);
-                bullet.position = origin.add(fireDir.scale(isMelee ? 0.1 : 0.5));
-                bullet.material = getSharedBulletMaterial(scene, false);
+                // Shotguns (pelletCount > 1) fire a real pellet pattern here
+                // too, mirroring WeaponController.fire() - a bot armed with
+                // one behaves exactly like the player's own.
+                const pelletCount = (!isMelee && this.currentWeapon.pelletCount > 1) ? this.currentWeapon.pelletCount : 1;
+                for (let p = 0; p < pelletCount; p++) {
+                    const fireDir = direction.add(new BABYLON.Vector3((Math.random() - 0.5) * spread, (Math.random() - 0.5) * spread * 0.5, (Math.random() - 0.5) * spread));
+                    if (pelletCount > 1) {
+                        const ps = this.currentWeapon.pelletSpread || 0;
+                        fireDir.addInPlace(new BABYLON.Vector3((Math.random() - 0.5) * ps, (Math.random() - 0.5) * ps, (Math.random() - 0.5) * ps));
+                    }
+                    fireDir.normalize();
 
-                bullet.owner = this;
-                bullet.damage = this.currentWeapon.damage;
-                bullet.headshotMul = this.currentWeapon.headshotMul;
-                // bulletSpeed/range already double as meleeSpeed/meleeRange
-                // in every melee weapon's config (see WEAPON_CONFIGS), so no
-                // separate melee-only fields are needed here.
-                bullet.velocity = fireDir.scale(this.currentWeapon.bulletSpeed);
-                bullet.life = 10;
-                bullet.maxRange = this.currentWeapon.range;
-                bullet.distanceTraveled = 0;
-                bullet.isExplosive = isExplosive;
-                bullet.splashRadius = this.currentWeapon.splashRadius || 0;
+                    const bullet = BABYLON.MeshBuilder.CreateSphere('bullet', { diameter: isMelee ? 0.02 : (isExplosive ? 0.16 : 0.1) }, scene);
+                    bullet.position = origin.add(fireDir.scale(isMelee ? 0.1 : 0.5));
+                    bullet.material = getSharedBulletMaterial(scene, false);
 
-                bullets.push(bullet);
+                    bullet.owner = this;
+                    bullet.damage = pelletCount > 1 ? this.currentWeapon.pelletDamage : this.currentWeapon.damage;
+                    bullet.headshotMul = this.currentWeapon.headshotMul;
+                    // bulletSpeed/range already double as meleeSpeed/meleeRange
+                    // in every melee weapon's config (see WEAPON_CONFIGS), so no
+                    // separate melee-only fields are needed here.
+                    bullet.velocity = fireDir.scale(this.currentWeapon.bulletSpeed);
+                    bullet.life = 10;
+                    bullet.maxRange = this.currentWeapon.range;
+                    bullet.distanceTraveled = 0;
+                    bullet.isExplosive = isExplosive;
+                    bullet.splashRadius = this.currentWeapon.splashRadius || 0;
+
+                    bullets.push(bullet);
+                }
                 if (isMelee) {
                     SoundSynth.playMeleeSwing();
                 } else {
@@ -4208,9 +4260,19 @@
                     bullet.life = -1;
                 }
 
-                // Check collisions (limited to alive entities). Fast weapons
-                // (up to 900 u/s) can move ~14 units in a single frame, so
-                // testing only the bullet's endpoint each frame lets it tunnel
+                // Check collisions (limited to alive entities and only for a
+                // bullet that hasn't just expired above - without this
+                // guard, a bullet that crossed its maxRange partway through
+                // this frame's travel segment still ran the full hit-test
+                // below using that segment's endpoint, so on a low-framerate
+                // frame (bigger per-frame travel) it could register a hit on
+                // a target positioned well beyond the weapon's configured
+                // range, or double-trigger an explosive's splash damage.
+                // Found via the shotgun pellet-range test: a 20-range
+                // shotgun connected on a target 35 units away under a
+                // throttled test framerate. Fast weapons (up to 900 u/s)
+                // can still move ~14 units in a single frame, so testing
+                // only the bullet's endpoint each frame lets it tunnel
                 // straight through a target without ever registering as
                 // "close enough" at a sampled instant - the bullet's whole
                 // travel segment for this frame (prevPos -> new position) is
@@ -4222,7 +4284,7 @@
                 // that one point made level shots miss right at the edge of
                 // the hit radius despite visually lining up perfectly.
                 let hit = false;
-                for (let entity of [player, ...bots]) {
+                for (let entity of (bullet.life > 0 ? [player, ...bots] : [])) {
                     if (entity && entity.isAlive && entity !== bullet.owner) {
                         const entityHalfHeight = 0.75;
                         const entityBottom = entity.mesh.position.add(new BABYLON.Vector3(0, -entityHalfHeight, 0));
