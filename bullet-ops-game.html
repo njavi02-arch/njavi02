@@ -887,6 +887,29 @@
                 soundProfile: 'pistol', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             },
+            // Revolver roster completion (3/4 -> 4/4): the 51-59 decade is
+            // now fully occupied by Pistol/Revolver (see WEAPON_CATEGORY
+            // comment), so this continues the 9x overflow range already
+            // used for Sniper's BO-91/92. Fills the gap between SNAKEEYE
+            // (7 rounds, fast/weak) and MAGNUM/PEACEMAKER (6 rounds, slow/
+            // heavy): the highest-capacity revolver (8) with the fastest
+            // reload of the category, a "practical" middle ground.
+            BO93: {
+                id: 'BO93', name: 'BO-93 WILDCARD', category: WEAPON_CATEGORY.REVOLVER,
+                subcategory: 'Combat Revolver', ammoType: '.357 Magnum', fireMode: 'double-action',
+                damage: 48, headshotMul: 2.0,
+                fireRate: 3.5, mag: 8, reserve: 40,
+                reloadTime: 1.6, reloadTimeEmpty: 1.6,
+                spread: { hip: 0.017, ads: 0.0035, moving: 0.0095 },
+                range: 58, bulletSpeed: 580,
+                ads: { time: 0.17, fovMul: 0.86, sensitivityMul: 0.78 },
+                movement: { hipMul: 1.1, adsMul: 0.8 },
+                sprintToFireDelay: 0.08,
+                recoil: { vertical: 0.032, horizontal: 0.009, cameraKick: 0.026, recoverySpeed: 6.8 },
+                sway: { amount: 0.017, speed: 2.0, bobAmount: 0.021, bobSpeed: 10.5 },
+                soundProfile: 'pistol', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
             BO53: {
                 id: 'BO53', name: 'BO-53 VIPER', category: WEAPON_CATEGORY.PISTOL,
                 damage: 22, headshotMul: 1.5,
@@ -1531,7 +1554,7 @@
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             }
             // Full roster: 5 AR, 5 SMG, 6 Shotgun, 5 Sniper, 5 DMR, 6 LMG,
-            // 6 Pistol, 3 Revolver, 6 Rocket, 5 Melee, 5 Special = 57 total.
+            // 6 Pistol, 4 Revolver, 6 Rocket, 5 Melee, 5 Special = 58 total.
         };
         // Backwards-compatible alias: Bot AI only ever reads the plain
         // numeric stats (damage/fireRate/mag/reserve/spread/speed), so it

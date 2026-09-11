@@ -486,6 +486,14 @@ Con este pase, la arquitectura de IDs por decena queda así: Pistola usa 51/53/5
 
 Probado con Playwright: las 4 configs verificadas; catálogo confirma los 4 nombres bajo PISTOL y ROCKET LAUNCHER; total de `WEAPON_CONFIGS` confirmado en 57. BO-58 TEMPEST disparado en ráfaga real (200ms de `inputs.mouseDown`) contra un bot a 5 unidades, con viewmodel parentado a `player.camera` y bot reposicionado justo antes de abrir fuego: impacto confirmado (100→80 HP, mag decrementado). Pase de regresión del camino dorado completo (disparo → cambio de arma → recarga) tras el cambio: sin errores, `totalWeapons: 57`. Cero errores de consola nuevos.
 
+### Roster completo: Revolver (3/4→4/4)
+
+Última categoría con un hueco pequeño. **BO-93 WILDCARD** (`subcategory: 'Combat Revolver'`): cargador de 8 balas (el mayor de la categoría, por encima de los 6-7 de BO-52/56/57) con la recarga más rápida (1.6s) — un "término medio práctico" entre SNAKEEYE (7 balas, rápido pero débil) y MAGNUM/PEACEMAKER (6 balas, lentos pero muy dañinos).
+
+Con el decenio 51-59 ya completamente ocupado entre Pistola y Revolver (51/53/54/55/58/59 Pistola, 52/56/57 Revolver), esta arma continúa el rango de desbordamiento 9x ya usado para los francotiradores BO-91/92 — documentado en el propio comentario de `WEAPON_CATEGORY` en el código.
+
+Probado con Playwright (viewmodel parentado, bot reposicionado justo antes de disparar): impacto confirmado a 5 unidades (100→4 HP, 96 de daño = 48 base × 2.0 de multiplicador de headshot, mag 8→7). Catálogo confirma "WILDCARD" bajo REVOLVER. Total de `WEAPON_CONFIGS` confirmado en 58 — **Revolver alcanza su objetivo de 4/4, completa**. Cero errores de consola nuevos.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.
