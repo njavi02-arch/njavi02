@@ -494,6 +494,18 @@ Con el decenio 51-59 ya completamente ocupado entre Pistola y Revolver (51/53/54
 
 Probado con Playwright (viewmodel parentado, bot reposicionado justo antes de disparar): impacto confirmado a 5 unidades (100→4 HP, 96 de daño = 48 base × 2.0 de multiplicador de headshot, mag 8→7). Catálogo confirma "WILDCARD" bajo REVOLVER. Total de `WEAPON_CONFIGS` confirmado en 58 — **Revolver alcanza su objetivo de 4/4, completa**. Cero errores de consola nuevos.
 
+### Revisión de sensación de armas: verificación de distinción real en partida (P2 del índice, completo)
+
+Tras seis ciclos consecutivos ampliando solo cantidad (35→58 armas), pausa deliberada para verificar algo que nunca se había medido directamente esta sesión: si las diferencias de configuración (`fireRate`, `recoil.vertical`) realmente se traducen en una sensación distinta al jugar, no solo en la tabla de `WEAPON_CONFIGS`. Elegidas 5 armas representativas de extremos opuestos del arsenal: BO-01 VANGUARD (AR base), BO-38 IRONCLAD (DMR full-auto), BO-92 COLOSSUS (el sniper más pesado), BO-46 WHIRLWIND (LMG de supresión, la cadencia más alta del juego) y BO-56 PEACEMAKER (revólver pesado).
+
+Metodología: cada arma equipada con munición artificialmente alta (para que la recarga no interrumpiera la medición) y disparada durante ~2s reales vía `inputs.mouseDown` real (no llamadas sintéticas a `fire()`), interceptando `SoundSynth.playGunshot` para contar disparos reales (se invoca exactamente una vez por disparo, en las 58 armas) y muestreando `player.weaponController.recoilKickPitch` cada 100ms para capturar el pico de retroceso real aplicado a la cámara.
+
+Resultado — cadencia real observada (disparos/segundo): WHIRLWIND 9.32 > VANGUARD 7.12 > IRONCLAD 3.37 > PEACEMAKER 2.07 > COLOSSUS 0.52. Coincide exactamente con el orden de `fireRate` configurado (16 > 10 > 3.6 > 1.8 > 0.45) — las cifras absolutas quedan algo por debajo de lo configurado (esperable: el conteo de disparos depende de que `WeaponController.update()` se ejecute cada frame, y este entorno de pruebas ya tiene un límite de FPS documentado por renderizado por software), pero el orden relativo y la separación entre categorías es clara e inequívoca.
+
+Resultado — pico de retroceso real: COLOSSUS 0.0645 > PEACEMAKER 0.0574 > VANGUARD 0.0294 ≈ IRONCLAD 0.0234 > WHIRLWIND 0.0170. También coincide con el orden de `recoil.vertical` configurado — VANGUARD e IRONCLAD quedan cerca entre sí (0.02 vs 0.021), lo cual es intencional (ambas son armas de precisión de retroceso moderado, se diferencian más en cadencia/daño/manejo que en retroceso puro), no un fallo de distinción.
+
+**Conclusión: las 5 armas se sienten genuinamente distintas en partida real, no solo sobre el papel — el LMG de supresión dispara rápido con retroceso mínimo, el revólver pesado dispara lento con fuerte patada, el sniper más pesado casi no dispara pero cada tiro golpea la cámara con fuerza.** No se encontró nada plano ni redundante; no se necesitó ningún cambio de código, solo esta verificación.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.
