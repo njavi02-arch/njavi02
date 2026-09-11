@@ -462,6 +462,17 @@ Catálogo de armas confirma los 4 nombres nuevos bajo sus cabeceras correspondie
 
 Catálogo de armas confirma los 4 nombres nuevos bajo DMR y SNIPER; total de `WEAPON_CONFIGS` confirmado en 49. Cero errores de consola nuevos.
 
+### Ampliación de roster: LMG y Shotgun (4/8→6/8 cada una)
+
+Últimas dos categorías empatadas como más vacías. 4 armas nuevas:
+
+- **BO-45 SIEGEBREAKER** (LMG, `subcategory: 'Heavy Support Gun'`): ninguna de las 4 LMG existentes llevaba el concepto a un extremo — esta tiene el mayor daño (34) y alcance (100) de la categoría, a costa de la peor movilidad (`hipMul: 0.78`) y la cadencia más lenta (8) de las 6 LMG.
+- **BO-46 WHIRLWIND** (LMG, `subcategory: 'Suppression Gun'`): el extremo opuesto — cargador de 150 (el más grande del juego), cadencia 16 (la más alta de la categoría) pero el daño por impacto más bajo (18) y la peor movilidad junto a SIEGEBREAKER — un arma de supresión pura, no de eliminación.
+- **BO-25 RIOT-12** (Shotgun, `fireMode: 'full-auto'`): la primera escopeta totalmente automática del arsenal (cadencia 4.5, muy por encima de las 4 existentes) — un híbrido SMG-escopeta.
+- **BO-26 SAWTOOTH** (Shotgun, `subcategory: 'Sawed-Off Shotgun'`): recortada de corto alcance (14, el más corto de la categoría) pero con la mejor movilidad de cualquier escopeta (`hipMul: 1.22`) — un nicho de manejo distinto al de BO-23 WIDOWMAKER (daño similar/mayor pero sin la ventaja de movilidad).
+
+Probado con Playwright aplicando ambas lecciones de metodología de esta sesión desde el principio (viewmodel de prueba parentado a `player.camera`, bot reposicionado justo antes de disparar): BO-26 SAWTOOTH impactó a un bot a 3 unidades de distancia en el primer intento (100→28 HP, mag 2→1). Catálogo confirma los 4 nombres bajo LMG y SHOTGUN; total de `WEAPON_CONFIGS` confirmado en 53. Cero errores de consola nuevos.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.

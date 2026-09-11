@@ -1001,6 +1001,44 @@
                 soundProfile: 'shotgun', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             },
+            // Shotgun roster expansion (4/8 -> 6/8): none of the existing 4
+            // was full-auto or a true close-quarters compact - adds an
+            // SMG-shotgun hybrid (fastest fire rate of the category by
+            // far) and a sawed-off (worst range, but the best mobility/
+            // fastest handling of any shotgun, distinct from BO-23's own
+            // high-damage-low-mag niche).
+            BO25: {
+                id: 'BO25', name: 'BO-25 RIOT-12', category: WEAPON_CATEGORY.SHOTGUN,
+                subcategory: 'Automatic Shotgun', ammoType: '12 Gauge Buckshot', fireMode: 'full-auto',
+                damage: 28, headshotMul: 1.1,
+                fireRate: 4.5, mag: 12, reserve: 48,
+                reloadTime: 2.8, reloadTimeEmpty: 3.2,
+                spread: { hip: 0.08, ads: 0.05, moving: 0.032 },
+                range: 20, bulletSpeed: 600,
+                ads: { time: 0.22, fovMul: 0.9, sensitivityMul: 0.82 },
+                movement: { hipMul: 0.95, adsMul: 0.78 },
+                sprintToFireDelay: 0.15,
+                recoil: { vertical: 0.03, horizontal: 0.018, cameraKick: 0.026, recoverySpeed: 6.5 },
+                sway: { amount: 0.02, speed: 1.6, bobAmount: 0.02, bobSpeed: 9 },
+                soundProfile: 'shotgun', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO26: {
+                id: 'BO26', name: 'BO-26 SAWTOOTH', category: WEAPON_CATEGORY.SHOTGUN,
+                subcategory: 'Sawed-Off Shotgun', ammoType: '12 Gauge Buckshot', fireMode: 'break-action',
+                damage: 60, headshotMul: 1.2,
+                fireRate: 1.4, mag: 2, reserve: 20,
+                reloadTime: 2.0, reloadTimeEmpty: 2.0,
+                spread: { hip: 0.13, ads: 0.09, moving: 0.04 },
+                range: 14, bulletSpeed: 550,
+                ads: { time: 0.14, fovMul: 0.95, sensitivityMul: 0.9 },
+                movement: { hipMul: 1.22, adsMul: 1.05 },
+                sprintToFireDelay: 0.05,
+                recoil: { vertical: 0.045, horizontal: 0.02, cameraKick: 0.038, recoverySpeed: 7 },
+                sway: { amount: 0.024, speed: 2.2, bobAmount: 0.023, bobSpeed: 11 },
+                soundProfile: 'shotgun', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
             BO33: {
                 id: 'BO33', name: 'BO-33 WRAITHFANG', category: WEAPON_CATEGORY.SNIPER,
                 damage: 75, headshotMul: 2.4,
@@ -1097,6 +1135,43 @@
                 sprintToFireDelay: 0.2,
                 recoil: { vertical: 0.013, horizontal: 0.008, cameraKick: 0.01, recoverySpeed: 7 },
                 sway: { amount: 0.017, speed: 1.4, bobAmount: 0.019, bobSpeed: 9 },
+                soundProfile: 'lmg', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            // LMG roster expansion (4/8 -> 6/8): none of the existing 4
+            // pushed to either extreme of the category - a slower, harder-
+            // hitting "heavy support gun" (best LMG range/damage, worst
+            // mobility) and an ultra-high-mag pure suppression gun (lowest
+            // damage, fastest fire rate, biggest magazine in the game).
+            BO45: {
+                id: 'BO45', name: 'BO-45 SIEGEBREAKER', category: WEAPON_CATEGORY.LMG,
+                subcategory: 'Heavy Support Gun', ammoType: '7.62mm Belt', fireMode: 'full-auto',
+                damage: 34, headshotMul: 1.5,
+                fireRate: 8, mag: 60, reserve: 180,
+                reloadTime: 3.8, reloadTimeEmpty: 4.4,
+                spread: { hip: 0.016, ads: 0.004, moving: 0.01 },
+                range: 100, bulletSpeed: 880,
+                ads: { time: 0.34, fovMul: 0.78, sensitivityMul: 0.6 },
+                movement: { hipMul: 0.78, adsMul: 0.48 },
+                sprintToFireDelay: 0.28,
+                recoil: { vertical: 0.02, horizontal: 0.008, cameraKick: 0.017, recoverySpeed: 6 },
+                sway: { amount: 0.017, speed: 1.1, bobAmount: 0.018, bobSpeed: 7.5 },
+                soundProfile: 'lmg', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO46: {
+                id: 'BO46', name: 'BO-46 WHIRLWIND', category: WEAPON_CATEGORY.LMG,
+                subcategory: 'Suppression Gun', ammoType: '5.56mm Belt', fireMode: 'full-auto',
+                damage: 18, headshotMul: 1.2,
+                fireRate: 16, mag: 150, reserve: 450,
+                reloadTime: 5.0, reloadTimeEmpty: 5.6,
+                spread: { hip: 0.032, ads: 0.01, moving: 0.02 },
+                range: 70, bulletSpeed: 780,
+                ads: { time: 0.3, fovMul: 0.85, sensitivityMul: 0.68 },
+                movement: { hipMul: 0.75, adsMul: 0.45 },
+                sprintToFireDelay: 0.32,
+                recoil: { vertical: 0.012, horizontal: 0.014, cameraKick: 0.01, recoverySpeed: 9 },
+                sway: { amount: 0.022, speed: 1.0, bobAmount: 0.021, bobSpeed: 7 },
                 soundProfile: 'lmg', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             },
@@ -1379,8 +1454,8 @@
                 soundProfile: 'special', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             }
-            // Full roster: 5 AR, 5 SMG, 4 Shotgun, 5 Sniper, 5 DMR, 4 LMG,
-            // 4 Pistol, 3 Revolver, 4 Rocket, 5 Melee, 5 Special = 49 total.
+            // Full roster: 5 AR, 5 SMG, 6 Shotgun, 5 Sniper, 5 DMR, 6 LMG,
+            // 4 Pistol, 3 Revolver, 4 Rocket, 5 Melee, 5 Special = 53 total.
         };
         // Backwards-compatible alias: Bot AI only ever reads the plain
         // numeric stats (damage/fireRate/mag/reserve/spread/speed), so it
