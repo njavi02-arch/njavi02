@@ -5543,12 +5543,33 @@
             ground.material = concreteMat;
             tagImpactMaterial(ground, 'concrete');
 
-            // Central factory structure
-            const factory1 = BABYLON.MeshBuilder.CreateBox('factory1', { width: 30, height: 8, depth: 15 }, scene);
-            factory1.position = new BABYLON.Vector3(0, 4, 0);
-            factory1.material = metalMat;
-            factory1.checkCollisions = true;
-            tagImpactMaterial(factory1, 'metal');
+            // Central factory structure - real accessible interior instead
+            // of one solid block, same 4-wall-segment pattern already
+            // proven in BACKLOT-7's tower and KRYPTOS-URBAN's Office
+            // Building. Door gap on the west face (the long north/south
+            // faces and the east face stay solid, matching how the ground
+            // plane's traffic naturally flows around this structure rather
+            // than straight through it).
+            const factoryWallH = 8, factoryWallT = 0.6, factoryDoorGap = 4;
+            function factoryWall(name, size, position) {
+                const w = BABYLON.MeshBuilder.CreateBox(name, size, scene);
+                w.position = position;
+                w.material = metalMat;
+                w.checkCollisions = true;
+                tagImpactMaterial(w, 'metal');
+                return w;
+            }
+            factoryWall('factory1_wallN', { width: 30, height: factoryWallH, depth: factoryWallT }, new BABYLON.Vector3(0, factoryWallH / 2, -7.5));
+            factoryWall('factory1_wallS', { width: 30, height: factoryWallH, depth: factoryWallT }, new BABYLON.Vector3(0, factoryWallH / 2, 7.5));
+            factoryWall('factory1_wallE', { width: factoryWallT, height: factoryWallH, depth: 15 }, new BABYLON.Vector3(15, factoryWallH / 2, 0));
+            const factory1WestSegD = (15 - factoryDoorGap) / 2;
+            factoryWall('factory1_wallW1', { width: factoryWallT, height: factoryWallH, depth: factory1WestSegD }, new BABYLON.Vector3(-15, factoryWallH / 2, -7.5 + factory1WestSegD / 2));
+            factoryWall('factory1_wallW2', { width: factoryWallT, height: factoryWallH, depth: factory1WestSegD }, new BABYLON.Vector3(-15, factoryWallH / 2, 7.5 - factory1WestSegD / 2));
+            const factory1Roof = BABYLON.MeshBuilder.CreateBox('factory1_roof', { width: 31, height: 0.5, depth: 16 }, scene);
+            factory1Roof.position = new BABYLON.Vector3(0, factoryWallH + 0.25, 0);
+            factory1Roof.material = metalMat;
+            factory1Roof.checkCollisions = true;
+            tagImpactMaterial(factory1Roof, 'metal');
 
             const factory2 = BABYLON.MeshBuilder.CreateBox('factory2', { width: 15, height: 15, depth: 30 }, scene);
             factory2.position = new BABYLON.Vector3(0, 7.5, 35);
