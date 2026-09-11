@@ -625,6 +625,20 @@ Probado con Playwright: estado inicial correcto (JUGAR activo, panel de partida 
 
 **Pendiente real, no un olvido**: la imagen de fondo real (bloqueada por la limitación de acceso a archivos descrita arriba) y un pequeño ajuste de color en los botones `.menu-button` compartidos (siguen en verde brillante dentro del nuevo panel oscuro/naranja — funcionan perfectamente, pero ese verde no combina del todo con la nueva paleta; no se tocó esa clase porque la comparten otras pantallas como pausa/resultados/loadout, y cambiarla ahí también habría sido un cambio de alcance mayor no pedido).
 
+### Sistema de skins/variantes de personaje (FASE 13, fase 5)
+
+Quinta fase del sistema de personajes: arquitectura BASE→EQUIPO→SKIN→VARIANTE pedida por el usuario, con 5 variantes nombradas por equipo (Militar: Estándar/Desierto/Bosque/Urbano/Nocturno; SWAT: Estándar/Urbano/Pesado/Táctico/Nocturno).
+
+**Arquitectura**: `CHARACTER_PALETTES` (2 entradas planas) se reemplaza por `CHARACTER_SKINS` (10 entradas anidadas por equipo), cada una con la misma forma de datos que ya usaba `buildHumanoidCharacter()` — sigue siendo solo color+material, la geometría/rig no cambia en absoluto entre variantes, exactamente la escalabilidad de datos que pidió el usuario ("añadir una variante es una entrada de datos, no una nueva función de geometría"). Selección persistida por equipo en `currentCharacterSkin` (`localStorage`, mismo patrón ya usado para `currentOperator`).
+
+**Excepción deliberada — "SWAT Pesado"**: la única variante que además de color cambia algo más: escala el chaleco (`vestScale`) para leer como una silueta más voluminosa/blindada, aplicado en `attachCharacterVisual()` tras construir el personaje. Demuestra que la arquitectura soporta variantes que van más allá de un simple cambio de paleta sin tocar el rig compartido por las otras 9 variantes.
+
+**Bug real encontrado y corregido durante la implementación**: la caché de materiales (`getCharacterMaterial`, indexada por `paletteKey + parte`) usaba como `paletteKey` solo el nombre del equipo ('MILITARY'/'SWAT'), no la variante concreta — cambiar de skin habría seguido reutilizando los materiales cacheados de la PRIMERA variante construida, mostrando los colores equivocados en todo personaje construido después de un cambio real de skin. Corregido incluyendo el id de la variante en la clave de caché (`'MILITARY_' + currentCharacterSkin.MILITARY`).
+
+**Selección**: la pantalla OPERATORS (ya existente) gana dos selectores de ciclo (◀ NOMBRE ▶) para Militar y SWAT, reutilizando exactamente el mismo patrón ya usado para ciclar operador (registro + índice persistido + re-render) — sin pantalla nueva, sin duplicar lógica de navegación.
+
+Probado con Playwright: registro verificado (10 variantes, 5 por equipo, nombres y colores de uniforme todos distintos, solo "SWAT Pesado" con `vestScale`). Ciclado real vía la UI de Operators (Militar Estándar→Bosque, SWAT Estándar→Pesado) confirmado en el DOM y persistido correctamente en `localStorage`. Tras el cambio, un personaje recién construido con `buildHumanoidCharacter()` usa exactamente el color de uniforme de la nueva variante (no el anterior — confirma que el bug de caché quedó corregido) y el chaleco de SWAT Pesado tiene la escala esperada (1.22/1.12/1.3). Regresión completa: 21 partes por personaje en jugador y bots, daño de combate exacto (42, headshot), `totalWeapons: 64` sin cambios. Cero errores de consola nuevos.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.

@@ -785,6 +785,29 @@
                 </div>
                 <button class="menu-button" id="operatorNextBtn" style="padding: 0.5rem 0.9rem;">▶</button>
             </div>
+
+            <!-- Character skin/variant selection - separate from the
+                 operator above (operator color is a per-player FFA accent;
+                 these are the team uniform variants, shared by every
+                 player/bot on that team once a match starts). -->
+            <div style="margin-top: 1.5rem; font-size: 0.7rem; color: #00aa00;">SKIN DE PERSONAJE</div>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.8rem; margin-top: 0.4rem;">
+                <button class="menu-button" id="militarySkinPrevBtn" style="padding: 0.4rem 0.7rem; font-size: 0.8rem;">◀</button>
+                <div style="width: 160px;">
+                    <div style="font-size: 0.65rem; color: #557755;">MILITAR</div>
+                    <div id="militarySkinName" style="font-size: 0.8rem;"></div>
+                </div>
+                <button class="menu-button" id="militarySkinNextBtn" style="padding: 0.4rem 0.7rem; font-size: 0.8rem;">▶</button>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.8rem; margin-top: 0.5rem;">
+                <button class="menu-button" id="swatSkinPrevBtn" style="padding: 0.4rem 0.7rem; font-size: 0.8rem;">◀</button>
+                <div style="width: 160px;">
+                    <div style="font-size: 0.65rem; color: #557755;">SWAT</div>
+                    <div id="swatSkinName" style="font-size: 0.8rem;"></div>
+                </div>
+                <button class="menu-button" id="swatSkinNextBtn" style="padding: 0.4rem 0.7rem; font-size: 0.8rem;">▶</button>
+            </div>
+
             <button class="menu-button" id="operatorsBackBtn" style="margin-top: 1.5rem;">↩ BACK</button>
         </div>
     </div>
@@ -3352,34 +3375,109 @@
         // every hit-detection/collision code path already reads
         // entity.mesh.position and the capsule's own half-height, and none
         // of that changes. This is purely an additive visual layer.
-        const CHARACTER_PALETTES = {
-            // Team 1 - Military: olive/tan/desert tactical, matches a
-            // modern military unit's silhouette. Deliberately NOT a clone
-            // of any real game's exact uniform - original color scheme.
+        // BASE -> TEAM -> SKIN -> VARIANT, as the user asked for: the
+        // geometry (buildHumanoidCharacter, unchanged below) is the BASE,
+        // MILITARY/SWAT are the TEAM layer, and each named entry here is a
+        // SKIN/VARIANT within that team - still just color+material data,
+        // still the same rig/parts, so adding an 11th variant later is a
+        // new object literal here, not a new geometry builder. 5 variants
+        // per team, matching the user's named list (standard/desert/
+        // forest/urban/night for Military; standard/urban/heavy/tactical/
+        // night for SWAT). Only 'heavy' also scales the vest (see
+        // vestScale, applied in attachCharacterVisual) - a real example of
+        // a variant changing more than color, without touching the shared
+        // rig other variants reuse untouched.
+        const CHARACTER_SKINS = {
             MILITARY: {
-                uniform: new BABYLON.Color3(0.29, 0.33, 0.19),
-                vest: new BABYLON.Color3(0.22, 0.24, 0.15),
-                helmet: new BABYLON.Color3(0.24, 0.26, 0.17),
-                gloves: new BABYLON.Color3(0.15, 0.15, 0.13),
-                boots: new BABYLON.Color3(0.13, 0.12, 0.1),
-                backpack: new BABYLON.Color3(0.27, 0.28, 0.18),
-                skin: new BABYLON.Color3(0.75, 0.57, 0.44),
-                accent: new BABYLON.Color3(0.55, 0.45, 0.15)
+                standard: {
+                    name: 'Militar Estándar',
+                    uniform: new BABYLON.Color3(0.29, 0.33, 0.19), vest: new BABYLON.Color3(0.22, 0.24, 0.15),
+                    helmet: new BABYLON.Color3(0.24, 0.26, 0.17), gloves: new BABYLON.Color3(0.15, 0.15, 0.13),
+                    boots: new BABYLON.Color3(0.13, 0.12, 0.1), backpack: new BABYLON.Color3(0.27, 0.28, 0.18),
+                    skin: new BABYLON.Color3(0.75, 0.57, 0.44), accent: new BABYLON.Color3(0.55, 0.45, 0.15)
+                },
+                desert: {
+                    name: 'Militar Desierto',
+                    uniform: new BABYLON.Color3(0.62, 0.54, 0.38), vest: new BABYLON.Color3(0.5, 0.43, 0.3),
+                    helmet: new BABYLON.Color3(0.55, 0.47, 0.33), gloves: new BABYLON.Color3(0.35, 0.3, 0.22),
+                    boots: new BABYLON.Color3(0.32, 0.27, 0.18), backpack: new BABYLON.Color3(0.58, 0.5, 0.35),
+                    skin: new BABYLON.Color3(0.75, 0.57, 0.44), accent: new BABYLON.Color3(0.75, 0.55, 0.2)
+                },
+                forest: {
+                    name: 'Militar Bosque',
+                    uniform: new BABYLON.Color3(0.16, 0.22, 0.13), vest: new BABYLON.Color3(0.12, 0.16, 0.1),
+                    helmet: new BABYLON.Color3(0.13, 0.18, 0.11), gloves: new BABYLON.Color3(0.1, 0.1, 0.08),
+                    boots: new BABYLON.Color3(0.08, 0.08, 0.06), backpack: new BABYLON.Color3(0.15, 0.19, 0.12),
+                    skin: new BABYLON.Color3(0.75, 0.57, 0.44), accent: new BABYLON.Color3(0.35, 0.5, 0.15)
+                },
+                urban: {
+                    name: 'Militar Urbano',
+                    uniform: new BABYLON.Color3(0.35, 0.35, 0.36), vest: new BABYLON.Color3(0.27, 0.27, 0.28),
+                    helmet: new BABYLON.Color3(0.3, 0.3, 0.31), gloves: new BABYLON.Color3(0.18, 0.18, 0.19),
+                    boots: new BABYLON.Color3(0.15, 0.15, 0.16), backpack: new BABYLON.Color3(0.32, 0.32, 0.33),
+                    skin: new BABYLON.Color3(0.75, 0.57, 0.44), accent: new BABYLON.Color3(0.7, 0.7, 0.72)
+                },
+                night: {
+                    name: 'Militar Nocturno',
+                    uniform: new BABYLON.Color3(0.08, 0.09, 0.08), vest: new BABYLON.Color3(0.05, 0.06, 0.05),
+                    helmet: new BABYLON.Color3(0.06, 0.07, 0.06), gloves: new BABYLON.Color3(0.03, 0.03, 0.03),
+                    boots: new BABYLON.Color3(0.02, 0.02, 0.02), backpack: new BABYLON.Color3(0.07, 0.08, 0.07),
+                    skin: new BABYLON.Color3(0.75, 0.57, 0.44), accent: new BABYLON.Color3(0.2, 0.6, 0.9)
+                }
             },
-            // Team 2 - SWAT/tactical: dark navy/black, modern tactical-unit
-            // silhouette (not a police-department logo/insignia, just the
-            // color language of "dark tactical operator").
             SWAT: {
-                uniform: new BABYLON.Color3(0.13, 0.14, 0.17),
-                vest: new BABYLON.Color3(0.08, 0.09, 0.11),
-                helmet: new BABYLON.Color3(0.1, 0.1, 0.12),
-                gloves: new BABYLON.Color3(0.06, 0.06, 0.07),
-                boots: new BABYLON.Color3(0.05, 0.05, 0.06),
-                backpack: new BABYLON.Color3(0.11, 0.12, 0.14),
-                skin: new BABYLON.Color3(0.75, 0.57, 0.44),
-                accent: new BABYLON.Color3(0.1, 0.35, 0.55)
+                standard: {
+                    name: 'SWAT Estándar',
+                    uniform: new BABYLON.Color3(0.13, 0.14, 0.17), vest: new BABYLON.Color3(0.08, 0.09, 0.11),
+                    helmet: new BABYLON.Color3(0.1, 0.1, 0.12), gloves: new BABYLON.Color3(0.06, 0.06, 0.07),
+                    boots: new BABYLON.Color3(0.05, 0.05, 0.06), backpack: new BABYLON.Color3(0.11, 0.12, 0.14),
+                    skin: new BABYLON.Color3(0.75, 0.57, 0.44), accent: new BABYLON.Color3(0.1, 0.35, 0.55)
+                },
+                urban: {
+                    name: 'SWAT Urbano',
+                    uniform: new BABYLON.Color3(0.28, 0.29, 0.3), vest: new BABYLON.Color3(0.2, 0.21, 0.22),
+                    helmet: new BABYLON.Color3(0.22, 0.23, 0.24), gloves: new BABYLON.Color3(0.14, 0.14, 0.15),
+                    boots: new BABYLON.Color3(0.12, 0.12, 0.13), backpack: new BABYLON.Color3(0.25, 0.26, 0.27),
+                    skin: new BABYLON.Color3(0.75, 0.57, 0.44), accent: new BABYLON.Color3(0.75, 0.75, 0.78)
+                },
+                heavy: {
+                    name: 'SWAT Pesado',
+                    uniform: new BABYLON.Color3(0.1, 0.1, 0.11), vest: new BABYLON.Color3(0.06, 0.06, 0.07),
+                    helmet: new BABYLON.Color3(0.08, 0.08, 0.09), gloves: new BABYLON.Color3(0.05, 0.05, 0.05),
+                    boots: new BABYLON.Color3(0.04, 0.04, 0.04), backpack: new BABYLON.Color3(0.09, 0.09, 0.1),
+                    skin: new BABYLON.Color3(0.75, 0.57, 0.44), accent: new BABYLON.Color3(0.6, 0.1, 0.1),
+                    vestScale: new BABYLON.Vector3(1.22, 1.12, 1.3)
+                },
+                tactical: {
+                    name: 'SWAT Táctico',
+                    uniform: new BABYLON.Color3(0.15, 0.16, 0.19), vest: new BABYLON.Color3(0.09, 0.1, 0.12),
+                    helmet: new BABYLON.Color3(0.11, 0.12, 0.14), gloves: new BABYLON.Color3(0.06, 0.06, 0.07),
+                    boots: new BABYLON.Color3(0.05, 0.05, 0.06), backpack: new BABYLON.Color3(0.12, 0.13, 0.15),
+                    skin: new BABYLON.Color3(0.75, 0.57, 0.44), accent: new BABYLON.Color3(0.15, 0.75, 0.35)
+                },
+                night: {
+                    name: 'SWAT Nocturno',
+                    uniform: new BABYLON.Color3(0.05, 0.05, 0.06), vest: new BABYLON.Color3(0.03, 0.03, 0.04),
+                    helmet: new BABYLON.Color3(0.04, 0.04, 0.05), gloves: new BABYLON.Color3(0.02, 0.02, 0.02),
+                    boots: new BABYLON.Color3(0.02, 0.02, 0.02), backpack: new BABYLON.Color3(0.04, 0.04, 0.05),
+                    skin: new BABYLON.Color3(0.75, 0.57, 0.44), accent: new BABYLON.Color3(0.7, 0.1, 0.7)
+                }
             }
         };
+
+        // Persisted per-team skin choice, same load/save pattern already
+        // used for currentOperator.
+        let currentCharacterSkin = { MILITARY: 'standard', SWAT: 'standard' };
+        try {
+            const savedSkins = JSON.parse(localStorage.getItem('bulletOpsCharacterSkin') || 'null');
+            if (savedSkins) {
+                if (CHARACTER_SKINS.MILITARY[savedSkins.MILITARY]) currentCharacterSkin.MILITARY = savedSkins.MILITARY;
+                if (CHARACTER_SKINS.SWAT[savedSkins.SWAT]) currentCharacterSkin.SWAT = savedSkins.SWAT;
+            }
+        } catch (e) { /* ignore - keep defaults */ }
+        function saveCharacterSkin() {
+            try { localStorage.setItem('bulletOpsCharacterSkin', JSON.stringify(currentCharacterSkin)); } catch (e) { /* ignore */ }
+        }
 
         // FFA has no team - falls back to a neutral tactical palette, with
         // the player's chosen operator color still applied as an accent
@@ -3397,8 +3495,8 @@
         };
 
         function paletteForTeam(team, operatorColor) {
-            if (team === 'BLUE') return CHARACTER_PALETTES.SWAT;
-            if (team === 'RED') return CHARACTER_PALETTES.MILITARY;
+            if (team === 'BLUE') return CHARACTER_SKINS.SWAT[currentCharacterSkin.SWAT] || CHARACTER_SKINS.SWAT.standard;
+            if (team === 'RED') return CHARACTER_SKINS.MILITARY[currentCharacterSkin.MILITARY] || CHARACTER_SKINS.MILITARY.standard;
             const p = Object.assign({}, CHARACTER_PALETTE_NEUTRAL);
             if (operatorColor) p.accent = operatorColor;
             return p;
@@ -3529,9 +3627,21 @@
         // camera-driven rotation) automatically.
         function attachCharacterVisual(entity, scene, team, accentColor, shadowGenerator) {
             const palette = paletteForTeam(team, accentColor);
-            const paletteKey = team === 'BLUE' ? 'SWAT' : team === 'RED' ? 'MILITARY' : 'NEUTRAL_' + (accentColor ? accentColor.toHexString() : 'default');
+            // Keyed by team AND the actual skin variant (not just team) -
+            // otherwise switching skins would keep reusing whichever
+            // variant's materials got cached first (see
+            // getCharacterMaterial()'s cache), showing the wrong colors on
+            // every subsequently-built character even after a real skin
+            // change.
+            const paletteKey = team === 'BLUE' ? 'SWAT_' + currentCharacterSkin.SWAT
+                : team === 'RED' ? 'MILITARY_' + currentCharacterSkin.MILITARY
+                : 'NEUTRAL_' + (accentColor ? accentColor.toHexString() : 'default');
             const character = buildHumanoidCharacter(scene, palette, paletteKey);
             character.root.parent = entity.mesh;
+            // 'heavy' (and any future variant that widens more than color)
+            // scales the vest directly - same shared geometry, a real
+            // silhouette difference rather than only a palette swap.
+            if (palette.vestScale) character.parts.vest.scaling.copyFrom(palette.vestScale);
             entity.mesh.isVisible = false;
             entity.characterParts = character.parts;
             if (shadowGenerator) {
@@ -5772,13 +5882,35 @@
             renderOperatorsScreen();
         }
 
+        // Character skin/variant cycling - independent of the operator
+        // cycle above, same underlying pattern (registry + persisted index
+        // + re-render). Takes effect on the next character built (i.e. the
+        // next match), not retroactively on whoever is already on screen.
+        function renderCharacterSkinPickers() {
+            document.getElementById('militarySkinName').textContent = CHARACTER_SKINS.MILITARY[currentCharacterSkin.MILITARY].name;
+            document.getElementById('swatSkinName').textContent = CHARACTER_SKINS.SWAT[currentCharacterSkin.SWAT].name;
+        }
+        function cycleCharacterSkin(team, dir) {
+            const ids = Object.keys(CHARACTER_SKINS[team]);
+            let idx = ids.indexOf(currentCharacterSkin[team]);
+            idx = (idx + dir + ids.length) % ids.length;
+            currentCharacterSkin[team] = ids[idx];
+            saveCharacterSkin();
+            renderCharacterSkinPickers();
+        }
+
         document.getElementById('operatorsBtn').addEventListener('click', () => {
             renderOperatorsScreen();
+            renderCharacterSkinPickers();
             menu.classList.add('hidden');
             document.getElementById('operatorsScreen').classList.remove('hidden');
         });
         document.getElementById('operatorPrevBtn').addEventListener('click', () => cycleOperator(-1));
         document.getElementById('operatorNextBtn').addEventListener('click', () => cycleOperator(1));
+        document.getElementById('militarySkinPrevBtn').addEventListener('click', () => cycleCharacterSkin('MILITARY', -1));
+        document.getElementById('militarySkinNextBtn').addEventListener('click', () => cycleCharacterSkin('MILITARY', 1));
+        document.getElementById('swatSkinPrevBtn').addEventListener('click', () => cycleCharacterSkin('SWAT', -1));
+        document.getElementById('swatSkinNextBtn').addEventListener('click', () => cycleCharacterSkin('SWAT', 1));
         document.getElementById('operatorsBackBtn').addEventListener('click', () => {
             document.getElementById('operatorsScreen').classList.add('hidden');
             menu.classList.remove('hidden');
