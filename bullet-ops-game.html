@@ -604,7 +604,7 @@
             border-radius: 50%;
             transform: translate(-50%, -50%);
         }
-        #pauseMenu, #resultsScreen, #loadoutScreen, #weaponsScreen, #operatorsScreen, #settingsScreen {
+        #pauseMenu, #resultsScreen, #loadoutScreen, #weaponsScreen, #operatorsScreen, #settingsScreen, #storeScreen {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(10, 14, 39, 0.85);
@@ -615,6 +615,94 @@
             z-index: 2000;
             color: #00ff00;
         }
+        /* ===== VISUAL ARSENAL: weapon cards, detail/preview overlay, store ===== */
+        /* Icon-first weapon cards - the image (see getWeaponIconDataURL())
+           is the dominant element of every card; the name is a small
+           secondary label underneath, never the card's main content. Used
+           identically by the WEAPONS catalog grid and each LOADOUT slot,
+           so both screens share one visual language. */
+        .weapon-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100px;
+            padding: 6px;
+            background: rgba(0, 20, 0, 0.35);
+            border: 1px solid rgba(0, 255, 0, 0.25);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.12s, border-color 0.12s, background 0.12s;
+            position: relative;
+        }
+        .weapon-card:hover {
+            transform: scale(1.06);
+            border-color: rgba(0, 255, 0, 0.7);
+            background: rgba(0, 40, 0, 0.5);
+        }
+        .weapon-card.equipped { border-color: #ffaa00; box-shadow: 0 0 10px rgba(255, 170, 0, 0.4); }
+        .weapon-card img { width: 100%; aspect-ratio: 1; border-radius: 3px; display: block; }
+        .weapon-card .wc-name { font-size: 0.62rem; color: #cceecc; margin-top: 4px; text-align: center; line-height: 1.15; min-height: 1.7em; }
+        .weapon-card .wc-badge {
+            position: absolute; top: 3px; left: 3px;
+            font-size: 0.55rem; padding: 1px 4px; border-radius: 2px;
+            background: rgba(255, 170, 0, 0.9); color: #000; font-weight: bold;
+        }
+        #weaponsGrid {
+            display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+            overflow-y: auto; padding: 0.5rem;
+        }
+        .weapon-category-header {
+            width: 100%; color: #00ff00; font-size: 0.75rem; text-align: left;
+            border-bottom: 1px solid #1a3a1a; padding-bottom: 2px; margin-top: 0.6rem;
+        }
+        /* Weapon detail / live 3D preview overlay - the image protagonist
+           of the whole system: a REAL live render of the exact procedural
+           viewmodel the weapon uses in a match (buildWeaponViewmodel(),
+           see openWeaponPreview()), not a separate fake asset. Drag to
+           rotate is Babylon's own ArcRotateCamera control, no custom input
+           code needed. */
+        #weaponDetailScreen {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(6, 8, 14, 0.92);
+            z-index: 2100;
+            display: flex; align-items: center; justify-content: center; gap: 2rem;
+            color: #00ff00; font-family: monospace;
+        }
+        #weaponPreviewCanvas {
+            width: 420px; height: 420px;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 4px;
+            background: radial-gradient(circle, #10151a 0%, #05070a 100%);
+        }
+        #weaponDetailInfo { width: 320px; text-align: left; }
+        #weaponDetailInfo .wd-name { font-size: 1.3rem; color: #cceecc; margin-bottom: 2px; }
+        #weaponDetailInfo .wd-cat { font-size: 0.75rem; color: #00aa00; margin-bottom: 1rem; }
+        .wd-stat-row { display: flex; justify-content: space-between; font-size: 0.78rem; color: #88bb88; padding: 3px 0; border-bottom: 1px solid #142214; }
+        .wd-stat-row span:last-child { color: #cceecc; }
+        #weaponDetailSkins { display: flex; gap: 8px; margin-top: 1rem; flex-wrap: wrap; }
+        .skin-swatch {
+            width: 44px; height: 44px; border-radius: 4px; cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.15); position: relative;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem;
+        }
+        .skin-swatch.equipped { border-color: #ffaa00; }
+        .skin-swatch.locked { opacity: 0.5; cursor: not-allowed; }
+        .skin-swatch .ss-price {
+            position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%);
+            font-size: 0.55rem; color: #d1cf5f; white-space: nowrap;
+        }
+        #weaponDetailEquipRow { margin-top: 1.2rem; display: flex; gap: 8px; flex-wrap: wrap; }
+        /* TIENDA - same card language, priced. */
+        #storeGrid { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; padding: 1rem; max-width: 700px; }
+        .store-card {
+            width: 150px; padding: 10px; background: rgba(0, 20, 0, 0.35);
+            border: 1px solid rgba(0, 255, 0, 0.25); border-radius: 4px; text-align: center;
+        }
+        .store-card .sc-swatch { width: 100%; aspect-ratio: 1.4; border-radius: 3px; margin-bottom: 6px; }
+        .store-card .sc-name { font-size: 0.75rem; color: #cceecc; }
+        .store-card .sc-tier { font-size: 0.6rem; color: #00aa00; margin-bottom: 6px; }
+        #storeCoins { font-size: 0.85rem; color: #d1cf5f; margin-bottom: 0.8rem; }
     </style>
 </head>
 <body>
@@ -637,7 +725,7 @@
             <button class="nav-item" id="navPracticaBtn"><span class="nav-dot"></span>PRÁCTICA</button>
             <button class="nav-item" id="navArmamentoBtn"><span class="nav-dot"></span>ARMAMENTO</button>
             <button class="nav-item" id="navOperadoresBtn"><span class="nav-dot"></span>OPERADORES</button>
-            <button class="nav-item locked" id="navTiendaBtn" title="Próximamente"><span class="nav-dot"></span>TIENDA</button>
+            <button class="nav-item" id="navTiendaBtn"><span class="nav-dot"></span>TIENDA</button>
             <button class="nav-item locked" id="navPaseBtn" title="Próximamente"><span class="nav-dot"></span>PASE DE BATALLA</button>
             <button class="nav-item" id="navAjustesBtn"><span class="nav-dot"></span>AJUSTES</button>
         </nav>
@@ -702,6 +790,7 @@
         <button class="menu-button hidden" id="weaponsBtn">🔫 WEAPONS</button>
         <button class="menu-button hidden" id="operatorsBtn">🧑 OPERATORS</button>
         <button class="menu-button hidden" id="settingsBtn">⚙ SETTINGS</button>
+        <button class="menu-button hidden" id="storeBtn">🛒 STORE</button>
     </div>
 
     <div id="hud" class="hidden">
@@ -767,10 +856,10 @@
 
     <div id="loadoutScreen" class="hidden">
         <div style="text-align: center;">
-            <div class="menu-title" style="font-size: 2rem;">🎒 LOADOUT</div>
-            <div style="font-size: 0.7rem; color: #00aa00; margin-bottom: 1rem;">Elige 3 armas de las 15 disponibles</div>
-            <div id="loadoutSlots"></div>
-            <button class="menu-button" id="loadoutBackBtn" style="margin-top: 1rem;">↩ BACK</button>
+            <div class="menu-title" style="font-size: 2rem;">🎒 CREAR CLASE</div>
+            <div style="font-size: 0.7rem; color: #00aa00; margin-bottom: 1rem;">Elige 3 armas del arsenal completo</div>
+            <div id="loadoutSlots" style="display: flex; gap: 1.5rem; justify-content: center;"></div>
+            <button class="menu-button" id="loadoutBackBtn" style="margin-top: 1.5rem;">↩ BACK</button>
         </div>
     </div>
 
@@ -814,11 +903,40 @@
     </div>
 
     <div id="weaponsScreen" class="hidden">
-        <div style="text-align: center; max-height: 90vh; display: flex; flex-direction: column;">
-            <div class="menu-title" style="font-size: 2rem; flex-shrink: 0;">🔫 WEAPONS</div>
-            <div style="font-size: 0.7rem; color: #00aa00; margin-bottom: 0.6rem; flex-shrink: 0;">Catálogo completo — 15 armas</div>
-            <div id="weaponsList" style="overflow-y: auto; padding: 0 1rem; flex: 1;"></div>
+        <div style="text-align: center; max-height: 90vh; width: 90vw; max-width: 820px; display: flex; flex-direction: column;">
+            <div class="menu-title" style="font-size: 2rem; flex-shrink: 0;">🔫 ARSENAL</div>
+            <div id="weaponsCount" style="font-size: 0.7rem; color: #00aa00; margin-bottom: 0.6rem; flex-shrink: 0;"></div>
+            <div id="weaponsGrid" style="flex: 1; max-height: 60vh;"></div>
             <button class="menu-button" id="weaponsBackBtn" style="margin-top: 1rem; flex-shrink: 0;">↩ BACK</button>
+        </div>
+    </div>
+
+    <!-- Weapon detail / live 3D preview - shared by the WEAPONS catalog,
+         each LOADOUT slot, and the TIENDA product page (see
+         openWeaponPreview()). A real live render of the weapon's actual
+         procedural viewmodel, not a static image. -->
+    <div id="weaponDetailScreen" class="hidden">
+        <canvas id="weaponPreviewCanvas"></canvas>
+        <div id="weaponDetailInfo">
+            <div class="wd-name" id="wdName"></div>
+            <div class="wd-cat" id="wdCat"></div>
+            <div id="wdStats"></div>
+            <div style="font-size: 0.65rem; color: #00aa00; margin-top: 1rem;">CAMUFLAJE</div>
+            <div id="weaponDetailSkins"></div>
+            <div id="weaponDetailEquipRow"></div>
+            <button class="menu-button" id="weaponDetailCloseBtn" style="margin-top: 1.2rem;">✕ CERRAR</button>
+        </div>
+    </div>
+
+    <!-- TIENDA: real functional store selling camos via SKIN_REGISTRY,
+         paid for with coins earned from real kills/wins (see
+         awardKill()/endGame()). -->
+    <div id="storeScreen" class="hidden">
+        <div style="text-align: center; max-height: 90vh; display: flex; flex-direction: column;">
+            <div class="menu-title" style="font-size: 2rem; flex-shrink: 0;">🛒 TIENDA</div>
+            <div id="storeCoins"></div>
+            <div id="storeGrid" style="overflow-y: auto; flex: 1;"></div>
+            <button class="menu-button" id="storeBackBtn" style="margin-top: 1rem; flex-shrink: 0;">↩ BACK</button>
         </div>
     </div>
 
@@ -2743,6 +2861,243 @@
             return mat;
         }
 
+        // ========== ECONOMY: coins + owned skins ==========
+        // SKIN_REGISTRY/applySkin() above existed from early in the project
+        // but were never actually player-facing - every weapon just always
+        // used its own defaultSkin, with no UI anywhere to choose a
+        // different one. This turns it into a real feature: coins earned
+        // from real kills/wins (see awardKill()/endGame()), skins bought
+        // with them, and an equipped skin PER WEAPON that genuinely changes
+        // what renders in a real match (see WeaponController's viewmodel
+        // construction below) - not just a cosmetic menu preview divorced
+        // from gameplay. 'default' is always owned/free - it's what every
+        // weapon already rendered with before this system existed, so nothing
+        // already-working gets locked behind this.
+        const SKIN_PRICES = { tan: 150, urban: 150, digital: 250, gold: 500 };
+        let playerCoins = 500;
+        try {
+            const savedCoins = localStorage.getItem('bulletOpsCoins');
+            if (savedCoins !== null) playerCoins = Math.max(0, parseInt(savedCoins, 10) || 0);
+        } catch (e) { /* ignore - keep default */ }
+        function saveCoins() { try { localStorage.setItem('bulletOpsCoins', String(playerCoins)); } catch (e) { /* ignore */ } }
+
+        let ownedSkins = new Set(['default']);
+        try {
+            const savedOwned = JSON.parse(localStorage.getItem('bulletOpsOwnedSkins') || 'null');
+            if (Array.isArray(savedOwned)) savedOwned.forEach(id => SKIN_REGISTRY[id] && ownedSkins.add(id));
+        } catch (e) { /* ignore - keep just default */ }
+        function saveOwnedSkins() { try { localStorage.setItem('bulletOpsOwnedSkins', JSON.stringify([...ownedSkins])); } catch (e) { /* ignore */ } }
+
+        // Per-weapon equipped skin choice (independent of any other
+        // weapon's choice, and independent of the global currentLoadout -
+        // a skin stays remembered for a weapon even if it's swapped out of
+        // the active loadout and back in later).
+        let equippedSkins = {};
+        try {
+            const savedEquipped = JSON.parse(localStorage.getItem('bulletOpsEquippedSkins') || 'null');
+            if (savedEquipped && typeof savedEquipped === 'object') equippedSkins = savedEquipped;
+        } catch (e) { /* ignore */ }
+        function saveEquippedSkins() { try { localStorage.setItem('bulletOpsEquippedSkins', JSON.stringify(equippedSkins)); } catch (e) { /* ignore */ } }
+        function getEquippedSkin(weaponId) {
+            const chosen = equippedSkins[weaponId];
+            if (chosen && ownedSkins.has(chosen)) return chosen;
+            return WEAPON_CONFIGS[weaponId].defaultSkin;
+        }
+        function equipSkinOnWeapon(weaponId, skinId) {
+            if (!ownedSkins.has(skinId)) return false;
+            equippedSkins[weaponId] = skinId;
+            saveEquippedSkins();
+            // If this weapon is in the player's active match loadout right
+            // now, re-skin its live viewmodel immediately instead of only
+            // on the next match start.
+            if (player && player.weaponController && player.weaponController.viewmodels[weaponId]) {
+                applySkin(player.weaponController.viewmodels[weaponId].root, skinId, scene);
+            }
+            return true;
+        }
+        function buySkin(skinId) {
+            if (ownedSkins.has(skinId)) return { ok: false, reason: 'owned' };
+            const price = SKIN_PRICES[skinId];
+            if (price === undefined) return { ok: false, reason: 'invalid' };
+            if (playerCoins < price) return { ok: false, reason: 'funds' };
+            playerCoins -= price;
+            ownedSkins.add(skinId);
+            saveCoins();
+            saveOwnedSkins();
+            return { ok: true };
+        }
+
+        // ========== WEAPON VISUAL REGISTRY ==========
+        // No external image/render assets exist for any weapon (no art
+        // pipeline in a single-file Artifact), so this builds real visual
+        // representations from two things that already exist in the
+        // project rather than falling back to plain text names:
+        //   1) A procedural 2D "icon" per weapon, drawn once to an
+        //      offscreen canvas and cached as a data URL (see
+        //      getWeaponIconDataURL) - cheap enough for a full 68-card grid
+        //      without any live rendering.
+        //   2) A REAL live 3D preview using the exact same
+        //      buildWeaponViewmodel()/applySkin() the weapon actually uses
+        //      in a match (see openWeaponPreview() further below) for the
+        //      one weapon currently selected - not a separate fake model.
+        // Both are keyed by category, not by individual weapon: a new
+        // weapon needs zero manual asset work here, it automatically gets
+        // its category's icon shape/silhouette and can be 3D-previewed
+        // immediately, the same "add one data entry" scalability every
+        // other per-category system in this file already has (see
+        // buildWeaponViewmodel's own category switch).
+        //
+        // Icon shapes are a simple set of rectangles per category (a 2D
+        // schematic silhouette, same blockout-primitives spirit as the 3D
+        // viewmodels - not an attempt at photorealistic art), in a local
+        // [-0.5, 0.5] unit space later scaled to the actual canvas size.
+        const CATEGORY_ICON_PARTS = {
+            [WEAPON_CATEGORY.AR]: [
+                { x: -0.34, y: -0.05, w: 0.5, h: 0.1 }, { x: 0.1, y: -0.03, w: 0.34, h: 0.06 },
+                { x: -0.4, y: 0.02, w: 0.09, h: 0.24 }, { x: -0.52, y: -0.035, w: 0.13, h: 0.09 },
+                { x: -0.06, y: 0.02, w: 0.08, h: 0.2 }
+            ],
+            [WEAPON_CATEGORY.SMG]: [
+                { x: -0.24, y: -0.045, w: 0.34, h: 0.09 }, { x: 0.06, y: -0.025, w: 0.16, h: 0.05 },
+                { x: -0.28, y: 0.02, w: 0.07, h: 0.2 }, { x: -0.36, y: -0.03, w: 0.09, h: 0.06 },
+                { x: -0.02, y: 0.02, w: 0.07, h: 0.17 }
+            ],
+            [WEAPON_CATEGORY.SHOTGUN]: [
+                { x: -0.36, y: -0.06, w: 0.4, h: 0.13 }, { x: 0.04, y: -0.045, w: 0.4, h: 0.09 },
+                { x: -0.5, y: -0.02, w: 0.15, h: 0.08 }, { x: -0.08, y: 0.03, w: 0.09, h: 0.2 }
+            ],
+            [WEAPON_CATEGORY.SNIPER]: [
+                { x: -0.4, y: -0.045, w: 0.55, h: 0.09 }, { x: 0.15, y: -0.02, w: 0.4, h: 0.04 },
+                { x: -0.12, y: -0.14, w: 0.22, h: 0.06 }, { x: -0.54, y: -0.035, w: 0.14, h: 0.09 },
+                { x: -0.2, y: 0.02, w: 0.07, h: 0.19 }
+            ],
+            [WEAPON_CATEGORY.DMR]: [
+                { x: -0.36, y: -0.045, w: 0.5, h: 0.09 }, { x: 0.14, y: -0.02, w: 0.3, h: 0.04 },
+                { x: -0.06, y: -0.1, w: 0.15, h: 0.045 }, { x: -0.5, y: -0.035, w: 0.13, h: 0.08 },
+                { x: -0.14, y: 0.02, w: 0.07, h: 0.19 }
+            ],
+            [WEAPON_CATEGORY.LMG]: [
+                { x: -0.38, y: -0.06, w: 0.56, h: 0.12 }, { x: 0.18, y: -0.035, w: 0.34, h: 0.07 },
+                { x: -0.34, y: 0.05, w: 0.14, h: 0.14 }, { x: -0.5, y: -0.04, w: 0.13, h: 0.09 },
+                { x: -0.1, y: 0.03, w: 0.08, h: 0.2 }
+            ],
+            [WEAPON_CATEGORY.PISTOL]: [
+                { x: -0.16, y: -0.045, w: 0.32, h: 0.09 }, { x: -0.18, y: -0.01, w: 0.1, h: 0.05 },
+                { x: -0.12, y: 0.035, w: 0.09, h: 0.17 }, { x: -0.22, y: 0.09, w: 0.07, h: 0.09 }
+            ],
+            [WEAPON_CATEGORY.REVOLVER]: [
+                { x: -0.14, y: -0.04, w: 0.3, h: 0.08 }, { x: -0.06, y: -0.06, w: 0.12, h: 0.12, round: true },
+                { x: -0.16, y: 0.04, w: 0.09, h: 0.17 }, { x: -0.26, y: 0.09, w: 0.07, h: 0.09 }
+            ],
+            [WEAPON_CATEGORY.ROCKET]: [
+                { x: -0.4, y: -0.09, w: 0.7, h: 0.18 }, { x: 0.3, y: -0.13, w: 0.1, h: 0.26 },
+                { x: -0.06, y: 0.09, w: 0.08, h: 0.18 }, { x: -0.28, y: 0.09, w: 0.08, h: 0.15 }
+            ],
+            [WEAPON_CATEGORY.MELEE]: [
+                { x: -0.05, y: -0.32, w: 0.1, h: 0.4 }, { x: -0.16, y: 0.05, w: 0.32, h: 0.05 },
+                { x: -0.06, y: 0.1, w: 0.12, h: 0.22 }
+            ],
+            [WEAPON_CATEGORY.SPECIAL]: [
+                { x: -0.3, y: -0.04, w: 0.4, h: 0.08 }, { x: -0.34, y: -0.16, w: 0.06, h: 0.2 },
+                { x: 0.24, y: -0.16, w: 0.06, h: 0.2 }, { x: -0.06, y: 0.04, w: 0.08, h: 0.2 },
+                { x: 0.06, y: -0.02, w: 0.1, h: 0.04, round: true }
+            ]
+        };
+        // Category accent color (background glow + icon fill tint) - reused
+        // from nowhere else, this is purely a menu-visual identity per
+        // category so the grid reads as color-coded at a glance.
+        const CATEGORY_ACCENT = {
+            [WEAPON_CATEGORY.AR]: '#5fd15f', [WEAPON_CATEGORY.SMG]: '#5fc7d1',
+            [WEAPON_CATEGORY.SHOTGUN]: '#e0954a', [WEAPON_CATEGORY.SNIPER]: '#c15fd1',
+            [WEAPON_CATEGORY.DMR]: '#8f6fe0', [WEAPON_CATEGORY.LMG]: '#d15f7a',
+            [WEAPON_CATEGORY.PISTOL]: '#d1cf5f', [WEAPON_CATEGORY.REVOLVER]: '#d19b5f',
+            [WEAPON_CATEGORY.ROCKET]: '#ff5a3c', [WEAPON_CATEGORY.MELEE]: '#c0c0c8',
+            [WEAPON_CATEGORY.SPECIAL]: '#4ae0c8'
+        };
+        const TIER_STYLE = {
+            ESTANDAR: { label: 'ESTÁNDAR', color: '#8a8d93' },
+            AVANZADA: { label: 'AVANZADA', color: '#4fb8e0' },
+            ELITE: { label: 'ÉLITE', color: '#ff8a1f' }
+        };
+        // Deterministic tier per weapon - ranked by a simple power score
+        // (damage x fireRate) within its OWN category only, so "ÉLITE"
+        // means "top of its category", not "highest raw number in the
+        // whole 68-weapon roster" (which would just always be the same 2-3
+        // sniper/LMG outliers). Computed lazily and cached, not stored on
+        // WEAPON_CONFIGS itself - purely a menu-presentation derivation.
+        let _tierCache = null;
+        function weaponTier(weaponId) {
+            if (!_tierCache) {
+                _tierCache = {};
+                const byCategory = {};
+                for (const id of Object.keys(WEAPON_CONFIGS)) {
+                    const cfg = WEAPON_CONFIGS[id];
+                    const score = (cfg.pelletCount ? cfg.pelletDamage * cfg.pelletCount : cfg.damage) * cfg.fireRate;
+                    (byCategory[cfg.category] = byCategory[cfg.category] || []).push({ id, score });
+                }
+                for (const cat in byCategory) {
+                    const sorted = byCategory[cat].slice().sort((a, b) => a.score - b.score);
+                    sorted.forEach((entry, i) => {
+                        const frac = sorted.length > 1 ? i / (sorted.length - 1) : 1;
+                        _tierCache[entry.id] = frac < 0.34 ? 'ESTANDAR' : frac < 0.72 ? 'AVANZADA' : 'ELITE';
+                    });
+                }
+            }
+            return _tierCache[weaponId] || 'ESTANDAR';
+        }
+
+        const _weaponIconCache = {};
+        function getWeaponIconDataURL(weaponId) {
+            if (_weaponIconCache[weaponId]) return _weaponIconCache[weaponId];
+            const cfg = WEAPON_CONFIGS[weaponId];
+            const size = 160;
+            const c = document.createElement('canvas');
+            c.width = size; c.height = size;
+            const ctx = c.getContext('2d');
+            const accent = CATEGORY_ACCENT[cfg.category] || '#5fd15f';
+            const tier = TIER_STYLE[weaponTier(weaponId)];
+
+            // Background: soft radial glow in the category color over a
+            // dark panel, plus a faint diagonal category-colored ring so
+            // even a glance at the background alone hints at the category
+            // before the silhouette is even parsed.
+            const grad = ctx.createRadialGradient(size / 2, size / 2, 4, size / 2, size / 2, size * 0.7);
+            grad.addColorStop(0, accent + '33');
+            grad.addColorStop(1, '#0a0d10');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, size, size);
+
+            // Silhouette - rotated 90° from its authored top-down layout so
+            // guns read pointing rightward, a conventional catalog pose.
+            ctx.save();
+            ctx.translate(size / 2, size / 2);
+            const scale = size * 0.92;
+            ctx.fillStyle = accent;
+            ctx.shadowColor = accent; ctx.shadowBlur = 10;
+            const parts = CATEGORY_ICON_PARTS[cfg.category] || CATEGORY_ICON_PARTS[WEAPON_CATEGORY.AR];
+            for (const p of parts) {
+                const px = p.x * scale, py = p.y * scale, pw = p.w * scale, ph = p.h * scale;
+                if (p.round) {
+                    ctx.beginPath();
+                    ctx.ellipse(px + pw / 2, py + ph / 2, pw / 2, ph / 2, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    ctx.fillRect(px, py, pw, ph);
+                }
+            }
+            ctx.restore();
+
+            // Tier accent border.
+            ctx.shadowBlur = 0;
+            ctx.strokeStyle = tier.color;
+            ctx.lineWidth = 3;
+            ctx.strokeRect(1.5, 1.5, size - 3, size - 3);
+
+            const url = c.toDataURL('image/png');
+            _weaponIconCache[weaponId] = url;
+            return url;
+        }
+
         // ========== SHARED PARTICLE TEXTURE ==========
         // One small radial-gradient texture, generated once and reused by
         // every particle system (muzzle flash, impacts) - avoids creating a
@@ -3182,7 +3537,11 @@
                     const cfg = WEAPON_CONFIGS[id];
                     const vm = buildWeaponViewmodel(scene, cfg.category);
                     vm.root.parent = player.camera;
-                    applySkin(vm.root, cfg.defaultSkin, scene);
+                    // Whatever skin the player actually equipped for this
+                    // weapon in the store/preview UI (see getEquippedSkin())
+                    // - falls back to cfg.defaultSkin if none was ever
+                    // chosen, exactly the old always-default behavior.
+                    applySkin(vm.root, getEquippedSkin(id), scene);
                     vm.root.setEnabled(false);
                     this.viewmodels[id] = vm;
                 }
@@ -5664,6 +6023,12 @@
             if (owner === player) {
                 showStreakMessage(player.kills);
                 SoundSynth.playKillConfirm();
+                // Real coin economy (see TIENDA below) - a player kill
+                // earns coins toward buying skins, headshots pay a bonus.
+                // Bot kills don't earn coins (only the real player has a
+                // wallet at all).
+                playerCoins += isHeadshot ? 15 : 10;
+                saveCoins();
             }
             if (gameMode === 'TDM') {
                 if (owner.team === 'BLUE') blueScore++; else redScore++;
@@ -6353,15 +6718,27 @@
             const scoreEl = document.getElementById('resultsScore');
             const statsEl = document.getElementById('resultsStats');
 
+            // Match-win coin bonus (see the coin economy above TIENDA) - FFA
+            // only ever reaches endGame() via the player's own score hitting
+            // the target (see updateGame()'s win check), so it's always a
+            // player win there; TDM needs the player's own team to actually
+            // be the winning one.
+            let playerWon = false;
             if (gameMode === 'TDM') {
                 const winner = blueScore > redScore ? 'BLUE' : 'RED';
                 titleEl.textContent = `🏆 ${winner} TEAM WINS`;
                 titleEl.style.color = winner === 'BLUE' ? '#3399ff' : '#ff4444';
                 scoreEl.textContent = `BLUE ${blueScore} - RED ${redScore}`;
+                playerWon = player.team === winner;
             } else {
                 titleEl.textContent = '🏆 VICTORY';
                 titleEl.style.color = '#00ff00';
                 scoreEl.textContent = `${player.kills} KILLS`;
+                playerWon = true;
+            }
+            if (playerWon) {
+                playerCoins += 50;
+                saveCoins();
             }
             statsEl.innerHTML = `KILLS: ${player.kills} &nbsp;|&nbsp; DEATHS: ${player.deaths} &nbsp;|&nbsp; K/D: ${kdr}<br>MATCH TIME: ${mins}:${secs.toString().padStart(2, '0')}`;
 
@@ -6477,28 +6854,194 @@
             setActiveNav(e.currentTarget);
             document.getElementById('settingsBtn').click();
         });
-        // TIENDA / PASE DE BATALLA: genuinely nothing behind them (no
-        // economy or progression system exists in this project) - the
-        // "locked" class + title="Próximamente" already communicates that
-        // without pretending a click does something.
-        document.getElementById('navTiendaBtn').addEventListener('click', () => SoundSynth.playEmpty());
+        // TIENDA is now a real screen (see storeBtn/renderStoreScreen below -
+        // sells camos via the coin economy). PASE DE BATALLA still has
+        // genuinely nothing behind it (no season/progression system exists
+        // in this project) - its "locked" class + title="Próximamente"
+        // already communicates that without pretending a click does
+        // something.
+        document.getElementById('navTiendaBtn').addEventListener('click', (e) => {
+            setActiveNav(e.currentTarget);
+            document.getElementById('storeBtn').click();
+        });
         document.getElementById('navPaseBtn').addEventListener('click', () => SoundSynth.playEmpty());
 
-        // ========== LOADOUT SCREEN ==========
+        // ========== VISUAL ARSENAL: shared weapon card + live 3D preview ==========
+        // Swatch colors mirror each SKIN_REGISTRY material's actual color
+        // (digital gets a CSS pattern instead of one flat color, since its
+        // real material is a 4-color tile pattern) - purely a menu-side
+        // approximation for a small non-rendered swatch; the real material
+        // (see applySkin()) is what actually shows on the 3D preview/in-game.
+        const SKIN_SWATCH_COLOR = {
+            default: '#2a2a2e', tan: '#ad8f61', urban: '#6b7074', gold: '#8c7019',
+            digital: 'repeating-linear-gradient(45deg, #3a4a32, #3a4a32 4px, #5a6b4a 4px, #5a6b4a 8px)'
+        };
+
+        // One shared card builder for the WEAPONS grid and every LOADOUT
+        // slot - the image (getWeaponIconDataURL) is the dominant element,
+        // the name a small secondary label underneath, per the requested
+        // "image first, name last" priority.
+        function createWeaponCardEl(weaponId, opts) {
+            opts = opts || {};
+            const cfg = WEAPON_CONFIGS[weaponId];
+            const card = document.createElement('div');
+            card.className = 'weapon-card' + (opts.equipped ? ' equipped' : '');
+            card.innerHTML =
+                `<img src="${getWeaponIconDataURL(weaponId)}" alt="${cfg.name}">` +
+                (opts.equipped ? '<div class="wc-badge">EQUIPADA</div>' : '') +
+                `<div class="wc-name">${cfg.name}</div>`;
+            return card;
+        }
+
+        // ========== LIVE 3D WEAPON PREVIEW ==========
+        // Shared by the WEAPONS catalog, LOADOUT slots, and (indirectly,
+        // via its skin swatches) TIENDA - a real live render of the exact
+        // buildWeaponViewmodel()/applySkin() geometry the weapon actually
+        // uses in a match, in a dedicated small Engine/Scene so it never
+        // competes with the main match scene. Built lazily on first open;
+        // its render loop only runs while the overlay is visible.
+        let previewEngine = null, previewScene = null, previewCamera = null;
+        let previewViewmodelRoot = null, previewRunning = false, previewContext = null;
+        function ensurePreviewEngine() {
+            if (previewEngine) return;
+            const c = document.getElementById('weaponPreviewCanvas');
+            previewEngine = new BABYLON.Engine(c, true, { preserveDrawingBuffer: true, stencil: true });
+            previewScene = new BABYLON.Scene(previewEngine);
+            previewScene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+            previewCamera = new BABYLON.ArcRotateCamera('previewCam', Math.PI / 2, Math.PI / 2.25, 1.5, BABYLON.Vector3.Zero(), previewScene);
+            previewCamera.attachControl(c, true); // drag-to-rotate + wheel-zoom, Babylon's own built-in control
+            previewCamera.lowerRadiusLimit = 0.8;
+            previewCamera.upperRadiusLimit = 3.2;
+            previewCamera.wheelPrecision = 40;
+            const hemi = new BABYLON.HemisphericLight('pHemi', new BABYLON.Vector3(0, 1, 0), previewScene);
+            hemi.intensity = 0.9;
+            const dir = new BABYLON.DirectionalLight('pDir', new BABYLON.Vector3(-1, -1, 0.4), previewScene);
+            dir.intensity = 0.65;
+        }
+        function refreshPreviewSkin() {
+            if (!previewContext || !previewViewmodelRoot) return;
+            applySkin(previewViewmodelRoot, getEquippedSkin(previewContext.weaponId), previewScene);
+        }
+        function renderWeaponDetailSkins(weaponId) {
+            const container = document.getElementById('weaponDetailSkins');
+            container.innerHTML = '';
+            const equipped = getEquippedSkin(weaponId);
+            for (const skinId of Object.keys(SKIN_REGISTRY)) {
+                const skin = SKIN_REGISTRY[skinId];
+                const owned = ownedSkins.has(skinId);
+                const sw = document.createElement('div');
+                sw.className = 'skin-swatch' + (skinId === equipped ? ' equipped' : '') + (!owned ? ' locked' : '');
+                sw.title = skin.name;
+                sw.style.background = SKIN_SWATCH_COLOR[skinId] || '#333';
+                if (!owned) {
+                    const price = document.createElement('div');
+                    price.className = 'ss-price';
+                    price.textContent = SKIN_PRICES[skinId] + '🪙';
+                    sw.appendChild(price);
+                } else if (skinId === equipped) {
+                    sw.textContent = '✓';
+                }
+                sw.addEventListener('click', () => {
+                    if (!owned) { SoundSynth.playEmpty(); return; }
+                    equipSkinOnWeapon(weaponId, skinId);
+                    refreshPreviewSkin();
+                    renderWeaponDetailSkins(weaponId);
+                });
+                container.appendChild(sw);
+            }
+        }
+        function openWeaponPreview(weaponId, ctx) {
+            ensurePreviewEngine();
+            previewContext = Object.assign({ weaponId }, ctx || {});
+            if (previewViewmodelRoot) { previewViewmodelRoot.dispose(); previewViewmodelRoot = null; }
+            const cfg = WEAPON_CONFIGS[weaponId];
+            const vm = buildWeaponViewmodel(previewScene, cfg.category);
+            vm.root.rotation = new BABYLON.Vector3(0, Math.PI / 2, 0);
+            vm.root.scaling.setAll(1.7);
+            previewViewmodelRoot = vm.root;
+            refreshPreviewSkin();
+
+            document.getElementById('wdName').textContent = cfg.name;
+            document.getElementById('wdCat').textContent = cfg.category.toUpperCase() + ' · ' + TIER_STYLE[weaponTier(weaponId)].label;
+            const statsEl = document.getElementById('wdStats');
+            statsEl.innerHTML = '';
+            const statRows = [
+                ['DAÑO', cfg.pelletCount ? `${cfg.pelletDamage} x${cfg.pelletCount}` : cfg.damage],
+                ['CADENCIA', cfg.fireRate],
+                ['CARGADOR', cfg.mag],
+                ['ALCANCE', cfg.range],
+                ['VEL. DE BALA', cfg.bulletSpeed]
+            ];
+            for (const [label, val] of statRows) {
+                const row = document.createElement('div');
+                row.className = 'wd-stat-row';
+                row.innerHTML = `<span>${label}</span><span>${val}</span>`;
+                statsEl.appendChild(row);
+            }
+
+            renderWeaponDetailSkins(weaponId);
+
+            // Opened from the catalog (not already a specific loadout slot):
+            // offer to equip it into any of the 3 slots directly from here,
+            // so IMAGEN -> SELECCIONAR -> PREVISUALIZAR -> EQUIPAR is one
+            // continuous flow instead of needing to back out to LOADOUT.
+            const equipRow = document.getElementById('weaponDetailEquipRow');
+            equipRow.innerHTML = '';
+            if (!ctx || ctx.context !== 'loadout') {
+                for (let slot = 0; slot < 3; slot++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'menu-button';
+                    btn.style.cssText = 'padding:0.4rem 0.7rem; font-size:0.68rem;';
+                    btn.textContent = `EQUIPAR EN SLOT ${slot + 1}`;
+                    btn.addEventListener('click', () => {
+                        currentLoadout[slot] = weaponId;
+                        saveLoadout();
+                        renderWeaponsScreen();
+                        closeWeaponPreview();
+                    });
+                    equipRow.appendChild(btn);
+                }
+            }
+
+            document.getElementById('weaponDetailScreen').classList.remove('hidden');
+            if (!previewRunning) {
+                previewRunning = true;
+                previewEngine.runRenderLoop(() => previewScene.render());
+            }
+        }
+        function closeWeaponPreview() {
+            document.getElementById('weaponDetailScreen').classList.add('hidden');
+            if (previewEngine && previewRunning) {
+                previewEngine.stopRenderLoop();
+                previewRunning = false;
+            }
+        }
+        document.getElementById('weaponDetailCloseBtn').addEventListener('click', closeWeaponPreview);
+
+        // ========== LOADOUT SCREEN (CREAR CLASE) ==========
         function renderLoadoutScreen() {
             const container = document.getElementById('loadoutSlots');
-            const ids = Object.keys(WEAPON_CONFIGS);
             container.innerHTML = '';
             for (let slot = 0; slot < 3; slot++) {
-                const cfg = WEAPON_CONFIGS[currentLoadout[slot]];
-                const row = document.createElement('div');
-                row.style.cssText = 'display:flex; align-items:center; justify-content:center; gap:0.7rem; margin:0.5rem 0;';
-                row.innerHTML =
-                    `<span style="width:60px; font-size:0.75rem; color:#00aa00;">SLOT ${slot + 1}</span>` +
-                    `<button class="menu-button" style="padding:0.4rem 0.7rem; font-size:0.9rem;" data-slot="${slot}" data-dir="-1">◀</button>` +
-                    `<span style="width:250px; font-size:0.85rem;">${cfg.name}<br><span style="color:#00aa00; font-size:0.65rem;">${cfg.category}</span></span>` +
-                    `<button class="menu-button" style="padding:0.4rem 0.7rem; font-size:0.9rem;" data-slot="${slot}" data-dir="1">▶</button>`;
-                container.appendChild(row);
+                const weaponId = currentLoadout[slot];
+                const wrap = document.createElement('div');
+                wrap.style.cssText = 'display:flex; flex-direction:column; align-items:center; gap:6px;';
+                const label = document.createElement('div');
+                label.style.cssText = 'font-size:0.68rem; color:#00aa00;';
+                label.textContent = `SLOT ${slot + 1}`;
+                const card = createWeaponCardEl(weaponId);
+                card.style.width = '130px';
+                card.title = 'Ver en grande';
+                card.addEventListener('click', () => openWeaponPreview(weaponId, { context: 'loadout', slot }));
+                const arrows = document.createElement('div');
+                arrows.style.cssText = 'display:flex; gap:6px;';
+                arrows.innerHTML =
+                    `<button class="menu-button" style="padding:0.3rem 0.6rem; font-size:0.8rem;" data-slot="${slot}" data-dir="-1">◀</button>` +
+                    `<button class="menu-button" style="padding:0.3rem 0.6rem; font-size:0.8rem;" data-slot="${slot}" data-dir="1">▶</button>`;
+                wrap.appendChild(label);
+                wrap.appendChild(card);
+                wrap.appendChild(arrows);
+                container.appendChild(wrap);
             }
             container.querySelectorAll('button[data-slot]').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -6525,14 +7068,16 @@
             menu.classList.remove('hidden');
         });
 
-        // ========== WEAPONS CATALOG SCREEN ==========
+        // ========== WEAPONS CATALOG SCREEN (visual arsenal grid) ==========
         function renderWeaponsScreen() {
-            const list = document.getElementById('weaponsList');
-            list.innerHTML = '';
+            const grid = document.getElementById('weaponsGrid');
+            grid.innerHTML = '';
+            const total = Object.keys(WEAPON_CONFIGS).length;
+            document.getElementById('weaponsCount').textContent = `Catálogo completo — ${total} armas`;
             const byCategory = {};
             for (const id of Object.keys(WEAPON_CONFIGS)) {
                 const cfg = WEAPON_CONFIGS[id];
-                (byCategory[cfg.category] = byCategory[cfg.category] || []).push(cfg);
+                (byCategory[cfg.category] = byCategory[cfg.category] || []).push(id);
             }
             // Stable category display order matching the roster ranges.
             // DMR/REVOLVER placed next to their parent SNIPER/PISTOL decade
@@ -6545,22 +7090,16 @@
                 WEAPON_CATEGORY.ROCKET, WEAPON_CATEGORY.MELEE, WEAPON_CATEGORY.SPECIAL
             ];
             for (const category of order) {
-                const weapons = byCategory[category];
-                if (!weapons) continue;
+                const ids = byCategory[category];
+                if (!ids) continue;
                 const header = document.createElement('div');
+                header.className = 'weapon-category-header';
                 header.textContent = category.toUpperCase();
-                header.style.cssText = 'color:#00ff00; font-size:0.8rem; margin:0.8rem 0 0.3rem; text-align:left; border-bottom:1px solid #1a3a1a; padding-bottom:2px;';
-                list.appendChild(header);
-                for (const cfg of weapons) {
-                    const row = document.createElement('div');
-                    row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#88bb88; padding:3px 0; text-align:left;';
-                    row.innerHTML =
-                        `<span style="color:#cceecc; width:170px;">${cfg.name}</span>` +
-                        `<span style="width:70px;">DMG ${cfg.damage}</span>` +
-                        `<span style="width:60px;">RoF ${cfg.fireRate}</span>` +
-                        `<span style="width:60px;">MAG ${cfg.mag}</span>` +
-                        `<span style="width:70px;">RNG ${cfg.range}</span>`;
-                    list.appendChild(row);
+                grid.appendChild(header);
+                for (const id of ids) {
+                    const card = createWeaponCardEl(id, { equipped: currentLoadout.includes(id) });
+                    card.addEventListener('click', () => openWeaponPreview(id, { context: 'catalog' }));
+                    grid.appendChild(card);
                 }
             }
         }
@@ -6573,6 +7112,61 @@
 
         document.getElementById('weaponsBackBtn').addEventListener('click', () => {
             document.getElementById('weaponsScreen').classList.add('hidden');
+            menu.classList.remove('hidden');
+        });
+
+        // ========== TIENDA (real functional camo store) ==========
+        // Sells the 4 non-default SKIN_REGISTRY camos for coins (see the
+        // ECONOMY section above applySkin() - earned from real kills/wins,
+        // persisted). 'default' isn't sold - it's what every weapon already
+        // rendered with before this system existed, so it stays free/owned
+        // rather than retroactively locking something that already worked.
+        function renderStoreScreen() {
+            document.getElementById('storeCoins').textContent = `🪙 ${playerCoins} MONEDAS`;
+            const grid = document.getElementById('storeGrid');
+            grid.innerHTML = '';
+            for (const skinId of Object.keys(SKIN_REGISTRY)) {
+                if (skinId === 'default') continue;
+                const skin = SKIN_REGISTRY[skinId];
+                const owned = ownedSkins.has(skinId);
+                const card = document.createElement('div');
+                card.className = 'store-card';
+                card.innerHTML =
+                    `<div class="sc-swatch" style="background:${SKIN_SWATCH_COLOR[skinId]}"></div>` +
+                    `<div class="sc-name">${skin.name}</div>` +
+                    `<div class="sc-tier">${skin.tier.toUpperCase()}</div>`;
+                const btn = document.createElement('button');
+                btn.className = 'menu-button';
+                btn.style.cssText = 'padding:0.4rem 0.7rem; font-size:0.7rem; width:100%;';
+                if (owned) {
+                    btn.textContent = '✓ EN PROPIEDAD';
+                    btn.disabled = true;
+                    btn.style.opacity = '0.6';
+                } else {
+                    btn.textContent = `COMPRAR — ${SKIN_PRICES[skinId]} 🪙`;
+                    btn.addEventListener('click', () => {
+                        const result = buySkin(skinId);
+                        if (result.ok) {
+                            SoundSynth.playKillConfirm();
+                            renderStoreScreen();
+                        } else {
+                            SoundSynth.playEmpty();
+                        }
+                    });
+                }
+                card.appendChild(btn);
+                grid.appendChild(card);
+            }
+        }
+
+        document.getElementById('storeBtn').addEventListener('click', () => {
+            renderStoreScreen();
+            menu.classList.add('hidden');
+            document.getElementById('storeScreen').classList.remove('hidden');
+        });
+
+        document.getElementById('storeBackBtn').addEventListener('click', () => {
+            document.getElementById('storeScreen').classList.add('hidden');
             menu.classList.remove('hidden');
         });
 

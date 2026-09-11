@@ -236,8 +236,9 @@ El usuario pidió convertir el sistema de armas en un shooter completo/profesion
 |---|---|---|
 | Menú principal | 🟢 | — |
 | HUD de partida | 🟢 | — |
-| Selector de arma / Loadout (35 armas) | 🟢 | — |
-| Catálogo de armas (WEAPONS) | 🟢 | — |
+| Selector de arma / Loadout (68 armas) | 🟢 | — | Ahora visual (tarjetas + icono por categoría/nivel), no texto — ver FASE 14 |
+| Catálogo de armas (WEAPONS) | 🟢 | — | Cuadrícula visual + detalle con previsualización 3D en vivo — ver FASE 14 |
+| TIENDA (economía de skins) | 🟢 | — | Antes bloqueada tras "Próximamente"; ahora funcional (monedas ganadas jugando, compra/equipa skins reales) — ver FASE 14 |
 | Operadores (identidad visual) | 🟢 | — |
 | Configuración (sensibilidad, volumen, invertir Y) | 🟢 | — |
 | Configuración gráfica (calidad, resolución) | 🟢 | — | Toggle HIGH/LOW: LOW desactiva sombras + reduce resolución interna (`setHardwareScalingLevel`) — las dos palancas reales identificadas en la auditoría de rendimiento |
@@ -386,6 +387,24 @@ Sección permanente, actualizada cada vez que se evalúa o conecta una herramien
 
 ~~FASE 13, fase 11 — Impactos por material~~ 🟢 completado. `spawnMaterialImpactEffect()` (5 perfiles) + primera colisión real bala-vs-entorno del juego (antes las balas atravesaban toda la geometría del mapa). Verificado con un raycast de control determinista (10/11 superficies etiquetadas acertadas exactamente, el único fallo un caso geométrico degenerado de la propia prueba) y una regresión completa de combate sin obstáculos (daño exacto, sin cambios). Ver `BULLET_OPS_PROGRESS.md`.
 
+---
+
+## FASE 14 — ARSENAL VISUAL: ARMAS/CREAR CLASE/TIENDA (directiva del usuario, sesión actual)
+
+El usuario pidió que las pantallas de armas dejaran de mostrar texto plano y pasaran a ser un inventario visual real: tarjeta grande por arma (imagen→estado→info→nombre), previsualización/personalización, y una tienda funcional — con un registro central de armas que alimente todas las pantallas automáticamente, sin mantenimiento manual por pantalla, y sin usar ningún asset pirateado o copiado de otro juego.
+
+| Tarea | Estado | Notas |
+|---|---|---|
+| Registro visual central (iconos por categoría/nivel, sin assets externos) | 🟢 completado | `CATEGORY_ICON_PARTS`/`CATEGORY_ACCENT`/`TIER_STYLE`/`weaponTier()`/`getWeaponIconDataURL()` — pictograma 2D procedural por categoría+nivel, cacheado, cero dependencia de imágenes reales de armas (que el proyecto no tiene y no puede generar sin herramienta de imágenes) |
+| Previsualización 3D en vivo | 🟢 completado | Segundo motor Babylon ligado a `#weaponPreviewCanvas`, reutiliza el `buildWeaponViewmodel()`/`applySkin()` real del juego (no una maqueta aparte); rotación/zoom libres vía `ArcRotateCamera.attachControl()`; bucle de render se para al cerrar la pantalla |
+| Pantalla ARMAS → cuadrícula visual | 🟢 completado | `#weaponsGrid`: 68 tarjetas agrupadas por categoría, cada una abre `#weaponDetailScreen` (preview 3D + stats + skins + equipar) |
+| Pantalla CREAR CLASE → tarjetas visuales | 🟢 completado | `#loadoutSlots` visual, mecanismo prev/next ya existente conservado sin regresión |
+| TIENDA funcional (economía de monedas + skins) | 🟢 completado | `playerCoins`/`ownedSkins`/`equippedSkins` persistentes, monedas ganadas jugando (no dinero real), `getEquippedSkin()` alimenta el arma real en combate — verificado que un skin comprado se ve de verdad en una partida real, no solo en el menú |
+| Personalización real por punto de montaje (mira/cañón/cargador/etc. individuales) | 🔴 pendiente, hueco explícito | `ATTACHMENT_REGISTRY` sigue vacío/solo-arquitectura; no construido esta sesión |
+| Animaciones idle/inspección en la previsualización 3D | 🔴 pendiente, hueco explícito | La preview solo rota libremente por arrastre, sin animación propia del arma |
+
+**Decisión de alcance documentada**: la TIENDA vende camuflajes/skins cosméticos, no las 68 armas en sí — el loadout sigue siendo de acceso libre como ya lo era antes de esta sesión, para no introducir una regresión de una funcionalidad existente. Ver `BULLET_OPS_PROGRESS.md` para el detalle completo, incluida la evidencia de Playwright del flujo completo MENÚ→ARMAS→PREVIEW→CREAR CLASE→TIENDA→COMPRA→EQUIPAR→PARTIDA REAL.
+
 ~~Vídeo de introducción~~ 🟢 completado. `intro.mp4` (adjuntado por el usuario) se reproduce en una pantalla nueva antes del menú, con botones SKIP/UNMUTE y manejo defensivo de errores (nunca bloquea al jugador si el vídeo falla). Verificado con Playwright: el fallback de error se activó automáticamente ante un fallo real de decodificación H.264 en el Chromium de pruebas (sin decodificador H.264 en este sandbox — limitación del entorno de pruebas, no del código; el archivo es un MP4/H.264 estándar), y se confirmó el cableado de SKIP/`ended` por separado. El flujo PLAY tras la intro sigue funcionando con normalidad.
 
 ~~Rediseño del menú principal (estilo shooter AAA)~~ 🟡 completado en lo funcional, pendiente la imagen real. El usuario pidió (en 3 mensajes sucesivos, cada uno más detallado) un menú de nivel AAA: logo metálico, navegación lateral de 8 opciones (JUGAR/MULTIJUGADOR/PRÁCTICA/ARMAMENTO/OPERADORES/TIENDA/PASE DE BATALLA/AJUSTES), panel de jugador, tarjeta de novedades, indicador de servidores, atajos de teclado, todo sobre una foto de portada real que el usuario compartió dos veces en el chat. **Bloqueo real, no evitado por comodidad**: esa imagen llegó como contenido inline del chat, no como archivo adjunto — esta sesión solo puede leer bytes de archivos adjuntados explícitamente (como `intro.mp4`, que sí funcionó), no de imágenes pegadas en la conversación. Como el usuario pidió explícitamente no alterar ni sustituir la imagen, se dejó un fondo de marcador de posición (degradado oscuro) con el cambio de una línea ya preparado en el código, y se le explicó la limitación pidiéndole que la adjunte como archivo. El resto — estructura, navegación, las 8 opciones enrutadas honestamente (JUGAR/MULTIJUGADOR → panel de partida real; PRÁCTICA → FFA directo; ARMAMENTO/OPERADORES/AJUSTES → pantallas ya existentes; TIENDA/PASE DE BATALLA → bloqueadas de verdad, sin sistema de economía) — está completo y probado. Ver `BULLET_OPS_PROGRESS.md` para el detalle completo y la evidencia de pruebas.
@@ -408,4 +427,8 @@ Sección permanente, actualizada cada vez que se evalúa o conecta una herramien
 
 **Resto de la directiva P0 (edificios/paredes/colisiones/balística)** — balística, colisión jugador-vs-pared, materiales/PBR, y el primer interior real ya están resueltos y verificados en los 4 mapas. Queda como trabajo futuro explícito: (1) interiores reales en más edificios (Control Tower/Warehouse/Office de KRYPTOS-URBAN, estructura de fábrica de INDUSTRIAL-5), y (2) un controlador de movimiento con tolerancia real de pendiente/escalón — sin eso, ninguna escalera/rampa nueva en ningún mapa funcionará, es un prerequisito real para dar acceso caminando a cualquier superficie elevada del juego.
 
-**Pendiente aparte (menor prioridad)**: en cuanto el usuario adjunte la imagen de portada del menú como archivo, integrarla en `#menuBg`. Terminar de probar/documentar/commitear la ampliación de roster AR/SMG (BO94 HAILSTORM/BO95 JUDGMENT/BO18 THREEPOINT/BO19 DELUGE) que quedó escrita pero sin probar. Releer el mensaje truncado de ADS/miras cuando el usuario lo continúe, antes de tocar el ADS existente de `WeaponController`.
+**Pendiente aparte (menor prioridad)**: en cuanto el usuario adjunte la imagen de portada del menú como archivo, integrarla en `#menuBg`. Releer el mensaje truncado de ADS/miras cuando el usuario lo continúe, antes de tocar el ADS existente de `WeaponController`.
+
+~~Arsenal visual: ARMAS/CREAR CLASE/TIENDA~~ 🟢 completado — ver FASE 14 (nueva, arriba) para el detalle completo. Registro visual central sin assets externos (iconos procedurales por categoría/nivel), previsualización 3D en vivo reutilizando el viewmodel real del juego, cuadrícula visual en ARMAS/CREAR CLASE, y una TIENDA funcional con economía de monedas ganadas jugando. Verificado end-to-end con Playwright (flujo completo MENÚ→ARMAS→PREVIEW→CREAR CLASE→TIENDA→COMPRA→EQUIPAR→PARTIDA REAL, incluida la confirmación de que un skin comprado se aplica de verdad al material del arma en combate real, no solo en el menú). Huecos explícitos que quedan abiertos: personalización real por punto de montaje (mira/cañón/cargador/etc., `ATTACHMENT_REGISTRY` sigue vacío) y animaciones idle/inspección en la previsualización 3D — ver `BULLET_OPS_PROGRESS.md` para el detalle honesto de ambos.
+
+**🎯 Próxima tarea real, sin esperar instrucción**: de los dos huecos explícitos que quedan de la directiva P0 de edificios/paredes (más interiores reales en KRYPTOS-URBAN/INDUSTRIAL-5, y un controlador de movimiento con tolerancia de pendiente/escalón — prerequisito de cualquier escalera/rampa futura), el controlador de movimiento es el de mayor apalancamiento porque desbloquea acceso caminando a superficies elevadas en los 4 mapas a la vez, no solo un edificio. Se abordará como el siguiente incremento verificado de principio a fin, salvo que llegue una nueva directiva del usuario con prioridad distinta.
