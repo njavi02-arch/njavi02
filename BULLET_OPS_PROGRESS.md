@@ -639,6 +639,22 @@ Quinta fase del sistema de personajes: arquitectura BASE→EQUIPO→SKIN→VARIA
 
 Probado con Playwright: registro verificado (10 variantes, 5 por equipo, nombres y colores de uniforme todos distintos, solo "SWAT Pesado" con `vestScale`). Ciclado real vía la UI de Operators (Militar Estándar→Bosque, SWAT Estándar→Pesado) confirmado en el DOM y persistido correctamente en `localStorage`. Tras el cambio, un personaje recién construido con `buildHumanoidCharacter()` usa exactamente el color de uniforme de la nueva variante (no el anterior — confirma que el bug de caché quedó corregido) y el chaleco de SWAT Pesado tiene la escala esperada (1.22/1.12/1.3). Regresión completa: 21 partes por personaje en jugador y bots, daño de combate exacto (42, headshot), `totalWeapons: 64` sin cambios. Cero errores de consola nuevos.
 
+### Animaciones de personaje en tercera persona (FASE 13, fase 6)
+
+Sexta fase del sistema de personajes: animación real de locomoción (idle/caminar/correr/agachado/salto-caída), lo que otros jugadores/bots se ven haciendo en tercera persona — el viewmodel de primera persona (manos+arma) ya tenía toda su propia animación desde antes; los cuerpos en tercera persona construidos en la fase 1-4 eran, hasta ahora, completamente estáticos.
+
+**Arquitectura**: `animateCharacter(entity, deltaTime, movementState)`, llamada cada frame desde `Player.update()` y `Bot.update()` justo después de calcular el estado de movimiento de ese frame (el mismo objeto `{moving, sprinting, crouching, grounded}` que ya se le pasa a `WeaponController.update()` en el caso del jugador). Solo necesita conocer los nombres de las partes que `buildHumanoidCharacter()` ya devuelve (`leftThigh`, `rightThigh`, `leftShin`, `rightShin`, `shoulder_left`, `shoulder_right`) — no toca geometría, así que sigue funcionando igual con cualquier skin/variante.
+
+**Capas de la animación, todas mezclables entre sí** (blend suave con `Math.min(1, deltaTime*N)`, no cambios bruscos de pose):
+- Ciclo de marcha: fase acumulada de seno, piernas en oposición, brazos con contra-balanceo opuesto a la pierna del mismo lado (marcha natural). Velocidad de ciclo escalada por `sprinting`/`crouching`.
+- Sentadilla al agacharse: los muslos rotan hacia delante y las espinillas se pliegan hacia atrás, superpuesto al ciclo de marcha (un agachado-caminando se ve como ambas cosas a la vez, no una sustituyendo a la otra).
+- Salto/caída: las piernas se recogen brevemente mientras `grounded` es falso.
+- Brazos amortiguados durante ADS: el contra-balanceo de brazos se reduce al 20% mientras el jugador apunta (`weaponController.isADS`), para que el torso se vea controlado en vez de balancear un brazo mientras intenta disparar. Los bots (sin concepto de ADS) siempre animan a balanceo completo.
+
+**Alcance deliberado de esta fase**: solo locomoción. Las poses de disparo/recarga/melee/reacción-a-impacto/muerte quedan como siguiente incremento explícito — no son un olvido, están documentadas aparte porque requieren lógica distinta (alinear brazos con la dirección de disparo real, no solo un ciclo periódico).
+
+Probado con Playwright: verificación directa de pose para las 4 combinaciones de `movementState` (idle → pose neutral exacta 0/0/0; caminando → piernas en oposición simétrica ±0.24, brazo con contrabalanceo; agachado → ambos muslos con el mismo bend 0.55, postura de sentadilla simétrica; en el aire → ambos muslos recogidos -0.35 simétricos) — todos los valores sanos, sin NaN ni fuera de rango. Verificación en juego real (no llamadas directas): un bot con velocidad real asignada alcanza `animBlend ≈ 1.0` tras varios fotogramas reales y su `leftThigh.rotation.x` cambia de valor con el tiempo, confirmando que la animación se activa desde el propio bucle de juego, no solo de forma sintética. Captura de pantalla confirma visualmente la asimetría de piernas de un bot caminando. Regresión completa de combate sin cambios (42 de daño exacto, 64 armas). Cero errores de consola nuevos.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.
