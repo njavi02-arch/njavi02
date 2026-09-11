@@ -5878,10 +5878,33 @@
 
             // ===== LEFT ROUTE (CQB/flank) =====
             // Apartment Block - the tallest structure on this side, a
-            // multi-"floor" silhouette via stacked ledges.
-            addBox('apartmentBlock', { width: 14, height: 16, depth: 14 }, new BABYLON.Vector3(-78, 8, 25), brickMat, 'brick');
+            // multi-"floor" silhouette via stacked ledges. The ground floor
+            // is now a real accessible room (same 4-wall pattern proven on
+            // BACKLOT-7/Office Building/factory1) instead of a solid block -
+            // the upper floors above `apartmentBlock_ledge1` stay solid
+            // (out of scope here, same as BACKLOT-7's upper platform),
+            // with the ledge itself doubling as this room's ceiling, same
+            // trick already used for BACKLOT-7's tower roof.
+            const apartWallH = 5, apartWallT = 0.6, apartDoorGap = 3;
+            function apartWall(name, size, position) {
+                const w = BABYLON.MeshBuilder.CreateBox(name, size, scene);
+                w.position = position;
+                w.material = brickMat;
+                w.checkCollisions = true;
+                tagImpactMaterial(w, 'brick');
+                return w;
+            }
+            apartWall('apartmentBlock_wallN', { width: 14, height: apartWallH, depth: apartWallT }, new BABYLON.Vector3(-78, apartWallH / 2, 32));
+            apartWall('apartmentBlock_wallE', { width: apartWallT, height: apartWallH, depth: 14 }, new BABYLON.Vector3(-71, apartWallH / 2, 25));
+            apartWall('apartmentBlock_wallW', { width: apartWallT, height: apartWallH, depth: 14 }, new BABYLON.Vector3(-85, apartWallH / 2, 25));
+            const apartSouthSegW = (14 - apartDoorGap) / 2;
+            apartWall('apartmentBlock_wallS1', { width: apartSouthSegW, height: apartWallH, depth: apartWallT }, new BABYLON.Vector3(-85 + apartSouthSegW / 2, apartWallH / 2, 18));
+            apartWall('apartmentBlock_wallS2', { width: apartSouthSegW, height: apartWallH, depth: apartWallT }, new BABYLON.Vector3(-71 - apartSouthSegW / 2, apartWallH / 2, 18));
             addBox('apartmentBlock_ledge1', { width: 15, height: 0.4, depth: 15 }, new BABYLON.Vector3(-78, 5.5, 25), concreteMat, 'concrete');
             addBox('apartmentBlock_ledge2', { width: 15, height: 0.4, depth: 15 }, new BABYLON.Vector3(-78, 11, 25), concreteMat, 'concrete');
+            // Upper floors above the ground-floor room stay a solid block
+            // (out of scope for this pass, same as BACKLOT-7's platform).
+            addBox('apartmentBlock_upper', { width: 14, height: 10.5, depth: 14 }, new BABYLON.Vector3(-78, 10.75, 25), brickMat, 'brick');
             // Destroyed Shop.
             addBox('destroyedShop', { width: 12, height: 7, depth: 11 }, new BABYLON.Vector3(-63, 3.5, 16), brickMat, 'brick');
             addBox('destroyedShop_rubble', { width: 5, height: 1, depth: 4 }, new BABYLON.Vector3(-58, 0.5, 10), concreteMat, 'concrete');
