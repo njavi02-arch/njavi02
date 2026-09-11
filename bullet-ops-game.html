@@ -5078,18 +5078,29 @@
         // per-map intensity/color/direction so each map reads with its own
         // mood: BACKLOT-7 bright neutral daylight, INDUSTRIAL-5 dimmer/
         // cooler overcast-factory light, OUTPOST-9 a warmer low-angle dusk.
+        // `sky` (found missing in the KRYPTOS-URBAN production-quality audit):
+        // scene.clearColor was a single hardcoded near-black navy regardless
+        // of selectedMap, so any empty patch of frame - especially visible
+        // through the Office Building's window - read as pitch-black night
+        // even on a map whose own lighting preset explicitly describes
+        // "daytime smoke/dust haze". Each map now supplies a sky tint
+        // consistent with its own hemi/dir mood instead of sharing one
+        // fixed color.
         const MAP_LIGHTING = {
             'BACKLOT-7': {
                 hemi: { intensity: 0.85, color: new BABYLON.Color3(1, 1, 1) },
-                dir: { intensity: 0.65, color: new BABYLON.Color3(1, 0.98, 0.92), direction: new BABYLON.Vector3(-1, -1, 0.5) }
+                dir: { intensity: 0.65, color: new BABYLON.Color3(1, 0.98, 0.92), direction: new BABYLON.Vector3(-1, -1, 0.5) },
+                sky: new BABYLON.Color3(0.45, 0.55, 0.72)
             },
             'INDUSTRIAL-5': {
                 hemi: { intensity: 0.55, color: new BABYLON.Color3(0.75, 0.8, 0.9) },
-                dir: { intensity: 0.4, color: new BABYLON.Color3(0.8, 0.85, 0.95), direction: new BABYLON.Vector3(-0.3, -1, 0.2) }
+                dir: { intensity: 0.4, color: new BABYLON.Color3(0.8, 0.85, 0.95), direction: new BABYLON.Vector3(-0.3, -1, 0.2) },
+                sky: new BABYLON.Color3(0.38, 0.41, 0.46)
             },
             'OUTPOST-9': {
                 hemi: { intensity: 0.7, color: new BABYLON.Color3(1, 0.9, 0.75) },
-                dir: { intensity: 0.75, color: new BABYLON.Color3(1, 0.7, 0.4), direction: new BABYLON.Vector3(-1, -0.35, 0.3) }
+                dir: { intensity: 0.75, color: new BABYLON.Color3(1, 0.7, 0.4), direction: new BABYLON.Vector3(-1, -0.35, 0.3) },
+                sky: new BABYLON.Color3(0.5, 0.32, 0.24)
             },
             // KRYPTOS-URBAN: warm low-sun combat-zone light matching the
             // reference video's mood (hazy, slightly overexposed highlights,
@@ -5098,7 +5109,8 @@
             // color) to read as daytime smoke/dust haze rather than dusk.
             'KRYPTOS-URBAN': {
                 hemi: { intensity: 0.8, color: new BABYLON.Color3(1, 0.93, 0.82) },
-                dir: { intensity: 0.7, color: new BABYLON.Color3(1, 0.85, 0.6), direction: new BABYLON.Vector3(-0.6, -0.55, 0.4) }
+                dir: { intensity: 0.7, color: new BABYLON.Color3(1, 0.85, 0.6), direction: new BABYLON.Vector3(-0.6, -0.55, 0.4) },
+                sky: new BABYLON.Color3(0.58, 0.52, 0.44)
             }
         };
 
@@ -5140,7 +5152,6 @@
             engine.setHardwareScalingLevel(gameSettings.graphicsQuality === 'LOW' ? 1.5 : 1);
 
             scene = new BABYLON.Scene(engine);
-            scene.clearColor = new BABYLON.Color3(0.08, 0.06, 0.15);
             scene.collisionsEnabled = true;
             // Weapon viewmodels render on group 1 with the depth buffer
             // cleared before that group draws, so the weapon always appears
@@ -5169,6 +5180,10 @@
             // Lights - per-map mood via MAP_LIGHTING (see above), not a
             // single fixed config shared by all 3 maps.
             const lighting = MAP_LIGHTING[selectedMap] || MAP_LIGHTING['BACKLOT-7'];
+            // Sky/void color now matches each map's own lighting mood
+            // instead of one fixed near-black navy (see the comment on
+            // MAP_LIGHTING's `sky` field above).
+            scene.clearColor = lighting.sky;
             const hlight = new BABYLON.HemisphericLight('hlight', new BABYLON.Vector3(0, 1, 0));
             hlight.intensity = lighting.hemi.intensity;
             hlight.diffuse = lighting.hemi.color;
