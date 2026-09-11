@@ -30,6 +30,38 @@
             color: #00ff00;
         }
         .hidden { display: none !important; }
+        /* Intro video - plays once before the main menu appears, skippable.
+           See the setupIntro() JS below for the actual playback/skip/
+           unmute logic. */
+        #introScreen {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        #introVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #000;
+        }
+        #introSkipBtn, #introUnmuteBtn {
+            position: absolute;
+            bottom: 24px;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 0, 0, 0.55);
+            color: #00ff00;
+            border: 1px solid rgba(0, 255, 0, 0.6);
+            font-family: monospace;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+        #introSkipBtn { right: 24px; }
+        #introUnmuteBtn { left: 24px; }
         .menu-title {
             font-size: 3.5rem;
             text-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
@@ -375,7 +407,13 @@
 <body>
     <canvas id="gameCanvas"></canvas>
 
-    <div id="menu">
+    <div id="introScreen">
+        <video id="introVideo" playsinline muted></video>
+        <button id="introUnmuteBtn">🔊 UNMUTE</button>
+        <button id="introSkipBtn">SKIP ▶</button>
+    </div>
+
+    <div id="menu" class="hidden">
         <div style="text-align: center;">
             <div class="menu-title">⚡ BULLET OPS ⚡</div>
             <div style="margin: 1rem 0; font-size: 1rem;">COMPETITIVE FPS</div>
@@ -556,6 +594,39 @@
         const loading = document.getElementById('loading');
         const pauseMenu = document.getElementById('pauseMenu');
 
+        // ========== INTRO VIDEO ==========
+        // Plays once before the main menu is shown. Starts muted (browser
+        // autoplay policy blocks audio without a prior user gesture, so a
+        // muted autoplay is the only reliable way to start it immediately)
+        // with a visible unmute button for anyone who wants the sound, plus
+        // a skip button - either ends the intro and reveals the menu, which
+        // starts out hidden (see the "hidden" class added to #menu in the
+        // HTML) specifically so it doesn't flash behind the video for a
+        // frame before this runs.
+        (function setupIntro() {
+            const introScreen = document.getElementById('introScreen');
+            const introVideo = document.getElementById('introVideo');
+            const skipBtn = document.getElementById('introSkipBtn');
+            const unmuteBtn = document.getElementById('introUnmuteBtn');
+
+            function endIntro() {
+                introVideo.pause();
+                introScreen.classList.add('hidden');
+                menu.classList.remove('hidden');
+            }
+
+            introVideo.src = 'intro.mp4';
+            introVideo.addEventListener('ended', endIntro);
+            introVideo.addEventListener('error', endIntro); // e.g. intro.mp4 missing/unsupported - never block the menu on it
+            skipBtn.addEventListener('click', endIntro);
+            unmuteBtn.addEventListener('click', () => {
+                introVideo.muted = false;
+                introVideo.play().catch(() => {});
+                unmuteBtn.style.display = 'none';
+            });
+            introVideo.play().catch(endIntro); // autoplay fully blocked - don't strand the player on a frozen black screen
+        })();
+
         // Single source of truth for cursor/control ownership. Pointer lock and
         // the pause menu are both driven from this instead of independent,
         // competing systems (see requestGamePointerLock/pauseGame/resumeGame).
@@ -569,6 +640,17 @@
         // shadow caster the moment they're built.
         let shadowGenerator = null;
         let player = null, bots = [], bullets = [];
+        // Map meshes tagged with an impact material (see tagImpactMaterial()
+        // in each buildMapX() and spawnMaterialImpactEffect()) - a bullet
+        // that doesn't hit a character raycasts against just this opt-in
+        // list, not every mesh in the scene, so untagged decorative props
+        // stay exactly as pass-through as they always were.
+        let IMPACT_SURFACES = [];
+        function tagImpactMaterial(mesh, material) {
+            mesh.metadata = mesh.metadata || {};
+            mesh.metadata.impactMaterial = material;
+            IMPACT_SURFACES.push(mesh);
+        }
         let blueScore = 0, redScore = 0;
         let killstreakMessages = [];
         let gameMode = 'TDM'; // 'TDM' or 'FFA'
@@ -2084,8 +2166,19 @@
                 noiseBurst({ duration: 0.35, filterFreq: 500, gain: 0.8, decay: 0.3 });
                 tone({ freq: 60, duration: 0.3, type: 'sine', gain: 0.5, decay: 0.28, freqEnd: 25 });
             }
+            // Per-material environment impact sounds - see
+            // spawnMaterialImpactEffect() for the matching visual per
+            // material. A bright metallic ting, a dull wood thud, a low
+            // concrete thud, an even lower dirt thump, and a sharp glass
+            // crack, each built from the same tone()/noiseBurst() helpers
+            // every other sound in this object already uses.
+            function playImpactMetal()    { tone({ freq: 2200, duration: 0.04, type: 'square', gain: 0.14, decay: 0.04, freqEnd: 1200 }); }
+            function playImpactWood()     { noiseBurst({ duration: 0.05, filterFreq: 900, gain: 0.14, decay: 0.05 }); }
+            function playImpactConcrete() { noiseBurst({ duration: 0.06, filterFreq: 400, gain: 0.15, decay: 0.06 }); }
+            function playImpactDirt()     { noiseBurst({ duration: 0.06, filterFreq: 250, gain: 0.12, decay: 0.06 }); }
+            function playImpactGlass()    { tone({ freq: 3000, duration: 0.05, type: 'sine', gain: 0.16, decay: 0.05, freqEnd: 5000 }); }
 
-            return { getCtx, setVolume, startAmbient, stopAmbient, playGunshot, playReloadClick, playMagOut, playMagIn, playEmpty, playEquip, playHitmarker, playHeadshot, playKillConfirm, playFootstep, playJump, playLand, playMeleeSwing, playMeleeHit, playExplosion, playUIClick, playUIHover, playSlide };
+            return { getCtx, setVolume, startAmbient, stopAmbient, playGunshot, playReloadClick, playMagOut, playMagIn, playEmpty, playEquip, playHitmarker, playHeadshot, playKillConfirm, playFootstep, playJump, playLand, playMeleeSwing, playMeleeHit, playExplosion, playUIClick, playUIHover, playSlide, playImpactMetal, playImpactWood, playImpactConcrete, playImpactDirt, playImpactGlass };
         })();
 
         // ========== SKIN / CAMOUFLAGE SYSTEM ==========
@@ -2405,6 +2498,68 @@
             ps.updateSpeed = 0.02;
             ps.start();
             setTimeout(() => { ps.stop(); setTimeout(() => ps.dispose(), 350); }, 60);
+        }
+
+        // Per-material environment impact - a bullet that hits tagged map
+        // geometry (see IMPACT_SURFACES / tagImpactMaterial() and the
+        // raycast added to the bullet-update loop) gets a visually and
+        // audibly distinct effect instead of reusing the character-hit
+        // blood burst above. Only 5 materials for now (metal/wood/concrete/
+        // dirt/glass, as requested) - adding a 6th later is a new case
+        // here, not a new subsystem.
+        const IMPACT_EFFECT_PROFILES = {
+            metal: {
+                color1: new BABYLON.Color4(1, 0.95, 0.6, 1), color2: new BABYLON.Color4(1, 0.7, 0.2, 1),
+                colorDead: new BABYLON.Color4(0.4, 0.3, 0.1, 0),
+                minSize: 0.02, maxSize: 0.05, minLife: 0.08, maxLife: 0.18, count: 16, power: [3, 6], gravity: -9,
+                sound: 'playImpactMetal'
+            },
+            wood: {
+                color1: new BABYLON.Color4(0.55, 0.38, 0.22, 1), color2: new BABYLON.Color4(0.35, 0.22, 0.12, 1),
+                colorDead: new BABYLON.Color4(0.2, 0.14, 0.08, 0),
+                minSize: 0.04, maxSize: 0.09, minLife: 0.15, maxLife: 0.3, count: 10, power: [1, 2.5], gravity: -7,
+                sound: 'playImpactWood'
+            },
+            concrete: {
+                color1: new BABYLON.Color4(0.7, 0.7, 0.68, 1), color2: new BABYLON.Color4(0.5, 0.5, 0.48, 1),
+                colorDead: new BABYLON.Color4(0.35, 0.35, 0.34, 0),
+                minSize: 0.05, maxSize: 0.12, minLife: 0.2, maxLife: 0.4, count: 12, power: [0.8, 2], gravity: -3,
+                sound: 'playImpactConcrete'
+            },
+            dirt: {
+                color1: new BABYLON.Color4(0.45, 0.32, 0.18, 1), color2: new BABYLON.Color4(0.3, 0.22, 0.12, 1),
+                colorDead: new BABYLON.Color4(0.2, 0.15, 0.08, 0),
+                minSize: 0.05, maxSize: 0.11, minLife: 0.2, maxLife: 0.4, count: 12, power: [0.7, 1.8], gravity: -4,
+                sound: 'playImpactDirt'
+            },
+            glass: {
+                color1: new BABYLON.Color4(0.85, 0.95, 1, 1), color2: new BABYLON.Color4(0.6, 0.8, 0.9, 0.8),
+                colorDead: new BABYLON.Color4(0.5, 0.6, 0.65, 0),
+                minSize: 0.015, maxSize: 0.04, minLife: 0.1, maxLife: 0.22, count: 18, power: [2.5, 5], gravity: -8,
+                sound: 'playImpactGlass'
+            }
+        };
+        function spawnMaterialImpactEffect(scene, position, material) {
+            const profile = IMPACT_EFFECT_PROFILES[material] || IMPACT_EFFECT_PROFILES.concrete;
+            const ps = new BABYLON.ParticleSystem('matImpact_' + Math.random(), profile.count, scene);
+            ps.particleTexture = getSharedParticleTexture(scene);
+            ps.emitter = position;
+            ps.minEmitBox = BABYLON.Vector3.Zero();
+            ps.maxEmitBox = BABYLON.Vector3.Zero();
+            ps.color1 = profile.color1;
+            ps.color2 = profile.color2;
+            ps.colorDead = profile.colorDead;
+            ps.minSize = profile.minSize; ps.maxSize = profile.maxSize;
+            ps.minLifeTime = profile.minLife; ps.maxLifeTime = profile.maxLife;
+            ps.emitRate = profile.count * 20;
+            ps.direction1 = new BABYLON.Vector3(1, 1, 1);
+            ps.direction2 = new BABYLON.Vector3(-1, -1, -1);
+            ps.minEmitPower = profile.power[0]; ps.maxEmitPower = profile.power[1];
+            ps.gravity = new BABYLON.Vector3(0, profile.gravity, 0);
+            ps.updateSpeed = 0.02;
+            ps.start();
+            setTimeout(() => { ps.stop(); setTimeout(() => ps.dispose(), 400); }, 60);
+            if (SoundSynth[profile.sound]) SoundSynth[profile.sound]();
         }
 
         // Bigger, longer-lived burst for rocket/grenade splash damage - a
@@ -4067,6 +4222,7 @@
             const groundMat = new BABYLON.StandardMaterial('groundMat', scene);
             groundMat.diffuseColor = new BABYLON.Color3(0.35, 0.35, 0.35);
             ground.material = groundMat;
+            tagImpactMaterial(ground, 'concrete');
 
             const towerMat = new BABYLON.StandardMaterial('towerMat', scene);
             towerMat.diffuseColor = new BABYLON.Color3(0.6, 0.55, 0.5);
@@ -4103,11 +4259,13 @@
             wall1.position = new BABYLON.Vector3(-15, 2, 20);
             wall1.material = wallMat;
             wall1.checkCollisions = true;
+            tagImpactMaterial(wall1, 'concrete');
 
             const wall2 = BABYLON.MeshBuilder.CreateBox('wall2', { width: 2, height: 4, depth: 30 }, scene);
             wall2.position = new BABYLON.Vector3(15, 2, -20);
             wall2.material = wallMat;
             wall2.checkCollisions = true;
+            tagImpactMaterial(wall2, 'concrete');
 
             // Scattered crates
             for (let i = 0; i < 8; i++) {
@@ -4119,6 +4277,7 @@
                 );
                 crate.material = wallMat;
                 crate.checkCollisions = true;
+                tagImpactMaterial(crate, 'wood');
             }
 
             // Corner structures for flanking
@@ -4182,6 +4341,7 @@
             const groundMat = new BABYLON.StandardMaterial('groundMat2', scene);
             groundMat.diffuseColor = new BABYLON.Color3(0.25, 0.25, 0.25);
             ground.material = groundMat;
+            tagImpactMaterial(ground, 'concrete');
 
             const metalMat = new BABYLON.StandardMaterial('metalMat', scene);
             metalMat.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.45);
@@ -4191,17 +4351,20 @@
             factory1.position = new BABYLON.Vector3(0, 4, 0);
             factory1.material = metalMat;
             factory1.checkCollisions = true;
+            tagImpactMaterial(factory1, 'metal');
 
             const factory2 = BABYLON.MeshBuilder.CreateBox('factory2', { width: 15, height: 15, depth: 30 }, scene);
             factory2.position = new BABYLON.Vector3(0, 7.5, 35);
             factory2.material = metalMat;
             factory2.checkCollisions = true;
+            tagImpactMaterial(factory2, 'metal');
 
             // Elevated walkway
             const walkway = BABYLON.MeshBuilder.CreateBox('walkway', { width: 60, height: 0.5, depth: 6 }, scene);
             walkway.position = new BABYLON.Vector3(0, 6, -35);
             walkway.material = metalMat;
             walkway.checkCollisions = true;
+            tagImpactMaterial(walkway, 'metal');
 
             // Warehouse corners
             const warehouseMat = new BABYLON.StandardMaterial('warehouseMat', scene);
@@ -4256,6 +4419,7 @@
                 container.rotation.y = Math.random() * Math.PI;
                 container.material = containerMat;
                 container.checkCollisions = true;
+                tagImpactMaterial(container, 'metal');
             }
 
             const pipeMat = new BABYLON.StandardMaterial('pipeMat', scene);
@@ -4283,6 +4447,7 @@
             const groundMat = new BABYLON.StandardMaterial('groundMat3', scene);
             groundMat.diffuseColor = new BABYLON.Color3(0.3, 0.32, 0.3);
             ground.material = groundMat;
+            tagImpactMaterial(ground, 'concrete');
 
             const baseMat = new BABYLON.StandardMaterial('outpostBaseMat', scene);
             baseMat.diffuseColor = new BABYLON.Color3(0.32, 0.4, 0.45);
@@ -4291,11 +4456,12 @@
             const towerMat = new BABYLON.StandardMaterial('outpostTowerMat', scene);
             towerMat.diffuseColor = new BABYLON.Color3(0.5, 0.48, 0.42);
 
-            function addBox(name, size, position, material) {
+            function addBox(name, size, position, material, impactMat) {
                 const box = BABYLON.MeshBuilder.CreateBox(name, size, scene);
                 box.position = position;
                 box.material = material;
                 box.checkCollisions = true;
+                if (impactMat) tagImpactMaterial(box, impactMat);
                 return box;
             }
 
@@ -4303,18 +4469,18 @@
             // spawn without fully enclosing it. BLUE at -x, RED mirrored at +x.
             for (const side of [-1, 1]) {
                 const mat = baseMat;
-                addBox(`base_back_${side}`, { width: 4, height: 8, depth: 54 }, new BABYLON.Vector3(side * 88, 4, 0), mat);
-                addBox(`base_north_${side}`, { width: 24, height: 8, depth: 4 }, new BABYLON.Vector3(side * 78, 4, 27), mat);
-                addBox(`base_south_${side}`, { width: 24, height: 8, depth: 4 }, new BABYLON.Vector3(side * 78, 4, -27), mat);
+                addBox(`base_back_${side}`, { width: 4, height: 8, depth: 54 }, new BABYLON.Vector3(side * 88, 4, 0), mat, 'concrete');
+                addBox(`base_north_${side}`, { width: 24, height: 8, depth: 4 }, new BABYLON.Vector3(side * 78, 4, 27), mat, 'concrete');
+                addBox(`base_south_${side}`, { width: 24, height: 8, depth: 4 }, new BABYLON.Vector3(side * 78, 4, -27), mat, 'concrete');
             }
 
             // Center lane: a contested map-control tower plus a low side
             // platform, with a couple of crates for close-range cover.
-            addBox('centerTower', { width: 10, height: 10, depth: 10 }, new BABYLON.Vector3(0, 5, 0), towerMat);
-            addBox('centerPlatform', { width: 16, height: 0.5, depth: 8 }, new BABYLON.Vector3(0, 3, 16), towerMat);
-            addBox('watchtower', { width: 4, height: 14, depth: 4 }, new BABYLON.Vector3(14, 7, 0), towerMat);
+            addBox('centerTower', { width: 10, height: 10, depth: 10 }, new BABYLON.Vector3(0, 5, 0), towerMat, 'concrete');
+            addBox('centerPlatform', { width: 16, height: 0.5, depth: 8 }, new BABYLON.Vector3(0, 3, 16), towerMat, 'concrete');
+            addBox('watchtower', { width: 4, height: 14, depth: 4 }, new BABYLON.Vector3(14, 7, 0), towerMat, 'concrete');
             for (const x of [-28, -14, 14, 28]) {
-                addBox(`midCrate_${x}`, { width: 3.5, height: 3.5, depth: 3.5 }, new BABYLON.Vector3(x, 1.75, (x % 28 === 0) ? 6 : -6), coverMat);
+                addBox(`midCrate_${x}`, { width: 3.5, height: 3.5, depth: 3.5 }, new BABYLON.Vector3(x, 1.75, (x % 28 === 0) ? 6 : -6), coverMat, 'wood');
             }
 
             // Flank lanes: short cover segments along z=+35 (north) and
@@ -4323,7 +4489,7 @@
             // flank instead of being funneled through one corridor.
             for (const z of [35, -35]) {
                 for (const x of [-60, -20, 20, 60]) {
-                    addBox(`flankCover_${x}_${z}`, { width: 12, height: 3.5, depth: 2 }, new BABYLON.Vector3(x, 1.75, z), coverMat);
+                    addBox(`flankCover_${x}_${z}`, { width: 12, height: 3.5, depth: 2 }, new BABYLON.Vector3(x, 1.75, z), coverMat, 'wood');
                 }
             }
 
@@ -4724,6 +4890,40 @@
                             bullet.life = -1;
                             hit = true;
                             break;
+                        }
+                    }
+                }
+
+                // Environment impact: a bullet that didn't hit a character
+                // this frame gets one raycast against IMPACT_SURFACES (the
+                // opt-in list of map meshes tagged via tagImpactMaterial() -
+                // never every mesh in the scene), using the same this-frame
+                // travel segment as the character hit-test above so a fast
+                // bullet can't tunnel through a tagged wall between samples
+                // either. This is the first real bullet-vs-environment
+                // collision in the game - bullets previously just passed
+                // through every wall/prop and either hit a character or
+                // silently expired at max range.
+                if (!hit && IMPACT_SURFACES.length > 0) {
+                    const segment = bullet.position.subtract(prevPos);
+                    const segLen = segment.length();
+                    if (segLen > 0.0001) {
+                        const ray = new BABYLON.Ray(prevPos, segment.scale(1 / segLen), segLen);
+                        const pick = scene.pickWithRay(ray, (m) => IMPACT_SURFACES.includes(m));
+                        if (pick && pick.hit && pick.pickedMesh) {
+                            const travelToHit = BABYLON.Vector3.Distance(prevPos, pick.pickedPoint);
+                            const distanceAtImpact = (bullet.distanceTraveled - segLen) + travelToHit;
+                            if (distanceAtImpact <= bullet.maxRange) {
+                                if (bullet.isExplosive) {
+                                    triggerExplosion(pick.pickedPoint, bullet);
+                                } else {
+                                    const material = pick.pickedMesh.metadata && pick.pickedMesh.metadata.impactMaterial;
+                                    spawnMaterialImpactEffect(scene, pick.pickedPoint, material);
+                                }
+                                bullet.position.copyFrom(pick.pickedPoint);
+                                bullet.life = -1;
+                                hit = true;
+                            }
                         }
                     }
                 }
