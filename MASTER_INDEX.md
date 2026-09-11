@@ -5,7 +5,7 @@ Documento vivo de gestión autónoma del proyecto. Se actualiza en cada ciclo de
 **Leyenda de estado:** 🔴 Pendiente · 🟡 En progreso · 🟢 Completado · 🔧 Funciona pero necesita mejora · 🔒 Bloqueado (requiere intervención del usuario) · ⚠️ Tiene errores conocidos
 **Leyenda de prioridad:** P0 Crítico · P1 Muy importante · P2 Importante · P3 Pulido · P4 Opcional
 
-Última actualización: sesión autónoma en curso (sistema de armas como prioridad principal; roster 62/82, ver `BULLET_OPS_PROGRESS.md`).
+Última actualización: sesión autónoma en curso (sistema de armas como prioridad principal; roster 64/82, ver `BULLET_OPS_PROGRESS.md`).
 
 ---
 
@@ -14,7 +14,7 @@ Documento vivo de gestión autónoma del proyecto. Se actualiza en cada ciclo de
 | Tarea | Estado | Prioridad | Notas |
 |---|---|---|---|
 | Arquitectura de archivo único (sin build step, compatible con Artifact) | 🟢 | — | Decisión técnica estable, no revisar sin motivo de peso |
-| `WEAPON_CONFIGS` como fuente única de datos de armas | 🟢 | — | 62 armas (objetivo 82), escalable por config |
+| `WEAPON_CONFIGS` como fuente única de datos de armas | 🟢 | — | 64 armas (objetivo 82), escalable por config |
 | `WeaponController` (estado IDLE/RELOADING/SWITCHING/INSPECTING) | 🟢 | — | |
 | `SoundSynth` (audio 100% sintetizado, sin assets externos) | 🟢 | — | |
 | `SKIN_REGISTRY` / sistema de camuflajes | 🟢 | — | Solo 1 skin real + 1 patrón de prueba, ver FASE 4 |
@@ -76,7 +76,7 @@ Cifras de BF4/BFV/BF2042 son aproximadas (rosters base, sin DLC/temporadas — v
 
 | Categoría (nuestra) | BF4 | BFV | BF2042 | Objetivo del proyecto | Estado actual |
 |---|---|---|---|---|---|
-| Fusiles de asalto (AR) | ~10 | ~8 | 2 (base) | 12 | 🟡 7/12 |
+| Fusiles de asalto (AR) | ~10 | ~8 | 2 (base) | 12 | 🟡 9/12 |
 | Subfusiles (SMG) | ~9 | ~6 | 4 | 10 | 🟡 7/10 |
 | LMG | ~6 | ~5 | 2 | 8 | 🟡 6/8 |
 | DMR (fusil de marcador) | ~5 | ~4 (autocargante) | 3 | 8 | 🟡 5/8 |
@@ -87,7 +87,7 @@ Cifras de BF4/BFV/BF2042 son aproximadas (rosters base, sin DLC/temporadas — v
 | Lanzadores | ~4 | ~3 | ~3 | 6 | 🟢 6/6 |
 | Especiales/balísticos | — (no existe como categoría en ninguna entrega — decisión propia para armas futuristas/no convencionales) | — | — | 6 | 🟡 5/6 |
 | Cuerpo a cuerpo (cuchillos + contundentes) | 1 (cuchillo genérico) | 1 | 1 | 6 | 🟡 5/6 |
-| **Total** | ~65 (sin melee/gadgets) | ~48 | ~23 (base) | **82** | **62/82 (76%)** |
+| **Total** | ~65 (sin melee/gadgets) | ~48 | ~23 (base) | **82** | **64/82 (78%)** |
 
 El objetivo de 82 no es un techo — es la primera meta ambiciosa de una arquitectura ya probada para escalar a "cientos de armas" (cada arma nueva es una entrada de datos en `WEAPON_CONFIGS`, sin tocar `WeaponController`/`Bot`/HUD/crosshair). Cuando 82 esté cerca, se revisará si ampliar más aporta valor real de gameplay o solo relleno.
 
@@ -115,9 +115,9 @@ No es una copia de ninguna entrega — es la síntesis tras comparar las tres (v
 
 Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(🟢 código) → animaciones(🟢 procedurales: equipar/disparo/recarga/ADS/sprint/inspección) → disparo(🟢) → recarga(🟢) → sonidos(🟢 sintetizados) → retroceso(🟢) → ADS(🟢) → estadísticas(🟢) → efectos(🟢) → testing(🟢) → subcategory/ammoType/fireMode(🟡 2/35, resto pendiente de backfill). **Ninguna arma nueva necesita trabajo de gameplay** — lo único pendiente en las 35 (salvo el backfill de metadatos) es el mismo bloqueo de siempre: modelos 3D/texturas reales.
 
-### Roster actual por categoría (62 armas · 11 categorías)
+### Roster actual por categoría (64 armas · 11 categorías)
 
-- **AR** (7/12): BO-01 VANGUARD, BO-02 PREDATOR, BO-03 STORMCALLER, BO-04 SENTINEL, BO-05 OUTLAW, BO-06 LANCER, BO-07 SKIRMISH
+- **AR** (9/12): BO-01 VANGUARD, BO-02 PREDATOR, BO-03 STORMCALLER, BO-04 SENTINEL, BO-05 OUTLAW, BO-06 LANCER, BO-07 SKIRMISH, BO-08 TRIBURST, BO-09 DUALSTRIKE
 - **SMG** (7/10): BO-11 RAZORBACK, BO-12 WHISPER, BO-13 ENFORCER, BO-14 VIPERBITE, BO-15 UNDERTOW, BO-16 PDW-9, BO-17 HUSH
 - **Shotgun** (6/8): BO-21 BREACHER, BO-22 SCATTERGUN, BO-23 WIDOWMAKER, BO-24 SLUGSTORM, BO-25 RIOT-12, BO-26 SAWTOOTH
 - **Sniper** (5/8): BO-31 LONGSHOT, BO-33 WRAITHFANG, BO-34 DEADEYE, BO-91 WHISPER-9, BO-92 COLOSSUS
@@ -137,7 +137,32 @@ Por arma: modelo(🔒 real / 🟢 placeholder) → textura(🔒) → materiales(
 | Sonido de disparo con variación por distancia | 🔴 | P4 |
 | Backfill subcategory/ammoType/fireMode en las 35 armas restantes | 🔴 | P3 |
 | Ampliación de roster hacia el objetivo de 82 (ver tabla maestra) | 🔴 | P2 — prioridad principal actual, ver PRÓXIMA TAREA |
-| Burst fire / modos de disparo múltiples por arma | 🔴 | P3 — depende de que `fireMode` tenga backfill primero |
+| Burst fire / modos de disparo múltiples por arma | 🟢 | — | Mecánica real implementada (no solo metadato), ver sección siguiente |
+
+### Alineación con la directiva de escala BF4 (redirección del usuario, sesión actual)
+
+El usuario pidió convertir el sistema de armas en un shooter completo/profesional al estilo BF4 (escala, variedad, arquitectura), NO copiar ningún asset de Battlefield. Balance de lo pedido vs. lo ya resuelto:
+
+**Ya satisfecho:**
+- Arquitectura 100% data-driven (`WEAPON_CONFIGS`), cero duplicación de código por arma.
+- Taxonomía de 11 categorías (AR/SMG/Shotgun/Sniper/DMR/LMG/Pistol/Revolver/Rocket/Melee/Special), con convención de rangos de id documentada.
+- Tabla de escala referenciada en BF4/BFV/BF2042 (objetivo 82 armas), roster actual 64/82 (78%).
+- Menú de armas moderno (nombre/categoría/imagen/daño/precisión/cadencia/movilidad/control/cargador/descripción).
+- Slots de attachment (arquitectura declarada en `attachmentSlots`, sin poblar — bloqueado en modelos reales, correcto dejarlo así).
+- Testing por Playwright contra el juego real tras cada bloque de armas, con dos lecciones de metodología documentadas (parenting de viewmodel, drift de IA de bots).
+- **Modos de disparo reales, no solo descriptivos**: `fireMode` ahora tiene mecánica real de backing para full-auto/semi-auto/bolt-action/single-shot/break-action/double-action/single-action, y ráfaga real (`burstCount`/`burstInterval`, BO-08 TRIBURST 3 tiros, BO-09 DUALSTRIKE 2 tiros, verificado por Playwright).
+- Armas de la misma categoría con arquetipos de juego genuinamente distintos (alto daño/baja cadencia vs. balanceado vs. alta precisión/cargador pequeño, etc.) — aplicado en cada ampliación de roster de esta sesión.
+
+**Genuinamente pendiente (gaps reales, no solo más filas de datos):**
+- Número de perdigones + dispersión de perdigones para shotguns (actualmente shotguns disparan como un solo proyectil de alto daño, no como patrón de perdigones) — **próxima tarea concreta**, ver PRÓXIMA TAREA.
+- Caída de daño por distancia (damage falloff curve) — actualmente `damage` es un valor fijo sin min/max por rango.
+- Draw time / weapon-switch time por arma — actualmente `switchDuration` es global, no por arma.
+- Distinción de recarga táctica vs. recarga por cargador vacío — actualmente `reloadTime`/`reloadTimeEmpty` ya distinguen tiempo, pero no hay diferencia de animación/comportamiento más allá del tiempo.
+- Loadout con slots tipados PRIMARY/SECONDARY/LAUNCHER/MELEE — actualmente el loadout es "3 armas cualesquiera" sin restricción de slot.
+- Pickup de armas en el mundo — no implementado (fuera de alcance por ahora, no bloqueante).
+- Gravedad de proyectil (`projectileType` existe pero sin física de caída real para proyectiles no-hitscan salvo cohetes).
+
+**Decisión de arquitectura de archivos (reafirmada):** el usuario pidió una estructura de carpetas `/assets/weapons/<categoría>/<arma>/{model,textures,animations,sounds,effects,data}/`. **No se implementa** porque el juego es un Artifact de un solo archivo HTML publicado vía Claude Artifacts — introducir carga de assets externos por carpeta rompería el flujo de publicación (`bullet-ops-game.html`, `favicon 🎯`, URL estable). La organización equivalente se mantiene dentro del archivo único vía agrupación por categoría en `WEAPON_CONFIGS`, comentarios de sección, y este mismo índice como catálogo de estado de producción por arma.
 
 ## FASE 5 — APUNTADO Y HUD
 
@@ -306,4 +331,8 @@ Sección permanente, actualizada cada vez que se evalúa o conecta una herramien
 
 ~~P2 — Revisión de sensación de armas en partida real~~ 🟢 completado. Cadencia real y pico de retroceso medidos con Playwright en 5 armas extremas (VANGUARD/IRONCLAD/COLOSSUS/WHIRLWIND/PEACEMAKER) vía `inputs.mouseDown` real — ambos órdenes coinciden exactamente con la configuración, confirmando distinción real en juego, no solo en datos. Nada plano encontrado, sin cambios de código necesarios. Ver `BULLET_OPS_PROGRESS.md`.
 
-**Siguiente**: retomar la ampliación de roster (FASE 4, P2) por AR/SMG (5/12, 5/10 — las categorías con más hueco absoluto pendiente). Después: revisar el 2º pase de props de mapas (FASE 6) por si quedan zonas vacías tras la última pasada. El resto de items P4 (4º mapa, música de menú/partida, CUSTOMIZE bloqueado en skins) y Fase 10 multijugador siguen en pausa.
+~~P2 — Ampliación AR (7/12→9/12)~~ 🟢 completado. BO-08 TRIBURST + BO-09 DUALSTRIKE. Roster global 62/82 (76%)→64/82 (78%).
+
+~~P1 — Redirección del usuario: sistema de armas a escala BF4 (mecánica real, no solo metadatos)~~ 🟢 Primera mecánica real implementada esta sesión: **ráfaga de disparo real** (`burstCount`/`burstInterval`, máquina de estados `burstRemaining`/`burstTimer` en `WeaponController`), estrenada en BO-08 (3 tiros) y BO-09 (2 tiros), verificado por Playwright sin afectar a las 62 armas preexistentes. Ver sección "Alineación con la directiva de escala BF4" arriba en FASE 4 para el balance completo de lo satisfecho vs. lo pendiente.
+
+**Siguiente concreto (P1, gap real identificado en la directiva del usuario)**: implementar **número de perdigones + dispersión de perdigones para shotguns** como segunda mecánica real (no solo dato de catálogo) — actualmente las 6 shotguns disparan un único proyectil de alto daño, lo cual no refleja el comportamiento real de una escopeta. Requiere: nuevos campos `pelletCount`/`pelletSpread` en `WEAPON_CONFIGS` para las 6 shotguns, y lógica en el método de disparo de `WeaponController` que, cuando `projectileType === 'shotgun'` (o campo equivalente), dispare N raycasts con dispersión angular en vez de 1, repartiendo daño por perdigón. Verificar con Playwright que el daño total a corta distancia con todos los perdigones conectando coincide con el daño esperado, y que a distancia el patrón se abre (menos perdigones impactan). Después de eso: retomar la ampliación de roster (FASE 4, P2) por AR/SMG (9/12, 7/10 — SMG con más hueco absoluto pendiente). Después: revisar el 2º pase de props de mapas (FASE 6) por si quedan zonas vacías tras la última pasada. El resto de items P4 (4º mapa, música de menú/partida, CUSTOMIZE bloqueado en skins) y Fase 10 multijugador siguen en pausa.

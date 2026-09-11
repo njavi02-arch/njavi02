@@ -1001,6 +1001,48 @@
                 soundProfile: 'ar', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             },
+            // AR roster expansion (7/12 -> 9/12), and the first weapons
+            // using real burst-fire mechanics (see WeaponController's
+            // burstRemaining/burstTimer): burstCount/burstInterval turn a
+            // single trigger pull into a fixed run of shots on a fast
+            // internal timer, independent of holding the mouse button down.
+            // fireRate here means "bursts per second", not individual
+            // rounds - gates when the NEXT burst can start, same as it
+            // gates a normal shot on every other weapon.
+            BO08: {
+                id: 'BO08', name: 'BO-08 TRIBURST', category: WEAPON_CATEGORY.AR,
+                subcategory: 'Burst Rifle', ammoType: '5.56mm', fireMode: 'burst-3',
+                burstCount: 3, burstInterval: 0.07,
+                damage: 26, headshotMul: 1.55,
+                fireRate: 2.5, mag: 30, reserve: 120,
+                reloadTime: 2.0, reloadTimeEmpty: 2.5,
+                spread: { hip: 0.01, ads: 0.002, moving: 0.007 },
+                range: 95, bulletSpeed: 900,
+                ads: { time: 0.2, fovMul: 0.76, sensitivityMul: 0.62 },
+                movement: { hipMul: 1.0, adsMul: 0.58 },
+                sprintToFireDelay: 0.14,
+                recoil: { vertical: 0.017, horizontal: 0.007, cameraKick: 0.014, recoverySpeed: 7.5 },
+                sway: { amount: 0.012, speed: 1.5, bobAmount: 0.017, bobSpeed: 8.5 },
+                soundProfile: 'ar', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
+            BO09: {
+                id: 'BO09', name: 'BO-09 DUALSTRIKE', category: WEAPON_CATEGORY.AR,
+                subcategory: 'Burst Rifle', ammoType: '5.56mm', fireMode: 'burst-2',
+                burstCount: 2, burstInterval: 0.055,
+                damage: 24, headshotMul: 1.5,
+                fireRate: 3.5, mag: 32, reserve: 128,
+                reloadTime: 1.9, reloadTimeEmpty: 2.3,
+                spread: { hip: 0.012, ads: 0.0025, moving: 0.008 },
+                range: 85, bulletSpeed: 870,
+                ads: { time: 0.18, fovMul: 0.79, sensitivityMul: 0.65 },
+                movement: { hipMul: 1.02, adsMul: 0.6 },
+                sprintToFireDelay: 0.13,
+                recoil: { vertical: 0.015, horizontal: 0.008, cameraKick: 0.012, recoverySpeed: 8 },
+                sway: { amount: 0.013, speed: 1.6, bobAmount: 0.018, bobSpeed: 9 },
+                soundProfile: 'ar', defaultSkin: 'default',
+                attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
+            },
             BO14: {
                 id: 'BO14', name: 'BO-14 VIPERBITE', category: WEAPON_CATEGORY.SMG,
                 damage: 15, headshotMul: 1.2,
@@ -1626,8 +1668,8 @@
                 soundProfile: 'special', defaultSkin: 'default',
                 attachmentSlots: { OPTIC: null, GRIP: null, MAGAZINE: null, BARREL: null, STOCK: null }
             }
-            // Full roster: 7 AR, 7 SMG, 6 Shotgun, 5 Sniper, 5 DMR, 6 LMG,
-            // 6 Pistol, 4 Revolver, 6 Rocket, 5 Melee, 5 Special = 62 total.
+            // Full roster: 9 AR, 7 SMG, 6 Shotgun, 5 Sniper, 5 DMR, 6 LMG,
+            // 6 Pistol, 4 Revolver, 6 Rocket, 5 Melee, 5 Special = 64 total.
         };
         // Backwards-compatible alias: Bot AI only ever reads the plain
         // numeric stats (damage/fireRate/mag/reserve/spread/speed), so it
@@ -2266,6 +2308,15 @@
 
                 this.state = 'IDLE'; // IDLE | RELOADING | SWITCHING | INSPECTING
                 this.fireCooldown = 0;
+                // Burst-fire: cfg.burstCount > 1 (see BO-08/BO-09) makes a
+                // single trigger pull fire a fixed run of shots on a fast
+                // internal timer (burstTimer/burstInterval), independent of
+                // the normal per-frame mouseDown check below - the state
+                // stays IDLE throughout so ADS/reload/switch input handling
+                // is untouched, and every other weapon leaves these at 0
+                // and behaves exactly as before.
+                this.burstRemaining = 0;
+                this.burstTimer = 0;
                 this.reloadTimer = 0;
                 this.reloadDuration = 0;
                 this.wasEmptyReload = false;
@@ -2353,9 +2404,27 @@
 
             update(deltaTime, inputs, movementState) {
                 const cfg = this.currentConfig;
+                const isMelee = cfg.projectileType === 'melee';
 
                 this.fireCooldown = Math.max(0, this.fireCooldown - deltaTime);
                 this.spreadBloom = Math.max(0, this.spreadBloom - deltaTime * 0.6);
+
+                // Burst-fire continuation: fires the remaining shots of a
+                // burst on their own fast timer, independent of the normal
+                // trigger check further below. Stops early (without
+                // consuming a shot) if the mag empties mid-burst.
+                if (this.burstRemaining > 0) {
+                    this.burstTimer -= deltaTime;
+                    if (this.burstTimer <= 0) {
+                        if (isMelee || this.currentAmmo.mag > 0) {
+                            this.fire(movementState);
+                            this.burstRemaining--;
+                            this.burstTimer = cfg.burstInterval || 0.08;
+                        } else {
+                            this.burstRemaining = 0;
+                        }
+                    }
+                }
                 this.recoilKickPitch += (0 - this.recoilKickPitch) * Math.min(1, deltaTime * cfg.recoil.recoverySpeed);
                 this.recoilKickYaw += (0 - this.recoilKickYaw) * Math.min(1, deltaTime * cfg.recoil.recoverySpeed);
                 this.kickOffset.z += (0 - this.kickOffset.z) * Math.min(1, deltaTime * 10);
@@ -2419,7 +2488,6 @@
                 this.player.camera.fov = this.baseFov * (1 - this.adsAmount * (1 - this.currentConfig.ads.fovMul));
 
                 // --- Reload input --- (melee never reloads - it doesn't use ammo)
-                const isMelee = cfg.projectileType === 'melee';
                 if (!isMelee && inputs.keys['r'] && this.state === 'IDLE' && this.currentAmmo.mag < cfg.mag && this.currentAmmo.reserve > 0) {
                     this.startReload();
                 }
@@ -2433,9 +2501,13 @@
                 }
 
                 // --- Firing --- (also gated on sprintRecoveryTimer above)
-                if (inputs.mouseDown && this.fireCooldown <= 0 && this.state === 'IDLE' && this.sprintRecoveryTimer <= 0) {
+                if (inputs.mouseDown && this.fireCooldown <= 0 && this.state === 'IDLE' && this.sprintRecoveryTimer <= 0 && this.burstRemaining <= 0) {
                     if (isMelee || this.currentAmmo.mag > 0) {
                         this.fire(movementState);
+                        if (cfg.burstCount > 1) {
+                            this.burstRemaining = cfg.burstCount - 1;
+                            this.burstTimer = cfg.burstInterval || 0.08;
+                        }
                     } else {
                         // Dry-fire click, throttled to the weapon's own fire
                         // rate so holding the trigger doesn't spam it every frame.
