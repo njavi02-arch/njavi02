@@ -99,6 +99,219 @@
             transform: none;
             box-shadow: none;
         }
+
+        /* ===== AAA MAIN MENU ===== */
+        /* Full redesign requested by the user: a shooter-menu dashboard
+           (logo, left nav, player info, news card, server status, control
+           hints) over a background image. The real hero image the user
+           provided only reaches this session as inline chat content, not
+           as a file this environment can read/copy - see the comment on
+           #menuBg below. Everything here (layout, nav, wiring to the real
+           existing screens) is fully functional today; swapping in the
+           real photo the moment it arrives as an attachment is a one-line
+           change (#menuBg background-image), nothing else needs to move. */
+        #menu {
+            display: block;
+            padding: 0;
+            overflow: hidden;
+        }
+        #menuBg {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            /* Placeholder atmosphere (no real photo file available yet -
+               see comment above) - swap for
+               background-image: url('menu-bg.jpg'); background-size: cover;
+               background-position: center; the moment the user attaches
+               the actual image as a file. Layout below is built to sit
+               correctly over a right-weighted hero photo either way. */
+            background:
+                radial-gradient(ellipse at 30% 40%, rgba(255, 90, 20, 0.10), transparent 55%),
+                linear-gradient(115deg, #05070a 0%, #0a0d12 35%, #14161b 60%, #1c1e24 100%);
+        }
+        #menuBg::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(90deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.45) 32%, rgba(0,0,0,0.08) 55%, rgba(0,0,0,0.35) 100%);
+        }
+        #menuLogo {
+            position: absolute;
+            top: 28px; left: 32px;
+            z-index: 5;
+            font-family: 'Arial', sans-serif;
+            font-weight: 900;
+            font-size: 2.6rem;
+            line-height: 0.95;
+            letter-spacing: 1px;
+            background: linear-gradient(180deg, #f4f4f4 0%, #b9bdc4 45%, #7d828a 55%, #e8e8ea 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+            filter: drop-shadow(0 0 6px rgba(0,0,0,0.6));
+        }
+        #menuLogo .logo-accent { color: #ff5a1f; -webkit-text-fill-color: #ff5a1f; }
+        #menuNav {
+            position: absolute;
+            top: 150px; left: 32px;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            width: 260px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.65rem 0.9rem;
+            background: rgba(15, 16, 19, 0.55);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-left: 2px solid transparent;
+            color: #cfd2d8;
+            font-family: 'Arial', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s, color 0.15s, padding-left 0.15s;
+        }
+        .nav-item .nav-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: transparent;
+            box-shadow: none;
+            flex-shrink: 0;
+            transition: background 0.15s, box-shadow 0.15s;
+        }
+        .nav-item:hover {
+            background: rgba(255, 90, 31, 0.12);
+            border-left-color: rgba(255, 90, 31, 0.5);
+            color: #fff;
+            padding-left: 1.1rem;
+        }
+        .nav-item.active {
+            background: rgba(255, 90, 31, 0.16);
+            border-left-color: #ff5a1f;
+            color: #fff;
+        }
+        .nav-item.active .nav-dot {
+            background: #ff5a1f;
+            box-shadow: 0 0 8px 2px rgba(255, 90, 31, 0.8);
+        }
+        .nav-item.locked {
+            color: #6a6d72;
+            cursor: not-allowed;
+        }
+        .nav-item.locked:hover {
+            background: rgba(15, 16, 19, 0.55);
+            border-left-color: transparent;
+            color: #6a6d72;
+            padding-left: 0.9rem;
+        }
+        #playerInfoBar {
+            position: absolute;
+            top: 24px; right: 28px;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.5rem 0.9rem 0.5rem 0.5rem;
+            background: rgba(10, 11, 13, 0.55);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+        #playerAvatar {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #3a3d44, #1a1c20);
+            border: 1px solid rgba(255,255,255,0.25);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+        }
+        #playerInfoText { color: #e8e8ea; font-family: 'Arial', sans-serif; }
+        #playerNameLevel { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.5px; }
+        #playerNameLevel .lvl { color: #ff5a1f; }
+        #playerCurrency { font-size: 0.7rem; color: #b7bac0; margin-top: 2px; }
+        #newsCard {
+            position: absolute;
+            bottom: 78px; right: 28px;
+            z-index: 5;
+            display: flex;
+            width: 260px;
+            background: rgba(10, 11, 13, 0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        #newsThumb {
+            width: 64px; flex-shrink: 0;
+            background: linear-gradient(145deg, #3a2418, #17100b);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem;
+        }
+        #newsText { padding: 0.5rem 0.7rem; color: #e8e8ea; font-family: 'Arial', sans-serif; }
+        .news-label { font-size: 0.6rem; color: #ff5a1f; font-weight: 700; letter-spacing: 1px; }
+        .news-title { font-size: 0.75rem; font-weight: 700; margin-top: 2px; }
+        .news-desc { font-size: 0.62rem; color: #a4a7ad; margin-top: 2px; }
+        #serverStatus {
+            position: absolute;
+            bottom: 40px; right: 28px;
+            z-index: 5;
+            font-family: monospace;
+            font-size: 0.68rem;
+            color: #7ee787;
+            letter-spacing: 0.5px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        #serverStatus .status-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: #2ecc40;
+            box-shadow: 0 0 6px 2px rgba(46, 204, 64, 0.8);
+        }
+        #controlHints {
+            position: absolute;
+            bottom: 18px; left: 32px;
+            z-index: 5;
+            display: flex; gap: 1.2rem;
+            font-family: monospace;
+            font-size: 0.65rem;
+            color: #8a8d93;
+            letter-spacing: 0.5px;
+        }
+        #controlHints kbd {
+            display: inline-block;
+            padding: 1px 5px;
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 2px;
+            color: #e8e8ea;
+            margin-right: 4px;
+            font-family: monospace;
+        }
+        #playPanel {
+            position: absolute;
+            top: 150px; left: 320px;
+            z-index: 6;
+            width: 300px;
+            background: rgba(8, 9, 11, 0.7);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 3px;
+            padding: 1rem;
+            color: #e8e8ea;
+            font-family: 'Arial', sans-serif;
+        }
+        #playPanel .panel-title {
+            font-size: 0.8rem; font-weight: 700; letter-spacing: 1.5px;
+            color: #ff5a1f; margin-bottom: 0.8rem;
+        }
+        #playPanel .panel-label {
+            font-size: 0.65rem; color: #a4a7ad; letter-spacing: 1px;
+            margin: 0.6rem 0 0.3rem;
+        }
+        #playPanel .menu-button {
+            font-size: 0.72rem;
+            padding: 0.5rem 0.8rem;
+            margin: 0.2rem 0.2rem 0.2rem 0;
+        }
         #hud {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -414,50 +627,80 @@
     </div>
 
     <div id="menu" class="hidden">
-        <div style="text-align: center;">
-            <div class="menu-title">⚡ BULLET OPS ⚡</div>
-            <div style="margin: 1rem 0; font-size: 1rem;">COMPETITIVE FPS</div>
+        <div id="menuBg"></div>
 
-            <div style="margin: 1.5rem 0;">
-                <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">GAME MODE:</div>
-                <button class="menu-button" id="tdmBtn" style="width: 140px; font-size: 0.8rem;">🎯 TDM</button>
-                <button class="menu-button" id="ffaBtn" style="width: 140px; font-size: 0.8rem;">⚔ FFA</button>
-            </div>
+        <div id="menuLogo">BULLET<br><span class="logo-accent">OPS</span></div>
 
-            <div style="margin: 0.8rem 0;">
-                <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">MAP:</div>
-                <button class="menu-button" id="map1Btn" style="width: 140px; font-size: 0.8rem;">🎮 BACKLOT-7</button>
-                <button class="menu-button" id="map2Btn" style="width: 140px; font-size: 0.8rem;">🏭 INDUSTRIAL-5</button>
-                <button class="menu-button" id="map3Btn" style="width: 140px; font-size: 0.8rem;">🏔 OUTPOST-9</button>
-            </div>
+        <nav id="menuNav">
+            <button class="nav-item active" id="navJugarBtn"><span class="nav-dot"></span>JUGAR</button>
+            <button class="nav-item" id="navMultijugadorBtn"><span class="nav-dot"></span>MULTIJUGADOR</button>
+            <button class="nav-item" id="navPracticaBtn"><span class="nav-dot"></span>PRÁCTICA</button>
+            <button class="nav-item" id="navArmamentoBtn"><span class="nav-dot"></span>ARMAMENTO</button>
+            <button class="nav-item" id="navOperadoresBtn"><span class="nav-dot"></span>OPERADORES</button>
+            <button class="nav-item locked" id="navTiendaBtn" title="Próximamente"><span class="nav-dot"></span>TIENDA</button>
+            <button class="nav-item locked" id="navPaseBtn" title="Próximamente"><span class="nav-dot"></span>PASE DE BATALLA</button>
+            <button class="nav-item" id="navAjustesBtn"><span class="nav-dot"></span>AJUSTES</button>
+        </nav>
 
-            <div style="margin: 1rem 0;">
-                <button class="menu-button" id="playBtn">▶ PLAY</button>
-                <button class="menu-button" id="quitBtn">✕ QUIT</button>
-            </div>
-
-            <!-- Fase 7 nav: these are genuinely disabled (not just styled to
-                 look locked), so a click literally does nothing - the game
-                 never claims a feature works when it doesn't. -->
-            <div style="margin: 0.6rem 0;">
-                <button class="menu-button" id="loadoutBtn">🎒 LOADOUT</button>
-                <button class="menu-button" id="weaponsBtn">🔫 WEAPONS</button>
-                <button class="menu-button" id="operatorsBtn">🧑 OPERATORS</button>
-                <button class="menu-button locked" disabled title="Próximamente">🎨 CUSTOMIZE</button>
-                <button class="menu-button" id="settingsBtn">⚙ SETTINGS</button>
-            </div>
-            <div style="font-size: 0.65rem; color: #557755; margin-bottom: 0.4rem;">🔒 Próximamente</div>
-
-            <div style="margin-top: 1rem; font-size: 0.75rem; color: #00aa00;">
-                <div id="modeDisplay">MODE: TEAM DEATHMATCH</div>
-                <div id="mapDisplay" style="margin-top: 0.3rem;">MAP: BACKLOT-7</div>
-                <div style="margin-top: 0.8rem;">
-                    WASD Move • Mouse Look • Click Fire • Right-Click ADS • R Reload<br>
-                    1/2/3 Swap Weapon • Space Jump • Shift Sprint • C Crouch (hold while sprinting to Slide)<br>
-                    I Inspect Weapon • ESC Pause
-                </div>
+        <div id="playerInfoBar">
+            <div id="playerAvatar">🧑‍✈️</div>
+            <div id="playerInfoText">
+                <div id="playerNameLevel">JAVI · <span class="lvl">NIVEL 27</span></div>
+                <div id="playerCurrency">🔶 1.250 CP &nbsp; 🪙 850 MONEDAS</div>
             </div>
         </div>
+
+        <div id="newsCard">
+            <div id="newsThumb">💥</div>
+            <div id="newsText">
+                <div class="news-label">NOVEDAD</div>
+                <div class="news-title">OPERACIÓN: BLACKOUT</div>
+                <div class="news-desc">Nueva operación disponible</div>
+            </div>
+        </div>
+        <div id="serverStatus"><span class="status-dot"></span>SERVIDORES: ONLINE</div>
+
+        <div id="controlHints">
+            <span><kbd>ENTER</kbd>SELECCIONAR</span>
+            <span><kbd>ESC</kbd>ATRÁS</span>
+            <span><kbd>TAB</kbd>PERFIL</span>
+        </div>
+
+        <!-- Configuración real de partida - lo que antes era todo el
+             contenido del menú (modo/mapa/play/loadout) vive aquí ahora,
+             mostrado por defecto porque JUGAR está seleccionado al
+             empezar. MULTIJUGADOR reutiliza exactamente este mismo panel
+             (el juego no distingue ningún otro modo aparte de TDM/FFA
+             contra bots, así que separar "jugar" de "multijugador" en dos
+             pantallas distintas sería fingir una distinción que no existe
+             todavía) - PRÁCTICA en cambio sí tiene un comportamiento
+             realmente distinto: fuerza FFA y arranca directamente, sin
+             pasar por este panel. -->
+        <div id="playPanel">
+            <div class="panel-title">CONFIGURAR PARTIDA</div>
+            <div class="panel-label">MODO</div>
+            <button class="menu-button" id="tdmBtn">🎯 TDM</button>
+            <button class="menu-button" id="ffaBtn">⚔ FFA</button>
+            <div class="panel-label">MAPA</div>
+            <button class="menu-button" id="map1Btn">🎮 BACKLOT-7</button>
+            <button class="menu-button" id="map2Btn">🏭 INDUSTRIAL-5</button>
+            <button class="menu-button" id="map3Btn">🏔 OUTPOST-9</button>
+            <div class="panel-label" id="modeDisplay">MODE: TEAM DEATHMATCH</div>
+            <div class="panel-label" id="mapDisplay" style="margin-top:-0.2rem;">MAP: BACKLOT-7</div>
+            <div style="margin-top: 0.8rem;">
+                <button class="menu-button" id="playBtn">▶ PLAY</button>
+                <button class="menu-button" id="loadoutBtn">🎒 LOADOUT</button>
+                <button class="menu-button" id="quitBtn">✕ QUIT</button>
+            </div>
+        </div>
+
+        <!-- Fase 7 nav target - genuinely disabled (not just styled to
+             look locked), so a click literally does nothing - the game
+             never claims a feature works when it doesn't. -->
+        <button class="menu-button locked hidden" disabled title="Próximamente" id="customizeBtnLegacy">🎨 CUSTOMIZE</button>
+        <button class="menu-button hidden" id="weaponsBtn">🔫 WEAPONS</button>
+        <button class="menu-button hidden" id="operatorsBtn">🧑 OPERATORS</button>
+        <button class="menu-button hidden" id="settingsBtn">⚙ SETTINGS</button>
     </div>
 
     <div id="hud" class="hidden">
@@ -5371,6 +5614,54 @@
             gameConfig.map = 'OUTPOST-9';
             updateMapDisplay();
         });
+
+        // ========== AAA MAIN MENU NAV ==========
+        // Every item routes to something that actually works today - either
+        // the always-visible #playPanel (JUGAR/MULTIJUGADOR - this game has
+        // no mode beyond TDM/FFA-vs-bots, so there is no real distinction
+        // to give them separate screens for yet), a direct forward to an
+        // existing, fully working screen's own button (ARMAMENTO/
+        // OPERADORES/AJUSTES - literally clicking weaponsBtn/operatorsBtn/
+        // settingsBtn under the hood, so there is exactly one place that
+        // owns each screen's open logic), a real quick-start shortcut
+        // (PRÁCTICA), or a clearly marked "not built yet" for the two items
+        // with no functionality behind them at all (TIENDA/PASE DE
+        // BATALLA - no economy/progression system exists in this project).
+        function setActiveNav(btn) {
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+        document.getElementById('navJugarBtn').addEventListener('click', (e) => {
+            setActiveNav(e.currentTarget);
+            SoundSynth.playUIClick();
+        });
+        document.getElementById('navMultijugadorBtn').addEventListener('click', (e) => {
+            setActiveNav(e.currentTarget);
+            SoundSynth.playUIClick();
+        });
+        document.getElementById('navPracticaBtn').addEventListener('click', (e) => {
+            setActiveNav(e.currentTarget);
+            document.getElementById('ffaBtn').click();
+            document.getElementById('playBtn').click();
+        });
+        document.getElementById('navArmamentoBtn').addEventListener('click', (e) => {
+            setActiveNav(e.currentTarget);
+            document.getElementById('weaponsBtn').click();
+        });
+        document.getElementById('navOperadoresBtn').addEventListener('click', (e) => {
+            setActiveNav(e.currentTarget);
+            document.getElementById('operatorsBtn').click();
+        });
+        document.getElementById('navAjustesBtn').addEventListener('click', (e) => {
+            setActiveNav(e.currentTarget);
+            document.getElementById('settingsBtn').click();
+        });
+        // TIENDA / PASE DE BATALLA: genuinely nothing behind them (no
+        // economy or progression system exists in this project) - the
+        // "locked" class + title="Próximamente" already communicates that
+        // without pretending a click does something.
+        document.getElementById('navTiendaBtn').addEventListener('click', () => SoundSynth.playEmpty());
+        document.getElementById('navPaseBtn').addEventListener('click', () => SoundSynth.playEmpty());
 
         // ========== LOADOUT SCREEN ==========
         function renderLoadoutScreen() {
