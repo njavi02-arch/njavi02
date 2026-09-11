@@ -6197,15 +6197,45 @@
             addCar(48, 32, 0, new BABYLON.Color3(0.55, 0.1, 0.08));
             addCar(48, 26, 0, new BABYLON.Color3(0.15, 0.15, 0.18));
             addCar(62, 32, Math.PI, new BABYLON.Color3(0.5, 0.42, 0.1));
-            // Warehouse - two-level box with exterior stairs to an upper
-            // yard/walkway, matching the blueprint's stair icons.
-            addBox('warehouse', { width: 22, height: 9, depth: 16 }, new BABYLON.Vector3(72, 4.5, 2), metalMat, 'metal');
+            // Warehouse - real accessible interior instead of a solid block
+            // (same 4-wall pattern as the other 6 interiors this session),
+            // with exterior stairs to an upper yard/walkway matching the
+            // blueprint's stair icons. Found in the audit: `warehouse_door`
+            // used to be a decal sitting flush on a fully solid box - a
+            // door that visually implied an entrance but led nowhere, the
+            // kind of "zona rota" the user's checklist explicitly warns
+            // about. The door gap below replaces that decal at the same
+            // position/width instead of just adding a wall behind it.
+            const whWallH = 9, whWallT = 0.6, whDoorGap = 6;
+            function whWall(name, size, position) {
+                const w = BABYLON.MeshBuilder.CreateBox(name, size, scene);
+                w.position = position;
+                w.material = metalMat;
+                w.checkCollisions = true;
+                tagImpactMaterial(w, 'metal');
+                return w;
+            }
+            whWall('warehouse_wallS', { width: 22, height: whWallH, depth: whWallT }, new BABYLON.Vector3(72, whWallH / 2, 10));
+            whWall('warehouse_wallW', { width: whWallT, height: whWallH, depth: 16 }, new BABYLON.Vector3(61, whWallH / 2, 2));
+            whWall('warehouse_wallE', { width: whWallT, height: whWallH, depth: 16 }, new BABYLON.Vector3(83, whWallH / 2, 2));
+            const whNorthSegW = (22 - whDoorGap) / 2;
+            whWall('warehouse_wallN1', { width: whNorthSegW, height: whWallH, depth: whWallT }, new BABYLON.Vector3(61 + whNorthSegW / 2, whWallH / 2, -6));
+            whWall('warehouse_wallN2', { width: whNorthSegW, height: whWallH, depth: whWallT }, new BABYLON.Vector3(83 - whNorthSegW / 2, whWallH / 2, -6));
+            // depth=16, not 16.6 (no overhang on the north/south edges) -
+            // the walkway sits just past the north wall at z=-6, touching
+            // but not overlapping the roof only because there's no z
+            // overhang there; a symmetric overhang would have pushed the
+            // roof's edge into the walkway's own footprint.
+            const whRoof = BABYLON.MeshBuilder.CreateBox('warehouse_roof', { width: 22.6, height: 0.5, depth: 16 }, scene);
+            whRoof.position = new BABYLON.Vector3(72, whWallH + 0.25, 2);
+            whRoof.material = metalMat;
+            whRoof.checkCollisions = true;
+            tagImpactMaterial(whRoof, 'metal');
             const warehouseWalkway = addBox('warehouse_walkway', { width: 22, height: 0.4, depth: 4 }, new BABYLON.Vector3(72, 9.2, -8), metalMatDark, 'metal');
             tagWalkable(warehouseWalkway);
             // Ramp approaching from the open field south of the walkway,
             // east of the yard crates, climbing to the walkway's south edge.
             addRampZ('warehouse_ramp', 9.4, 30, 78, -10, 1, metalMatDark, 'metal');
-            addBox('warehouse_door', { width: 6, height: 5, depth: 0.3 }, new BABYLON.Vector3(72, 2.5, -6), metalMatDark, 'metal');
             // Office Building - real accessible interior instead of one
             // solid block, same 4-wall-segment pattern already proven in
             // BACKLOT-7's tower. North face (facing the Yard) is a
