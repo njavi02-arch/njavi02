@@ -5815,20 +5815,29 @@
                 if (impactMat) tagImpactMaterial(box, impactMat);
                 return box;
             }
-            // Exterior fire-escape-style staircase - the blueprint marks
-            // several ("Control Tower accessible roof", "Warehouse
-            // stairs"), and the video's buildings are full of them. A
-            // shallow run of flat steps wide enough to walk up without
-            // needing real stair-stepping physics (matches how every other
-            // ramp/elevation in this project's maps already works).
-            function addStairs(name, base, width, topY, dir) {
-                const steps = 10;
-                for (let i = 0; i < steps; i++) {
-                    const t = i / (steps - 1);
-                    addBox(`${name}_${i}`, { width: width, height: 0.3, depth: 1.1 },
-                        new BABYLON.Vector3(base.x + dir.x * t * (steps * 0.55), base.y + t * topY, base.z + dir.z * t * (steps * 0.55)),
-                        metalMatDark, 'metal');
-                }
+            // Sloped ramp along the Z axis - replaces an earlier discrete-step
+            // staircase here that turned out to be unclimbable: verified with
+            // Playwright that the player only rises a few centimeters into
+            // the first step before sliding off around the whole flight
+            // (each step's ~1.2-unit rise is far more than this project's
+            // per-frame step tolerance). This project's movement controller
+            // (see WALKABLE_SURFACES in Player.update()) only supports
+            // continuous slopes, the same proven pattern already used for
+            // BACKLOT-7/INDUSTRIAL-5/OUTPOST-9's ramps - climbDir +1 means
+            // walking in +z climbs, -1 means -z climbs (verified against
+            // both signs before use, see BULLET_OPS_PROGRESS.md).
+            function addRampZ(name, rise, run, xCenter, zHigh, climbDir, material, impactMat) {
+                const angle = Math.atan2(rise, run);
+                const len = Math.sqrt(rise * rise + run * run);
+                const zLow = zHigh - climbDir * run;
+                const ramp = BABYLON.MeshBuilder.CreateBox(name, { width: 6, height: 0.6, depth: len }, scene);
+                ramp.position = new BABYLON.Vector3(xCenter, rise / 2, (zHigh + zLow) / 2);
+                ramp.rotation.x = climbDir > 0 ? -angle : angle;
+                ramp.material = material;
+                ramp.checkCollisions = true;
+                tagImpactMaterial(ramp, impactMat);
+                tagWalkable(ramp);
+                return ramp;
             }
             // Simple wrecked/parked car - a blocky silhouette (body + cabin
             // step), enough to read as "car" and block sightlines/provide
@@ -5875,8 +5884,11 @@
             // Control Tower with an accessible roof (exterior stairs up to
             // a flat platform - the blueprint's own callout).
             addBox('controlTower', { width: 12, height: 11, depth: 12 }, new BABYLON.Vector3(-10, 5.5, 32), concreteMat, 'concrete');
-            addBox('controlTower_roof', { width: 13, height: 0.5, depth: 13 }, new BABYLON.Vector3(-10, 11.2, 32), concreteMat, 'concrete');
-            addStairs('controlTower_stairs', new BABYLON.Vector3(-16, 0, 26), 2.4, 11, new BABYLON.Vector3(1, 0, 1));
+            const controlTowerRoof = addBox('controlTower_roof', { width: 13, height: 0.5, depth: 13 }, new BABYLON.Vector3(-10, 11.2, 32), concreteMat, 'concrete');
+            tagWalkable(controlTowerRoof);
+            // Ramp approaching from the south (open ground toward the
+            // plaza), climbing to the roof's south edge.
+            addRampZ('controlTower_ramp', 11.2, 35, -11, 26, 1, concreteMat, 'concrete');
             // Central Plaza - open flat ground, Hardpoint B beacon.
             const beaconB = BABYLON.MeshBuilder.CreateCylinder('beaconB', { diameterTop: 0.15, diameterBottom: 0.4, height: 2.4 }, scene);
             beaconB.position = new BABYLON.Vector3(0, 1.2, 2);
@@ -5905,8 +5917,11 @@
             // Warehouse - two-level box with exterior stairs to an upper
             // yard/walkway, matching the blueprint's stair icons.
             addBox('warehouse', { width: 22, height: 9, depth: 16 }, new BABYLON.Vector3(72, 4.5, 2), metalMat, 'metal');
-            addBox('warehouse_walkway', { width: 22, height: 0.4, depth: 4 }, new BABYLON.Vector3(72, 9.2, -8), metalMatDark, 'metal');
-            addStairs('warehouse_stairs', new BABYLON.Vector3(84, 0, -4), 2.2, 9, new BABYLON.Vector3(-0.6, 0, -0.8));
+            const warehouseWalkway = addBox('warehouse_walkway', { width: 22, height: 0.4, depth: 4 }, new BABYLON.Vector3(72, 9.2, -8), metalMatDark, 'metal');
+            tagWalkable(warehouseWalkway);
+            // Ramp approaching from the open field south of the walkway,
+            // east of the yard crates, climbing to the walkway's south edge.
+            addRampZ('warehouse_ramp', 9.4, 30, 78, -10, 1, metalMatDark, 'metal');
             addBox('warehouse_door', { width: 6, height: 5, depth: 0.3 }, new BABYLON.Vector3(72, 2.5, -6), metalMatDark, 'metal');
             // Office Building - has a couple of glazed openings (PBR glass)
             // instead of being a solid block.
