@@ -538,6 +538,11 @@
             BO01: {
                 id: 'BO01', name: 'BO-01 VANGUARD', category: WEAPON_CATEGORY.AR,
                 damage: 28, headshotMul: 1.5,
+                // Full damage out to 40 units, tapering to 60% by its own
+                // 100-unit range - a mid-range AR falls off gradually
+                // rather than staying a flat one-number gun at any
+                // distance.
+                damageFalloff: { start: 40, end: 100, minMul: 0.6 },
                 fireRate: 10, mag: 30, reserve: 120,
                 reloadTime: 2.0, reloadTimeEmpty: 2.5,
                 spread: { hip: 0.014, ads: 0.003, moving: 0.008 },
@@ -595,6 +600,11 @@
                 // Standard buckshot: 9 pellets, ~63 total at point-blank if
                 // every pellet connects (damage falls off fast per range).
                 pelletCount: 9, pelletDamage: 7, pelletSpread: 0.05,
+                // Full pellet damage only inside 6 units - by its own 20-unit
+                // range, each pellet that still connects only does 35% of
+                // its base damage. A real buckshot's defining trait: brutal
+                // up close, weak at the edge of its own range.
+                damageFalloff: { start: 6, end: 20, minMul: 0.35 },
                 damage: 55, headshotMul: 1.3,
                 fireRate: 1.3, mag: 6, reserve: 30,
                 reloadTime: 2.6, reloadTimeEmpty: 3.2,
@@ -612,6 +622,11 @@
             BO31: {
                 id: 'BO31', name: 'BO-31 LONGSHOT', category: WEAPON_CATEGORY.SNIPER,
                 damage: 95, headshotMul: 2.2,
+                // Snipers barely fall off compared to an AR/shotgun - full
+                // damage nearly to the edge of its own huge 200-unit range,
+                // only dropping to 85% right at the very end. The whole
+                // point of the category is staying deadly at range.
+                damageFalloff: { start: 150, end: 200, minMul: 0.85 },
                 fireRate: 0.75, mag: 5, reserve: 25,
                 reloadTime: 3.0, reloadTimeEmpty: 3.6,
                 spread: { hip: 0.05, ads: 0.0008, moving: 0.03 },
@@ -2606,6 +2621,12 @@
                     bullet.distanceTraveled = 0;
                     bullet.isExplosive = isExplosive;
                     bullet.splashRadius = cfg.splashRadius || 0;
+                    // Direct-hit damage falloff by travel distance - see
+                    // damageFalloffMultiplier() in updateGame(). Absent on
+                    // most weapons (undefined), which keep dealing flat
+                    // damage at any range within maxRange, exactly as
+                    // before.
+                    bullet.damageFalloff = cfg.damageFalloff || null;
                     bullets.push(bullet);
                 }
 
@@ -3413,6 +3434,7 @@
                     bullet.distanceTraveled = 0;
                     bullet.isExplosive = isExplosive;
                     bullet.splashRadius = this.currentWeapon.splashRadius || 0;
+                    bullet.damageFalloff = this.currentWeapon.damageFalloff || null;
 
                     bullets.push(bullet);
                 }
@@ -4195,6 +4217,23 @@
             addKillMsg(msg);
         }
 
+        // Direct-hit damage falloff by travel distance: full damage up to
+        // damageFalloff.start, linearly interpolated down to
+        // damageFalloff.minMul by damageFalloff.end, clamped beyond that.
+        // bullet.damageFalloff is only set on weapons whose WEAPON_CONFIGS
+        // entry has a damageFalloff field (see WeaponController.fire() /
+        // Bot.fire()) - every other weapon keeps dealing flat damage at any
+        // distance within its range, exactly as before this existed.
+        function damageFalloffMultiplier(bullet, distanceAtImpact) {
+            const df = bullet.damageFalloff;
+            if (!df) return 1;
+            const d = distanceAtImpact;
+            if (d <= df.start) return 1;
+            if (d >= df.end) return df.minMul;
+            const t = (d - df.start) / (df.end - df.start);
+            return 1 - t * (1 - df.minMul);
+        }
+
         // Explosive splash damage (rockets/grenade launcher): every living
         // entity within bullet.splashRadius of the impact takes damage that
         // falls off linearly with distance (full damage at the center, zero
@@ -4255,24 +4294,23 @@
                 // an explosive self-detonates at its impact/max-range point
                 // instead of just vanishing, so a rocket that never hits
                 // anyone still goes off somewhere.
-                if (bullet.distanceTraveled > bullet.maxRange) {
-                    if (bullet.isExplosive) triggerExplosion(bullet.position, bullet);
-                    bullet.life = -1;
-                }
+                // Range expiry is decided per-impact-point below (see
+                // distanceAtImpact), not here - deciding it here off the
+                // frame's END position over-triggers on a large-delta frame
+                // (a stutter, or this environment's software-rendered
+                // framerate): a bullet whose frame-end position is past
+                // maxRange can still have a perfectly valid, well-within-
+                // range hit earlier along that same frame's travel segment,
+                // and an early life=-1 here used to make the hit-test below
+                // skip it entirely. Explosives are the one exception - they
+                // still self-detonate at the max-range point itself if nothing
+                // was hit by the time the loop below finishes (see after the
+                // loop), so a rocket that never hits anyone still goes off
+                // somewhere.
 
-                // Check collisions (limited to alive entities and only for a
-                // bullet that hasn't just expired above - without this
-                // guard, a bullet that crossed its maxRange partway through
-                // this frame's travel segment still ran the full hit-test
-                // below using that segment's endpoint, so on a low-framerate
-                // frame (bigger per-frame travel) it could register a hit on
-                // a target positioned well beyond the weapon's configured
-                // range, or double-trigger an explosive's splash damage.
-                // Found via the shotgun pellet-range test: a 20-range
-                // shotgun connected on a target 35 units away under a
-                // throttled test framerate. Fast weapons (up to 900 u/s)
-                // can still move ~14 units in a single frame, so testing
-                // only the bullet's endpoint each frame lets it tunnel
+                // Check collisions (limited to alive entities). Fast weapons
+                // (up to 900 u/s) can move ~14 units in a single frame, so
+                // testing only the bullet's endpoint each frame lets it tunnel
                 // straight through a target without ever registering as
                 // "close enough" at a sampled instant - the bullet's whole
                 // travel segment for this frame (prevPos -> new position) is
@@ -4284,7 +4322,7 @@
                 // that one point made level shots miss right at the edge of
                 // the hit radius despite visually lining up perfectly.
                 let hit = false;
-                for (let entity of (bullet.life > 0 ? [player, ...bots] : [])) {
+                for (let entity of [player, ...bots]) {
                     if (entity && entity.isAlive && entity !== bullet.owner) {
                         const entityHalfHeight = 0.75;
                         const entityBottom = entity.mesh.position.add(new BABYLON.Vector3(0, -entityHalfHeight, 0));
@@ -4292,6 +4330,23 @@
                         const closest = closestDistanceSegmentSegment(prevPos, bullet.position, entityBottom, entityTop);
                         if (closest.distance < 0.4) {
                             const impactPoint = closest.pointOnFirst;
+                            // Distance-at-impact: bullet.distanceTraveled
+                            // already includes this whole frame's full travel
+                            // (prevPos -> bullet.position, set above), but the
+                            // actual hit usually lands partway through that
+                            // segment, not at its very end - subtracting the
+                            // unused remainder gets the real cumulative
+                            // distance at the impact point itself. Used both
+                            // to decide whether this hit is within the
+                            // weapon's actual range (below) and for damage
+                            // falloff. Barely matters at 60fps (a frame's
+                            // span is only ~15 units for a fast bullet), but
+                            // a large frame delta makes the difference
+                            // between "impact at range X" and "impact at
+                            // range X+80" - found while testing both the
+                            // range cutoff and damage falloff.
+                            const distanceAtImpact = bullet.distanceTraveled - BABYLON.Vector3.Distance(impactPoint, bullet.position);
+                            if (distanceAtImpact > bullet.maxRange) continue;
                             bullet.position.copyFrom(impactPoint);
 
                             if (bullet.isExplosive) {
@@ -4311,7 +4366,7 @@
                                 // weapon) - e.g. a Sniper's 2.2x actually hits
                                 // harder on a headshot than a Shotgun's 1.2x now.
                                 const damageMul = isHeadshot ? bullet.headshotMul : 1.0;
-                                const totalDamage = bullet.damage * damageMul;
+                                const totalDamage = bullet.damage * damageMul * damageFalloffMultiplier(bullet, distanceAtImpact);
 
                                 entity.takeDamage(totalDamage);
                                 spawnImpactEffect(scene, impactPoint, isHeadshot);
@@ -4333,6 +4388,18 @@
                             break;
                         }
                     }
+                }
+
+                // Nothing was hit within range this frame - expire once past
+                // the weapon's configured range (checked here, after the hit
+                // loop, using the frame-end distance: any valid closer hit
+                // would already have been caught above via distanceAtImpact).
+                // Silent for a normal bullet; an explosive self-detonates at
+                // its impact/max-range point instead of just vanishing, so a
+                // rocket that never hits anyone still goes off somewhere.
+                if (!hit && bullet.distanceTraveled > bullet.maxRange) {
+                    if (bullet.isExplosive) triggerExplosion(bullet.position, bullet);
+                    bullet.life = -1;
                 }
 
                 if (bullet.life <= 0 || hit) {
