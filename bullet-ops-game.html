@@ -3048,6 +3048,23 @@
             if (SoundSynth[profile.sound]) SoundSynth[profile.sound]();
         }
 
+        // Bullet penetration by material - not every tagged surface should
+        // behave like a wall. glass/wood let a bullet keep going (with a
+        // damage cut and one fewer penetration left, see bullet.penetrationsLeft
+        // set at creation), concrete/metal/dirt stop it outright. A material
+        // with no entry here (or an untagged mesh reached through some other
+        // path) falls back to blocking - the safe default, since treating an
+        // unknown surface as penetrable risks a bullet sailing through
+        // something that was always meant to be solid cover.
+        const PENETRATION_PROFILES = {
+            concrete: { blocks: true },
+            metal: { blocks: true },
+            dirt: { blocks: true },
+            wood: { blocks: false, damageLossPercent: 0.55 },
+            glass: { blocks: false, damageLossPercent: 0.12 },
+            default: { blocks: true }
+        };
+
         // Bigger, longer-lived burst for rocket/grenade splash damage - a
         // plain spawnImpactEffect() reads as a normal bullet impact, which
         // undersells an actual explosion. A brief bright flash sphere (same
@@ -3392,6 +3409,14 @@
                     // damage at any range within maxRange, exactly as
                     // before.
                     bullet.damageFalloff = cfg.damageFalloff || null;
+                    // How many penetrable surfaces (glass/wood - see
+                    // PENETRATION_PROFILES) this bullet can still punch
+                    // through before it's forced to stop even on a
+                    // non-blocking material. A bullet must never penetrate
+                    // infinitely - 1 keeps "shoot through a window" working
+                    // without turning every wall into swiss cheese.
+                    bullet.penetrationsLeft = isMelee || isExplosive ? 0 : 1;
+                    bullet.penetratedMesh = null;
                     bullets.push(bullet);
                 }
 
@@ -4605,6 +4630,8 @@
                     bullet.isExplosive = isExplosive;
                     bullet.splashRadius = this.currentWeapon.splashRadius || 0;
                     bullet.damageFalloff = this.currentWeapon.damageFalloff || null;
+                    bullet.penetrationsLeft = isMelee || isExplosive ? 0 : 1;
+                    bullet.penetratedMesh = null;
 
                     bullets.push(bullet);
                 }
@@ -5707,6 +5734,44 @@
                 // pivot even on a dead-on shot, so comparing against only
                 // that one point made level shots miss right at the edge of
                 // the hit radius despite visually lining up perfectly.
+                // Environment probe, run BEFORE the character hit-test so a
+                // solid wall between the shooter and a target can actually
+                // block the shot - this used to run only AFTER (and only
+                // "if (!hit)"), which meant a bullet's straight-line segment
+                // could register a character hit regardless of any tagged
+                // wall standing between them: "shooter -> wall -> player"
+                // dealt full damage exactly like a clear shot, as long as the
+                // segment passed within hit radius of the player's capsule.
+                // Real bug, found while implementing wall-blocking - fixed by
+                // computing the nearest environment hit first and comparing
+                // its distance-from-prevPos against each candidate character
+                // hit's own distance-from-prevPos below (see travelToChar):
+                // whichever is physically closer along the ray wins.
+                let envHit = null;
+                const segment = bullet.position.subtract(prevPos);
+                const segLen = segment.length();
+                if (IMPACT_SURFACES.length > 0 && segLen > 0.0001) {
+                    const ray = new BABYLON.Ray(prevPos, segment.scale(1 / segLen), segLen);
+                    // Exclude a mesh this bullet already penetrated - a
+                    // starting point nudged just past the entry surface can
+                    // still sit inside a thick mesh's own volume, and a ray
+                    // cast from inside a convex shape still hits that same
+                    // shape's far-side triangles on the way out. That made a
+                    // bullet re-pick the very glass pane it had just pierced
+                    // one frame earlier, with 0 penetrations left, and get
+                    // blocked right there without ever visibly making it
+                    // through - found via a real shot-through-glass test
+                    // (damage reduced correctly on entry, then the bullet
+                    // vanished the very next frame with no hit registered).
+                    // A fixed positional nudge can't fix this in general
+                    // (wall thickness varies per mesh); not re-picking the
+                    // same mesh again does, independent of thickness.
+                    const pick = scene.pickWithRay(ray, (m) => IMPACT_SURFACES.includes(m) && m !== bullet.penetratedMesh);
+                    if (pick && pick.hit && pick.pickedMesh) {
+                        envHit = { point: pick.pickedPoint, mesh: pick.pickedMesh, travelToHit: BABYLON.Vector3.Distance(prevPos, pick.pickedPoint) };
+                    }
+                }
+
                 let hit = false;
                 for (let entity of [player, ...bots]) {
                     if (entity && entity.isAlive && entity !== bullet.owner) {
@@ -5733,6 +5798,17 @@
                             // range cutoff and damage falloff.
                             const distanceAtImpact = bullet.distanceTraveled - BABYLON.Vector3.Distance(impactPoint, bullet.position);
                             if (distanceAtImpact > bullet.maxRange) continue;
+
+                            // Wall-blocking: a tagged environment surface
+                            // closer to the shooter than this character
+                            // means the wall is physically in the way - the
+                            // shot never reaches this entity. Don't break;
+                            // a different entity standing in front of that
+                            // same wall (or in a different direction this
+                            // segment happens to graze) can still be hit.
+                            const travelToChar = BABYLON.Vector3.Distance(prevPos, impactPoint);
+                            if (envHit && envHit.travelToHit < travelToChar - 0.05) continue;
+
                             bullet.position.copyFrom(impactPoint);
 
                             if (bullet.isExplosive) {
@@ -5777,32 +5853,78 @@
                 }
 
                 // Environment impact: a bullet that didn't hit a character
-                // this frame gets one raycast against IMPACT_SURFACES (the
-                // opt-in list of map meshes tagged via tagImpactMaterial() -
-                // never every mesh in the scene), using the same this-frame
-                // travel segment as the character hit-test above so a fast
-                // bullet can't tunnel through a tagged wall between samples
-                // either. This is the first real bullet-vs-environment
-                // collision in the game - bullets previously just passed
-                // through every wall/prop and either hit a character or
-                // silently expired at max range.
-                if (!hit && IMPACT_SURFACES.length > 0) {
-                    const segment = bullet.position.subtract(prevPos);
-                    const segLen = segment.length();
-                    if (segLen > 0.0001) {
-                        const ray = new BABYLON.Ray(prevPos, segment.scale(1 / segLen), segLen);
-                        const pick = scene.pickWithRay(ray, (m) => IMPACT_SURFACES.includes(m));
-                        if (pick && pick.hit && pick.pickedMesh) {
-                            const travelToHit = BABYLON.Vector3.Distance(prevPos, pick.pickedPoint);
-                            const distanceAtImpact = (bullet.distanceTraveled - segLen) + travelToHit;
-                            if (distanceAtImpact <= bullet.maxRange) {
-                                if (bullet.isExplosive) {
-                                    triggerExplosion(pick.pickedPoint, bullet);
-                                } else {
-                                    const material = pick.pickedMesh.metadata && pick.pickedMesh.metadata.impactMaterial;
-                                    spawnMaterialImpactEffect(scene, pick.pickedPoint, material);
-                                }
-                                bullet.position.copyFrom(pick.pickedPoint);
+                // this frame (either nothing was in its path, or envHit
+                // itself blocked/occluded a would-be character hit above)
+                // resolves against that same envHit probe - no second
+                // raycast needed, it was already computed before the
+                // character loop so wall-blocking could use it. This is the
+                // first real bullet-vs-environment collision in the game -
+                // bullets previously just passed through every wall/prop and
+                // either hit a character or silently expired at max range.
+                if (!hit && envHit) {
+                    const distanceAtImpact = (bullet.distanceTraveled - segLen) + envHit.travelToHit;
+                    if (distanceAtImpact <= bullet.maxRange) {
+                        const material = envHit.mesh.metadata && envHit.mesh.metadata.impactMaterial;
+                        if (bullet.isExplosive) {
+                            triggerExplosion(envHit.point, bullet);
+                            bullet.position.copyFrom(envHit.point);
+                            bullet.life = -1;
+                            hit = true;
+                        } else {
+                            spawnMaterialImpactEffect(scene, envHit.point, material);
+                            const profile = PENETRATION_PROFILES[material] || PENETRATION_PROFILES.default;
+                            if (!profile.blocks && bullet.penetrationsLeft > 0) {
+                                // Penetrate: realistic material behavior (see
+                                // PENETRATION_PROFILES) - glass/wood cost the
+                                // bullet damage and one penetration instead
+                                // of stopping it outright. The bullet keeps
+                                // flying from the penetration point onward;
+                                // it isn't re-tested against a character
+                                // within this same frame (the remaining
+                                // travel this frame is usually tiny), so an
+                                // entity right behind the glass registers the
+                                // hit on the very next frame instead - never
+                                // more than one frame's delay in practice.
+                                bullet.damage *= (1 - profile.damageLossPercent);
+                                bullet.penetrationsLeft--;
+                                // Truncate distanceTraveled to the actual
+                                // distance at the penetration point (already
+                                // confirmed <= bullet.maxRange above), not
+                                // the full, possibly much longer, frame-end
+                                // travel. Without this, a large deltaTime
+                                // frame (this software-rendered test
+                                // environment's known issue, documented
+                                // elsewhere in this file) could leave
+                                // distanceTraveled past maxRange even though
+                                // the penetration itself was well within
+                                // range - the "nothing hit, expire" check
+                                // right after this block only guards on
+                                // !hit, and a penetrating bullet keeps
+                                // hit === false on purpose so it keeps
+                                // flying, so it would otherwise get disposed
+                                // the instant after successfully piercing
+                                // the glass. Found via a real shot-through-
+                                // glass test: the bullet vanished after
+                                // frame 1 and dealt zero damage instead of a
+                                // reduced amount.
+                                bullet.distanceTraveled = distanceAtImpact;
+                                bullet.penetratedMesh = envHit.mesh;
+                                // Push the bullet slightly past the pierced
+                                // surface (along its own travel direction,
+                                // not just envHit.point itself) - landing
+                                // bullet.position exactly ON the mesh made
+                                // next frame's ray start from a point still
+                                // touching it, so the raycast immediately
+                                // re-picked the very same mesh at t≈0 and
+                                // treated it as a second, already-out-of-
+                                // penetrations hit - the bullet never
+                                // visibly made it through. Found by testing
+                                // a shot through a single glass pane: it
+                                // dealt zero damage instead of a reduced
+                                // amount.
+                                bullet.position.copyFrom(envHit.point).addInPlace(bullet.velocity.normalizeToNew().scale(0.1));
+                            } else {
+                                bullet.position.copyFrom(envHit.point);
                                 bullet.life = -1;
                                 hit = true;
                             }
