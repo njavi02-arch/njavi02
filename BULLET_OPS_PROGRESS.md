@@ -901,6 +901,30 @@ Siguiente punto del checklist del usuario tras cerrar colisiones e iluminación:
 
 **Probado con Playwright**: el nuevo bloque tiene colisión real (un jugador caminando de frente se detiene antes de tocarlo, no es solo un obstáculo visual), y se puede rodear libremente por los lados sin quedar atrapado ni cerrar la plaza. Repetida la auditoría automatizada de solapamiento de las ahora 58 mallas: 0 solapamientos nuevos causados por esta pieza. Repetida la comprobación de los 12 spawns: siguen completamente libres de geometría. 68 armas intactas.
 
+### Texturas: mapas de normales reales + desgaste/manchas (mejora grande pedida explícitamente)
+
+Última parte de la directiva de prioridad absoluta antes de seguir con otras funcionalidades: mejorar de verdad las texturas, evitando que sigan pareciendo "planas" aunque ya tuvieran variación de color. El proyecto seguía sin ningún `bumpTexture`/mapa de normales en ningún material — cada superficie, por mucho ruido de color que tuviera pintado, seguía siendo geométricamente perfectamente plana bajo la luz direccional, la razón real por la que el usuario podía seguir viéndolas como "prototipo" pese a la variación de color ya existente.
+
+**`makeNormalNoise()`**: nueva función compartida que pinta un mapa de normales real (no un mapa de altura mal usado) directamente en convención tangent-space — una superficie plana es `rgb(128,128,255)` (recto hacia +Z), y cada mota/línea desplaza los canales R/G para simular un pequeño bulto o hueco. Aplicado a los 5 materiales opacos (`concreteMat`/`brickMat`/`metalMat`/`asphaltMat`/`woodMat`):
+- **Hormigón**: ruido fino de picado (900 motas), coherente con la variación de color ya pintada.
+- **Ladrillo**: el propio mapa de normales dibuja la rejilla de ladrillo/mortero como relieve real (líneas hundidas), no solo una línea de color sobre un plano — antes la junta de mortero era pura ilusión de color.
+- **Metal**: ruido con sesgo horizontal (simulando el grano de una chapa cepillada/gastada) en vez de ruido isotrópico.
+- **Madera**: ruido alineado con la veta (rayas verticales) más picado fino.
+- **Asfalto**: picado fino de grano denso.
+
+**Pasada de desgaste/manchas en el color base** (además del relieve), siguiendo la petición explícita de "suciedad, desgaste, manchas, arañazos, variación de color... sin exagerar":
+- Hormigón: churretes verticales tenues desde arriba (efecto lluvia/escorrentía) + un par de manchas difusas cerca de la base (mugre acumulada donde el muro toca el suelo).
+- Ladrillo: manchas de humedad bajando desde algunas juntas de mortero (el desgaste real de una fachada de ladrillo no es uniforme, se concentra en las juntas).
+- Metal: arañazos finos cortos y aleatorios (el tipo de marca que deja el roce, no daño).
+- Asfalto: un par de manchas oscuras de aceite/neumático.
+- Madera: un par de manchas de agua más oscuras.
+
+Todas las pasadas usan opacidades bajas (0.08-0.22) para que se lea como desgaste real, no como un filtro de suciedad exagerado.
+
+**Probado con Playwright**: capturas de pantalla en primer plano contra ladrillo (Apartment Block) y hormigón (Destroyed Shop/exterior) confirman el relieve visible bajo la luz direccional y las manchas/churretes — mejora visual real, no solo un cambio de código sin efecto. Regresión completa en los 4 mapas (estas funciones son compartidas): los 4 cargan correctamente, 68 armas en cada uno, HUD visible, sin errores nuevos de consola. Como son funciones compartidas, esta mejora beneficia automáticamente a los 4 mapas del proyecto, no solo a KRYPTOS-URBAN — coherente con el criterio ya aplicado antes para el color del cielo.
+
+**Alcance honesto**: sigue sin existir un mapa de Ambient Occlusion dedicado ni reflejos de entorno (sin HDR/mapa de reflexión configurado, ver nota ya existente sobre esta limitación) — sería el siguiente incremento de calidad PBR, no intentado aquí. La resolución de las texturas se mantiene en 128×128 (igual que antes), suficiente para el patrón de ruido usado pero un límite real si se quisiera detalle aún más fino.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.

@@ -1062,6 +1062,46 @@
         // attempted here. Call once per surface type and reuse the
         // returned material across every matching mesh (same shared-
         // material discipline as getCharacterMaterial()'s cache).
+        // Real normal map (not a misused heightmap) generated the same
+        // hand-drawn-DynamicTexture way as the albedo textures above -
+        // found missing in the KRYPTOS-URBAN texture-quality audit ("evita
+        // texturas completamente planas" was still true even with the
+        // albedo speckle/variation already in place, since PBRMaterial had
+        // no bumpTexture at all, so every surface stayed geometrically
+        // flat under specular light no matter how noisy its color was).
+        // Painted directly in tangent-space normal-map convention: a flat
+        // surface is rgb(128,128,255) (straight up +Z), and each fleck
+        // nudges the R/G channels away from 128 to fake a tiny pit or
+        // bump - cheap, but it's genuine per-pixel surface perturbation,
+        // not a fake plain-color texture pretending to be one.
+        function makeNormalNoise(scene, name, size, count, strength, lineCount) {
+            const tex = new BABYLON.DynamicTexture('texNormal_' + name + '_' + Math.random(), size, scene, false);
+            const ctx = tex.getContext();
+            ctx.fillStyle = 'rgb(128,128,255)';
+            ctx.fillRect(0, 0, size, size);
+            for (let i = 0; i < count; i++) {
+                const nx = 128 + (Math.random() - 0.5) * strength;
+                const ny = 128 + (Math.random() - 0.5) * strength;
+                ctx.fillStyle = `rgb(${nx | 0},${ny | 0},255)`;
+                ctx.fillRect(Math.random() * size, Math.random() * size, 1 + Math.random() * 3, 1 + Math.random() * 3);
+            }
+            if (lineCount) {
+                for (let i = 0; i < lineCount; i++) {
+                    const horizontal = Math.random() < 0.5;
+                    const nx = horizontal ? 128 : 128 + (Math.random() - 0.5) * strength * 1.5;
+                    const ny = horizontal ? 128 + (Math.random() - 0.5) * strength * 1.5 : 128;
+                    ctx.strokeStyle = `rgb(${nx | 0},${ny | 0},255)`;
+                    ctx.lineWidth = 1 + Math.random() * 2;
+                    ctx.beginPath();
+                    if (horizontal) { const y = Math.random() * size; ctx.moveTo(0, y); ctx.lineTo(size, y); }
+                    else { const x = Math.random() * size; ctx.moveTo(x, 0); ctx.lineTo(x, size); }
+                    ctx.stroke();
+                }
+            }
+            tex.update();
+            tex.wrapU = tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+            return tex;
+        }
         function makePBRConcrete(scene) {
             const mat = new BABYLON.PBRMaterial('pbrConcrete_' + Math.random(), scene);
             const size = 128;
@@ -1081,9 +1121,34 @@
                 for (let j = 0; j < 5; j++) { x += (Math.random() - 0.5) * 30; y += (Math.random() - 0.5) * 30; ctx.lineTo(x, y); }
                 ctx.stroke();
             }
+            // Wear/stain pass - found missing in the texture-quality audit
+            // ("small dirt/wear/stain variation, without overdoing it").
+            // Soft dark streaks (rain/dirt runoff from the top edge, as if
+            // dripping down a vertical surface) plus a couple of broader,
+            // very-low-opacity stain blotches near the base (the kind of
+            // grime that collects where a wall meets the ground) - both
+            // subtle, not a "grunge filter" pass.
+            for (let i = 0; i < 5; i++) {
+                const x = Math.random() * size;
+                const grad = ctx.createLinearGradient(x, 0, x, size);
+                grad.addColorStop(0, 'rgba(25,24,20,0.16)');
+                grad.addColorStop(1, 'rgba(25,24,20,0)');
+                ctx.fillStyle = grad;
+                ctx.fillRect(x - (2 + Math.random() * 3), 0, 4 + Math.random() * 6, size * (0.4 + Math.random() * 0.5));
+            }
+            for (let i = 0; i < 3; i++) {
+                const bx = Math.random() * size, by = size * (0.7 + Math.random() * 0.3);
+                const r = 10 + Math.random() * 14;
+                const grad = ctx.createRadialGradient(bx, by, 0, bx, by, r);
+                grad.addColorStop(0, 'rgba(35,30,22,0.14)');
+                grad.addColorStop(1, 'rgba(35,30,22,0)');
+                ctx.fillStyle = grad;
+                ctx.fillRect(bx - r, by - r, r * 2, r * 2);
+            }
             tex.update();
             tex.wrapU = tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
             mat.albedoTexture = tex;
+            mat.bumpTexture = makeNormalNoise(scene, 'concrete', size, 900, 30, 3);
             mat.metallic = 0; mat.roughness = 0.92;
             return mat;
         }
@@ -1105,10 +1170,34 @@
                 ctx.fillStyle = `rgba(${138 + shade},${90 + shade},${68 + shade},0.35)`;
                 ctx.fillRect(Math.random() * size, Math.random() * size, brickW * 0.8, rowH * 0.8);
             }
+            // Damp/grime staining running down from a few mortar joints -
+            // brick facades weather unevenly along their joint lines in
+            // reality, not as a uniform tint.
+            for (let i = 0; i < 4; i++) {
+                const x = Math.random() * size;
+                const grad = ctx.createLinearGradient(x, 0, x, size);
+                grad.addColorStop(0, 'rgba(20,18,15,0.18)');
+                grad.addColorStop(1, 'rgba(20,18,15,0)');
+                ctx.fillStyle = grad;
+                ctx.fillRect(x - 3, 0, 6, size * (0.5 + Math.random() * 0.4));
+            }
             tex.update();
             tex.wrapU = tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
             tex.uScale = 3; tex.vScale = 2;
             mat.albedoTexture = tex;
+            // Normal map mirrors the brick/mortar grid itself (recessed
+            // mortar lines, not just a color line drawn over a flat plane)
+            // plus fine per-brick noise for the weathered surface.
+            const brickNormal = makeNormalNoise(scene, 'brick', size, 500, 22, 0);
+            const bctx = brickNormal.getContext();
+            bctx.strokeStyle = 'rgb(128,100,235)'; bctx.lineWidth = 2;
+            for (let row = 0, y = 0; y < size; row++, y += rowH) {
+                const offset = (row % 2) * (brickW / 2);
+                for (let x = -brickW; x < size + brickW; x += brickW) bctx.strokeRect(x + offset, y, brickW, rowH);
+            }
+            brickNormal.update();
+            brickNormal.uScale = 3; brickNormal.vScale = 2;
+            mat.bumpTexture = brickNormal;
             mat.metallic = 0; mat.roughness = 0.85;
             return mat;
         }
@@ -1125,9 +1214,23 @@
                 ctx.fillStyle = `rgba(110,60,30,${0.1 + Math.random() * 0.15})`;
                 ctx.fillRect(Math.random() * size, Math.random() * size, 2 + Math.random() * 4, 10 + Math.random() * 20);
             }
+            // Fine scratch pass - short bright/dark paired scuffs, the kind
+            // scraped metal panels pick up, kept faint so it reads as wear
+            // rather than damage.
+            for (let i = 0; i < 25; i++) {
+                const x = Math.random() * size, y = Math.random() * size, len = 4 + Math.random() * 10;
+                const ang = Math.random() * Math.PI;
+                ctx.strokeStyle = `rgba(200,200,205,${0.08 + Math.random() * 0.1})`;
+                ctx.lineWidth = 0.6;
+                ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(ang) * len, y + Math.sin(ang) * len); ctx.stroke();
+            }
             tex.update();
             tex.wrapU = tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
             mat.albedoTexture = tex;
+            // Anisotropic-leaning noise (thin horizontal scratch lines) -
+            // brushed/worn sheet metal scatters light along a grain, not
+            // uniformly in every direction.
+            mat.bumpTexture = makeNormalNoise(scene, 'metal', size, 300, 18, 14);
             mat.metallic = 0.8; mat.roughness = 0.45;
             return mat;
         }
@@ -1147,9 +1250,20 @@
             ctx.strokeStyle = 'rgba(200,190,150,0.15)';
             ctx.setLineDash([6, 6]); ctx.lineWidth = 2;
             ctx.beginPath(); ctx.moveTo(size / 2, 0); ctx.lineTo(size / 2, size); ctx.stroke();
+            // Oil/tire staining - a couple of soft dark patches, the kind
+            // that accumulate under parked vehicles or well-trodden paths.
+            for (let i = 0; i < 3; i++) {
+                const bx = Math.random() * size, by = Math.random() * size, r = 12 + Math.random() * 16;
+                const grad = ctx.createRadialGradient(bx, by, 0, bx, by, r);
+                grad.addColorStop(0, 'rgba(8,8,9,0.22)');
+                grad.addColorStop(1, 'rgba(8,8,9,0)');
+                ctx.fillStyle = grad;
+                ctx.fillRect(bx - r, by - r, r * 2, r * 2);
+            }
             tex.update();
             tex.wrapU = tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
             mat.albedoTexture = tex;
+            mat.bumpTexture = makeNormalNoise(scene, 'asphalt', size, 1200, 16, 0);
             mat.metallic = 0; mat.roughness = 0.95;
             return mat;
         }
@@ -1164,9 +1278,23 @@
                 ctx.strokeStyle = `rgba(50,32,18,${0.2 + Math.random() * 0.2})`;
                 ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, size); ctx.stroke();
             }
+            // Weathering: a couple of darker water-stain patches and light
+            // scuffing along the bottom edge (crates/pallets get scraped
+            // and dragged along the ground).
+            for (let i = 0; i < 2; i++) {
+                const bx = Math.random() * size, by = size * (0.5 + Math.random() * 0.4), r = 14 + Math.random() * 10;
+                const grad = ctx.createRadialGradient(bx, by, 0, bx, by, r);
+                grad.addColorStop(0, 'rgba(30,20,10,0.2)');
+                grad.addColorStop(1, 'rgba(30,20,10,0)');
+                ctx.fillStyle = grad;
+                ctx.fillRect(bx - r, by - r, r * 2, r * 2);
+            }
             tex.update();
             tex.wrapU = tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
             mat.albedoTexture = tex;
+            // Grain-aligned normal noise - vertical streaks matching the
+            // plank direction plus fine per-fleck pitting.
+            mat.bumpTexture = makeNormalNoise(scene, 'wood', size, 250, 14, 10);
             mat.metallic = 0; mat.roughness = 0.8;
             return mat;
         }
