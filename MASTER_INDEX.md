@@ -668,11 +668,35 @@ accesorio óptico equipado) sin regresión. Ver `BULLET_OPS_PROGRESS.md`.
 
 **Alcance honesto**: los 10 skins de rareza de FASE 16 siguen sin
 migrar a PBR; solo BO-31 tiene mira con lente de cristal separada del
-housing (el resto sigue con una sola caja de mira); sin pase de
-microdetalle geométrico todavía.
+housing (el resto sigue con una sola caja de mira).
+
+El usuario pidió monedas ilimitadas para revisar el sistema de
+camuflajes sin farmear, y seguir trabajando en paralelo mientras
+revisaba. ~~Botón `#devUnlimitedCoinsBtn` en AJUSTES~~ 🟢 completado
+(reemplaza un comando de consola que el usuario no supo dónde pegar) —
+marcado en el código como ayuda temporal de QA, pendiente de retirar.
+
+~~Pase de microdetalle mecánico (tornillos, ranuras de riel)~~ 🟢
+completado. `drawScrewHeads()`/`drawRailGrooves()` nuevos, aplicados en
+`getWeaponZoneMaterial()` (metal/optic_housing) y `buildCamoMaterial()`
+(los 10 camuflajes). Probado: 4 materiales de zona + 10 camuflajes +
+68 armas construyen sin excepción, 0 errores de consola, confirmado
+visualmente vía previsualización 3D. Ver `BULLET_OPS_PROGRESS.md`.
+
+**🐛 Bug reportado por el usuario (con captura): pantalla de muerte
+vacía** — al morir, la cámara se congelaba en el ángulo exacto de la
+muerte (sin overlay de feedback), mostrando solo cielo plano si el
+jugador miraba hacia arriba al morir. ~~Overlay `#deathOverlay`~~ 🟢
+completado: "ELIMINADO" + quién mató + contador de respawn, mostrado
+mientras `!player.isAlive` sin importar hacia dónde quedó mirando la
+cámara. Probado con Playwright reproduciendo el caso exacto (muerte
+mirando verticalmente hacia arriba) + el camino real de disparo de bot
+(`awardKill`) — overlay se activa/desactiva correctamente, texto
+"Eliminado por BOT" correcto, 0 errores de consola. Ver
+`BULLET_OPS_PROGRESS.md`.
 
 **🎯 Próxima tarea real**: pendiente de nueva directiva del usuario —
 posibles siguientes pasos: migrar los skins de rareza a PBR, extender
-la lente de cristal al resto de armas con mira, pase de microdetalle
-geométrico (tornillos, ranuras de riel), o retomar el backlog P2
-existente / tarea #84 (KRYPTOS-URBAN).
+la lente de cristal al resto de armas con mira, retirar el botón de
+monedas ilimitadas (QA) una vez el usuario termine de revisar, o
+retomar el backlog P2 existente / tarea #84 (KRYPTOS-URBAN).

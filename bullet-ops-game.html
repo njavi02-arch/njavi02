@@ -360,6 +360,46 @@
             opacity: 0;
             transition: opacity 0.2s;
         }
+        /* Death overlay: previously dying left the screen exactly as it was
+           the instant of death (frozen camera, no dark-out, no feedback
+           besides the HP number) - if the fatal shot landed while looking
+           up at an enemy on a rooftop/ledge, that froze on flat sky for the
+           whole respawn delay with nothing telling the player they'd died.
+           A dedicated full-screen overlay guarantees real feedback every
+           death regardless of where the camera happened to be aiming. */
+        #deathOverlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(20, 0, 0, 0.55);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s;
+            z-index: 5;
+        }
+        #deathOverlay.active { opacity: 1; }
+        #deathEliminatedText {
+            font-size: 1.6rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            color: #ff3333;
+            text-shadow: 0 0 20px rgba(255, 51, 51, 0.7);
+        }
+        #deathKilledBy {
+            font-size: 0.85rem;
+            color: #ccc;
+            letter-spacing: 1px;
+        }
+        #deathRespawnTimer {
+            font-size: 0.75rem;
+            color: #888;
+            letter-spacing: 1px;
+            margin-top: 0.3rem;
+        }
         /* Classic 4-line shooter crosshair (default for most categories) -
            each line sits `--gap` away from dead center and moves out
            together as effective spread grows (idle -> small, moving/ADS ->
@@ -830,6 +870,11 @@
         <div id="ammo">📦 <span id="magVal">30</span> | <span id="resVal">120</span></div>
         <div id="killFeed"></div>
         <div id="minimapContainer"><canvas id="minimapCanvas" width="140" height="140"></canvas></div>
+        <div id="deathOverlay">
+            <div id="deathEliminatedText">ELIMINADO</div>
+            <div id="deathKilledBy"></div>
+            <div id="deathRespawnTimer"></div>
+        </div>
     </div>
 
     <div id="loading" class="hidden">
@@ -3174,11 +3219,20 @@
                     ctx.fillStyle = `rgba(190,195,200,${0.05 + Math.random() * 0.1})`;
                     ctx.fillRect(Math.random() * size, Math.random() * size, 8 + Math.random() * 14, 1.5);
                 }
+                mat.bumpTexture = makeNormalNoise(scene, 'weaponMetal', size, 260, 20, 12);
+                // Real mechanical detail (weapon-realism pass, user request:
+                // "detalles mecánicos... tornillos") - screw heads baked
+                // into both the albedo and the normal map at the same
+                // coordinates, so they actually catch light under the
+                // scene's real directional light instead of being a flat
+                // painted dot. Applies to every weapon's bare-metal parts
+                // for free, since this material is built once and shared.
+                drawScrewHeads(ctx, mat.bumpTexture.getContext(), size, 4);
                 tex.update();
+                mat.bumpTexture.update();
                 tex.wrapU = tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
                 tex.uScale = 2; tex.vScale = 2;
                 mat.albedoTexture = tex;
-                mat.bumpTexture = makeNormalNoise(scene, 'weaponMetal', size, 260, 20, 12);
                 mat.bumpTexture.uScale = 2; mat.bumpTexture.vScale = 2;
                 mat.metallic = 0.85; mat.roughness = 0.32;
             } else if (zone === 'rubber') {
@@ -3236,10 +3290,14 @@
                     ctx.fillStyle = `rgba(60,60,65,${0.05 + Math.random() * 0.08})`;
                     ctx.fillRect(Math.random() * size, Math.random() * size, 1.5, 1.5);
                 }
+                mat.bumpTexture = makeNormalNoise(scene, 'weaponOptic', size, 150, 14, 0);
+                // Mount screws (top/bottom ring clamp of a real optic) -
+                // same technique as the metal zone above.
+                drawScrewHeads(ctx, mat.bumpTexture.getContext(), size, 3);
                 tex.update();
+                mat.bumpTexture.update();
                 tex.wrapU = tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
                 mat.albedoTexture = tex;
-                mat.bumpTexture = makeNormalNoise(scene, 'weaponOptic', size, 150, 14, 0);
                 mat.metallic = 0.7; mat.roughness = 0.4;
             }
             weaponZoneMats[zone] = mat;
@@ -3304,6 +3362,17 @@
             const m = new BABYLON.PBRMaterial('camo_' + name + '_' + Math.random(), scene);
             m.albedoTexture = tex;
             m.bumpTexture = makeNormalNoise(scene, 'camo_' + name, size, 200, 14, 0);
+            // Mechanical detail: rail grooves baked into the normal map
+            // only (so they read as surface structure under raking light
+            // without disturbing whichever camo pattern is equipped),
+            // plus a couple of small panel screws (visible in both albedo
+            // and normal, like the metal zone above) - the same
+            // real-world cue every painted receiver/handguard panel has.
+            const bumpCtx = m.bumpTexture.getContext();
+            drawRailGrooves(bumpCtx, size, 5);
+            drawScrewHeads(ctx, bumpCtx, size, 2);
+            tex.update();
+            m.bumpTexture.update();
             m.bumpTexture.uScale = tex.uScale; m.bumpTexture.vScale = tex.vScale;
             m.metallic = opts.metallic !== undefined ? opts.metallic : 0.12;
             m.roughness = opts.roughness !== undefined ? opts.roughness : 0.6;
@@ -5961,8 +6030,18 @@
             die() {
                 this.isAlive = false;
                 this.deaths++;
+                // Drives both the #deathOverlay countdown text and its
+                // fixed 3s respawn wait below - previously nothing recorded
+                // when death happened, so there was no way for the HUD to
+                // know how much of the respawn delay was left.
+                this.deathTimestamp = Date.now();
+                this.respawnDelay = 3000;
+                // Cleared here (not just left stale) so a fall-off-map death
+                // - the one die() path with no awardKill() call to set it -
+                // doesn't show a leftover killer name from a previous life.
+                this.lastKilledByName = null;
                 playDeathPose(this);
-                setTimeout(() => this.respawn(), 3000);
+                setTimeout(() => this.respawn(), this.respawnDelay);
             }
 
             respawn() {
@@ -7650,6 +7729,12 @@
         // can kill several entities in one blast) apply score/streak/
         // killfeed consistently instead of duplicating this block.
         function awardKill(owner, victim, isHeadshot) {
+            // Feeds #deathOverlay's "eliminated by" line (see updateHUD()) -
+            // the killfeed already knew this at the point of death, the
+            // death overlay just didn't exist to read it yet.
+            if (victim === player) {
+                player.lastKilledByName = owner === player ? player.callsign : 'BOT';
+            }
             owner.addKill();
             if (owner === player) {
                 showStreakMessage(player.kills);
@@ -8117,6 +8202,22 @@
                 shieldDisplay.textContent = `🛡 SHIELD ${player.spawnShieldTime.toFixed(1)}s`;
             } else {
                 shieldDisplay.style.opacity = '0';
+            }
+
+            // Death overlay (see CSS comment on #deathOverlay) - guarantees
+            // the player always gets "you died" feedback and a respawn
+            // countdown, regardless of what the frozen camera happens to be
+            // pointed at for the rest of the respawn delay.
+            const deathOverlayEl = document.getElementById('deathOverlay');
+            if (!player.isAlive) {
+                deathOverlayEl.classList.add('active');
+                document.getElementById('deathKilledBy').textContent =
+                    player.lastKilledByName ? `Eliminado por ${player.lastKilledByName}` : '';
+                const elapsedMs = Date.now() - (player.deathTimestamp || Date.now());
+                const remainingS = Math.max(0, ((player.respawnDelay || 3000) - elapsedMs) / 1000);
+                document.getElementById('deathRespawnTimer').textContent = `Reapareciendo en ${remainingS.toFixed(1)}s`;
+            } else {
+                deathOverlayEl.classList.remove('active');
             }
         }
 

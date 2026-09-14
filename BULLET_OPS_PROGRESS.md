@@ -1258,6 +1258,24 @@ Con este criterio ya no hace falta el caso especial "arma insignia con zonas vs.
 
 **Alcance honesto que queda pendiente**: los 10 skins de rareza de FASE 16 (tan/urban/digital/etc.) siguen siendo `StandardMaterial`, no se migraron a PBR en esta pasada — solo los 10 camuflajes militares nuevos son PBR reales. La mira con lente de cristal separada (housing + `glass`) solo existe en BO-31 por ahora; el resto de armas con mira siguen con una sola caja `optic_housing` sin lente distinta — extenderlo es un incremento menor, no bloqueante. Ningún pase de microdetalle geométrico (tornillos, ranuras de riel) se hizo en esta pasada.
 
+### Botón temporal de monedas ilimitadas (QA)
+
+El usuario pidió una forma de ver todos los camuflajes sin farmear monedas. Se descartó la primera solución (comando de consola del navegador) porque el usuario no sabía dónde pegarlo ("no se donde ponerlo") — reemplazada de inmediato por un botón real dentro del juego: `#devUnlimitedCoinsBtn` en AJUSTES ("🪙 MONEDAS ILIMITADAS (TEST)"), que pone `playerCoins = 999999` con un click, sin consola ni conocimientos técnicos. Marcado explícitamente en el código como ayuda temporal de QA, pendiente de retirar cuando el usuario termine de revisar el sistema de camuflajes.
+
+### Pase de microdetalle mecánico (tornillos, ranuras de riel)
+
+Incremento pequeño sobre el sistema de zonas PBR: dos helpers nuevos compartidos, `drawScrewHeads(ctx, normCtx, size, count)` (dibuja cabezas de tornillo — círculo oscuro con borde en el albedo, más un relieve a juego en el normal map si se le pasa `normCtx`) y `drawRailGrooves(normCtx, size, count)` (ranuras verticales de riel Picatinny, solo en el normal map, nunca toca el albedo para no interferir con el patrón de camuflaje). Aplicados en `getWeaponZoneMaterial()` (4 tornillos en `metal`, 3 tornillos de montaje en `optic_housing`) y en `buildCamoMaterial()` (5 ranuras de riel + 2 tornillos en cada uno de los 10 camuflajes militares).
+
+**Probado con Playwright**: los 4 materiales de zona y los 10 camuflajes construyen sin excepción; bucle de regresión completo sobre las 68 armas (`buildWeaponViewmodel` + `applySkin`) — 0 fallos, 0 errores de consola. Captura visual vía la pantalla de previsualización 3D confirma que BO-31 con Woodland sigue leyendo correctamente (el detalle de tornillos/ranuras es intencionalmente sutil — unos pocos píxeles en una textura de 64×64 — pensado para leerse bajo luz rasante en juego, no como un elemento gráfico dominante).
+
+### Bug reportado por el usuario: pantalla de muerte vacía (corregido)
+
+El usuario envió una captura real de partida: tras morir, la pantalla se quedaba congelada mostrando solo cielo plano, sin ningún indicio de que el jugador había muerto salvo el "HP: 0" del HUD. Causa confirmada leyendo el código: `Player.update()` corta en la primera línea si `!this.isAlive`, y ni `die()` ni nada más tocan la cámara al morir — la cámara se congela exactamente en el ángulo que tenía en el instante de la muerte durante los 3s de espera de respawn. Si ese instante coincidía con estar mirando hacia arriba (p. ej. apuntando a un enemigo en un tejado), el jugador se quedaba viendo cielo vacío sin ningún feedback.
+
+**Fix**: overlay `#deathOverlay` (fondo oscuro rojizo + "ELIMINADO" + "Eliminado por [BOT/callsign]" + contador de respawn en segundos), controlado por `updateHUD()` cada frame según `player.isAlive` — garantiza feedback real en cualquier muerte, sin importar hacia dónde quedó mirando la cámara congelada. `Player.die()` ahora registra `deathTimestamp`/`respawnDelay` (antes no se guardaba nada, así que no había forma de mostrar cuánto faltaba); `awardKill()` guarda `player.lastKilledByName` para el overlay justo después de que `takeDamage()`/`die()` ya se ejecutaron, reutilizando la misma lógica que ya alimentaba el killfeed.
+
+**Probado con Playwright**: muerte forzada con la cámara mirando casi verticalmente hacia arriba (repro exacta del caso reportado) — overlay se activa, cuenta atrás correcta ("Reapareciendo en 2.8s"), se desactiva automáticamente tras el respawn real a los 3s. Muerte a través del camino real de disparo de un bot (`awardKill(bot, player, false)`) confirma el texto "Eliminado por BOT" se rellena correctamente. 0 errores de consola en las 3 pruebas.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.
