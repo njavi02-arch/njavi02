@@ -1108,6 +1108,16 @@ Antes de este cambio, la única señal visual de una bala en vuelo era la propia
 
 **Probado con Playwright**: disparo real de BO01 confirma una trazadora real como malla hija de la bala, con largo exacto (`min(2.2, max(0.35, 900×0.0055))` = 2.2, coincide). BO71 (Melee) y BO61 (Rocket, `isExplosive:true`) confirmados **sin** trazadora. Verificación de limpieza: justo tras disparar hay exactamente 1 malla `tracer_*` en la escena; al disponer la bala manualmente (mismo `dispose()` que ya usa `updateGame()` al expirar/impactar) esa cuenta baja a 0 — sin mallas huérfanas, sin fuga. 0 errores de consola.
 
+### Eyección de casquillos (ticket V-SHELL)
+
+Verificado explícitamente en la Weapon Bible: cero menciones de eyección de casquillos en todo el código.
+
+**Cambio real**: `spawnShellCasing(scene, position, direction)` crea un cilindro pequeño (0.025 diámetro × 0.07 alto) en un objeto ligero propio (`shellCasings`, no una malla de Babylon con física real — este proyecto no usa ningún motor de físicas) con velocidad inicial lateral+hacia arriba (derivada del vector de disparo vía producto vectorial, funciona igual para el jugador con cámara que para los bots sin ella) y un giro de "tumbling" aleatorio. `updateShellCasings(deltaTime)`, llamada una vez por fotograma desde `updateGame()` junto al resto de listas efímeras del juego, integra gravedad+velocidad+rotación a mano (la misma disciplina "sin motor de físicas, integración manual" que ya usan las balas y el movimiento del jugador) y destruye cada casquillo tras una vida corta (1.1s) — un casquillo es un detalle fugaz, no un prop persistente.
+
+Se dispara **una sola vez por apretón de gatillo, no por perdigón** — una escopeta de 9 perdigones sigue expulsando solo 1 casquillo, igual que en la realidad. Excluido de armas explosivas (`!isExplosive` — un lanzacohetes no expulsa casquillo) y de cuerpo a cuerpo (nunca entra en la rama `else` de disparo). Cableado tanto en `WeaponController.fire()` (jugador) como en `Bot.fire()` (bots, que hasta ahora tampoco tenían este detalle).
+
+**Probado con Playwright**: disparo real de BO01 (AR) crea exactamente 1 casquillo con velocidad vertical inicial positiva (+0.34) que pasa a negativa (-3.19) tras 3 fotogramas — gravedad real aplicándose, no un valor estático. BO21 (Shotgun, 9 perdigones reales) confirma **exactamente 1 casquillo**, no 9. BO61 (Rocket, explosivo) confirma **0 casquillos**. Verificación de limpieza: tras forzar la expiración de todos los casquillos activos, tanto el array `shellCasings` como las mallas `casing_*` en la escena quedan en 0 — sin fugas. 0 errores de consola.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.

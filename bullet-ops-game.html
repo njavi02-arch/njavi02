@@ -1031,6 +1031,12 @@
         // shadow caster the moment they're built.
         let shadowGenerator = null;
         let player = null, bots = [], bullets = [];
+        // Ejected shell casings (Weapon Bible P2 backlog, V-SHELL) - simple
+        // velocity+gravity objects updated alongside bullets in
+        // updateGame(), same "no physics engine, manual integration"
+        // approach the rest of this project already uses for
+        // bullets/player movement. See spawnShellCasing()/updateShellCasings().
+        let shellCasings = [];
         // Map meshes tagged with an impact material (see tagImpactMaterial()
         // in each buildMapX() and spawnMaterialImpactEffect()) - a bullet
         // that doesn't hit a character raycasts against just this opt-in
@@ -3549,6 +3555,65 @@
             tracer.isPickable = false;
             tracer.material = getSharedBulletMaterial(scene, isPlayerOwned);
         }
+
+        // Ejected shell casing (Weapon Bible P2 backlog, V-SHELL) - a small
+        // cylinder popped out to the side of the muzzle position with
+        // simple velocity+gravity motion and a bit of tumble spin, matching
+        // the ticket's own spec ("pequeño cilindro expulsado lateralmente
+        // al disparar, con física simple"). No physics engine exists in
+        // this project, so it's a manually-integrated object (see
+        // updateShellCasings()) rather than a rigid body - the same
+        // approach already used for bullets/player movement everywhere
+        // else in this file. `direction` is the bullet's own fire
+        // direction; right/up are derived from it via cross products
+        // (works for both the player, who has a camera, and bots, who
+        // don't) rather than reading player.camera directly.
+        let sharedCasingMat = null;
+        function getSharedCasingMaterial(scene) {
+            if (!sharedCasingMat) {
+                sharedCasingMat = new BABYLON.StandardMaterial('casingMat_shared', scene);
+                sharedCasingMat.diffuseColor = new BABYLON.Color3(0.75, 0.6, 0.2);
+                sharedCasingMat.specularColor = new BABYLON.Color3(0.4, 0.35, 0.15);
+            }
+            return sharedCasingMat;
+        }
+        function spawnShellCasing(scene, position, direction) {
+            const right = BABYLON.Vector3.Cross(direction, BABYLON.Vector3.Up());
+            if (right.lengthSquared() < 0.0001) right.copyFromFloats(1, 0, 0); else right.normalize();
+            const up = BABYLON.Vector3.Cross(right, direction).normalize();
+
+            const casing = BABYLON.MeshBuilder.CreateCylinder('casing_' + Math.random(), { diameter: 0.025, height: 0.07, tessellation: 6 }, scene);
+            casing.position = position.add(right.scale(0.08)).add(up.scale(-0.03));
+            casing.material = getSharedCasingMaterial(scene);
+            casing.isPickable = false;
+            casing.renderingGroupId = 1;
+            shellCasings.push({
+                mesh: casing,
+                velocity: right.scale(1.8 + Math.random() * 1.2).add(up.scale(1.4 + Math.random() * 0.8)).add(direction.scale(-0.4)),
+                spin: new BABYLON.Vector3((Math.random() - 0.5) * 18, (Math.random() - 0.5) * 18, (Math.random() - 0.5) * 18),
+                life: 1.1
+            });
+        }
+        // Called once per frame from updateGame() - simple Euler
+        // integration (gravity + velocity + tumble), same discipline as
+        // bullets. Expires (and disposes) after its short life runs out,
+        // rather than accumulating forever - a casing is a brief flourish,
+        // not a persistent prop players are meant to notice on the ground.
+        function updateShellCasings(deltaTime) {
+            for (let i = shellCasings.length - 1; i >= 0; i--) {
+                const c = shellCasings[i];
+                c.velocity.y -= 9.81 * deltaTime;
+                c.mesh.position.addInPlace(c.velocity.scale(deltaTime));
+                c.mesh.rotation.x += c.spin.x * deltaTime;
+                c.mesh.rotation.y += c.spin.y * deltaTime;
+                c.mesh.rotation.z += c.spin.z * deltaTime;
+                c.life -= deltaTime;
+                if (c.life <= 0) {
+                    c.mesh.dispose();
+                    shellCasings.splice(i, 1);
+                }
+            }
+        }
         // Cached by color key instead of a single shared material, so the
         // per-category muzzle flash colors below (see MUZZLE_FLASH_PROFILES)
         // can each get their own cheap emissive material without creating a
@@ -4466,6 +4531,11 @@
                 } else {
                     spawnMuzzleFlash(this.scene, muzzleWorldPos, baseDirection, cfg.category);
                     SoundSynth.playGunshot(cfg.soundProfile, muzzleWorldPos);
+                    // One casing per trigger pull, not per pellet - a
+                    // shotgun firing 9 pellets still only cycles 1 shell.
+                    // Explosive weapons (rockets/grenade launchers) don't
+                    // eject brass.
+                    if (!isExplosive) spawnShellCasing(this.scene, muzzleWorldPos, baseDirection);
                 }
             }
 
@@ -5732,6 +5802,7 @@
                     SoundSynth.playMeleeSwing();
                 } else {
                     SoundSynth.playGunshot(this.currentWeapon.soundProfile);
+                    if (!isExplosive) spawnShellCasing(scene, origin, direction);
                 }
             }
 
@@ -7187,6 +7258,8 @@
             for (let bot of bots) {
                 bot.update(deltaTime, allPlayers);
             }
+
+            updateShellCasings(deltaTime);
 
             // Update bullets with performance limits
             for (let i = bullets.length - 1; i >= 0; i--) {
