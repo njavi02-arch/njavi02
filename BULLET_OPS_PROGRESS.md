@@ -943,6 +943,31 @@ Continuación directa de la ampliación de interiores, mismo patrón de 4 parede
 
 **Balance de interiores reales tras esta pasada**: 8 de ~20 edificios del mapa.
 
+## 🔫 WEAPON BIBLE — PRODUCCIÓN DEL BACKLOG P1
+
+Tras completar y publicar `docs/WEAPON_BIBLE.md`/`docs/weapons.json`/`docs/WEAPON_ASSET_BACKLOG.md` (auditoría honesta del sistema de armas real, ver esos archivos), el usuario dio luz verde para empezar a implementar el backlog P1 en el orden ya documentado en la sección 14 de `WEAPON_BIBLE.md`. Primer punto: cerrar los 3 gaps concretos de Weapon Inspect.
+
+### Weapon Inspect: tecla configurable + movimiento de cámara + sonido mecánico
+
+La Weapon Bible había documentado que el sistema de Inspect (estado `INSPECTING`, animación de giro+acercamiento del arma) ya existía y funcionaba, pero con 3 huecos reales respecto a lo pedido: tecla hardcodeada (`i`), sin movimiento de cámara (solo se movía el arma), sin sonido.
+
+**Tecla configurable**: `gameSettings.inspectKey` (nuevo campo, default `'i'`, persistido en `localStorage` igual que `sensitivity`/`invertY`/etc.). Como no existía ningún sistema de rebinding de teclas en todo el proyecto, se construyó el mínimo necesario: un botón nuevo en SETTINGS ("WEAPON INSPECT KEY") que entra en modo "PRESS ANY KEY..." al pulsarlo; el siguiente `keydown` global se captura ahí (interceptado antes de llegar a `inputs.keys`/`pauseGame()`, para que pulsar la tecla de bind no dispare también lo que esa tecla ya hacía en el juego) y se guarda como el nuevo `inspectKey`. `Escape` cancela el rebind sin cambiar nada. Salir de Settings a medio rebind (botón Back en vez de pulsar una tecla) resetea el flag de espera — de lo contrario el siguiente `keydown` de cualquier tipo, en cualquier pantalla, se habría quedado interceptado para siempre (bug real encontrado y corregido antes de dar el punto por cerrado, no solo teorizado). `GAME_KEYS` (el set usado para `preventDefault()`) ya no incluye `'i'` como caso especial fijo — el chequeo de `preventDefault` ahora también comprueba `gameSettings.inspectKey` dinámicamente, así un rebind surte efecto inmediatamente sin tocar ese set.
+
+**Movimiento de cámara**: nuevo método `WeaponController.getInspectCameraOffset()`, que reutiliza el mismo envelope seno (`inspectEnvelope`, guardado cada frame en `updateViewmodelTransform()`) que ya movía el arma, aplicando un pequeño pitch/yaw/roll + desplazamiento a `player.camera` en `Player.update()` — antes esa cámara nunca se tocaba durante el inspect, solo el `TransformNode` del arma.
+
+**Sonido**: `SoundSynth.playInspect()` (dos tonos cortos en cascada, un clic mecánico de dos tiempos, distinto de `playEquip()`), llamado exactamente en la transición `IDLE→INSPECTING`.
+
+**Mejora adicional de bajo riesgo, dentro del mismo cambio**: se añadió el guard `!movementState.sprinting` al trigger de Inspect (la Weapon Bible había marcado este comportamiento como "no definido, recomendado revisar" — ahora Inspect no puede iniciarse mientras se esprinta, igual que ya pasaba con ADS).
+
+**Probado con Playwright** (Babylon servido localmente vía `node_modules/babylonjs/babylon.js` de nuevo, el proxy de este entorno sigue bloqueando cdnjs) — descubrimiento de metodología real durante la prueba: `#settingsBtn` está intencionalmente oculto en el HTML (`class="menu-button hidden"`) y se abre solo indirectamente vía `#navAjustesBtn.click()` (el botón de navegación real de la barra AAA), así que `page.click('#settingsBtn')` falla por "elemento no visible" aunque el flujo real del juego funcione — corregido usando `#navAjustesBtn` en el test, no el juego.
+- Rebind completo probado: tecla por defecto `I`, clic entra en modo espera, `Escape` cancela sin cambiar nada (settings sigue abierto), rebind real a `F` cambia el botón/`gameSettings.inspectKey`/`localStorage` los tres a la vez, abandonar Settings a medio rebind no deja el teclado bloqueado (verificado leyendo `awaitingInspectKeybind === false` tras pulsar Back), y la tecla `F` sigue vigente al reabrir Settings.
+- En partida real: la tecla vieja (`i`) ya NO dispara el inspect tras el rebind; la nueva (`f`) sí.
+- Este sandbox renderiza a ~4-5fps (rasterizador software, ya documentado antes en este archivo) — el primer intento de muestrear "a mitad de animación" con un número fijo de frames cayó fuera de ventana porque `deltaTime` real por frame aquí es ~200ms, no ~16ms (1.4s de duración se consume en ~6-7 frames de este entorno, no ~84). Corregido muestreando frame a frame; confirmado `inspectEnvelope` subiendo y bajando con la forma seno esperada, y la rotación de cámara (`camera.rotation.{x,y,z}`) moviéndose exactamente según `getInspectCameraOffset()`.
+- Bloqueo de disparo verificado limpiamente con un inspect recién iniciado (`inspectTimer` en su valor máximo, lejos de terminar): mantener el gatillo pulsado durante el inspect no consume munición (`mag` sin cambios); sí se dispara con normalidad una vez el estado vuelve a `IDLE`.
+- Sprint bloquea iniciar un inspect nuevo (`w`+`shift` mantenidos, la tecla no hace nada mientras tanto); al soltar sprint, la misma tecla vuelve a funcionar de inmediato.
+- `SoundSynth.playInspect()` confirmado invocado exactamente 1 vez en la transición `IDLE→INSPECTING`, no en cada frame que se mantiene la tecla pulsada.
+- 0 errores de consola en ningún escenario.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.

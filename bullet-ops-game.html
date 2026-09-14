@@ -965,6 +965,10 @@
                 <span style="font-size: 0.8rem;" title="LOW disables dynamic shadows and renders at reduced resolution - real, measured levers for underpowered hardware.">GRAPHICS QUALITY</span>
                 <button class="menu-button" id="graphicsQualityToggle" style="padding: 0.4rem 0.9rem; font-size: 0.75rem;"></button>
             </div>
+            <div style="margin: 1.2rem 0; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem;" title="Click, then press any key to bind it as the Weapon Inspect trigger.">WEAPON INSPECT KEY</span>
+                <button class="menu-button" id="inspectKeyBindBtn" style="padding: 0.4rem 0.9rem; font-size: 0.75rem;"></button>
+            </div>
             <button class="menu-button" id="settingsResetBtn" style="margin-top: 0.5rem; font-size: 0.75rem;">↺ RESET TO DEFAULT</button>
             <button class="menu-button" id="settingsBackBtn" style="margin-top: 1rem;">↩ BACK</button>
         </div>
@@ -2707,7 +2711,7 @@
         }
 
         // ========== SETTINGS ==========
-        const DEFAULT_SETTINGS = { sensitivity: 1.0, invertY: false, volume: 1.0, graphicsQuality: 'HIGH' };
+        const DEFAULT_SETTINGS = { sensitivity: 1.0, invertY: false, volume: 1.0, graphicsQuality: 'HIGH', inspectKey: 'i' };
         let gameSettings = { ...DEFAULT_SETTINGS };
         try {
             const savedSettings = JSON.parse(localStorage.getItem('bulletOpsSettings'));
@@ -2716,6 +2720,7 @@
                 if (typeof savedSettings.invertY === 'boolean') gameSettings.invertY = savedSettings.invertY;
                 if (typeof savedSettings.volume === 'number') gameSettings.volume = Math.max(0, Math.min(1, savedSettings.volume));
                 if (savedSettings.graphicsQuality === 'HIGH' || savedSettings.graphicsQuality === 'LOW') gameSettings.graphicsQuality = savedSettings.graphicsQuality;
+                if (typeof savedSettings.inspectKey === 'string' && savedSettings.inspectKey.length >= 1 && savedSettings.inspectKey.length <= 20) gameSettings.inspectKey = savedSettings.inspectKey;
             }
         } catch (e) { /* ignore - keep defaults */ }
         function saveSettings() {
@@ -2886,6 +2891,14 @@
             function playMagIn()       { tone({ freq: 480, duration: 0.05, type: 'square', gain: 0.18, decay: 0.05 }); }
             function playEmpty()       { tone({ freq: 900, duration: 0.02, type: 'square', gain: 0.1,  decay: 0.02 }); }
             function playEquip()       { noiseBurst({ duration: 0.04, filterFreq: 3000, gain: 0.12, decay: 0.04 }); }
+            // Two-part mechanical handling click (a slightly higher second
+            // tick right after the first, like a small latch/catch) for the
+            // start of Weapon Inspect - distinct from playEquip's single
+            // broadband burst so the two don't read as the same sound.
+            function playInspect() {
+                tone({ freq: 550, duration: 0.025, type: 'square', gain: 0.1, decay: 0.025 });
+                setTimeout(() => tone({ freq: 680, duration: 0.02, type: 'square', gain: 0.08, decay: 0.02 }), 60);
+            }
             function playHitmarker()   { tone({ freq: 1400, duration: 0.03, type: 'sine', gain: 0.12, decay: 0.03 }); }
             function playHeadshot()    { tone({ freq: 1800, duration: 0.05, type: 'sine', gain: 0.18, decay: 0.05, freqEnd: 900 }); }
             function playKillConfirm() { tone({ freq: 600, duration: 0.12, type: 'triangle', gain: 0.18, decay: 0.12, freqEnd: 1200 }); }
@@ -2921,7 +2934,7 @@
             function playImpactDirt()     { noiseBurst({ duration: 0.06, filterFreq: 250, gain: 0.12, decay: 0.06 }); }
             function playImpactGlass()    { tone({ freq: 3000, duration: 0.05, type: 'sine', gain: 0.16, decay: 0.05, freqEnd: 5000 }); }
 
-            return { getCtx, setVolume, startAmbient, stopAmbient, playGunshot, playReloadClick, playMagOut, playMagIn, playEmpty, playEquip, playHitmarker, playHeadshot, playKillConfirm, playFootstep, playJump, playLand, playMeleeSwing, playMeleeHit, playExplosion, playUIClick, playUIHover, playSlide, playImpactMetal, playImpactWood, playImpactConcrete, playImpactDirt, playImpactGlass };
+            return { getCtx, setVolume, startAmbient, stopAmbient, playGunshot, playReloadClick, playMagOut, playMagIn, playEmpty, playEquip, playInspect, playHitmarker, playHeadshot, playKillConfirm, playFootstep, playJump, playLand, playMeleeSwing, playMeleeHit, playExplosion, playUIClick, playUIHover, playSlide, playImpactMetal, playImpactWood, playImpactConcrete, playImpactDirt, playImpactGlass };
         })();
 
         // ========== SKIN / CAMOUFLAGE SYSTEM ==========
@@ -3634,6 +3647,7 @@
                 this.wasEmptyReload = false;
                 this.inspectTimer = 0;
                 this.inspectDuration = 1.4;
+                this.inspectEnvelope = 0; // 0..1, driven by updateViewmodelTransform, read by Player.update() for the camera drift
                 this.switchTimer = 0;
                 this.switchDuration = 0.35;
                 this.pendingIndex = null;
@@ -3702,6 +3716,17 @@
             getSensitivityMultiplier() {
                 const cfg = this.currentConfig;
                 return 1 - this.adsAmount * (1 - cfg.ads.sensitivityMul);
+            }
+
+            // Small cinematic drift applied to the player's own camera while
+            // inspecting a weapon (driven by the same envelope that moves
+            // the weapon itself in updateViewmodelTransform), separate from
+            // the weapon's own inspectPos/inspectRot so the player reads as
+            // glancing the gun over rather than only the gun model moving in
+            // an otherwise static view.
+            getInspectCameraOffset() {
+                const e = this.inspectEnvelope || 0;
+                return { pitch: -0.05 * e, yaw: 0.03 * e, roll: -0.025 * e, posX: 0.01 * e, posY: -0.015 * e };
             }
 
             getMovementMultiplier() {
@@ -3808,12 +3833,16 @@
                     this.startReload();
                 }
 
-                // --- Inspect (I), a cosmetic flourish with no gameplay
-                // effect beyond blocking fire/reload/ADS for its duration,
-                // same as any other non-IDLE state already does. ---
-                if (inputs.keys['i'] && this.state === 'IDLE') {
+                // --- Inspect (key is configurable via Settings, default I),
+                // a cosmetic flourish with no gameplay effect beyond
+                // blocking fire/reload/ADS for its duration, same as any
+                // other non-IDLE state already does. Also excluded while
+                // sprinting, matching the guard ADS already has - starting
+                // it mid-sprint had no defined behavior before. ---
+                if (inputs.keys[gameSettings.inspectKey] && this.state === 'IDLE' && !movementState.sprinting) {
                     this.state = 'INSPECTING';
                     this.inspectTimer = this.inspectDuration;
+                    SoundSynth.playInspect();
                 }
 
                 // --- Firing --- (also gated on sprintRecoveryTimer above)
@@ -4047,6 +4076,9 @@
                     const envelope = Math.sin(progress * Math.PI);
                     inspectRot = new BABYLON.Vector3(0, envelope * 0.9, envelope * 0.15);
                     inspectPos = new BABYLON.Vector3(-0.05 * envelope, 0.03 * envelope, -0.08 * envelope);
+                    this.inspectEnvelope = envelope;
+                } else {
+                    this.inspectEnvelope = 0;
                 }
 
                 root.position = basePos
@@ -4812,14 +4844,19 @@
                 const bobAmp = (this.isCrouching ? 0.018 : 0.03) * adsBobMul;
                 const camBobY = Math.abs(Math.sin(this.cameraBobPhase)) * bobAmp * bobActive;
                 const camBobX = Math.sin(this.cameraBobPhase * 0.5) * bobAmp * 0.5 * bobActive;
-                this.camera.position.y = this.cameraHeightCurrent + camBobY;
-                this.camera.position.x = camBobX;
+                // Weapon Inspect drives a small cinematic drift of its own on
+                // top of normal bob/height, so the player reads as glancing
+                // the weapon over rather than the gun just moving in an
+                // otherwise static view.
+                const inspectCam = this.weaponController.getInspectCameraOffset();
+                this.camera.position.y = this.cameraHeightCurrent + camBobY + inspectCam.posY;
+                this.camera.position.x = camBobX + inspectCam.posX;
 
                 // Final camera rotation: the player's own raw aim combined
-                // with this frame's recoil kick.
+                // with this frame's recoil kick and any Inspect drift.
                 const effectivePitch = this.weaponController.getEffectivePitch();
                 const effectiveYaw = this.weaponController.getEffectiveYaw();
-                this.camera.rotation = new BABYLON.Vector3(-effectivePitch, effectiveYaw, 0);
+                this.camera.rotation = new BABYLON.Vector3(-effectivePitch + inspectCam.pitch, effectiveYaw + inspectCam.yaw, inspectCam.roll);
 
                 // Respawn if fell
                 if (this.mesh.position.y < -50) this.die();
@@ -6354,12 +6391,38 @@
         // Keys the game itself handles. Space in particular must not be
         // allowed to fall through to the browser's default "scroll page"
         // behavior, and none of these should trigger other page shortcuts.
-        const GAME_KEYS = new Set(['w', 'a', 's', 'd', ' ', 'shift', 'r', '1', '2', '3', 'c', 'i', 'escape']);
+        // The Weapon Inspect key is NOT listed here (it's configurable, see
+        // gameSettings.inspectKey / awaitingInspectKeybind below) - it's
+        // checked dynamically instead so a rebind takes effect immediately.
+        const GAME_KEYS = new Set(['w', 'a', 's', 'd', ' ', 'shift', 'r', '1', '2', '3', 'c', 'escape']);
+
+        // True while the Settings screen is waiting for the next keypress to
+        // bind as the new Weapon Inspect key (see the inspectKeyBindBtn
+        // listener below). While true, keydown is fully intercepted here -
+        // it never reaches inputs.keys or pauseGame() - so pressing a key to
+        // bind it can't also fire whatever that key already does in-game.
+        let awaitingInspectKeybind = false;
 
         window.addEventListener('keydown', (e) => {
             const key = e.key.toLowerCase();
+            if (awaitingInspectKeybind) {
+                e.preventDefault();
+                if (key === 'escape') {
+                    // Cancel the rebind without changing anything.
+                    awaitingInspectKeybind = false;
+                    renderSettingsScreen();
+                    return;
+                }
+                // Modifier keys alone aren't a usable single-key trigger.
+                if (key === 'shift' || key === 'control' || key === 'alt' || key === 'meta') return;
+                gameSettings.inspectKey = key;
+                awaitingInspectKeybind = false;
+                saveSettings();
+                renderSettingsScreen();
+                return;
+            }
             inputs.keys[key] = true;
-            if (GAME_KEYS.has(key)) e.preventDefault();
+            if (GAME_KEYS.has(key) || key === gameSettings.inspectKey) e.preventDefault();
             // Escape pauses directly. This is a fallback for when pointer lock
             // was never actually acquired (denied by the browser, so the
             // 'pointerlockchange' handler below would never fire on its own);
@@ -6368,9 +6431,10 @@
             if (key === 'escape') pauseGame();
         });
         window.addEventListener('keyup', (e) => {
+            if (awaitingInspectKeybind) return;
             const key = e.key.toLowerCase();
             inputs.keys[key] = false;
-            if (GAME_KEYS.has(key)) e.preventDefault();
+            if (GAME_KEYS.has(key) || key === gameSettings.inspectKey) e.preventDefault();
         });
 
         document.addEventListener('mousemove', (e) => {
@@ -7713,6 +7777,9 @@
             document.getElementById('volumeValue').textContent = Math.round(gameSettings.volume * 100) + '%';
             document.getElementById('invertYToggle').textContent = gameSettings.invertY ? 'ON' : 'OFF';
             document.getElementById('graphicsQualityToggle').textContent = gameSettings.graphicsQuality;
+            document.getElementById('inspectKeyBindBtn').textContent = awaitingInspectKeybind
+                ? 'PRESS ANY KEY...'
+                : (gameSettings.inspectKey === ' ' ? 'SPACE' : gameSettings.inspectKey.toUpperCase());
         }
 
         document.getElementById('settingsBtn').addEventListener('click', () => {
@@ -7746,13 +7813,21 @@
             document.getElementById('graphicsQualityToggle').textContent = gameSettings.graphicsQuality;
             saveSettings();
         });
+        document.getElementById('inspectKeyBindBtn').addEventListener('click', () => {
+            awaitingInspectKeybind = true;
+            renderSettingsScreen();
+        });
         document.getElementById('settingsResetBtn').addEventListener('click', () => {
             gameSettings = { ...DEFAULT_SETTINGS };
+            awaitingInspectKeybind = false;
             SoundSynth.setVolume(gameSettings.volume);
             saveSettings();
             renderSettingsScreen();
         });
         document.getElementById('settingsBackBtn').addEventListener('click', () => {
+            // Leaving mid-rebind (clicked Back instead of pressing a key)
+            // must not leave keydown permanently intercepted.
+            awaitingInspectKeybind = false;
             document.getElementById('settingsScreen').classList.add('hidden');
             menu.classList.remove('hidden');
         });
