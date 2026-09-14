@@ -972,6 +972,11 @@
                 <button class="menu-button" id="inspectKeyBindBtn" style="padding: 0.4rem 0.9rem; font-size: 0.75rem;"></button>
             </div>
             <button class="menu-button" id="settingsResetBtn" style="margin-top: 0.5rem; font-size: 0.75rem;">↺ RESET TO DEFAULT</button>
+            <!-- Temporary QA aid (user request, weapon-realism review pass) -
+                 no console/devtools needed to test all 10 camo skins. Not
+                 part of the real economy design; remove once the visual
+                 review is done. -->
+            <button class="menu-button" id="devUnlimitedCoinsBtn" style="margin-top: 0.5rem; font-size: 0.7rem; background: #ffaa00;">🪙 MONEDAS ILIMITADAS (TEST)</button>
             <button class="menu-button" id="settingsBackBtn" style="margin-top: 1rem;">↩ BACK</button>
         </div>
     </div>
@@ -3103,6 +3108,48 @@
         // zone-tagged weapon shares the same 4 materials, same discipline
         // as every other shared-material cache in this file.
         let weaponZoneMats = {};
+        // Small procedural screw-head detail (a dark circle with a
+        // lighter rim, plus a matching dimple in the normal map at the
+        // same coordinates) - shared by every zone/camo material below so
+        // mechanical hardware (rail screws, panel screws, mount screws)
+        // shows up automatically across the whole roster instead of being
+        // hand-placed per weapon. `normCtx` is optional - pass null to
+        // only affect the albedo (used where the normal map is generated
+        // by a different call and shouldn't be touched here).
+        function drawScrewHeads(ctx, normCtx, size, count) {
+            for (let i = 0; i < count; i++) {
+                const x = 4 + Math.random() * (size - 8), y = 4 + Math.random() * (size - 8);
+                const r = 1.3 + Math.random() * 0.6;
+                ctx.fillStyle = 'rgba(10,10,12,0.55)';
+                ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = 'rgba(150,150,155,0.35)';
+                ctx.lineWidth = 0.4;
+                ctx.beginPath(); ctx.arc(x, y, r * 0.65, 0, Math.PI * 2); ctx.stroke();
+                if (normCtx) {
+                    normCtx.fillStyle = 'rgb(100,100,235)';
+                    normCtx.beginPath(); normCtx.arc(x, y, r, 0, Math.PI * 2); normCtx.fill();
+                    normCtx.fillStyle = 'rgb(150,150,255)';
+                    normCtx.beginPath(); normCtx.arc(x, y, r * 0.4, 0, Math.PI * 2); normCtx.fill();
+                }
+            }
+        }
+        // A short run of evenly-spaced Picatinny-style rail grooves, baked
+        // into the normal map only (never the albedo, so it reads under
+        // raking light without fighting whatever camo pattern is
+        // equipped) - a few parallel dark slots along one edge, the same
+        // mechanical cue a real rail section gives off.
+        function drawRailGrooves(normCtx, size, count) {
+            const grooveW = size / (count * 1.6);
+            normCtx.strokeStyle = 'rgb(90,90,235)';
+            normCtx.lineWidth = grooveW * 0.7;
+            for (let i = 0; i < count; i++) {
+                const pos = (i + 0.5) * (size / count);
+                normCtx.beginPath();
+                normCtx.moveTo(pos, 0);
+                normCtx.lineTo(pos, size * 0.3);
+                normCtx.stroke();
+            }
+        }
         function getWeaponZoneMaterial(scene, zone) {
             if (weaponZoneMats[zone]) return weaponZoneMats[zone];
             const size = 64;
@@ -8930,6 +8977,11 @@
             SoundSynth.setVolume(gameSettings.volume);
             saveSettings();
             renderSettingsScreen();
+        });
+        document.getElementById('devUnlimitedCoinsBtn').addEventListener('click', () => {
+            playerCoins = 999999;
+            saveCoins();
+            SoundSynth.playKillConfirm();
         });
         document.getElementById('settingsBackBtn').addEventListener('click', () => {
             // Leaving mid-rebind (clicked Back instead of pressing a key)
