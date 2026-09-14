@@ -1118,6 +1118,45 @@ Se dispara **una sola vez por apretón de gatillo, no por perdigón** — una es
 
 **Probado con Playwright**: disparo real de BO01 (AR) crea exactamente 1 casquillo con velocidad vertical inicial positiva (+0.34) que pasa a negativa (-3.19) tras 3 fotogramas — gravedad real aplicándose, no un valor estático. BO21 (Shotgun, 9 perdigones reales) confirma **exactamente 1 casquillo**, no 9. BO61 (Rocket, explosivo) confirma **0 casquillos**. Verificación de limpieza: tras forzar la expiración de todos los casquillos activos, tanto el array `shellCasings` como las mallas `casing_*` en la escena quedan en 0 — sin fugas. 0 errores de consola.
 
+## 🗂️ FASE 16 — ORGANIZACIÓN, COHERENCIA VISUAL Y REALISMO DEL SISTEMA DE ARMAS
+
+El usuario pidió una fase dedicada de organización profesional: nombres
+de archivo, carpetas/estructura de assets, modelos/skins/texturas,
+nombres internos, animaciones, sonidos, accesorios/ópticas, estética,
+iluminación/escala respecto al mapa, y ambientación del primer mapa —
+con una estructura literal de estilo Unity/Unreal (`Weapons/AssaultRifles/M4A1/Models/Textures/.../M4A1_Model`).
+
+### Auditoría previa (obligatoria antes de tocar/borrar nada)
+
+Comando de auditoría: listado del repo + `find src` + `grep -ril "weapon"` excluyendo `bullet-ops-game.html` y `node_modules`. Resultado: 4 rutas fuera del juego real contenían texto relacionado con armas — `index.html`, `game.js`, `play.html`, `src/` (14 archivos: `src/ai/{Bot,BotManager}.js`, `src/core/{GameManager,InputManager,PhysicsManager}.js`, `src/game/Match.js`, `src/main.js`, `src/map/{MapBuilder,backlot9}.js`, `src/player/{Camera,PlayerController}.js`, `src/ui/UIManager.js`, `src/weapons/{Weapon,WeaponManager,weapons-config}.js`).
+
+Verificación de referencias cruzadas en ambas direcciones (`grep` de `src="src/`, imports, y de vuelta) antes de mover nada, como exige explícitamente la directiva del usuario ("no elimines archivos ni rompas referencias sin comprobar previamente dónde se utilizan"): **cero coincidencias**. `index.html`/`play.html` cargan Babylon.js/cannon-es desde CDN y `game.js` (o su propio `<script>` inline) — ninguno referencia `src/` ni viceversa, y ninguno es referenciado desde `bullet-ops-game.html`. `git log` confirma que los 4 se tocaron por última vez el 10 de septiembre (el mismo día), en dos commits — un "refactor: Simplify game architecture for Phase 1 prototype" que creó `index.html`/`game.js`/`src/` y un "feat: Add standalone play.html" justo después — frente al desarrollo real de `bullet-ops-game.html`, que sigue activo hasta hoy (14 sept). `package.json`/`vite.config.js` confirman que fue un scaffold Vite real, abandonado el mismo día que se creó a favor del enfoque single-file.
+
+Hallazgo adicional no relacionado con armas: `README.md` no describía este proyecto en absoluto — era el boilerplate genérico de una plantilla distinta ("VDT", landing page con Tailwind/Three.js/GSAP), probablemente arrastrado del scaffold original del repo.
+
+### La decisión de arquitectura, puesta al usuario en vez de asumida
+
+La estructura de carpetas pedida por el usuario (`Weapons/AssaultRifles/M4A1/Models/Textures/Materials/Animations/Audio/Attachments/`) implica archivos de asset reales y separados — algo que `bullet-ops-game.html` deliberadamente no tiene (0 archivos `.glb`/`.fbx`/`.png`/`.wav` en todo el proyecto; cada modelo es geometría Babylon procedural, cada textura un `DynamicTexture` dibujado con Canvas2D, cada sonido síntesis Web Audio en tiempo real). Construir esa estructura de verdad exigiría romper la restricción permanente de esta sesión ("nunca reestructurar la arquitectura de un solo archivo") y migrar a un pipeline multi-archivo con build step, perdiendo la capacidad de publicarlo como Claude Artifact de un solo HTML.
+
+En vez de asumir una lectura y ejecutar 10 puntos de trabajo potencialmente en la dirección equivocada, se presentaron al usuario los hallazgos de la auditoría y las dos alternativas reales (adaptar dentro del single-file vs. migrar a multi-archivo real) antes de escribir una sola línea. El usuario eligió explícitamente: adaptar dentro del single-file (recomendado), y archivar — no borrar — el prototipo abandonado.
+
+### Archivado del prototipo abandonado
+
+`git mv index.html game.js play.html vite.config.js package.json package-lock.json src/ _archive/legacy-prototype/` — git detectó el 100% de los renames (ningún archivo se recreó desde cero, así que el historial de cada uno se conserva íntegro). Se añadió `_archive/legacy-prototype/README.md` explicando qué es, por qué se abandonó, y por qué se conserva en vez de eliminarse (útil como referencia histórica, no como código activo). `README.md` de la raíz, reescrito de cero para describir BULLET OPS real: qué es, cómo jugarlo (`bullet-ops-game.html`, sin build), qué documento cubre qué, y la nota explícita de que `_archive/` no es parte del juego.
+
+**Probado**: `git status --short` tras el `mv` confirmó 21 archivos como rename puro (`R`, sin `D`+`A` sueltos que hubieran roto el historial), sin ningún archivo huérfano ni referencia rota — ya verificado antes del movimiento que nada apuntaba a estas rutas.
+
+### `docs/WEAPON_ASSET_MAP.md`: nomenclatura + estructura de organización
+
+Documento nuevo que resuelve los puntos 1, 2 y 4 del pedido (nombres de archivo, carpetas/estructura, nombres internos) sin fabricar una sola carpeta o archivo falso:
+
+- **Sistema de ID ya vigente, documentado por primera vez**: extraídas programáticamente las 68 entradas de `WEAPON_CONFIGS` (script Node de conteo de llaves, igual que el usado para `damageFalloff`) para confirmar el esquema de decenas por categoría que ya regía el diseño del roster desde antes de esta sesión (01-09 AR, 11-19 SMG, 21-29 Shotgun, 31-39 Sniper con DMR intercalado, 41-49 LMG, 51-59 Pistol con Revolver intercalado, 61-69 Rocket, 71-79 Melee, 81-89 Special, 91-95 overflow) — nunca antes escrito en ningún documento, solo vivía implícito en el código y un comentario suelto junto a `WEAPON_CATEGORY`.
+- **Auditoría de coherencia nombre↔categoría (punto 3 del pedido)**: los 68 codenames (`BO-01 VANGUARD`, `BO-71 FANG`, etc.) se revisaron uno por uno contra su categoría real. Ninguno afirma una categoría falsa en el propio texto — son códigos temáticos neutros, en la línea de nomenclatura de shooters comerciales reales (ni "AK-47" ni "MP5" dicen "rifle"/"subfusil" en el nombre). Conclusión honesta: no hace falta renombrar ninguna de las 68 armas para resolver este punto, ya estaba resuelto por diseño.
+- **Mapa virtual de 68 filas**: cada arma mapeada a `Weapons/[Categoría]/[ID]_[Codename]/`, con una segunda tabla que apunta cada pieza compartida por categoría (geometría, VFX de disparo, síntesis de sonido, animaciones de estado, accesorios) a su función/línea real dentro de `bullet-ops-game.html`, en vez de a un archivo que no existe. Se marca explícitamente cuáles de las 11 armas insignia tienen geometría 100% única (una por categoría) frente a las 57 que comparten plantilla.
+- **Tabla de honestidad final**: cada uno de los 10 puntos del pedido original cruzado contra el estado real hoy — incluye admitir sin rodeos que el punto 9 (iluminación/escala del arma respecto al mapa) no se tocó en esta pasada y que el punto 10 (ambientación del mapa) es un tema de mapas, no de armas, y queda fuera del alcance de este documento.
+
+**Probado**: el script de extracción confirmó 68/68 armas (suma por categoría: 11+9+6+6+5+6+5+4+6+5+5 = 68, coincide con el total real de `WEAPON_CONFIGS`), y las 11 líneas de "línea de código" de la tabla de la sección 2 se verificaron una por una con `grep -n` contra el archivo real antes de escribirlas (no se copiaron de memoria del contexto previo).
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.

@@ -511,3 +511,63 @@ Tras `docs/WEAPON_BIBLE.md`/`docs/weapons.json`/`docs/WEAPON_ASSET_BACKLOG.md` (
 ~~Eyección de casquillos~~ 🟢 completado (ticket V-SHELL). `spawnShellCasing()`/`updateShellCasings()` — cilindro pequeño con velocidad+gravedad+giro integrados a mano (sin motor de físicas), 1 por apretón de gatillo (no por perdigón), excluido de explosivas/melee, cableado en jugador y bots. Probado con Playwright: gravedad real confirmada (velocidad Y pasa de positiva a negativa), exactamente 1 casquillo con una escopeta de 9 perdigones, 0 en armas explosivas, limpieza sin fugas. Ver `BULLET_OPS_PROGRESS.md`.
 
 **🎯 Próxima tarea real, sin esperar instrucción**: seguir con el resto del backlog P2 (poblar GRIP/MAGAZINE/BARREL/STOCK siguiendo el mismo patrón que OPTIC, ampliar skins de 5 a 10 con rareza real, humo tras el disparo) o retomar la tarea #84 (auditoría de KRYPTOS-URBAN), salvo que llegue una nueva directiva del usuario.
+
+## 🗂️ FASE 16 — ORGANIZACIÓN, COHERENCIA VISUAL Y REALISMO DEL SISTEMA DE ARMAS (directiva del usuario, sesión actual)
+
+El usuario pidió una fase dedicada a alinear profesionalmente nombres de
+archivo, carpetas/estructura de assets, modelos/skins/texturas, nombres
+internos, animaciones, sonidos, accesorios/ópticas, estética,
+iluminación/escala y ambientación — con una estructura literal
+`Weapons/AssaultRifles/M4A1/Models/Textures/.../M4A1_Model` de estilo
+Unity/Unreal.
+
+**Auditoría previa (obligatoria antes de tocar nada)**: se localizaron
+4 archivos/directorios con referencias a "weapon" fuera de
+`bullet-ops-game.html` — `index.html`, `game.js`, `play.html`, `src/`
+(14 archivos: `ai/`, `core/`, `game/`, `map/`, `player/`, `ui/`,
+`weapons/`). Confirmado por grep en ambas direcciones: **cero
+referencias cruzadas** con `bullet-ops-game.html`. Es un scaffold Vite
+completo (con `package.json`/`vite.config.js`) abandonado el mismo día
+que se creó (10 sept), el mismo día en que arrancó la arquitectura
+single-file real. `README.md` tampoco describía este proyecto — era
+boilerplate de un template distinto ("VDT", Three.js/Tailwind/GSAP).
+
+Presentado el hallazgo al usuario junto con el choque real: la
+estructura de carpetas pedida requiere archivos de asset externos reales
+(`.fbx`/`.png`/`.wav`), que contradicen la arquitectura single-file
+vigente desde el inicio de la sesión (constraint permanente: "nunca
+reestructurar la arquitectura de un solo archivo"). El usuario eligió
+explícitamente: (a) adaptar la petición dentro del single-file en vez de
+migrar a multi-archivo real, (b) archivar (no borrar) el prototipo
+abandonado.
+
+~~Archivar prototipo Vite abandonado + corregir README.md~~ 🟢
+completado. `index.html`/`game.js`/`play.html`/`vite.config.js`/
+`package.json`/`package-lock.json`/`src/` movidos con `git mv` (rename
+detectado 100% por git, historial preservado) a
+`_archive/legacy-prototype/`, con un `README.md` propio explicando qué
+es y por qué sigue ahí. `README.md` de la raíz reescrito para describir
+BULLET OPS de verdad (antes describía un proyecto no relacionado).
+
+~~`docs/WEAPON_ASSET_MAP.md`: sistema de nombres + mapa virtual de
+organización~~ 🟢 completado. En vez de fabricar carpetas/archivos
+falsos, documenta: (1) el esquema de decenas por ID ya vigente desde el
+diseño del roster (01-09 AR, 11-19 SMG, etc. — nunca antes escrito
+explícitamente), auditado y confirmado sin conflictos nombre↔categoría
+en los 68 codenames (todos son códigos temáticos neutros, como en
+shooters comerciales reales — ninguno afirma una categoría falsa en el
+texto); (2) una tabla de 68 filas que mapea cada arma a una ruta
+conceptual `Weapons/[Categoría]/[ID]_[Codename]/` apuntando a la
+función/línea real de `bullet-ops-game.html` donde vive cada pieza
+(modelo, VFX, audio, accesorios, `damageFalloff`) en vez de a un archivo
+separado; (3) una tabla de honestidad que cruza cada uno de los 10
+puntos del pedido original contra lo que existe de verdad hoy (11/68
+armas con geometría única, solo slot OPTIC poblado, sin animación
+esquelética por no haber rig, iluminación/escala del arma respecto al
+mapa aún sin auditar). Ver `docs/WEAPON_ASSET_MAP.md` para el detalle
+completo.
+
+**🎯 Próxima tarea real**: auditar iluminación/escala del arma respecto
+al mapa (punto 9, aún sin tocar en esta fase) o retomar el backlog P2
+existente (GRIP/MAGAZINE/BARREL/STOCK, skins 5→10, humo de disparo),
+salvo que llegue una nueva directiva del usuario.
