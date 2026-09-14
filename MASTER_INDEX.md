@@ -567,7 +567,25 @@ esquelética por no haber rig, iluminación/escala del arma respecto al
 mapa aún sin auditar). Ver `docs/WEAPON_ASSET_MAP.md` para el detalle
 completo.
 
-**🎯 Próxima tarea real**: auditar iluminación/escala del arma respecto
-al mapa (punto 9, aún sin tocar en esta fase) o retomar el backlog P2
-existente (GRIP/MAGAZINE/BARREL/STOCK, skins 5→10, humo de disparo),
-salvo que llegue una nueva directiva del usuario.
+~~Auditoría de iluminación/escala del arma respecto al mapa (punto 9)~~
+🟢 completado. Medido con Playwright contra el estado real del motor: la
+altura de colisión del jugador (`ellipsoid.y = 0.9` → 1.8 unidades)
+confirma que 1 unidad del mundo ≈ 1 metro real, y con esa referencia se
+midieron las 8 armas insignia (una por categoría) — orden relativo
+correcto (Sniper > Shotgun/LMG > AR > Rocket > Special > Melee > Pistol,
+el esperado en un arsenal real) y todas dentro de un margen razonable
+(≤~30%) de su equivalente real (M4A1, M24, Mossberg 500, etc.). Sin
+armas con escala rota. Iluminación confirmada compartida con el mapa
+(mismas 2 luces de escena que cualquier malla del mundo, material con
+`disableLighting: false`) — el arma sí reacciona a la luz del mapa. Un
+gap real encontrado y registrado como ticket (`V-VMSHADOW`): el
+viewmodel nunca se añade a `shadowGenerator`, así que no proyecta
+sombra ni se oscurece en zonas en sombra. Ver `docs/WEAPON_ASSET_MAP.md`
+sección 5 para el detalle completo con tabla de medidas.
+
+**🎯 Próxima tarea real**: retomar el backlog P2 existente
+(GRIP/MAGAZINE/BARREL/STOCK, skins 5→10, humo de disparo, `V-VMSHADOW`)
+o la tarea #84 (auditoría de KRYPTOS-URBAN), salvo que llegue una nueva
+directiva del usuario. Con esto se completan los puntos accionables
+(1-9) del pedido de reorganización; el punto 10 (ambientación del
+mapa) queda fuera del alcance de una fase de armas.

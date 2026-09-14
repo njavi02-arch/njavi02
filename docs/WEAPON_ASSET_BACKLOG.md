@@ -109,6 +109,7 @@ Los 8 perfiles de disparo (`GUNSHOT_PROFILES`) YA existen y están ✅ IMPLEMENT
 | V-TRACER | Trazadora de bala | 🟢 COMPLETADO | `spawnBulletTracer()`, caja delgada emparentada a la bala, largo escalado por `bulletSpeed`, excluida de Melee/Explosivas. Ver `BULLET_OPS_PROGRESS.md` |
 | V-CAMSHAKE-FIRE | Camera shake al disparar (distinto del de recibir daño) | 🟢 COMPLETADO | `camShakeAmount`/`getCamShakeOffset()` en `WeaponController`, magnitud real vía `cfg.recoil.cameraKick` (Shotgun sacude ~2x más que Pistol), aplicado solo a `camera.rotation`, nunca al aim real. Ver `BULLET_OPS_PROGRESS.md` |
 | V-BULLETTRAIL | Estela visual tras el proyectil en vuelo | 🔴 MISSING | Sistema de partículas ligero siguiendo la esfera de bala ya existente |
+| V-VMSHADOW | Sombra proyectada por el viewmodel | 🔴 MISSING | El arma en primera persona no está en `shadowGenerator.addShadowCaster()` (solo personajes/mallas grandes del mapa, ver `WEAPON_ASSET_MAP.md` sección 5) — no proyecta sombra sobre suelo/paredes cercanas ni se oscurece al entrar en una zona en sombra del mapa. Requiere cuidado con artefactos de auto-sombra por la cercanía a la cámara antes de activarlo sin más |
 
 ---
 

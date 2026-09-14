@@ -230,10 +230,38 @@ trabajo futuro, no de esta fase).
 | 6 | Sonidos asociados | `SoundSynth` con perfil por arma (`soundProfile`) + audio espacial (`PannerNode`); ver `WEAPON_ASSET_BACKLOG.md` para gaps de sonidos no-disparo |
 | 7 | Accesorios y ópticas | Solo slot OPTIC poblado (3 miras); GRIP/MAGAZINE/BARREL/STOCK pendientes (P2 backlog) |
 | 8 | Estética por arma | VFX de muzzle flash diferenciado por categoría (`MUZZLE_FLASH_PROFILES`); geometría diferenciada solo en las 11 insignia |
-| 9 | Iluminación/escala respecto al mapa | No auditado en esta fase — pendiente como tarea siguiente |
+| 9 | Iluminación/escala respecto al mapa | Auditado (sección 5) — escala realista confirmada, iluminación compartida con el mapa confirmada, un gap real encontrado (sin sombra proyectada) |
 | 10 | Ambientación del primer mapa | Fuera del alcance de este documento (es de mapas, no de armas) — ver `MASTER_INDEX.md` para el estado de KRYPTOS-URBAN |
 
-Los puntos 9 y 10 (iluminación/escala del arma respecto al mapa,
-ambientación general del mapa) no son de nomenclatura ni de código de
-armas: quedan para una fase de arte/iluminación del mapa, no de este
-documento.
+El punto 10 (ambientación general del mapa) no es de nomenclatura ni de
+código de armas: queda para una fase de arte/iluminación del mapa, no
+de este documento.
+
+## 5. Auditoría de escala e iluminación (punto 9)
+
+Medido con Playwright leyendo el estado real del motor en juego (no
+estimado a ojo desde una captura).
+
+**Escala**: el cápsula de colisión del jugador (`ellipsoid.y = 0.9`,
+bullet-ops-game.html:5121) fija la unidad del mundo — altura total del
+jugador = 1.8 unidades, tomada como 1.8 m real (estatura humana
+estándar). Con esa referencia, se midió el bounding box real de 8
+viewmodels (las 8 armas insignia con geometría única, una por
+categoría representativa):
+
+| Arma | Categoría | Longitud (z) | Ancho (x) | Alto (y) | Referencia real aprox. |
+|---|---|---|---|---|---|
+| BO31 LONGSHOT | Sniper | 1.355 m | 0.181 m | 0.340 m | M24/AWM ≈ 1.1–1.3 m — algo largo pero coherente (debe ser el arma más larga) |
+| BO21 BREACHER | Shotgun | 1.19 m | 0.105 m | 0.260 m | Mossberg 500 ≈ 1.0–1.2 m — realista |
+| BO41 JUGGERNAUT | LMG | 1.2 m | 0.263 m | 0.260 m | M249 SAW ≈ 1.04 m — algo larga, plausible |
+| BO01 VANGUARD | Assault Rifle | 0.99 m | 0.100 m | 0.407 m | M4A1 ≈ 0.84–1.0 m — realista |
+| BO61 DEVASTATOR | Rocket Launcher | 0.895 m | 0.180 m | 0.372 m | AT4/RPG-7 ≈ 0.95–1.0 m — realista |
+| BO81 SILENTBOLT | Special (ballesta) | 0.536 m | 0.474 m | 0.264 m | Ballesta táctica ≈ 0.5–0.7 m — realista |
+| BO71 FANG | Melee | 0.405 m | 0.085 m | 0.095 m | Cuchillo táctico grande ≈ 0.25–0.35 m — ligeramente largo |
+| BO51 SIDEARM | Pistol | 0.25 m | 0.062 m | 0.278 m | Glock 17 ≈ 0.19 m — ligeramente largo |
+
+**Conclusión de escala**: el orden relativo es correcto (Sniper > Shotgun/LMG > AR > Rocket > Special > Melee > Pistol, que es el orden real esperado en un arsenal de shooter) y los valores absolutos cotejados contra armas reales caen todos dentro de un margen razonable de estilización (ninguno se desvía más de ~30%, la mayoría por debajo del 15%). No se encontró ninguna arma con escala rota o incoherente con su categoría.
+
+**Iluminación**: la escena tiene 2 luces (`hlight` Hemispheric intensidad 0.85, `dlight` Directional intensidad 0.65) y el viewmodel usa el mismo `scene.lights` que cualquier malla del mapa (confirmado: 2 luces en ambos casos) — el arma **sí reacciona** a la iluminación del mapa, no está renderizada con luz plana/desconectada. Material `StandardMaterial` con `disableLighting: false` y `diffuseColor` real.
+
+**Gap real encontrado**: el viewmodel tiene `receiveShadows: false` y nunca se añade a `shadowGenerator.addShadowCaster()` (solo personajes y mallas grandes del mapa lo hacen, bullet-ops-game.html:5093-6007) — el arma no proyecta sombra sobre el suelo/paredes cercanas ni recibe sombras de otros objetos. Esto es en parte una convención estándar de FPS real (evita artefactos de auto-sombra por la cercanía a la cámara), pero significa que el arma no se oscurece al entrar en una zona en sombra del mapa — sigue iluminada igual en interiores oscuros que en exteriores. No se corrige en esta pasada (cambiar esto con la implementación actual de sombras podría introducir artefactos de auto-sombra sin más ajuste); registrado como ticket `V-VMSHADOW` en `WEAPON_ASSET_BACKLOG.md`.
