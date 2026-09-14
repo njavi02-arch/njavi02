@@ -106,7 +106,7 @@ Los 8 perfiles de disparo (`GUNSHOT_PROFILES`) YA existen y están ✅ IMPLEMENT
 |---|---|---|---|
 | V-SMOKE | Humo post-disparo | 🔴 MISSING | Partícula de humo residual tras el muzzle flash, por categoría (reutilizar sistema de partículas existente) |
 | V-SHELL | Eyección de casquillos | 🔴 MISSING | Pequeño cilindro/`CreateCylinder` expulsado lateralmente al disparar, con física simple o animación corta |
-| V-TRACER | Trazadora de bala | 🔴 MISSING | Línea/`CreateLines` o cilindro delgado siguiendo la trayectoria del proyectil existente |
+| V-TRACER | Trazadora de bala | 🟢 COMPLETADO | `spawnBulletTracer()`, caja delgada emparentada a la bala, largo escalado por `bulletSpeed`, excluida de Melee/Explosivas. Ver `BULLET_OPS_PROGRESS.md` |
 | V-CAMSHAKE-FIRE | Camera shake al disparar (distinto del de recibir daño) | 🟢 COMPLETADO | `camShakeAmount`/`getCamShakeOffset()` en `WeaponController`, magnitud real vía `cfg.recoil.cameraKick` (Shotgun sacude ~2x más que Pistol), aplicado solo a `camera.rotation`, nunca al aim real. Ver `BULLET_OPS_PROGRESS.md` |
 | V-BULLETTRAIL | Estela visual tras el proyectil en vuelo | 🔴 MISSING | Sistema de partículas ligero siguiendo la esfera de bala ya existente |
 

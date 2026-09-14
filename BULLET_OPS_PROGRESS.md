@@ -1098,6 +1098,16 @@ Reutiliza `cfg.recoil.cameraKick` (ya tuneado por arma) como magnitud del shake 
 
 **Probado con Playwright**: disparo real de BO01 (AR) — el shake pasa de 0 a 0.0352 (`0.016 × 2.2`, exacto) justo después de disparar, `camera.rotation` refleja el cambio, y `player.pitch`/`player.yaw` (el aim real) se quedan en 0 — confirma que el shake nunca toca el aim. Tras 20 fotogramas decae de vuelta a 0. Comparación directa Shotgun (BO21) vs Pistol (BO51): shake de disparo 0.088 vs 0.0484 — la Shotgun sacude casi el doble, en la proporción exacta de sus `cameraKick` respectivos. 0 errores de consola.
 
+### Trazadora de bala (ticket V-TRACER)
+
+Antes de este cambio, la única señal visual de una bala en vuelo era la propia esfera de 0.1 de diámetro — sin ninguna estela detrás que ayudara a leer su trayectoria (hallazgo ya documentado en la Weapon Bible sección 8).
+
+**Cambio real**: `spawnBulletTracer(scene, bulletMesh, direction, bulletSpeed, isPlayerOwned)` crea una caja delgada (0.02×0.02×largo) **emparentada a la propia malla de la bala** — se mueve con ella automáticamente sin necesidad de actualizarla cada fotograma, y se destruye sola cuando la bala se destruye (comportamiento por defecto de Babylon: `dispose()` destruye también los hijos). Orientada una sola vez en el momento de creación reutilizando la **misma convención yaw/pitch→dirección ya usada en todo el archivo** para la cámara/puntería (`baseDirection = (sin(yaw), sin(pitch), cos(yaw))`, `camera.rotation = (-pitch, yaw, 0)`) — no una convención nueva. El largo escala con la velocidad real del proyectil (`bulletSpeed × 0.0055`, con mínimo/máximo razonables) para que un sniper deje una estela más marcada que una SMG lenta. Reutiliza el material ya compartido del jugador/bot (`getSharedBulletMaterial`) — la trazadora es del mismo color que su propia bala, no un asset nuevo.
+
+**Excluida a propósito** de cuerpo a cuerpo (sin proyectil) y de armas explosivas (ya tienen su propio lenguaje visual grande — ver `spawnExplosionEffect`) — condición `!isMelee && !isExplosive`, aplicada tanto en `WeaponController.fire()` (jugador) como en `Bot.fire()` (bots), para que ambos disparen con trazadora de la misma forma.
+
+**Probado con Playwright**: disparo real de BO01 confirma una trazadora real como malla hija de la bala, con largo exacto (`min(2.2, max(0.35, 900×0.0055))` = 2.2, coincide). BO71 (Melee) y BO61 (Rocket, `isExplosive:true`) confirmados **sin** trazadora. Verificación de limpieza: justo tras disparar hay exactamente 1 malla `tracer_*` en la escena; al disponer la bala manualmente (mismo `dispose()` que ya usa `updateGame()` al expirar/impactar) esa cuenta baja a 0 — sin mallas huérfanas, sin fuga. 0 errores de consola.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.

@@ -3519,6 +3519,36 @@
             }
             return sharedBulletMatBot;
         }
+
+        // Bullet tracer (Weapon Bible P2 backlog, V-TRACER) - before this,
+        // the bullet itself (a small sphere) was the only visible trace of
+        // a shot in flight, with nothing showing its actual path. A thin
+        // box parented to the bullet mesh so it moves with it automatically
+        // (no per-frame update needed, and it disposes along with the
+        // bullet - Babylon disposes children by default), oriented once at
+        // creation using the exact same yaw/pitch->forward convention
+        // already used for the camera/aim direction elsewhere in this file
+        // (baseDirection = (sin(yaw), sin(pitch), cos(yaw)), camera.rotation
+        // = (-pitch, yaw, 0)) rather than a new one. Reuses the existing
+        // player/bot bullet material - a tracer is the same color as its
+        // own bullet, not a separate asset. Skipped for melee (no
+        // projectile) and explosive rounds (already have their own large,
+        // distinct flight/impact VFX - see spawnExplosionEffect).
+        function spawnBulletTracer(scene, bulletMesh, direction, bulletSpeed, isPlayerOwned) {
+            // Longer for faster bullets (a sniper's tracer reads as a
+            // sharper streak than a slow SMG round), capped so it never
+            // dwarfs the map at extreme bulletSpeed values.
+            const len = Math.min(2.2, Math.max(0.35, bulletSpeed * 0.0055));
+            const tracer = BABYLON.MeshBuilder.CreateBox('tracer_' + Math.random(), { width: 0.02, height: 0.02, depth: len }, scene);
+            tracer.parent = bulletMesh;
+            tracer.position = new BABYLON.Vector3(0, 0, 0).subtract(direction.scale(len / 2 + 0.06));
+            const yaw = Math.atan2(direction.x, direction.z);
+            const pitch = Math.asin(Math.max(-1, Math.min(1, direction.y)));
+            tracer.rotation = new BABYLON.Vector3(-pitch, yaw, 0);
+            tracer.renderingGroupId = 1;
+            tracer.isPickable = false;
+            tracer.material = getSharedBulletMaterial(scene, isPlayerOwned);
+        }
         // Cached by color key instead of a single shared material, so the
         // per-category muzzle flash colors below (see MUZZLE_FLASH_PROFILES)
         // can each get their own cheap emissive material without creating a
@@ -4385,6 +4415,7 @@
                     bullet.damage = pelletCount > 1 ? cfg.pelletDamage : cfg.damage;
                     bullet.headshotMul = cfg.headshotMul;
                     bullet.velocity = direction.scale(isMelee ? (cfg.meleeSpeed || 40) : cfg.bulletSpeed);
+                    if (!isMelee && !isExplosive) spawnBulletTracer(this.scene, bullet, direction, cfg.bulletSpeed, true);
                     bullet.life = 10;
                     // cfg.range existed per-weapon from the start but was never
                     // enforced - every bullet traveled identically far regardless
@@ -5685,6 +5716,7 @@
                     // in every melee weapon's config (see WEAPON_CONFIGS), so no
                     // separate melee-only fields are needed here.
                     bullet.velocity = fireDir.scale(this.currentWeapon.bulletSpeed);
+                    if (!isMelee && !isExplosive) spawnBulletTracer(scene, bullet, fireDir, this.currentWeapon.bulletSpeed, false);
                     bullet.life = 10;
                     bullet.maxRange = this.currentWeapon.range;
                     bullet.distanceTraveled = 0;
