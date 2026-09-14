@@ -151,7 +151,7 @@ Los 8 perfiles de disparo (`GUNSHOT_PROFILES`) YA existen y están ✅ IMPLEMENT
 
 | # | ASSET | ESTADO | NECESIDAD | ESPECIFICACIÓN |
 |---|---|---|---|---|
-| A-OPTIC | Primer set de Optics (Red Dot, Holographic, ACOG mínimo) | 🔴 MISSING | Más visible de los 5 slots, empezar aquí | Geometría simple superpuesta en el riel superior + efecto de mira al hacer ADS |
+| A-OPTIC | Primer set de Optics (Red Dot, Holographic, ACOG mínimo) | 🟢 COMPLETADO | Más visible de los 5 slots, se empezó aquí | 3 accesorios reales en `ATTACHMENT_REGISTRY`, `statModifiers` aplicados de verdad vía `getEffectiveWeaponStats()`, malla propia montada sobre sight/scope/optic, UI de equipar en la pantalla de detalle de arma, `isSlotCompatible()` bloquea Melee. Ver `BULLET_OPS_PROGRESS.md` |
 | A-MUZZLE | Primer set de Muzzle (Suppressor, Compensator) | 🔴 MISSING | Habilita también el ticket S-SUPPRESSED de sonido | Geometría enroscada en la punta del cañón |
 | A-MAGAZINE | Primer set de Magazine (Extended) | 🔴 MISSING | Modifica `mag` real en stats, no solo visual | Cargador visualmente más largo + valor de `mag` aumentado en la config |
 | A-GRIP | Primer set de Grip (Vertical, Angled) | 🔴 MISSING | Geometría bajo el guardamano | Pieza añadida bajo el cañón |

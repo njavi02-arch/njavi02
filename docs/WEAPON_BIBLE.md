@@ -316,11 +316,11 @@ Confirmado por auditoría de código (cero coincidencias de `AnimationGroup`, `.
 
 ## 9. ACCESORIOS (Fase 10)
 
-`ATTACHMENT_REGISTRY = {}` — **objeto completamente vacío**, verificado. Cada arma declara 5 slots (`OPTIC`, `GRIP`, `MAGAZINE`, `BARREL`, `STOCK`) en `attachmentSlots`, pero **los 5 están siempre a `null` en las 68 armas** y no hay ni una sola definición de accesorio real en ningún sitio del código. El comentario del propio código lo confirma: *"con nada en ATTACHMENT_REGISTRY todavía esto es un stub puro sin ningún efecto"*.
+**Actualizado tras el backlog P2, ticket A-OPTIC**: `ATTACHMENT_REGISTRY` tiene ahora 3 entradas reales para el slot `OPTIC` (Red Dot/Holographic/ACOG), con `statModifiers` reales aplicados de verdad vía `getEffectiveWeaponStats()` (ver `BULLET_OPS_PROGRESS.md`). Los otros 4 slots (`GRIP`/`MAGAZINE`/`BARREL`/`STOCK`) siguen vacíos.
 
 | Categoría de accesorio pedida | Estado |
 |---|---|
-| Optics (Red Dot, Holographic, ACOG, Sniper Scope, etc.) | 🔴 MISSING |
+| Optics (Red Dot, Holographic, ACOG) | 🟢 IMPLEMENTADO (3 reales; Sniper Scope específico no añadido — los Sniper ya tienen su propia mira base en la geometría) |
 | Muzzle (Suppressor, Compensator, etc.) | 🔴 MISSING |
 | Magazine (Extended, Fast, etc.) | 🔴 MISSING |
 | Grip (Vertical, Angled, etc.) | 🔴 MISSING |

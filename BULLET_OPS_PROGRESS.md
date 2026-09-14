@@ -1064,6 +1064,30 @@ Quinto y último punto del backlog P1. Antes de este cambio, verificado explíci
 
 Con este punto se completan los 5 elementos del backlog P1 de la Weapon Bible (`docs/WEAPON_BIBLE.md` sección 14).
 
+## 🎯 BACKLOG P2 DE LA WEAPON BIBLE
+
+Completado el backlog P1 completo (los 5 puntos), se continúa con el backlog P2, empezando por el ticket A-OPTIC (`docs/WEAPON_ASSET_BACKLOG.md`, sección 8): el primer set real de accesorios.
+
+### Primer accesorio real: slot OPTIC (Red Dot / Holographic / ACOG)
+
+`ATTACHMENT_REGISTRY` estaba **completamente vacío** desde el inicio del proyecto (confirmado en la Weapon Bible) — 5 slots declarados por arma (`OPTIC`/`GRIP`/`MAGAZINE`/`BARREL`/`STOCK`) pero siempre `null`. `getEffectiveWeaponStats()` (la función que combina stats base + modificadores de accesorios) ya existía en el código desde antes, pero **nunca se llamaba desde `WeaponController`** — `currentConfig` devolvía directamente `WEAPON_CONFIGS[id]` sin pasar por ella, así que aunque se hubiera poblado el registro, no habría tenido ningún efecto real en el juego.
+
+**Cambio real**:
+- 3 accesorios reales en `ATTACHMENT_REGISTRY` para el slot `OPTIC`: **Red Dot** (ADS más rápido, sin zoom — `ads.time -0.03`), **Holographic** (intermedio — `ads.time -0.015`, ligera mejora de precisión en ADS), **ACOG 4x** (zoom real a costa de ADS más lento — `ads.time +0.06`, `ads.fovMul -0.15`, mejor precisión en ADS). Son *tradeoffs* de diseño reales, no solo variaciones cosméticas.
+- `isSlotCompatible(category, slot)` — guarda de compatibilidad física (Fase 10 de la directiva: "nunca añadir accesorios físicamente incompatibles"): las armas Melee no tienen ADS real (`ads.fovMul` siempre 1.0, sin zoom), así que no pueden montar óptica.
+- `WeaponController.currentConfig` ahora sí pasa por `getEffectiveWeaponStats()`, con una **caché** (`_effectiveConfigCache`) invalidada solo al cambiar de arma o al equipar/desequipar en caliente (`refreshEffectiveConfig()`) — evita re-clonar el objeto de config completo cada fotograma, ya que `currentConfig` se lee muchas veces por fotograma dentro de `update()`/`fire()`.
+- Representación visual real (no solo un cambio de stats invisible): `applyAttachmentVisuals()` monta una pequeña pieza con material propio (rojo/verde/negro-emisivo según el tipo) sobre la parte `sight`/`scope`/`optic` ya existente por categoría, o en una posición por defecto razonable si la categoría no tiene ninguna de esas piezas. `applySkin()` se ajustó para no repintar esta pieza al cambiar de camuflaje (antes lo habría hecho, ya que recorría todas las mallas hijas sin excepción).
+- Persistencia por arma (`equippedAttachments`, patrón idéntico a `equippedSkins` pero con slot como segunda clave) — a diferencia de los skins, los accesorios **no cuestan monedas** (ningún ticket pedía una economía de accesorios).
+- UI real en la pantalla de detalle de arma (ARSENAL/CREAR CLASE/TIENDA): nueva fila "ÓPTICA" con swatches clicables (mismo patrón visual que los de camuflaje), incluida una opción "Sin óptica" para desequipar. Un arma incompatible (Melee) muestra un mensaje explicativo en vez de swatches vacíos que no harían nada.
+
+**Probado con Playwright**:
+- Flujo de UI real: abrir BO01 en ARSENAL, la fila de accesorios muestra 4 opciones (ninguna + 3 ópticas), clicar en ACOG la equipa de verdad (`getEquippedAttachments('BO01').OPTIC === 'optic_acog'`), aparece la malla `attachment_optic` en la previsualización 3D real, el swatch se marca como equipado.
+- BO71 (Melee) muestra el mensaje de incompatibilidad en vez de swatches, y un intento directo de `equipAttachment('BO71','OPTIC',...)` es rechazado (`false`) — la guarda de compatibilidad funciona tanto en la UI como en el dato.
+- Persistencia: recargar la página completa conserva el ACOG equipado en BO01 (`localStorage`).
+- **Efecto real en partida**: BO01 equipado con ACOG en una partida real — `ads.time` efectivo sube de 0.22 (base) a 0.28 (+0.06 del modificador) y `ads.fovMul` baja de 0.78 a 0.63 (más zoom), leído directamente de `wc.currentConfig`, no simulado. Desequipar en caliente mientras el arma está activa revierte los números a los base **inmediatamente** (sin necesidad de cambiar de arma) y quita la malla visual. Equipar Red Dot en su lugar da números distintos (`ads.time` 0.19, `fovMul` sin cambio) confirmando que cada accesorio aplica su propio modificador real, no uno genérico. 0 errores de consola en todo el proceso.
+
+**Alcance honesto**: solo el slot `OPTIC` está poblado (3 accesorios). `GRIP`/`MAGAZINE`/`BARREL`/`STOCK` siguen vacíos — quedan como tickets separados del mismo backlog P2, siguiendo exactamente este mismo patrón (registro + `isSlotCompatible` + modificadores reales + visual + UI), no una construcción nueva.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.

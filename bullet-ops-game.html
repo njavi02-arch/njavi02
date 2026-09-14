@@ -923,6 +923,8 @@
             <div id="wdStats"></div>
             <div style="font-size: 0.65rem; color: #00aa00; margin-top: 1rem;">CAMUFLAJE</div>
             <div id="weaponDetailSkins"></div>
+            <div style="font-size: 0.65rem; color: #00aa00; margin-top: 1rem;">ÓPTICA</div>
+            <div id="weaponDetailAttachments"></div>
             <div id="weaponDetailEquipRow"></div>
             <button class="menu-button" id="weaponDetailCloseBtn" style="margin-top: 1.2rem;">✕ CERRAR</button>
         </div>
@@ -1363,18 +1365,49 @@
             DMR: 'DMR', REVOLVER: 'Revolver'
         };
 
-        // ========== ATTACHMENTS FRAMEWORK (architecture only - not yet populated) ==========
-        // Real attachments need their own viewmodels/effects, which don't
-        // exist yet. The data shape is ready so adding one later is additive:
-        // an ATTACHMENT_REGISTRY entry with { id, name, slot, statModifiers }.
+        // ========== ATTACHMENTS FRAMEWORK ==========
+        // Weapon Bible P2 backlog (A-OPTIC ticket): first real attachment
+        // set, for the OPTIC slot only - GRIP/MAGAZINE/BARREL/STOCK remain
+        // empty, a future increment each following this same pattern
+        // (nothing about this shape is OPTIC-specific). Each entry is a
+        // real gameplay tradeoff, not just a cosmetic swap: Red Dot is the
+        // fastest ADS with no zoom, ACOG trades ADS speed for real zoom +
+        // tighter aimed spread, Holographic sits between the two. Applied
+        // via getEffectiveWeaponStats() below (existed since early in the
+        // project but was never actually wired into WeaponController until
+        // this pass - see WeaponController.currentConfig).
         const ATTACHMENT_SLOTS = ['OPTIC', 'GRIP', 'MAGAZINE', 'BARREL', 'STOCK'];
-        const ATTACHMENT_REGISTRY = {};
+        const ATTACHMENT_REGISTRY = {
+            optic_reddot: {
+                id: 'optic_reddot', name: 'Red Dot', slot: 'OPTIC',
+                statModifiers: { ads: { time: -0.03 } }
+            },
+            optic_holo: {
+                id: 'optic_holo', name: 'Holographic', slot: 'OPTIC',
+                statModifiers: { ads: { time: -0.015 }, spread: { ads: -0.0006 } }
+            },
+            optic_acog: {
+                id: 'optic_acog', name: 'ACOG 4x', slot: 'OPTIC',
+                statModifiers: { ads: { time: 0.06, fovMul: -0.15 }, spread: { ads: -0.0012 } }
+            }
+        };
+        // Physical-compatibility guard (Fase 10 of the Weapon Bible
+        // directive: "never add attachments physically incompatible with a
+        // given weapon"). Melee weapons have no real ADS at all (their
+        // ads.fovMul is always 1.0, i.e. no zoom - see WEAPON_CONFIGS) so
+        // mounting an optic on one would be a pure no-op that still shows
+        // in the UI as if it did something.
+        function isSlotCompatible(category, slot) {
+            if (slot === 'OPTIC' && category === WEAPON_CATEGORY.MELEE) return false;
+            return true;
+        }
 
         // Combines a weapon's base stats with whatever attachments are
-        // equipped. With nothing in ATTACHMENT_REGISTRY yet this is a pure
-        // identity pass-through - every weapon already runs through this so
-        // that plugging in real attachments later requires zero changes to
-        // WeaponController/Player.
+        // equipped. Every weapon runs through this (see
+        // WeaponController.currentConfig) so a weapon with nothing equipped
+        // in any slot still resolves to a plain identity pass-through of
+        // its own WEAPON_CONFIGS entry, unchanged from before attachments
+        // existed.
         function getEffectiveWeaponStats(weaponConfig, equippedAttachments) {
             equippedAttachments = equippedAttachments || {};
             const stats = JSON.parse(JSON.stringify(weaponConfig));
@@ -3110,9 +3143,60 @@
             const skin = SKIN_REGISTRY[skinId] || SKIN_REGISTRY.default;
             const mat = skin.materialFactory(scene);
             if (weaponViewmodelRoot && weaponViewmodelRoot.getChildMeshes) {
-                weaponViewmodelRoot.getChildMeshes().forEach(m => { m.material = mat; });
+                // Skip the attachment mount mesh (see applyAttachmentVisuals
+                // below) - an equipped optic keeps its own distinct look
+                // (lens/housing color) across a camo change instead of
+                // being silently repainted the same as the rest of the gun.
+                weaponViewmodelRoot.getChildMeshes().forEach(m => { if (!m.name.startsWith('attachment_')) m.material = mat; });
             }
             return mat;
+        }
+
+        // Visual mount for the equipped OPTIC (Weapon Bible P2 backlog,
+        // A-OPTIC). No real per-part model exists for any weapon (see
+        // buildWeaponViewmodel's own primitive-blockout comment), so this
+        // is one small distinct-shaped box per optic type, parented at the
+        // existing sight/scope/optic part's position when the category has
+        // one (AR/Sniper/DMR/Rocket/Special already do), or a sensible
+        // default mount point otherwise (SMG/Shotgun/LMG/Pistol/Revolver,
+        // none of which happen to have a named optic-ish part today).
+        let sharedAttachmentMats = {};
+        function getSharedAttachmentMaterial(scene, key, r, g, b, emissive) {
+            if (!sharedAttachmentMats[key]) {
+                const mat = new BABYLON.StandardMaterial('attachMat_' + key, scene);
+                mat.diffuseColor = new BABYLON.Color3(r, g, b);
+                if (emissive) mat.emissiveColor = emissive;
+                sharedAttachmentMats[key] = mat;
+            }
+            return sharedAttachmentMats[key];
+        }
+        const OPTIC_VISUALS = {
+            optic_reddot: { size: { width: 0.03, height: 0.035, depth: 0.05 }, matKey: 'reddot', color: [0.08, 0.08, 0.09], emissive: new BABYLON.Color3(0.6, 0.05, 0.05) },
+            optic_holo: { size: { width: 0.045, height: 0.04, depth: 0.06 }, matKey: 'holo', color: [0.1, 0.1, 0.11], emissive: new BABYLON.Color3(0.05, 0.4, 0.15) },
+            optic_acog: { size: { width: 0.04, height: 0.05, depth: 0.11 }, matKey: 'acog', color: [0.05, 0.05, 0.05], emissive: null }
+        };
+        function attachmentMountPosition(root) {
+            const candidates = ['sight', 'scope', 'optic'];
+            const meshes = root.getChildMeshes();
+            for (const name of candidates) {
+                const mesh = meshes.find(m => m.name.startsWith(name));
+                if (mesh) return mesh.position.add(new BABYLON.Vector3(0, 0.035, 0));
+            }
+            // Default mount for categories with no dedicated optic-ish part.
+            return new BABYLON.Vector3(0, 0.09, 0.08);
+        }
+        function applyAttachmentVisuals(weaponViewmodelRoot, scene, opticId) {
+            if (!weaponViewmodelRoot) return;
+            const existing = weaponViewmodelRoot.getChildMeshes().find(m => m.name === 'attachment_optic');
+            if (existing) existing.dispose();
+            const visual = opticId && OPTIC_VISUALS[opticId];
+            if (!visual) return;
+            const mesh = BABYLON.MeshBuilder.CreateBox('attachment_optic', visual.size, scene);
+            mesh.position = attachmentMountPosition(weaponViewmodelRoot);
+            mesh.parent = weaponViewmodelRoot;
+            mesh.renderingGroupId = 1;
+            mesh.isPickable = false;
+            mesh.material = getSharedAttachmentMaterial(scene, visual.matKey, visual.color[0], visual.color[1], visual.color[2], visual.emissive);
         }
 
         // ========== ECONOMY: coins + owned skins ==========
@@ -3179,6 +3263,44 @@
             saveCoins();
             saveOwnedSkins();
             return { ok: true };
+        }
+
+        // Per-weapon, per-slot equipped attachment (Weapon Bible P2 backlog,
+        // A-OPTIC ticket) - same persisted-per-weapon shape as equippedSkins
+        // above, but keyed by slot too: { weaponId: { OPTIC: 'optic_acog' } }.
+        // Unlike skins, attachments are never purchased/locked (no ticket
+        // asked for an attachment economy) - every entry in
+        // ATTACHMENT_REGISTRY is always available to equip on any
+        // compatible weapon.
+        let equippedAttachments = {};
+        try {
+            const savedAttachments = JSON.parse(localStorage.getItem('bulletOpsEquippedAttachments') || 'null');
+            if (savedAttachments && typeof savedAttachments === 'object') equippedAttachments = savedAttachments;
+        } catch (e) { /* ignore */ }
+        function saveEquippedAttachments() { try { localStorage.setItem('bulletOpsEquippedAttachments', JSON.stringify(equippedAttachments)); } catch (e) { /* ignore */ } }
+        function getEquippedAttachments(weaponId) {
+            return equippedAttachments[weaponId] || {};
+        }
+        function equipAttachment(weaponId, slot, attId) {
+            const cfg = WEAPON_CONFIGS[weaponId];
+            if (!cfg || !isSlotCompatible(cfg.category, slot)) return false;
+            // attId === null/'' unequips the slot instead of assigning
+            // something invalid to it.
+            if (attId && (!ATTACHMENT_REGISTRY[attId] || ATTACHMENT_REGISTRY[attId].slot !== slot)) return false;
+            equippedAttachments[weaponId] = equippedAttachments[weaponId] || {};
+            if (attId) equippedAttachments[weaponId][slot] = attId;
+            else delete equippedAttachments[weaponId][slot];
+            saveEquippedAttachments();
+            // Same live-refresh pattern as equipSkinOnWeapon() - a weapon
+            // already in the player's active match loadout gets its real
+            // stats AND visual mount updated immediately, not only on the
+            // next match start.
+            if (player && player.weaponController && player.weaponController.viewmodels[weaponId]) {
+                const wc = player.weaponController;
+                if (wc.currentId === weaponId) wc.refreshEffectiveConfig();
+                applyAttachmentVisuals(wc.viewmodels[weaponId].root, scene, getEquippedAttachments(weaponId).OPTIC);
+            }
+            return true;
         }
 
         // ========== WEAPON VISUAL REGISTRY ==========
@@ -3976,14 +4098,36 @@
                     // - falls back to cfg.defaultSkin if none was ever
                     // chosen, exactly the old always-default behavior.
                     applySkin(vm.root, getEquippedSkin(id), scene);
+                    // Same for whatever OPTIC the player equipped (see
+                    // getEquippedAttachments()) - a no-op box that disposes
+                    // itself if nothing is equipped for this weapon yet.
+                    applyAttachmentVisuals(vm.root, scene, getEquippedAttachments(id).OPTIC);
                     vm.root.setEnabled(false);
                     this.viewmodels[id] = vm;
                 }
                 this.viewmodels[this.loadout[0]].root.setEnabled(true);
+
+                // Effective-stats cache (base config + equipped attachments'
+                // statModifiers, see getEffectiveWeaponStats()) - computed
+                // once per weapon switch rather than every frame, since it's
+                // a deep JSON clone and currentConfig is read many times per
+                // frame across update()/fire(). refreshEffectiveConfig() is
+                // also called directly by equipAttachment() so a live
+                // mid-match attachment change takes effect immediately
+                // instead of only on the next switch.
+                this._effectiveConfigCache = null;
+                this._effectiveConfigCacheId = null;
             }
 
             get currentId() { return this.loadout[this.currentIndex]; }
-            get currentConfig() { return WEAPON_CONFIGS[this.currentId]; }
+            get currentConfig() {
+                if (this._effectiveConfigCacheId !== this.currentId) this.refreshEffectiveConfig();
+                return this._effectiveConfigCache;
+            }
+            refreshEffectiveConfig() {
+                this._effectiveConfigCache = getEffectiveWeaponStats(WEAPON_CONFIGS[this.currentId], getEquippedAttachments(this.currentId));
+                this._effectiveConfigCacheId = this.currentId;
+            }
             get currentAmmo() { return this.ammo[this.currentId]; }
             get currentViewmodel() { return this.viewmodels[this.currentId]; }
 
@@ -7720,6 +7864,12 @@
             default: '#2a2a2e', tan: '#ad8f61', urban: '#6b7074', gold: '#8c7019',
             digital: 'repeating-linear-gradient(45deg, #3a4a32, #3a4a32 4px, #5a6b4a 4px, #5a6b4a 8px)'
         };
+        // Menu-side swatch approximation for each OPTIC (see OPTIC_VISUALS
+        // for the real in-scene material) - same "cheap menu preview, real
+        // material only in the live 3D render" split already used for skins.
+        const OPTIC_SWATCH_COLOR = {
+            optic_reddot: '#3a1414', optic_holo: '#0f2a1a', optic_acog: '#161616'
+        };
 
         // One shared card builder for the WEAPONS grid and every LOADOUT
         // slot - the image (getWeaponIconDataURL) is the dominant element,
@@ -7766,6 +7916,48 @@
             if (!previewContext || !previewViewmodelRoot) return;
             applySkin(previewViewmodelRoot, getEquippedSkin(previewContext.weaponId), previewScene);
         }
+        function refreshPreviewAttachments() {
+            if (!previewContext || !previewViewmodelRoot) return;
+            applyAttachmentVisuals(previewViewmodelRoot, previewScene, getEquippedAttachments(previewContext.weaponId).OPTIC);
+        }
+        function renderWeaponDetailAttachments(weaponId) {
+            const container = document.getElementById('weaponDetailAttachments');
+            if (!container) return;
+            container.innerHTML = '';
+            const cfg = WEAPON_CONFIGS[weaponId];
+            if (!isSlotCompatible(cfg.category, 'OPTIC')) {
+                container.innerHTML = '<div style="font-size:0.62rem; color:#557755;">Esta arma no monta óptica.</div>';
+                return;
+            }
+            const equipped = getEquippedAttachments(weaponId).OPTIC || null;
+            // "None" option first - unequipping is a real, always-available choice.
+            const noneSw = document.createElement('div');
+            noneSw.className = 'skin-swatch' + (!equipped ? ' equipped' : '');
+            noneSw.title = 'Sin óptica';
+            noneSw.style.background = '#222';
+            noneSw.textContent = !equipped ? '✓' : '—';
+            noneSw.addEventListener('click', () => {
+                equipAttachment(weaponId, 'OPTIC', null);
+                refreshPreviewAttachments();
+                renderWeaponDetailAttachments(weaponId);
+            });
+            container.appendChild(noneSw);
+            for (const attId of Object.keys(ATTACHMENT_REGISTRY)) {
+                const att = ATTACHMENT_REGISTRY[attId];
+                if (att.slot !== 'OPTIC') continue;
+                const sw = document.createElement('div');
+                sw.className = 'skin-swatch' + (attId === equipped ? ' equipped' : '');
+                sw.title = att.name;
+                sw.style.background = OPTIC_SWATCH_COLOR[attId] || '#333';
+                if (attId === equipped) sw.textContent = '✓';
+                sw.addEventListener('click', () => {
+                    equipAttachment(weaponId, 'OPTIC', attId);
+                    refreshPreviewAttachments();
+                    renderWeaponDetailAttachments(weaponId);
+                });
+                container.appendChild(sw);
+            }
+        }
         function renderWeaponDetailSkins(weaponId) {
             const container = document.getElementById('weaponDetailSkins');
             container.innerHTML = '';
@@ -7804,6 +7996,7 @@
             vm.root.scaling.setAll(1.7);
             previewViewmodelRoot = vm.root;
             refreshPreviewSkin();
+            refreshPreviewAttachments();
 
             document.getElementById('wdName').textContent = cfg.name;
             document.getElementById('wdCat').textContent = cfg.category.toUpperCase() + ' · ' + TIER_STYLE[weaponTier(weaponId)].label;
@@ -7824,6 +8017,7 @@
             }
 
             renderWeaponDetailSkins(weaponId);
+            renderWeaponDetailAttachments(weaponId);
 
             // Opened from the catalog (not already a specific loadout slot):
             // offer to equip it into any of the 3 slots directly from here,
