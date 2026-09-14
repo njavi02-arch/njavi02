@@ -583,9 +583,32 @@ viewmodel nunca se añade a `shadowGenerator`, así que no proyecta
 sombra ni se oscurece en zonas en sombra. Ver `docs/WEAPON_ASSET_MAP.md`
 sección 5 para el detalle completo con tabla de medidas.
 
-**🎯 Próxima tarea real**: retomar el backlog P2 existente
-(GRIP/MAGAZINE/BARREL/STOCK, skins 5→10, humo de disparo, `V-VMSHADOW`)
-o la tarea #84 (auditoría de KRYPTOS-URBAN), salvo que llegue una nueva
-directiva del usuario. Con esto se completan los puntos accionables
-(1-9) del pedido de reorganización; el punto 10 (ambientación del
-mapa) queda fuera del alcance de una fase de armas.
+~~Skins 5→10 con rareza real (tickets K-COUNT/K-RARITY)~~ 🟢
+completado. El usuario compartió `github.com/tomaszobac/bf6-camo-list`
+(catálogo público de camuflajes de Battlefield 6) como referencia — se
+usó **solo su convención de nomenclatura** (familias temáticas: nature
+vs. digital/técnico), nunca como fuente de assets — el proyecto sigue
+100% procedural, ningún pixel copiado. `SKIN_REGISTRY` pasa de 5 a 10
+entradas: 5 nuevas (`overgrowth`, `riptide`, `rustbelt`, `glitch`,
+`prism`), cada una con su propio patrón real dibujado en
+`DynamicTexture` (blotches orgánicos, bandas de onda, speckle de óxido,
+scanlines RGB-shift, gradiente iridiscente) — mismo estándar de calidad
+que `digital`, ninguna es solo un color plano nuevo. `tier` pasa de 3
+valores ad hoc (basic/military/special) a un sistema de rareza real de
+5 niveles (common/uncommon/rare/epic/legendary), con `SKIN_TIER_COLOR`
+nuevo dando color real al badge de TIENDA (antes fijo en verde para
+cualquier tier) y precios escalados por tier en `SKIN_PRICES`.
+Probado con Playwright: las 10 entradas crean un `StandardMaterial`
+real sin errores dentro de una partida real, capturas de pantalla
+confirman 3 de los 5 nuevos renderizando visualmente distintos y
+correctos sobre el arma en juego (Overgrowth, Glitch Array, Prism
+Shift), flujo completo de compra/equipar probado con las 5 nuevas
+(`buySkin`→`ownedSkins`→`equipSkinOnWeapon`→`getEquippedSkin`), 0
+errores de consola. Ver `BULLET_OPS_PROGRESS.md`.
+
+**🎯 Próxima tarea real**: retomar el resto del backlog P2
+(GRIP/MAGAZINE/BARREL/STOCK, humo de disparo, `V-VMSHADOW`, K-PERZONE,
+K-ICON) o la tarea #84 (auditoría de KRYPTOS-URBAN), salvo que llegue
+una nueva directiva del usuario. Con esto se completan los puntos
+accionables (1-9) del pedido de reorganización; el punto 10
+(ambientación del mapa) queda fuera del alcance de una fase de armas.

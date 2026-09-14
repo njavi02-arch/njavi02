@@ -3081,9 +3081,20 @@
         // ========== SKIN / CAMOUFLAGE SYSTEM ==========
         // Adding a new skin = adding one entry here. applySkin() just swaps
         // the viewmodel's material, so weapon code never needs to change.
+        //
+        // Rarity is a real 5-tier scale (common/uncommon/rare/epic/legendary)
+        // - not just a label, it drives SKIN_PRICES below. Naming/thematic
+        // grouping (a "nature" family of organic patterns, a "digital" family
+        // of tech patterns) takes inspiration from how commercial shooters'
+        // camo catalogs are organized (e.g. Battlefield 6's public camo list,
+        // github.com/tomaszobac/bf6-camo-list, reviewed for naming
+        // conventions only) - every material below is still 100% original
+        // procedural geometry/Canvas2D, same as the rest of this project; no
+        // external image or pixel data was copied from that or any other
+        // source.
         const SKIN_REGISTRY = {
             default: {
-                id: 'default', name: 'Factory', tier: 'basic',
+                id: 'default', name: 'Factory', tier: 'common',
                 materialFactory: (scene) => {
                     const m = new BABYLON.StandardMaterial('skin_default_' + Math.random(), scene);
                     m.diffuseColor = new BABYLON.Color3(0.16, 0.16, 0.18);
@@ -3092,7 +3103,7 @@
                 }
             },
             tan: {
-                id: 'tan', name: 'Desert Tan', tier: 'basic',
+                id: 'tan', name: 'Desert Tan', tier: 'uncommon',
                 materialFactory: (scene) => {
                     const m = new BABYLON.StandardMaterial('skin_tan_' + Math.random(), scene);
                     m.diffuseColor = new BABYLON.Color3(0.68, 0.56, 0.38);
@@ -3100,25 +3111,45 @@
                 }
             },
             urban: {
-                id: 'urban', name: 'Urban Grey', tier: 'basic',
+                id: 'urban', name: 'Urban Grey', tier: 'uncommon',
                 materialFactory: (scene) => {
                     const m = new BABYLON.StandardMaterial('skin_urban_' + Math.random(), scene);
                     m.diffuseColor = new BABYLON.Color3(0.42, 0.44, 0.46);
                     return m;
                 }
             },
-            gold: {
-                id: 'gold', name: 'Gilded', tier: 'special',
+            overgrowth: {
+                id: 'overgrowth', name: 'Overgrowth', tier: 'uncommon',
                 materialFactory: (scene) => {
-                    const m = new BABYLON.StandardMaterial('skin_gold_' + Math.random(), scene);
-                    m.diffuseColor = new BABYLON.Color3(0.55, 0.44, 0.1);
-                    m.specularColor = new BABYLON.Color3(1, 0.9, 0.5);
-                    m.specularPower = 64;
+                    // Nature family: organic blotches, not a grid - random
+                    // filled circles of 3 green/brown tones over a dark base.
+                    const size = 64;
+                    const tex = new BABYLON.DynamicTexture('skin_overgrowth_tex_' + Math.random(), size, scene, false);
+                    const ctx2d = tex.getContext();
+                    ctx2d.fillStyle = '#1f2a17';
+                    ctx2d.fillRect(0, 0, size, size);
+                    const blotchColors = ['#3d5a2a', '#5c7a3a', '#2e3a1e'];
+                    for (let i = 0; i < 28; i++) {
+                        ctx2d.fillStyle = blotchColors[Math.floor(Math.random() * blotchColors.length)];
+                        ctx2d.beginPath();
+                        ctx2d.ellipse(
+                            Math.random() * size, Math.random() * size,
+                            4 + Math.random() * 6, 3 + Math.random() * 5,
+                            Math.random() * Math.PI, 0, Math.PI * 2
+                        );
+                        ctx2d.fill();
+                    }
+                    tex.update();
+                    tex.wrapU = BABYLON.Texture.WRAP_ADDRESSMODE;
+                    tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+                    tex.uScale = 3; tex.vScale = 3;
+                    const m = new BABYLON.StandardMaterial('skin_overgrowth_' + Math.random(), scene);
+                    m.diffuseTexture = tex;
                     return m;
                 }
             },
             digital: {
-                id: 'digital', name: 'Digital Mesh', tier: 'military',
+                id: 'digital', name: 'Digital Mesh', tier: 'rare',
                 materialFactory: (scene) => {
                     // Procedurally generated pattern - drawn at runtime, not
                     // sourced from any external image, so it is an original
@@ -3140,6 +3171,132 @@
                     tex.uScale = 4; tex.vScale = 4;
                     const m = new BABYLON.StandardMaterial('skin_digital_' + Math.random(), scene);
                     m.diffuseTexture = tex;
+                    return m;
+                }
+            },
+            riptide: {
+                id: 'riptide', name: 'Riptide', tier: 'rare',
+                materialFactory: (scene) => {
+                    // Nature/water family: horizontal wave bands, sine-offset
+                    // so they read as water rather than straight stripes.
+                    const size = 64;
+                    const tex = new BABYLON.DynamicTexture('skin_riptide_tex_' + Math.random(), size, scene, false);
+                    const ctx2d = tex.getContext();
+                    ctx2d.fillStyle = '#0d2733';
+                    ctx2d.fillRect(0, 0, size, size);
+                    const waveColors = ['#1c4a5c', '#2f6b7a', '#123542'];
+                    for (let band = 0; band < 8; band++) {
+                        ctx2d.fillStyle = waveColors[band % waveColors.length];
+                        ctx2d.beginPath();
+                        const baseY = band * 8;
+                        ctx2d.moveTo(0, baseY);
+                        for (let x = 0; x <= size; x += 8) {
+                            ctx2d.lineTo(x, baseY + Math.sin((x / size) * Math.PI * 2 + band) * 2.5);
+                        }
+                        ctx2d.lineTo(size, baseY + 6);
+                        ctx2d.lineTo(0, baseY + 6);
+                        ctx2d.closePath();
+                        ctx2d.fill();
+                    }
+                    tex.update();
+                    tex.wrapU = BABYLON.Texture.WRAP_ADDRESSMODE;
+                    tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+                    tex.uScale = 3; tex.vScale = 3;
+                    const m = new BABYLON.StandardMaterial('skin_riptide_' + Math.random(), scene);
+                    m.diffuseTexture = tex;
+                    m.specularColor = new BABYLON.Color3(0.3, 0.5, 0.55);
+                    return m;
+                }
+            },
+            rustbelt: {
+                id: 'rustbelt', name: 'Rustbelt', tier: 'rare',
+                materialFactory: (scene) => {
+                    // Weathered-metal family: rust speckles over a worn
+                    // orange-brown base, low specular (matte oxidation).
+                    const size = 64;
+                    const tex = new BABYLON.DynamicTexture('skin_rustbelt_tex_' + Math.random(), size, scene, false);
+                    const ctx2d = tex.getContext();
+                    ctx2d.fillStyle = '#4a3018';
+                    ctx2d.fillRect(0, 0, size, size);
+                    const speckleColors = ['#6b3f1a', '#8a4f1e', '#331f0d'];
+                    for (let i = 0; i < 90; i++) {
+                        ctx2d.fillStyle = speckleColors[Math.floor(Math.random() * speckleColors.length)];
+                        const s = 1 + Math.random() * 3;
+                        ctx2d.fillRect(Math.random() * size, Math.random() * size, s, s);
+                    }
+                    tex.update();
+                    tex.wrapU = BABYLON.Texture.WRAP_ADDRESSMODE;
+                    tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+                    tex.uScale = 3; tex.vScale = 3;
+                    const m = new BABYLON.StandardMaterial('skin_rustbelt_' + Math.random(), scene);
+                    m.diffuseTexture = tex;
+                    m.specularColor = new BABYLON.Color3(0.15, 0.1, 0.05);
+                    return m;
+                }
+            },
+            glitch: {
+                id: 'glitch', name: 'Glitch Array', tier: 'epic',
+                materialFactory: (scene) => {
+                    // Digital/technical family: RGB-shifted scanline bands,
+                    // distinct from Digital Mesh's flat 4-color grid.
+                    const size = 64;
+                    const tex = new BABYLON.DynamicTexture('skin_glitch_tex_' + Math.random(), size, scene, false);
+                    const ctx2d = tex.getContext();
+                    ctx2d.fillStyle = '#0a0a0c';
+                    ctx2d.fillRect(0, 0, size, size);
+                    for (let y = 0; y < size; y += 3) {
+                        const shift = Math.random() < 0.3 ? (Math.random() * 10 - 5) : 0;
+                        const hue = Math.random() < 0.5 ? '#00e0d0' : '#e000a0';
+                        ctx2d.fillStyle = hue;
+                        ctx2d.globalAlpha = 0.5 + Math.random() * 0.3;
+                        ctx2d.fillRect(shift, y, size, 1);
+                        ctx2d.globalAlpha = 1;
+                    }
+                    tex.update();
+                    tex.wrapU = BABYLON.Texture.WRAP_ADDRESSMODE;
+                    tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+                    tex.uScale = 2; tex.vScale = 2;
+                    const m = new BABYLON.StandardMaterial('skin_glitch_' + Math.random(), scene);
+                    m.diffuseTexture = tex;
+                    m.specularColor = new BABYLON.Color3(0.6, 0.9, 0.9);
+                    m.specularPower = 48;
+                    return m;
+                }
+            },
+            gold: {
+                id: 'gold', name: 'Gilded', tier: 'legendary',
+                materialFactory: (scene) => {
+                    const m = new BABYLON.StandardMaterial('skin_gold_' + Math.random(), scene);
+                    m.diffuseColor = new BABYLON.Color3(0.55, 0.44, 0.1);
+                    m.specularColor = new BABYLON.Color3(1, 0.9, 0.5);
+                    m.specularPower = 64;
+                    return m;
+                }
+            },
+            prism: {
+                id: 'prism', name: 'Prism Shift', tier: 'legendary',
+                materialFactory: (scene) => {
+                    // Top-tier iridescent skin: a smooth multi-hue gradient
+                    // sweep, high specular for a holographic read.
+                    const size = 64;
+                    const tex = new BABYLON.DynamicTexture('skin_prism_tex_' + Math.random(), size, scene, false);
+                    const ctx2d = tex.getContext();
+                    const grad = ctx2d.createLinearGradient(0, 0, size, 0);
+                    grad.addColorStop(0, '#ff4d9e');
+                    grad.addColorStop(0.25, '#ffb84d');
+                    grad.addColorStop(0.5, '#7dff8a');
+                    grad.addColorStop(0.75, '#4dc3ff');
+                    grad.addColorStop(1, '#b44dff');
+                    ctx2d.fillStyle = grad;
+                    ctx2d.fillRect(0, 0, size, size);
+                    tex.update();
+                    tex.wrapU = BABYLON.Texture.WRAP_ADDRESSMODE;
+                    tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+                    tex.uScale = 1; tex.vScale = 1;
+                    const m = new BABYLON.StandardMaterial('skin_prism_' + Math.random(), scene);
+                    m.diffuseTexture = tex;
+                    m.specularColor = new BABYLON.Color3(1, 1, 1);
+                    m.specularPower = 96;
                     return m;
                 }
             }
@@ -3217,7 +3374,12 @@
         // from gameplay. 'default' is always owned/free - it's what every
         // weapon already rendered with before this system existed, so nothing
         // already-working gets locked behind this.
-        const SKIN_PRICES = { tan: 150, urban: 150, digital: 250, gold: 500 };
+        const SKIN_PRICES = {
+            tan: 150, urban: 150, overgrowth: 150,
+            digital: 250, riptide: 300, rustbelt: 300,
+            glitch: 550,
+            gold: 500, prism: 700
+        };
         let playerCoins = 500;
         try {
             const savedCoins = localStorage.getItem('bulletOpsCoins');
@@ -8022,7 +8184,18 @@
         // (see applySkin()) is what actually shows on the 3D preview/in-game.
         const SKIN_SWATCH_COLOR = {
             default: '#2a2a2e', tan: '#ad8f61', urban: '#6b7074', gold: '#8c7019',
-            digital: 'repeating-linear-gradient(45deg, #3a4a32, #3a4a32 4px, #5a6b4a 4px, #5a6b4a 8px)'
+            digital: 'repeating-linear-gradient(45deg, #3a4a32, #3a4a32 4px, #5a6b4a 4px, #5a6b4a 8px)',
+            overgrowth: 'radial-gradient(circle at 30% 30%, #5c7a3a 0%, #3d5a2a 40%, #1f2a17 100%)',
+            riptide: 'repeating-linear-gradient(0deg, #1c4a5c, #1c4a5c 4px, #2f6b7a 4px, #2f6b7a 8px)',
+            rustbelt: 'radial-gradient(circle at 60% 40%, #8a4f1e 0%, #6b3f1a 45%, #4a3018 100%)',
+            glitch: 'repeating-linear-gradient(0deg, #0a0a0c, #0a0a0c 2px, #00e0d0 2px, #00e0d0 3px, #0a0a0c 3px, #0a0a0c 5px, #e000a0 5px, #e000a0 6px)',
+            prism: 'linear-gradient(90deg, #ff4d9e, #ffb84d, #7dff8a, #4dc3ff, #b44dff)'
+        };
+        // Real per-tier color coding for the TIENDA badge (see .sc-tier),
+        // so rarity reads visually, not just as text.
+        const SKIN_TIER_COLOR = {
+            common: '#8a9a8a', uncommon: '#4ac25a', rare: '#4a9ee0',
+            epic: '#b04ae0', legendary: '#e0a03a'
         };
         // Menu-side swatch approximation for each OPTIC (see OPTIC_VISUALS
         // for the real in-scene material) - same "cheap menu preview, real
@@ -8332,7 +8505,7 @@
                 card.innerHTML =
                     `<div class="sc-swatch" style="background:${SKIN_SWATCH_COLOR[skinId]}"></div>` +
                     `<div class="sc-name">${skin.name}</div>` +
-                    `<div class="sc-tier">${skin.tier.toUpperCase()}</div>`;
+                    `<div class="sc-tier" style="color:${SKIN_TIER_COLOR[skin.tier] || '#00aa00'}">${skin.tier.toUpperCase()}</div>`;
                 const btn = document.createElement('button');
                 btn.className = 'menu-button';
                 btn.style.cssText = 'padding:0.4rem 0.7rem; font-size:0.7rem; width:100%;';
