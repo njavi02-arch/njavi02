@@ -4073,6 +4073,22 @@
                 this.kickOffset = new BABYLON.Vector3(0, 0, 0);
                 this.kickRotX = 0;
 
+                // Camera shake on firing (Weapon Bible P2 backlog,
+                // V-CAMSHAKE-FIRE) - deliberately separate from the recoil
+                // kick above: kickOffset/kickRotX/recoilKickPitch/
+                // recoilKickYaw all feed into where the weapon points and
+                // where the NEXT shot actually goes (real recoil, see
+                // getEffectivePitch/getEffectiveYaw), while this is a pure
+                // visual disturbance applied only to the rendered
+                // camera.rotation in Player.update() and never fed back
+                // into player.pitch/yaw - it can never affect aim. Reuses
+                // cfg.recoil.cameraKick (already tuned per weapon - a
+                // Shotgun's ~0.04-0.05 vs a Pistol's ~0.013-0.02) as the
+                // shake magnitude driver instead of inventing a second,
+                // redundant per-weapon number.
+                this.camShakeAmount = 0;
+                this.camShakePhase = 0;
+
                 // Smoothed 0-1 blend toward a sprint pose (weapon pulled
                 // down/in, canted) in updateViewmodelTransform() - previously
                 // sprinting only sped up the walk bob, the weapon never
@@ -4154,6 +4170,25 @@
                 return { pitch: -0.05 * e, yaw: 0.03 * e, roll: -0.025 * e, posX: 0.01 * e, posY: -0.015 * e };
             }
 
+            // Camera shake on firing (see camShakeAmount/camShakePhase
+            // above) - a multi-frequency sine wobble whose envelope is
+            // camShakeAmount, so it reads as a jolt that settles rather
+            // than a constant tremor. Pure visual disturbance: applied only
+            // to the rendered camera.rotation in Player.update(), never to
+            // player.pitch/yaw, so it can never change where the next shot
+            // actually goes - that's still entirely owned by the real
+            // recoil pattern (recoilKickPitch/Yaw).
+            getCamShakeOffset() {
+                const a = this.camShakeAmount || 0;
+                if (a <= 0.0001) return { pitch: 0, yaw: 0, roll: 0 };
+                const p = this.camShakePhase;
+                return {
+                    pitch: Math.sin(p * 1.0) * a,
+                    yaw: Math.sin(p * 1.7 + 1.3) * a * 0.7,
+                    roll: Math.sin(p * 2.3 + 2.7) * a * 0.4
+                };
+            }
+
             getMovementMultiplier() {
                 const cfg = this.currentConfig;
                 return cfg.movement.hipMul - this.adsAmount * (cfg.movement.hipMul - cfg.movement.adsMul);
@@ -4195,6 +4230,13 @@
                 this.recoilKickYaw += (0 - this.recoilKickYaw) * Math.min(1, deltaTime * cfg.recoil.recoverySpeed);
                 this.kickOffset.z += (0 - this.kickOffset.z) * Math.min(1, deltaTime * 10);
                 this.kickRotX += (0 - this.kickRotX) * Math.min(1, deltaTime * 10);
+                // Fast decay (independent of the weapon's own recoil
+                // recoverySpeed - a shake is a quick jolt, not a recoil
+                // pattern that should linger) plus a continuously advancing
+                // phase so getCamShakeOffset()'s sine wobble doesn't freeze
+                // between shots even while camShakeAmount is briefly at 0.
+                this.camShakeAmount += (0 - this.camShakeAmount) * Math.min(1, deltaTime * 16);
+                this.camShakePhase += deltaTime * 45;
 
                 // Sprint-to-fire recovery: cfg.sprintToFireDelay existed on
                 // every weapon config from the start but was never actually
@@ -4382,6 +4424,11 @@
                 if (spread > 0) this.spreadBloom = Math.min(spread * 2.5, this.spreadBloom + spread * 0.6);
                 this.kickOffset.z -= cfg.recoil.cameraKick * 1.4;
                 this.kickRotX -= cfg.recoil.cameraKick * 3;
+                // Camera shake spike on this shot - accumulates rather than
+                // resets, so rapid full-auto fire (AR/SMG/LMG) builds up a
+                // stronger, more sustained wobble than a single shot would,
+                // capped so it can't run away on a very high fire-rate weapon.
+                this.camShakeAmount = Math.min(cfg.recoil.cameraKick * 3.5, this.camShakeAmount + cfg.recoil.cameraKick * 2.2);
 
                 if (isMelee) {
                     SoundSynth.playMeleeSwing();
@@ -5278,10 +5325,18 @@
                 this.camera.position.x = camBobX + inspectCam.posX;
 
                 // Final camera rotation: the player's own raw aim combined
-                // with this frame's recoil kick and any Inspect drift.
+                // with this frame's recoil kick, any Inspect drift, and the
+                // firing camera shake (see getCamShakeOffset() - purely
+                // visual, added only here, never folded into pitch/yaw
+                // itself, so it can't affect where the next shot goes).
                 const effectivePitch = this.weaponController.getEffectivePitch();
                 const effectiveYaw = this.weaponController.getEffectiveYaw();
-                this.camera.rotation = new BABYLON.Vector3(-effectivePitch + inspectCam.pitch, effectiveYaw + inspectCam.yaw, inspectCam.roll);
+                const camShake = this.weaponController.getCamShakeOffset();
+                this.camera.rotation = new BABYLON.Vector3(
+                    -effectivePitch + inspectCam.pitch + camShake.pitch,
+                    effectiveYaw + inspectCam.yaw + camShake.yaw,
+                    inspectCam.roll + camShake.roll
+                );
 
                 // Keep the Web Audio listener glued to the camera every
                 // frame, so PannerNode-routed sounds (currently just

@@ -1088,6 +1088,16 @@ Completado el backlog P1 completo (los 5 puntos), se continúa con el backlog P2
 
 **Alcance honesto**: solo el slot `OPTIC` está poblado (3 accesorios). `GRIP`/`MAGAZINE`/`BARREL`/`STOCK` siguen vacíos — quedan como tickets separados del mismo backlog P2, siguiendo exactamente este mismo patrón (registro + `isSlotCompatible` + modificadores reales + visual + UI), no una construcción nueva.
 
+### Camera shake dedicado al disparo (ticket V-CAMSHAKE-FIRE)
+
+La Weapon Bible documentó que existía shake de cámara al **recibir** daño (`Player.takeDamage()`), pero ninguno dedicado al **disparar** — el `cameraKick` de recoil movía el arma/la mira (afecta a dónde apunta el siguiente disparo), no la cámara del jugador como una sacudida puramente visual.
+
+**Cambio real**: `WeaponController` gana `camShakeAmount`/`camShakePhase`, con `getCamShakeOffset()` devolviendo un pequeño temblor multi-seno (pitch/yaw/roll) cuya envolvente es `camShakeAmount`. Cada disparo real suma `cfg.recoil.cameraKick * 2.2` al shake (acumulativo, no un reseteo — un arma automática disparando rápido acumula más temblor que un solo disparo, con un tope para que no se dispare sin control), y decae rápido (`deltaTime * 16`, independiente de la velocidad de recuperación de recoil de cada arma — un shake es un sobresalto puntual, no un patrón de retroceso que deba mantenerse). Aplicado **solo** al `camera.rotation` final en `Player.update()`, nunca a `player.pitch`/`player.yaw` — a propósito, para que sea una perturbación puramente visual que nunca pueda afectar a dónde va realmente el siguiente disparo (eso sigue siendo responsabilidad exclusiva del patrón de recoil real, `recoilKickPitch`/`recoilKickYaw`).
+
+Reutiliza `cfg.recoil.cameraKick` (ya tuneado por arma) como magnitud del shake en vez de inventar un segundo número redundante — así una Shotgun (cameraKick ~0.04-0.05) sacude bastante más que una Pistol (~0.013-0.022), cumpliendo la petición de "magnitud mayor para LMG/Shotgun que para Pistol/SMG" sin necesidad de una tabla nueva.
+
+**Probado con Playwright**: disparo real de BO01 (AR) — el shake pasa de 0 a 0.0352 (`0.016 × 2.2`, exacto) justo después de disparar, `camera.rotation` refleja el cambio, y `player.pitch`/`player.yaw` (el aim real) se quedan en 0 — confirma que el shake nunca toca el aim. Tras 20 fotogramas decae de vuelta a 0. Comparación directa Shotgun (BO21) vs Pistol (BO51): shake de disparo 0.088 vs 0.0484 — la Shotgun sacude casi el doble, en la proporción exacta de sus `cameraKick` respectivos. 0 errores de consola.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.
