@@ -1043,6 +1043,27 @@ Cuarto punto del backlog P1. Antes de este cambio solo 3 armas (BO01 AR, BO21 Sh
 
 `docs/weapons.json` y `docs/WEAPON_BIBLE.md` (sección 2 y el backlog P1) se actualizaron en la misma pasada para no dejar la documentación desincronizada con el código real.
 
+### Audio espacial básico (PannerNode) — último punto del backlog P1
+
+Quinto y último punto del backlog P1. Antes de este cambio, verificado explícitamente en la Weapon Bible: **cero `PannerNode`/audio espacial en todo el proyecto** — un disparo sonaba exactamente igual sin importar dónde ocurriera respecto a la cámara del jugador.
+
+**Cambio real**:
+- `SoundSynth.updateListener(position, forward, up)` — posiciona/orienta el `AudioListener` del `AudioContext` (las "orejas" del jugador en el espacio 3D), usando la API moderna (`listener.positionX/Y/Z.value`, `forwardX/Y/Z`, `upX/Y/Z`) con fallback al `setPosition()`/`setOrientation()` antiguo si el navegador no soporta la nueva. Llamado una vez por fotograma desde `Player.update()`, justo después de fijar `camera.rotation`, usando `camera.computeWorldMatrix(true)` + `camera.globalPosition`/`getDirection()` para tener la posición/orientación real de ese mismo fotograma (no una del fotograma anterior).
+- `tone()`/`noiseBurst()` (las dos primitivas de síntesis de las que depende todo `SoundSynth`) ganan un parámetro opcional `opts.position`. Cuando se pasa, el nodo de ganancia final se enruta a través de un `PannerNode` nuevo (`panningModel: 'equalpower'`, `distanceModel: 'inverse'`, con `refDistance`/`maxDistance`/`rolloffFactor` reales) en vez de conectar directo a `masterGain` — así que **el resto de sonidos del juego (pasos, recarga, hitmarker, UI, etc.) siguen exactamente como antes** (no posicionales), solo cambia lo que explícitamente pasa una posición.
+- `playGunshot(profileKey, position)` — único punto de uso real por ahora — pasa esa posición a sus llamadas internas de `noiseBurst()`/`tone()`. El único llamador real, `WeaponController.fire()`, ya tenía la posición real de la boca del cañón calculada para el muzzle flash (`muzzleWorldPos`) — se reutiliza la misma, sin duplicar cálculo.
+
+**Probado con Playwright** (interceptando `AudioContext.prototype.createPanner` para poder inspeccionar el grafo de audio real, ya que un navegador headless no "suena" pero el grafo sí es real e inspeccionable):
+- El listener sigue a la cámara con precisión real: en juego normal (sin teletransportar al jugador — ver nota de metodología abajo), el listener queda a **~0.03 unidades** de la posición real de la cámara tras varios fotogramas de movimiento normal (andar hacia delante), un desfase irrelevante a la escala del mapa (cientos de unidades).
+- `playEquip()` (sonido no posicional) confirmado que **no** crea ningún `PannerNode` — la ruta antigua directa a `masterGain` sigue intacta para todo lo que no pasa posición.
+- Un disparo real (`fire()` completo, en partida en marcha) crea exactamente 2 `PannerNode` (uno por cada llamada interna de `playGunshot()` — el `noiseBurst()` del disparo + el `tone()` del golpe grave), confirmando el cableado real, no solo la función aislada.
+- Disparar con el jugador teletransportado muy lejos (5000 unidades) no lanza ninguna excepción — el modelo de distancia/rolloff se comporta con normalidad a cualquier escala.
+
+**Nota de metodología (para no repetir el error)**: el primer intento de esta prueba teletransportaba al jugador a mitad de una caída (`mesh.position.set(x, 2, z)` sobre terreno cuyo nivel real era `y=1`) y comparaba la posición de la cámara **inmediatamente después** con la que se le había pasado al listener **durante** ese mismo fotograma — encontrando un desfase aparente de 1.0 unidad en altura. Investigado a fondo (con un espía sobre `SoundSynth.updateListener` para capturar exactamente qué le pasa el juego en cada llamada): no es un bug del sistema de audio — es que el fotograma de teletransporte artificial todavía no había terminado de resolver la caída por gravedad/snap al suelo en el instante exacto en que se leía la cámara desde fuera del juego, un artefacto específico de forzar una teleportación anómala en pleno aire, no algo que ocurra en juego real (confirmado repitiendo la prueba sin teletransportar, con el jugador ya asentado en el suelo desde el spawn normal — ahí el desfase es el ~0.03 mencionado arriba).
+
+**Alcance honesto**: solo el disparo (`playGunshot`) es posicional por ahora — el resto de sonidos (pasos, impactos, recarga, UI) siguen sin audio espacial, tal y como quedó anotado en `docs/WEAPON_ASSET_BACKLOG.md` (ticket S-SPATIAL cubría explícitamente el disparo; extenderlo a otros sonidos queda como trabajo futuro, no una omisión silenciosa).
+
+Con este punto se completan los 5 elementos del backlog P1 de la Weapon Bible (`docs/WEAPON_BIBLE.md` sección 14).
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.

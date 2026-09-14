@@ -289,7 +289,9 @@ Confirmado por auditoría de código (cero coincidencias de `AnimationGroup`, `.
 | **Mecánicos** (Equip, Magazine In/Out, Trigger, Safety) | 🟡 PARCIAL — existen `playEquip()`, `playMagOut()`, `playMagIn()`, `playReloadClick()`, `playEmpty()` (genéricos, compartidos por las 68 armas); NO existen sonidos de Bolt/Slide/Chamber/Safety/Inspect como eventos propios |
 | **Recarga** (Start/Remove/Insert/Complete) | ✅ IMPLEMENTADO como secuencia temporizada — `playMagOut()` al iniciar, `playMagIn()` a mitad de la recarga (`midDelay`), `playReloadClick()` al completar — genérico, no por arma |
 | **Impactos por material** | ✅ IMPLEMENTADO — 5 sonidos reales y distintos por material de superficie (`playImpactMetal/Wood/Concrete/Dirt/Glass`), pero **por MATERIAL de la superficie golpeada, no por arma que dispara**; no existe "Bullet Impact Body" como sonido propio (el impacto contra un personaje no reproduce ningún sonido de impacto dedicado, solo el hitmarker) |
-| Formato de archivo / duración / volumen / pitch variation / randomización / distancia máxima / falloff / 2D-3D / spatial audio | 🔴 MISSING **en su totalidad** — no aplica ningún concepto de archivo real (todo es síntesis), y verificado explícitamente: **no existe ningún `PannerNode` ni audio espacial/posicional en todo el proyecto** — un disparo suena exactamente igual sin importar dónde ocurra en el mapa respecto al jugador |
+| Formato de archivo / duración / volumen / pitch variation / randomización | 🔴 MISSING (formato de archivo no aplica, todo es síntesis) | — |
+| Distancia máxima / falloff / spatial audio del disparo | 🟢 IMPLEMENTADO — *actualizado tras el backlog P1.5* | `SoundSynth.updateListener()` (sigue a la cámara cada fotograma) + `PannerNode` real (`distanceModel: 'inverse'`, `panningModel: 'equalpower'`) en `playGunshot()`. Ver `BULLET_OPS_PROGRESS.md` para la fórmula y las pruebas. |
+| Spatial audio del resto de sonidos (pasos, impactos, recarga, UI) | 🔴 MISSING | Solo el disparo es posicional por ahora — ver P1.5 en el backlog, alcance deliberadamente acotado a la petición explícita del usuario |
 
 ---
 
@@ -425,7 +427,9 @@ Dado que **la mayoría de sistemas de producción son compartidos por categoría
 2. ~~**Weapon Inspect: cerrar los 3 gaps concretos**~~ 🟢 completado — tecla configurable, movimiento de cámara, sonido mecánico. Ver `BULLET_OPS_PROGRESS.md`.
 3. ~~**Diferenciar VFX de disparo/impacto por categoría**~~ 🟢 completado (muzzle flash) — `MUZZLE_FLASH_PROFILES`, un perfil por categoría no-melee. Ver `BULLET_OPS_PROGRESS.md`.
 4. ~~**Extender `damageFalloff`**~~ 🟢 completado — 56/68 armas (ver sección 2 actualizada arriba). Ver `BULLET_OPS_PROGRESS.md`.
-5. **Audio espacial/posicional básico** (`PannerNode` de Web Audio, ya disponible en la API que ya se usa) — hoy un disparo suena igual sin importar la distancia. *(Pendiente — siguiente en la cola)*
+5. ~~**Audio espacial/posicional básico**~~ 🟢 completado (solo el disparo) — `SoundSynth.updateListener()` + `PannerNode` real en `playGunshot()`. Ver `BULLET_OPS_PROGRESS.md`.
+
+**Con este punto se completan los 5 elementos del backlog P1** (identidad visual, Weapon Inspect, VFX, damageFalloff, audio espacial) — ver P2/P3 abajo para lo que sigue.
 
 ### P2 — POLISH
 1. Poblar `ATTACHMENT_REGISTRY` con un primer set real (empezar por Optics, el más visible).
