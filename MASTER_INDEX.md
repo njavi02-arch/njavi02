@@ -650,7 +650,29 @@ confirmado visualmente vía la previsualización 3D real con capturas
 de 3 camuflajes distintos, y las 68 armas construyen sin excepción
 (0 regresión). Ver `BULLET_OPS_PROGRESS.md`.
 
-**🎯 Próxima tarea real**: pendiente de que el usuario valide el
-prototipo antes de decidir extenderlo a las 10 armas insignia + 11
-ramas de categoría restantes (cubre las 68 por herencia), y/o un pase
-de microdetalle geométrico (tornillos, ranuras de riel).
+El usuario validó el prototipo y confirmó el rollout completo ("si
+dale").
+
+~~Rollout del sistema de zonas PBR a las 68 armas~~ 🟢 completado. Las
+10 ramas insignia restantes + las 11 ramas de categoría genérica ganan
+el mismo criterio de zonas que BO-31: `shell` (receiver/mag/stock,
+pintado por el camuflaje), `metal` (cañón/tambor/hardware, siempre
+acero desnudo), `rubber` (empuñaduras, siempre goma negra),
+`optic_housing` (miras, siempre metal oscuro — nunca camuflaje).
+Probado con Playwright: 68/68 armas construyen con al menos una zona
+real asignada y 0 excepciones; capturas reales de 5 armas de
+categorías distintas (incluida BO43 LMG, una de las 57 no-insignia)
+confirman el patrón funcionando visualmente en toda la variedad del
+roster; prueba funcional completa en partida real (disparo, ADS,
+accesorio óptico equipado) sin regresión. Ver `BULLET_OPS_PROGRESS.md`.
+
+**Alcance honesto**: los 10 skins de rareza de FASE 16 siguen sin
+migrar a PBR; solo BO-31 tiene mira con lente de cristal separada del
+housing (el resto sigue con una sola caja de mira); sin pase de
+microdetalle geométrico todavía.
+
+**🎯 Próxima tarea real**: pendiente de nueva directiva del usuario —
+posibles siguientes pasos: migrar los skins de rareza a PBR, extender
+la lente de cristal al resto de armas con mira, pase de microdetalle
+geométrico (tornillos, ranuras de riel), o retomar el backlog P2
+existente / tarea #84 (KRYPTOS-URBAN).

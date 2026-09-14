@@ -4092,14 +4092,15 @@
                 else { cyl.material = tempMat; if (zone === 'shell') cyl.metadata = { zone: 'shell' }; }
                 return cyl;
             }
-            function addTorus(name, opts, position, rotation) {
+            function addTorus(name, opts, position, rotation, zone) {
                 const t = BABYLON.MeshBuilder.CreateTorus(name, opts, scene);
                 t.position = position;
                 if (rotation) t.rotation = rotation;
                 t.parent = root;
                 t.renderingGroupId = 1;
-                t.material = tempMat;
                 t.isPickable = false;
+                if (zone && zone !== 'shell') { t.material = getWeaponZoneMaterial(scene, zone); t.metadata = { zone }; }
+                else { t.material = tempMat; if (zone === 'shell') t.metadata = { zone: 'shell' }; }
                 return t;
             }
 
@@ -4119,35 +4120,35 @@
             if (weaponId === 'BO01') {
                 // VANGUARD: carry-handle rail + angled foregrip distinguish
                 // it from the other 10 ARs, which share the plain body below.
-                addBox('receiver', { width: 0.095, height: 0.095, depth: 0.52 }, new BABYLON.Vector3(0, 0, 0));
-                addCylinder('barrel', { diameter: 0.032, height: 0.38 }, new BABYLON.Vector3(0, 0.01, 0.4), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addBox('mag', { width: 0.062, height: 0.24, depth: 0.072 }, new BABYLON.Vector3(0, -0.17, 0.08));
-                addBox('stock', { width: 0.062, height: 0.085, depth: 0.2 }, new BABYLON.Vector3(0, -0.015, -0.3));
-                addBox('grip', { width: 0.062, height: 0.165, depth: 0.062 }, new BABYLON.Vector3(0, -0.125, -0.08));
-                addBox('carryHandle', { width: 0.05, height: 0.05, depth: 0.24 }, new BABYLON.Vector3(0, 0.09, 0.05));
-                addBox('foregrip', { width: 0.045, height: 0.09, depth: 0.045 }, new BABYLON.Vector3(0, -0.09, 0.28), new BABYLON.Vector3(0.35, 0, 0));
+                addBox('receiver', { width: 0.095, height: 0.095, depth: 0.52 }, new BABYLON.Vector3(0, 0, 0), null, 'shell');
+                addCylinder('barrel', { diameter: 0.032, height: 0.38 }, new BABYLON.Vector3(0, 0.01, 0.4), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addBox('mag', { width: 0.062, height: 0.24, depth: 0.072 }, new BABYLON.Vector3(0, -0.17, 0.08), null, 'shell');
+                addBox('stock', { width: 0.062, height: 0.085, depth: 0.2 }, new BABYLON.Vector3(0, -0.015, -0.3), null, 'shell');
+                addBox('grip', { width: 0.062, height: 0.165, depth: 0.062 }, new BABYLON.Vector3(0, -0.125, -0.08), null, 'rubber');
+                addBox('carryHandle', { width: 0.05, height: 0.05, depth: 0.24 }, new BABYLON.Vector3(0, 0.09, 0.05), null, 'metal');
+                addBox('foregrip', { width: 0.045, height: 0.09, depth: 0.045 }, new BABYLON.Vector3(0, -0.09, 0.28), new BABYLON.Vector3(0.35, 0, 0), 'rubber');
                 muzzleZ = 0.6;
             } else if (weaponId === 'BO11') {
                 // RAZORBACK: extended barrel shroud + a folding (not solid)
                 // wire stock, vs. the plain block stock the other 8 SMGs use.
-                addBox('receiver', { width: 0.085, height: 0.095, depth: 0.34 }, new BABYLON.Vector3(0, 0, 0));
-                addCylinder('barrel', { diameter: 0.032, height: 0.2 }, new BABYLON.Vector3(0, 0.005, 0.25), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addCylinder('shroud', { diameter: 0.045, height: 0.16 }, new BABYLON.Vector3(0, 0.005, 0.2), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addBox('mag', { width: 0.052, height: 0.21, depth: 0.062 }, new BABYLON.Vector3(0, -0.145, 0.02));
-                addBox('grip', { width: 0.058, height: 0.155, depth: 0.058 }, new BABYLON.Vector3(0, -0.115, -0.1));
-                addBox('foldArmTop', { width: 0.012, height: 0.012, depth: 0.22 }, new BABYLON.Vector3(0, 0.02, -0.3));
-                addBox('foldArmBottom', { width: 0.012, height: 0.012, depth: 0.22 }, new BABYLON.Vector3(0, -0.04, -0.3));
+                addBox('receiver', { width: 0.085, height: 0.095, depth: 0.34 }, new BABYLON.Vector3(0, 0, 0), null, 'shell');
+                addCylinder('barrel', { diameter: 0.032, height: 0.2 }, new BABYLON.Vector3(0, 0.005, 0.25), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addCylinder('shroud', { diameter: 0.045, height: 0.16 }, new BABYLON.Vector3(0, 0.005, 0.2), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addBox('mag', { width: 0.052, height: 0.21, depth: 0.062 }, new BABYLON.Vector3(0, -0.145, 0.02), null, 'shell');
+                addBox('grip', { width: 0.058, height: 0.155, depth: 0.058 }, new BABYLON.Vector3(0, -0.115, -0.1), null, 'rubber');
+                addBox('foldArmTop', { width: 0.012, height: 0.012, depth: 0.22 }, new BABYLON.Vector3(0, 0.02, -0.3), null, 'metal');
+                addBox('foldArmBottom', { width: 0.012, height: 0.012, depth: 0.22 }, new BABYLON.Vector3(0, -0.04, -0.3), null, 'metal');
                 muzzleZ = 0.33;
             } else if (weaponId === 'BO21') {
                 // BREACHER: a real pump/slide handguard offset from the
                 // stock grip, vs. the single fixed guardBox the other 5
                 // shotguns use.
-                addBox('receiver', { width: 0.105, height: 0.105, depth: 0.36 }, new BABYLON.Vector3(0, 0, 0));
-                addCylinder('barrel', { diameter: 0.052, height: 0.46 }, new BABYLON.Vector3(0, 0.02, 0.43), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addCylinder('tube', { diameter: 0.032, height: 0.36 }, new BABYLON.Vector3(0, -0.05, 0.3), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addBox('pump', { width: 0.07, height: 0.06, depth: 0.16 }, new BABYLON.Vector3(0, -0.05, 0.24));
-                addBox('stock', { width: 0.075, height: 0.105, depth: 0.3 }, new BABYLON.Vector3(0, -0.02, -0.38));
-                addBox('grip', { width: 0.062, height: 0.165, depth: 0.062 }, new BABYLON.Vector3(0, -0.125, -0.1));
+                addBox('receiver', { width: 0.105, height: 0.105, depth: 0.36 }, new BABYLON.Vector3(0, 0, 0), null, 'shell');
+                addCylinder('barrel', { diameter: 0.052, height: 0.46 }, new BABYLON.Vector3(0, 0.02, 0.43), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addCylinder('tube', { diameter: 0.032, height: 0.36 }, new BABYLON.Vector3(0, -0.05, 0.3), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addBox('pump', { width: 0.07, height: 0.06, depth: 0.16 }, new BABYLON.Vector3(0, -0.05, 0.24), null, 'rubber');
+                addBox('stock', { width: 0.075, height: 0.105, depth: 0.3 }, new BABYLON.Vector3(0, -0.02, -0.38), null, 'shell');
+                addBox('grip', { width: 0.062, height: 0.165, depth: 0.062 }, new BABYLON.Vector3(0, -0.125, -0.1), null, 'rubber');
                 muzzleZ = 0.66;
             } else if (weaponId === 'BO31') {
                 // LONGSHOT: real bipod legs + a raised cheek riser on the
@@ -4176,170 +4177,170 @@
             } else if (weaponId === 'BO32') {
                 // PHANTOM: angled foregrip + a visible flash hider cone, vs.
                 // the plain barrel tip the other 4 DMRs use.
-                addBox('receiver', { width: 0.088, height: 0.093, depth: 0.54 }, new BABYLON.Vector3(0, 0, 0));
-                addCylinder('barrel', { diameter: 0.033, height: 0.33 }, new BABYLON.Vector3(0, 0.005, 0.43), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addCylinder('flashHider', { diameterTop: 0.02, diameterBottom: 0.036, height: 0.06 }, new BABYLON.Vector3(0, 0.005, 0.62), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addBox('optic', { width: 0.038, height: 0.048, depth: 0.15 }, new BABYLON.Vector3(0, 0.078, 0.08));
-                addBox('mag', { width: 0.058, height: 0.19, depth: 0.068 }, new BABYLON.Vector3(0, -0.155, 0.06));
-                addBox('stock', { width: 0.062, height: 0.083, depth: 0.25 }, new BABYLON.Vector3(0, -0.02, -0.35));
-                addBox('foregrip', { width: 0.045, height: 0.075, depth: 0.045 }, new BABYLON.Vector3(0, -0.09, 0.3), new BABYLON.Vector3(0.3, 0, 0));
-                addBox('grip', { width: 0.062, height: 0.165, depth: 0.062 }, new BABYLON.Vector3(0, -0.125, -0.1));
+                addBox('receiver', { width: 0.088, height: 0.093, depth: 0.54 }, new BABYLON.Vector3(0, 0, 0), null, 'shell');
+                addCylinder('barrel', { diameter: 0.033, height: 0.33 }, new BABYLON.Vector3(0, 0.005, 0.43), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addCylinder('flashHider', { diameterTop: 0.02, diameterBottom: 0.036, height: 0.06 }, new BABYLON.Vector3(0, 0.005, 0.62), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addBox('optic', { width: 0.038, height: 0.048, depth: 0.15 }, new BABYLON.Vector3(0, 0.078, 0.08), null, 'optic_housing');
+                addBox('mag', { width: 0.058, height: 0.19, depth: 0.068 }, new BABYLON.Vector3(0, -0.155, 0.06), null, 'shell');
+                addBox('stock', { width: 0.062, height: 0.083, depth: 0.25 }, new BABYLON.Vector3(0, -0.02, -0.35), null, 'shell');
+                addBox('foregrip', { width: 0.045, height: 0.075, depth: 0.045 }, new BABYLON.Vector3(0, -0.09, 0.3), new BABYLON.Vector3(0.3, 0, 0), 'rubber');
+                addBox('grip', { width: 0.062, height: 0.165, depth: 0.062 }, new BABYLON.Vector3(0, -0.125, -0.1), null, 'rubber');
                 muzzleZ = 0.66;
             } else if (weaponId === 'BO41') {
                 // JUGGERNAUT: a side-mounted ammo box + a perforated-look
                 // heat-shield sleeve over the barrel, vs. the centered drum
                 // the other 5 LMGs use.
-                addBox('receiver', { width: 0.105, height: 0.105, depth: 0.57 }, new BABYLON.Vector3(0, 0, 0));
-                addCylinder('barrel', { diameter: 0.042, height: 0.42 }, new BABYLON.Vector3(0, 0.01, 0.47), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addCylinder('heatShield', { diameter: 0.06, height: 0.3 }, new BABYLON.Vector3(0, 0.01, 0.35), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addBox('ammoBox', { width: 0.16, height: 0.16, depth: 0.1 }, new BABYLON.Vector3(-0.11, -0.1, 0.08));
-                addBox('bipod', { width: 0.145, height: 0.022, depth: 0.032 }, new BABYLON.Vector3(0, -0.085, 0.58));
-                addBox('stock', { width: 0.072, height: 0.093, depth: 0.26 }, new BABYLON.Vector3(0, -0.02, -0.39));
-                addBox('grip', { width: 0.062, height: 0.165, depth: 0.062 }, new BABYLON.Vector3(0, -0.125, -0.1));
+                addBox('receiver', { width: 0.105, height: 0.105, depth: 0.57 }, new BABYLON.Vector3(0, 0, 0), null, 'shell');
+                addCylinder('barrel', { diameter: 0.042, height: 0.42 }, new BABYLON.Vector3(0, 0.01, 0.47), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addCylinder('heatShield', { diameter: 0.06, height: 0.3 }, new BABYLON.Vector3(0, 0.01, 0.35), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addBox('ammoBox', { width: 0.16, height: 0.16, depth: 0.1 }, new BABYLON.Vector3(-0.11, -0.1, 0.08), null, 'shell');
+                addBox('bipod', { width: 0.145, height: 0.022, depth: 0.032 }, new BABYLON.Vector3(0, -0.085, 0.58), null, 'metal');
+                addBox('stock', { width: 0.072, height: 0.093, depth: 0.26 }, new BABYLON.Vector3(0, -0.02, -0.39), null, 'shell');
+                addBox('grip', { width: 0.062, height: 0.165, depth: 0.062 }, new BABYLON.Vector3(0, -0.125, -0.1), null, 'rubber');
                 muzzleZ = 0.68;
             } else if (weaponId === 'BO51') {
                 // SIDEARM: a ported compensator at the muzzle + an accessory
                 // rail nub under the frame, vs. the plain slide/frame the
                 // other 5 Pistols use.
-                addBox('slide', { width: 0.062, height: 0.062, depth: 0.21 }, new BABYLON.Vector3(0, 0.032, 0));
-                addBox('compensator', { width: 0.05, height: 0.05, depth: 0.05 }, new BABYLON.Vector3(0, 0.03, 0.12));
-                addBox('frame', { width: 0.062, height: 0.052, depth: 0.1 }, new BABYLON.Vector3(0, -0.02, -0.02));
-                addBox('grip', { width: 0.058, height: 0.145, depth: 0.062 }, new BABYLON.Vector3(0, -0.115, -0.06));
-                addBox('mag', { width: 0.042, height: 0.1, depth: 0.042 }, new BABYLON.Vector3(0, -0.165, -0.05));
-                addBox('rail', { width: 0.025, height: 0.02, depth: 0.08 }, new BABYLON.Vector3(0, -0.005, 0.03));
+                addBox('slide', { width: 0.062, height: 0.062, depth: 0.21 }, new BABYLON.Vector3(0, 0.032, 0), null, 'metal');
+                addBox('compensator', { width: 0.05, height: 0.05, depth: 0.05 }, new BABYLON.Vector3(0, 0.03, 0.12), null, 'metal');
+                addBox('frame', { width: 0.062, height: 0.052, depth: 0.1 }, new BABYLON.Vector3(0, -0.02, -0.02), null, 'shell');
+                addBox('grip', { width: 0.058, height: 0.145, depth: 0.062 }, new BABYLON.Vector3(0, -0.115, -0.06), null, 'rubber');
+                addBox('mag', { width: 0.042, height: 0.1, depth: 0.042 }, new BABYLON.Vector3(0, -0.165, -0.05), null, 'shell');
+                addBox('rail', { width: 0.025, height: 0.02, depth: 0.08 }, new BABYLON.Vector3(0, -0.005, 0.03), null, 'metal');
                 muzzleZ = 0.16;
             } else if (weaponId === 'BO52') {
                 // MAGNUM: a longer exposed barrel + a visible hammer spur +
                 // a chunkier grip, vs. the compact frame the other 3
                 // Revolvers use.
-                addBox('frame', { width: 0.062, height: 0.062, depth: 0.15 }, new BABYLON.Vector3(0, 0, -0.02));
-                addCylinder('cylinder', { diameter: 0.095, height: 0.075 }, new BABYLON.Vector3(0, 0.005, 0.02), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addCylinder('barrel', { diameter: 0.027, height: 0.26 }, new BABYLON.Vector3(0, 0.005, 0.22), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addBox('hammer', { width: 0.02, height: 0.035, depth: 0.02 }, new BABYLON.Vector3(0, 0.05, -0.09));
-                addBox('grip', { width: 0.07, height: 0.17, depth: 0.08 }, new BABYLON.Vector3(0, -0.13, -0.09));
+                addBox('frame', { width: 0.062, height: 0.062, depth: 0.15 }, new BABYLON.Vector3(0, 0, -0.02), null, 'shell');
+                addCylinder('cylinder', { diameter: 0.095, height: 0.075 }, new BABYLON.Vector3(0, 0.005, 0.02), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addCylinder('barrel', { diameter: 0.027, height: 0.26 }, new BABYLON.Vector3(0, 0.005, 0.22), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addBox('hammer', { width: 0.02, height: 0.035, depth: 0.02 }, new BABYLON.Vector3(0, 0.05, -0.09), null, 'metal');
+                addBox('grip', { width: 0.07, height: 0.17, depth: 0.08 }, new BABYLON.Vector3(0, -0.13, -0.09), null, 'rubber');
                 muzzleZ = 0.36;
             } else if (weaponId === 'BO61') {
                 // DEVASTATOR: a shoulder stock plate + a front handguard
                 // ring + a larger targeting scope, vs. the plain tube the
                 // other 5 Rocket Launchers use.
-                addCylinder('tube', { diameter: 0.15, height: 0.72 }, new BABYLON.Vector3(0, 0, 0.1), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addCylinder('rearCone', { diameterTop: 0.17, diameterBottom: 0.1, height: 0.17 }, new BABYLON.Vector3(0, 0, -0.33), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addBox('shoulderPlate', { width: 0.14, height: 0.14, depth: 0.03 }, new BABYLON.Vector3(0, -0.02, -0.42));
-                addBox('scope', { width: 0.025, height: 0.09, depth: 0.14 }, new BABYLON.Vector3(0, 0.11, 0.16));
-                addCylinder('handguardRing', { diameter: 0.18, height: 0.03 }, new BABYLON.Vector3(0, 0, 0.28), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addBox('grip', { width: 0.062, height: 0.165, depth: 0.062 }, new BABYLON.Vector3(0, -0.135, -0.12));
-                addBox('rearGrip', { width: 0.062, height: 0.145, depth: 0.062 }, new BABYLON.Vector3(0, -0.125, -0.34));
+                addCylinder('tube', { diameter: 0.15, height: 0.72 }, new BABYLON.Vector3(0, 0, 0.1), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'shell');
+                addCylinder('rearCone', { diameterTop: 0.17, diameterBottom: 0.1, height: 0.17 }, new BABYLON.Vector3(0, 0, -0.33), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addBox('shoulderPlate', { width: 0.14, height: 0.14, depth: 0.03 }, new BABYLON.Vector3(0, -0.02, -0.42), null, 'rubber');
+                addBox('scope', { width: 0.025, height: 0.09, depth: 0.14 }, new BABYLON.Vector3(0, 0.11, 0.16), null, 'optic_housing');
+                addCylinder('handguardRing', { diameter: 0.18, height: 0.03 }, new BABYLON.Vector3(0, 0, 0.28), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addBox('grip', { width: 0.062, height: 0.165, depth: 0.062 }, new BABYLON.Vector3(0, -0.135, -0.12), null, 'rubber');
+                addBox('rearGrip', { width: 0.062, height: 0.145, depth: 0.062 }, new BABYLON.Vector3(0, -0.125, -0.34), null, 'rubber');
                 muzzleZ = 0.64;
             } else if (weaponId === 'BO71') {
                 // FANG: a curved hooked blade tip + a finger ring at the
                 // pommel (karambit silhouette), vs. the straight blade the
                 // other 4 Melee weapons use.
-                addBox('handle', { width: 0.036, height: 0.036, depth: 0.13 }, new BABYLON.Vector3(0, 0, -0.05));
-                addBox('guard', { width: 0.085, height: 0.022, depth: 0.022 }, new BABYLON.Vector3(0, 0, 0.035));
-                addTorus('fingerRing', { diameter: 0.05, thickness: 0.008, tessellation: 16 }, new BABYLON.Vector3(0, -0.02, -0.11), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addBox('bladeBase', { width: 0.019, height: 0.052, depth: 0.14 }, new BABYLON.Vector3(0, 0, 0.15));
-                addBox('bladeHook', { width: 0.017, height: 0.045, depth: 0.09 }, new BABYLON.Vector3(0, -0.028, 0.24), new BABYLON.Vector3(0.5, 0, 0));
+                addBox('handle', { width: 0.036, height: 0.036, depth: 0.13 }, new BABYLON.Vector3(0, 0, -0.05), null, 'shell');
+                addBox('guard', { width: 0.085, height: 0.022, depth: 0.022 }, new BABYLON.Vector3(0, 0, 0.035), null, 'metal');
+                addTorus('fingerRing', { diameter: 0.05, thickness: 0.008, tessellation: 16 }, new BABYLON.Vector3(0, -0.02, -0.11), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addBox('bladeBase', { width: 0.019, height: 0.052, depth: 0.14 }, new BABYLON.Vector3(0, 0, 0.15), null, 'metal');
+                addBox('bladeHook', { width: 0.017, height: 0.045, depth: 0.09 }, new BABYLON.Vector3(0, -0.028, 0.24), new BABYLON.Vector3(0.5, 0, 0), 'metal');
                 muzzleZ = 0.3;
             } else if (weaponId === 'BO81') {
                 // SILENTBOLT: a real crossbow silhouette - string arms
                 // angled in toward the body + a stock, vs. the generic
                 // body/limbs/scope block the other 4 Special weapons use.
-                addBox('body', { width: 0.062, height: 0.062, depth: 0.32 }, new BABYLON.Vector3(0, 0, 0));
-                addBox('limbs', { width: 0.44, height: 0.022, depth: 0.032 }, new BABYLON.Vector3(0, 0, 0.15));
-                addBox('stringL', { width: 0.008, height: 0.008, depth: 0.17 }, new BABYLON.Vector3(-0.2, 0, 0.08), new BABYLON.Vector3(0, 0.4, 0));
-                addBox('stringR', { width: 0.008, height: 0.008, depth: 0.17 }, new BABYLON.Vector3(0.2, 0, 0.08), new BABYLON.Vector3(0, -0.4, 0));
-                addBox('scope', { width: 0.032, height: 0.042, depth: 0.11 }, new BABYLON.Vector3(0, 0.065, -0.02));
-                addBox('stock', { width: 0.052, height: 0.085, depth: 0.22 }, new BABYLON.Vector3(0, -0.02, -0.26));
-                addBox('grip', { width: 0.052, height: 0.145, depth: 0.052 }, new BABYLON.Vector3(0, -0.105, -0.08));
+                addBox('body', { width: 0.062, height: 0.062, depth: 0.32 }, new BABYLON.Vector3(0, 0, 0), null, 'shell');
+                addBox('limbs', { width: 0.44, height: 0.022, depth: 0.032 }, new BABYLON.Vector3(0, 0, 0.15), null, 'metal');
+                addBox('stringL', { width: 0.008, height: 0.008, depth: 0.17 }, new BABYLON.Vector3(-0.2, 0, 0.08), new BABYLON.Vector3(0, 0.4, 0), 'metal');
+                addBox('stringR', { width: 0.008, height: 0.008, depth: 0.17 }, new BABYLON.Vector3(0.2, 0, 0.08), new BABYLON.Vector3(0, -0.4, 0), 'metal');
+                addBox('scope', { width: 0.032, height: 0.042, depth: 0.11 }, new BABYLON.Vector3(0, 0.065, -0.02), null, 'optic_housing');
+                addBox('stock', { width: 0.052, height: 0.085, depth: 0.22 }, new BABYLON.Vector3(0, -0.02, -0.26), null, 'shell');
+                addBox('grip', { width: 0.052, height: 0.145, depth: 0.052 }, new BABYLON.Vector3(0, -0.105, -0.08), null, 'rubber');
                 muzzleZ = 0.36;
             } else if (category === WEAPON_CATEGORY.AR) {
-                addBox('receiver', { width: 0.09, height: 0.09, depth: 0.5 }, new BABYLON.Vector3(0, 0, 0));
-                addCylinder('barrel', { diameter: 0.035, height: 0.35 }, new BABYLON.Vector3(0, 0.01, 0.38), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addBox('mag', { width: 0.06, height: 0.22, depth: 0.07 }, new BABYLON.Vector3(0, -0.16, 0.08));
-                addBox('stock', { width: 0.06, height: 0.08, depth: 0.22 }, new BABYLON.Vector3(0, -0.02, -0.32));
-                addBox('grip', { width: 0.06, height: 0.16, depth: 0.06 }, new BABYLON.Vector3(0, -0.12, -0.08));
-                addBox('sight', { width: 0.03, height: 0.05, depth: 0.08 }, new BABYLON.Vector3(0, 0.07, 0.05));
+                addBox('receiver', { width: 0.09, height: 0.09, depth: 0.5 }, new BABYLON.Vector3(0, 0, 0), null, 'shell');
+                addCylinder('barrel', { diameter: 0.035, height: 0.35 }, new BABYLON.Vector3(0, 0.01, 0.38), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addBox('mag', { width: 0.06, height: 0.22, depth: 0.07 }, new BABYLON.Vector3(0, -0.16, 0.08), null, 'shell');
+                addBox('stock', { width: 0.06, height: 0.08, depth: 0.22 }, new BABYLON.Vector3(0, -0.02, -0.32), null, 'shell');
+                addBox('grip', { width: 0.06, height: 0.16, depth: 0.06 }, new BABYLON.Vector3(0, -0.12, -0.08), null, 'rubber');
+                addBox('sight', { width: 0.03, height: 0.05, depth: 0.08 }, new BABYLON.Vector3(0, 0.07, 0.05), null, 'optic_housing');
                 muzzleZ = 0.56;
             } else if (category === WEAPON_CATEGORY.SMG) {
-                addBox('receiver', { width: 0.08, height: 0.09, depth: 0.32 }, new BABYLON.Vector3(0, 0, 0));
-                addCylinder('barrel', { diameter: 0.03, height: 0.15 }, new BABYLON.Vector3(0, 0.005, 0.22), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addBox('mag', { width: 0.05, height: 0.2, depth: 0.06 }, new BABYLON.Vector3(0, -0.14, 0.02));
-                addBox('grip', { width: 0.055, height: 0.15, depth: 0.055 }, new BABYLON.Vector3(0, -0.11, -0.1));
-                addBox('stock', { width: 0.05, height: 0.05, depth: 0.15 }, new BABYLON.Vector3(0, -0.01, -0.28));
+                addBox('receiver', { width: 0.08, height: 0.09, depth: 0.32 }, new BABYLON.Vector3(0, 0, 0), null, 'shell');
+                addCylinder('barrel', { diameter: 0.03, height: 0.15 }, new BABYLON.Vector3(0, 0.005, 0.22), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addBox('mag', { width: 0.05, height: 0.2, depth: 0.06 }, new BABYLON.Vector3(0, -0.14, 0.02), null, 'shell');
+                addBox('grip', { width: 0.055, height: 0.15, depth: 0.055 }, new BABYLON.Vector3(0, -0.11, -0.1), null, 'rubber');
+                addBox('stock', { width: 0.05, height: 0.05, depth: 0.15 }, new BABYLON.Vector3(0, -0.01, -0.28), null, 'shell');
                 muzzleZ = 0.3;
             } else if (category === WEAPON_CATEGORY.PISTOL) {
-                addBox('slide', { width: 0.06, height: 0.06, depth: 0.2 }, new BABYLON.Vector3(0, 0.03, 0));
-                addBox('frame', { width: 0.06, height: 0.05, depth: 0.1 }, new BABYLON.Vector3(0, -0.02, -0.02));
-                addBox('grip', { width: 0.055, height: 0.14, depth: 0.06 }, new BABYLON.Vector3(0, -0.11, -0.06));
-                addBox('mag', { width: 0.04, height: 0.1, depth: 0.04 }, new BABYLON.Vector3(0, -0.16, -0.05));
+                addBox('slide', { width: 0.06, height: 0.06, depth: 0.2 }, new BABYLON.Vector3(0, 0.03, 0), null, 'metal');
+                addBox('frame', { width: 0.06, height: 0.05, depth: 0.1 }, new BABYLON.Vector3(0, -0.02, -0.02), null, 'shell');
+                addBox('grip', { width: 0.055, height: 0.14, depth: 0.06 }, new BABYLON.Vector3(0, -0.11, -0.06), null, 'rubber');
+                addBox('mag', { width: 0.04, height: 0.1, depth: 0.04 }, new BABYLON.Vector3(0, -0.16, -0.05), null, 'shell');
                 muzzleZ = 0.1;
             } else if (category === WEAPON_CATEGORY.REVOLVER) {
                 // Same pistol-scale frame/grip, but a thick cylinder in
                 // place of the pistol's flat magazine - the one silhouette
                 // change that reads as "revolver" instead of "sidearm"
                 // without needing a real model.
-                addBox('frame', { width: 0.06, height: 0.06, depth: 0.14 }, new BABYLON.Vector3(0, 0, -0.02));
-                addCylinder('cylinder', { diameter: 0.09, height: 0.07 }, new BABYLON.Vector3(0, 0.005, 0.02), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addCylinder('barrel', { diameter: 0.025, height: 0.16 }, new BABYLON.Vector3(0, 0.005, 0.16), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addBox('grip', { width: 0.058, height: 0.15, depth: 0.065 }, new BABYLON.Vector3(0, -0.11, -0.07));
+                addBox('frame', { width: 0.06, height: 0.06, depth: 0.14 }, new BABYLON.Vector3(0, 0, -0.02), null, 'shell');
+                addCylinder('cylinder', { diameter: 0.09, height: 0.07 }, new BABYLON.Vector3(0, 0.005, 0.02), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addCylinder('barrel', { diameter: 0.025, height: 0.16 }, new BABYLON.Vector3(0, 0.005, 0.16), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addBox('grip', { width: 0.058, height: 0.15, depth: 0.065 }, new BABYLON.Vector3(0, -0.11, -0.07), null, 'rubber');
                 muzzleZ = 0.24;
             } else if (category === WEAPON_CATEGORY.SHOTGUN) {
-                addBox('receiver', { width: 0.1, height: 0.1, depth: 0.35 }, new BABYLON.Vector3(0, 0, 0));
-                addCylinder('barrel', { diameter: 0.05, height: 0.45 }, new BABYLON.Vector3(0, 0.02, 0.42), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addCylinder('tube', { diameter: 0.03, height: 0.35 }, new BABYLON.Vector3(0, -0.05, 0.3), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addBox('stock', { width: 0.07, height: 0.1, depth: 0.28 }, new BABYLON.Vector3(0, -0.02, -0.36));
-                addBox('grip', { width: 0.06, height: 0.16, depth: 0.06 }, new BABYLON.Vector3(0, -0.12, -0.1));
+                addBox('receiver', { width: 0.1, height: 0.1, depth: 0.35 }, new BABYLON.Vector3(0, 0, 0), null, 'shell');
+                addCylinder('barrel', { diameter: 0.05, height: 0.45 }, new BABYLON.Vector3(0, 0.02, 0.42), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addCylinder('tube', { diameter: 0.03, height: 0.35 }, new BABYLON.Vector3(0, -0.05, 0.3), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addBox('stock', { width: 0.07, height: 0.1, depth: 0.28 }, new BABYLON.Vector3(0, -0.02, -0.36), null, 'shell');
+                addBox('grip', { width: 0.06, height: 0.16, depth: 0.06 }, new BABYLON.Vector3(0, -0.12, -0.1), null, 'rubber');
                 muzzleZ = 0.64;
             } else if (category === WEAPON_CATEGORY.SNIPER) {
-                addBox('receiver', { width: 0.08, height: 0.09, depth: 0.6 }, new BABYLON.Vector3(0, 0, 0));
-                addCylinder('barrel', { diameter: 0.03, height: 0.45 }, new BABYLON.Vector3(0, 0, 0.5), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addBox('scope', { width: 0.04, height: 0.05, depth: 0.22 }, new BABYLON.Vector3(0, 0.09, 0.1));
-                addBox('mag', { width: 0.05, height: 0.14, depth: 0.06 }, new BABYLON.Vector3(0, -0.14, 0.05));
-                addBox('stock', { width: 0.06, height: 0.1, depth: 0.32 }, new BABYLON.Vector3(0, -0.03, -0.42));
-                addBox('grip', { width: 0.06, height: 0.15, depth: 0.06 }, new BABYLON.Vector3(0, -0.12, -0.14));
+                addBox('receiver', { width: 0.08, height: 0.09, depth: 0.6 }, new BABYLON.Vector3(0, 0, 0), null, 'shell');
+                addCylinder('barrel', { diameter: 0.03, height: 0.45 }, new BABYLON.Vector3(0, 0, 0.5), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addBox('scope', { width: 0.04, height: 0.05, depth: 0.22 }, new BABYLON.Vector3(0, 0.09, 0.1), null, 'optic_housing');
+                addBox('mag', { width: 0.05, height: 0.14, depth: 0.06 }, new BABYLON.Vector3(0, -0.14, 0.05), null, 'shell');
+                addBox('stock', { width: 0.06, height: 0.1, depth: 0.32 }, new BABYLON.Vector3(0, -0.03, -0.42), null, 'shell');
+                addBox('grip', { width: 0.06, height: 0.15, depth: 0.06 }, new BABYLON.Vector3(0, -0.12, -0.14), null, 'rubber');
                 muzzleZ = 0.75;
             } else if (category === WEAPON_CATEGORY.DMR) {
                 // AR-proportioned body (shorter/lighter than SNIPER's) with
                 // a compact optic instead of SNIPER's bulky scope box - a
                 // marksman rifle reads as "AR that's been stretched and
                 // given a sight", not as a shrunken bolt-action.
-                addBox('receiver', { width: 0.085, height: 0.09, depth: 0.52 }, new BABYLON.Vector3(0, 0, 0));
-                addCylinder('barrel', { diameter: 0.032, height: 0.32 }, new BABYLON.Vector3(0, 0.005, 0.42), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addBox('optic', { width: 0.035, height: 0.045, depth: 0.14 }, new BABYLON.Vector3(0, 0.075, 0.08));
-                addBox('mag', { width: 0.055, height: 0.18, depth: 0.065 }, new BABYLON.Vector3(0, -0.15, 0.06));
-                addBox('stock', { width: 0.06, height: 0.08, depth: 0.24 }, new BABYLON.Vector3(0, -0.02, -0.34));
-                addBox('grip', { width: 0.06, height: 0.16, depth: 0.06 }, new BABYLON.Vector3(0, -0.12, -0.1));
+                addBox('receiver', { width: 0.085, height: 0.09, depth: 0.52 }, new BABYLON.Vector3(0, 0, 0), null, 'shell');
+                addCylinder('barrel', { diameter: 0.032, height: 0.32 }, new BABYLON.Vector3(0, 0.005, 0.42), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addBox('optic', { width: 0.035, height: 0.045, depth: 0.14 }, new BABYLON.Vector3(0, 0.075, 0.08), null, 'optic_housing');
+                addBox('mag', { width: 0.055, height: 0.18, depth: 0.065 }, new BABYLON.Vector3(0, -0.15, 0.06), null, 'shell');
+                addBox('stock', { width: 0.06, height: 0.08, depth: 0.24 }, new BABYLON.Vector3(0, -0.02, -0.34), null, 'shell');
+                addBox('grip', { width: 0.06, height: 0.16, depth: 0.06 }, new BABYLON.Vector3(0, -0.12, -0.1), null, 'rubber');
                 muzzleZ = 0.6;
             } else if (category === WEAPON_CATEGORY.LMG) {
-                addBox('receiver', { width: 0.1, height: 0.1, depth: 0.55 }, new BABYLON.Vector3(0, 0, 0));
-                addCylinder('barrel', { diameter: 0.04, height: 0.4 }, new BABYLON.Vector3(0, 0.01, 0.45), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addBox('drum', { width: 0.14, height: 0.14, depth: 0.06 }, new BABYLON.Vector3(0, -0.16, 0.1));
-                addBox('bipod', { width: 0.14, height: 0.02, depth: 0.03 }, new BABYLON.Vector3(0, -0.08, 0.55));
-                addBox('stock', { width: 0.07, height: 0.09, depth: 0.25 }, new BABYLON.Vector3(0, -0.02, -0.38));
-                addBox('grip', { width: 0.06, height: 0.16, depth: 0.06 }, new BABYLON.Vector3(0, -0.12, -0.1));
+                addBox('receiver', { width: 0.1, height: 0.1, depth: 0.55 }, new BABYLON.Vector3(0, 0, 0), null, 'shell');
+                addCylinder('barrel', { diameter: 0.04, height: 0.4 }, new BABYLON.Vector3(0, 0.01, 0.45), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addBox('drum', { width: 0.14, height: 0.14, depth: 0.06 }, new BABYLON.Vector3(0, -0.16, 0.1), null, 'shell');
+                addBox('bipod', { width: 0.14, height: 0.02, depth: 0.03 }, new BABYLON.Vector3(0, -0.08, 0.55), null, 'metal');
+                addBox('stock', { width: 0.07, height: 0.09, depth: 0.25 }, new BABYLON.Vector3(0, -0.02, -0.38), null, 'shell');
+                addBox('grip', { width: 0.06, height: 0.16, depth: 0.06 }, new BABYLON.Vector3(0, -0.12, -0.1), null, 'rubber');
                 muzzleZ = 0.65;
             } else if (category === WEAPON_CATEGORY.ROCKET) {
-                addCylinder('tube', { diameter: 0.14, height: 0.7 }, new BABYLON.Vector3(0, 0, 0.1), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addCylinder('rearCone', { diameterTop: 0.16, diameterBottom: 0.09, height: 0.16 }, new BABYLON.Vector3(0, 0, -0.32), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addBox('sight', { width: 0.02, height: 0.08, depth: 0.1 }, new BABYLON.Vector3(0, 0.1, 0.15));
-                addBox('grip', { width: 0.06, height: 0.16, depth: 0.06 }, new BABYLON.Vector3(0, -0.13, -0.12));
-                addBox('rearGrip', { width: 0.06, height: 0.14, depth: 0.06 }, new BABYLON.Vector3(0, -0.12, -0.34));
+                addCylinder('tube', { diameter: 0.14, height: 0.7 }, new BABYLON.Vector3(0, 0, 0.1), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'shell');
+                addCylinder('rearCone', { diameterTop: 0.16, diameterBottom: 0.09, height: 0.16 }, new BABYLON.Vector3(0, 0, -0.32), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addBox('sight', { width: 0.02, height: 0.08, depth: 0.1 }, new BABYLON.Vector3(0, 0.1, 0.15), null, 'optic_housing');
+                addBox('grip', { width: 0.06, height: 0.16, depth: 0.06 }, new BABYLON.Vector3(0, -0.13, -0.12), null, 'rubber');
+                addBox('rearGrip', { width: 0.06, height: 0.14, depth: 0.06 }, new BABYLON.Vector3(0, -0.12, -0.34), null, 'rubber');
                 muzzleZ = 0.62;
             } else if (category === WEAPON_CATEGORY.MELEE) {
-                addBox('handle', { width: 0.035, height: 0.035, depth: 0.14 }, new BABYLON.Vector3(0, 0, -0.05));
-                addBox('guard', { width: 0.08, height: 0.02, depth: 0.02 }, new BABYLON.Vector3(0, 0, 0.04));
-                addBox('blade', { width: 0.018, height: 0.05, depth: 0.24 }, new BABYLON.Vector3(0, 0, 0.18));
+                addBox('handle', { width: 0.035, height: 0.035, depth: 0.14 }, new BABYLON.Vector3(0, 0, -0.05), null, 'shell');
+                addBox('guard', { width: 0.08, height: 0.02, depth: 0.02 }, new BABYLON.Vector3(0, 0, 0.04), null, 'metal');
+                addBox('blade', { width: 0.018, height: 0.05, depth: 0.24 }, new BABYLON.Vector3(0, 0, 0.18), null, 'metal');
                 muzzleZ = 0.32;
             } else if (category === WEAPON_CATEGORY.SPECIAL) {
-                addBox('body', { width: 0.06, height: 0.06, depth: 0.3 }, new BABYLON.Vector3(0, 0, 0));
-                addBox('limbs', { width: 0.42, height: 0.02, depth: 0.03 }, new BABYLON.Vector3(0, 0, 0.14));
-                addBox('scope', { width: 0.03, height: 0.04, depth: 0.1 }, new BABYLON.Vector3(0, 0.06, -0.02));
-                addBox('stock', { width: 0.05, height: 0.08, depth: 0.2 }, new BABYLON.Vector3(0, -0.02, -0.24));
-                addBox('grip', { width: 0.05, height: 0.14, depth: 0.05 }, new BABYLON.Vector3(0, -0.1, -0.08));
+                addBox('body', { width: 0.06, height: 0.06, depth: 0.3 }, new BABYLON.Vector3(0, 0, 0), null, 'shell');
+                addBox('limbs', { width: 0.42, height: 0.02, depth: 0.03 }, new BABYLON.Vector3(0, 0, 0.14), null, 'metal');
+                addBox('scope', { width: 0.03, height: 0.04, depth: 0.1 }, new BABYLON.Vector3(0, 0.06, -0.02), null, 'optic_housing');
+                addBox('stock', { width: 0.05, height: 0.08, depth: 0.2 }, new BABYLON.Vector3(0, -0.02, -0.24), null, 'shell');
+                addBox('grip', { width: 0.05, height: 0.14, depth: 0.05 }, new BABYLON.Vector3(0, -0.1, -0.08), null, 'rubber');
                 muzzleZ = 0.34;
             } else {
-                addBox('receiver', { width: 0.08, height: 0.09, depth: 0.4 }, new BABYLON.Vector3(0, 0, 0));
-                addBox('grip', { width: 0.055, height: 0.15, depth: 0.055 }, new BABYLON.Vector3(0, -0.11, -0.1));
+                addBox('receiver', { width: 0.08, height: 0.09, depth: 0.4 }, new BABYLON.Vector3(0, 0, 0), null, 'shell');
+                addBox('grip', { width: 0.055, height: 0.15, depth: 0.055 }, new BABYLON.Vector3(0, -0.11, -0.1), null, 'rubber');
             }
 
             // Empty node at the barrel tip - muzzle flash/bullets spawn from

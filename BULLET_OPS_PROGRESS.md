@@ -1241,6 +1241,23 @@ Nueva función compartida `buildCamoMaterial(scene, name, baseColor, blotchColor
 
 **Alcance honesto**: esto es un prototipo de 1 arma (BO-31), tal como el usuario pidió antes de comprometerse a las 68. Queda pendiente, sujeto a la validación del usuario: extender el sistema de zonas a las 10 armas insignia restantes + las 11 ramas de categoría genérica (cubre las 68 por herencia), un pase de microdetalle geométrico barato (tornillos, ranuras de riel, costuras) y la decisión sobre si migrar los 10 skins de rareza previos (FASE 16) al mismo sistema PBR.
 
+### Rollout completo: sistema de zonas PBR extendido a las 68 armas
+
+El usuario validó el prototipo de BO-31 LONGSHOT y confirmó extenderlo directamente a todo el roster ("si dale"), sin más pasos intermedios.
+
+**Cambio real**: las 10 ramas insignia restantes (`BO01`/`BO11`/`BO21`/`BO32`/`BO41`/`BO51`/`BO52`/`BO61`/`BO71`/`BO81`) y las 11 ramas de categoría genérica (`AR`/`SMG`/`PISTOL`/`REVOLVER`/`SHOTGUN`/`SNIPER`/`DMR`/`LMG`/`ROCKET`/`MELEE`/`SPECIAL`, más el `else` de categoría desconocida) ganan el mismo quinto parámetro `zone` que BO-31 ya tenía, siguiendo un criterio consistente en todo el roster:
+
+- **`shell`** (pintado por el camuflaje equipado): receiver/frame/slide/body/tube/mag/ammoBox/drum/stock/handle(melee) — las superficies exteriores grandes, exactamente el mismo criterio que un Cerakote/pintura real cubriría.
+- **`metal`** (siempre acero desnudo, nunca camuflaje): barrel/cylinder(tambor de revólver)/flashHider/heatShield/shroud/handguardRing/bipod/carryHandle/rail/compensator/hoja y guarda de las armas cuerpo a cuerpo.
+- **`rubber`** (siempre goma negra, nunca camuflaje): grip/foregrip/rearGrip/pump/shoulderPlate.
+- **`optic_housing`** (siempre metal oscuro, nunca camuflaje): sight/scope/optic — la mira de cada arma, tal como pidió el usuario explícitamente.
+
+Con este criterio ya no hace falta el caso especial "arma insignia con zonas vs. resto de armas sin zonas" que tenía `applySkin()` — pero esa rama de compatibilidad (pintar toda la malla si no hay ningún mesh `shell`) se deja intacta en el código de todos modos, sin coste, por si en el futuro se añade un arma nueva sin zonificar.
+
+**Probado con Playwright**: bucle sobre las 68 armas de `WEAPON_CONFIGS` construyendo cada viewmodel + aplicando un camuflaje — **68/68 con al menos una zona real asignada, 0 excepciones, 0 armas cayendo al modo de compatibilidad "sin zonas"**. Capturas reales de la previsualización 3D para 5 armas representativas de categorías distintas (BO01 Assault Rifle insignia, BO21 Shotgun insignia, BO71 Melee insignia, BO81 Special/ballesta insignia, y BO43 LMG — **una de las 57 armas no-insignia, usando la rama de categoría genérica**) confirman visualmente el patrón funcionando en todas: cañón/bípode/hoja siempre metal, empuñadura siempre goma, receptor/culata/cargador con el camuflaje real aplicado. Prueba funcional completa en partida real con BO01: cambio de arma, disparo real (bala creada), ADS real (`adsAmount` llega a 1), y un accesorio óptico equipado (`attachment_optic`) sigue existiendo y sin verse afectado por el cambio de camuflaje — el sistema de accesorios (independiente, por nombre de malla) no sufrió ninguna regresión. 0 errores de consola en todas las pruebas.
+
+**Alcance honesto que queda pendiente**: los 10 skins de rareza de FASE 16 (tan/urban/digital/etc.) siguen siendo `StandardMaterial`, no se migraron a PBR en esta pasada — solo los 10 camuflajes militares nuevos son PBR reales. La mira con lente de cristal separada (housing + `glass`) solo existe en BO-31 por ahora; el resto de armas con mira siguen con una sola caja `optic_housing` sin lente distinta — extenderlo es un incremento menor, no bloqueante. Ningún pase de microdetalle geométrico (tornillos, ranuras de riel) se hizo en esta pasada.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.
