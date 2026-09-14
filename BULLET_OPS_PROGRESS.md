@@ -1013,6 +1013,36 @@ Tercer punto del backlog P1. La Weapon Bible documentó que `spawnMuzzleFlash()`
 
 **Alcance honesto**: esto diferencia el **muzzle flash de disparo**. Los otros elementos de VFX listados en la Weapon Bible (humo, casquillos, trazadora de bala, camera shake dedicado al disparo, efecto de recarga visual) siguen sin implementar — ver `docs/WEAPON_ASSET_BACKLOG.md` (tickets V-SMOKE/V-SHELL/V-TRACER/V-CAMSHAKE-FIRE).
 
+### Extender `damageFalloff` a 56 de las 68 armas
+
+Cuarto punto del backlog P1. Antes de este cambio solo 3 armas (BO01 AR, BO21 Shotgun, BO31 Sniper) tenían caída de daño por distancia real; las otras 65 disparaban con daño plano a cualquier distancia dentro de su propio `range`.
+
+**Fórmula usada** (derivada de las 3 armas ya existentes, no inventada al azar): en las 3, `damageFalloff.end` es siempre exactamente igual al `range` propio del arma, y `start` es una fracción de ese mismo `range` que varía por categoría según su rol de diseño (un sniper apenas cae, una escopeta cae fuerte y pronto). Se generalizó esa misma relación a una tabla por categoría (ratio de `start` respecto al `range` + `minMul` fijo):
+
+| Categoría | `start` (fracción de `range`) | `minMul` |
+|---|---|---|
+| Pistol | 0.35 | 0.50 |
+| SMG | 0.35 | 0.45 |
+| Revolver | 0.40 | 0.55 |
+| AR | 0.40 (igual que BO01, sin cambios de sensación en las 11 ARs) | 0.60 |
+| Special (excepto BO82) | 0.50 | 0.65 |
+| LMG | 0.45 | 0.55 |
+| DMR | 0.55 | 0.70 |
+| Sniper | 0.75 (igual que BO31) | 0.85 |
+| Shotgun | 0.30 (igual que BO21) | 0.35 |
+
+**Excluidas a propósito** (12 armas, no es un olvido): las 6 Rocket Launcher y BO82 THUMPER (única Special explosiva) — el daño de un arma explosiva ya lo gestiona `splashRadius`, un modelo de "cae con la distancia recorrida de la bala" no encaja con un proyectil que hace daño de área; las 5 Melee — no tienen bala que recorra distancia, el golpe es instantáneo.
+
+**Implementación**: script de Node (`/tmp/.../add-damage-falloff.js`, no forma parte del repo) que localiza el bloque real `WEAPON_CONFIGS` dentro de `bullet-ops-game.html` por conteo de llaves (mismo método ya usado para extraer `weapons.json`), separa cada arma en su propio segmento de texto, y para cada una sin `damageFalloff` ya existente y de categoría elegible, calcula `start`/`end`/`minMul` a partir de su `range` real y **inserta una única línea nueva** justo después de su línea `range:`/`bulletSpeed:` — nunca reescribe el resto del bloque (68 armas × ~25 campos, ~4700 líneas), minimizando el riesgo de romper algo por transcripción manual o por una regeneración completa.
+
+**Probado**:
+- `node -e` cargando el bloque `WEAPON_CONFIGS` modificado directamente (mismo método de extracción que `weapons.json`): 68 armas totales, 56 con `damageFalloff` (3 originales + 53 nuevas), 12 sin él (6 Rocket + 5 Melee + BO82), y verificación programática de que en las 56 `end === range` y `start < end` siempre — sin excepciones.
+- Con Playwright, juego real cargado sin errores tras el cambio (confirma que la inserción no rompió la sintaxis del archivo).
+- `damageFalloffMultiplier()` (la función real que ya consume el juego) probada directamente contra 5 armas recién extendidas (BO02, BO12, BO41, BO92, BO83): multiplicador 1.0 antes de `start`, interpolación lineal correcta a mitad de camino, exactamente `minMul` en `end` y más allá — y confirmado que Rocket/Melee/BO82 siguen devolviendo 1.0 a cualquier distancia (sin regresión).
+- Partida real: BO02 equipado y disparado de verdad; la bala creada por el `fire()` real lleva el `damageFalloff` exacto de su config (`{start:44, end:110, minMul:0.6}`), demostrando que el cableado end-to-end (config → bala → `damageFalloffMultiplier()` en el impacto) funciona, no solo la función aislada.
+
+`docs/weapons.json` y `docs/WEAPON_BIBLE.md` (sección 2 y el backlog P1) se actualizaron en la misma pasada para no dejar la documentación desincronizada con el código real.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.

@@ -140,7 +140,7 @@ Todas las estadísticas reales están en [`weapons.json`](./weapons.json), extra
 | Estadística pedida | Estado | Nota |
 |---|---|---|
 | Daño | ✅ IMPLEMENTADO | `damage` (o `pelletDamage`×`pelletCount` en shotguns) |
-| Daño por distancia | 🟡 PARCIAL | `damageFalloff` existe solo en **3 armas de ejemplo** (BO01 AR, BO21 Shotgun, BO31 Sniper) verificadas explícitamente con Playwright esta sesión; el resto de las 68 armas dispara con **daño plano a cualquier distancia dentro de su alcance** — no es que falte el sistema, es que no se ha extendido a las otras 65 armas todavía |
+| Daño por distancia | 🟢 IMPLEMENTADO (56/68) — *actualizado tras el backlog P1.4* | `damageFalloff` cubre ahora 56 de las 68 armas (las 3 originales + 53 extendidas con fórmula por categoría — `start` como fracción del propio `range` del arma, `end` siempre igual al `range`, `minMul` fijo por categoría). Excluidas a propósito: las 6 Rocket Launcher, las 5 Melee y BO82 THUMPER (arma Special explosiva) — ninguna encaja en el modelo "el daño baja con la distancia recorrida de la bala" (splash/instantáneo). Ver la sección de progreso "Extender `damageFalloff`" en `BULLET_OPS_PROGRESS.md` para la fórmula exacta y las pruebas. |
 | Cadencia / RPM | ✅ IMPLEMENTADO | `fireRate` (disparos/seg); RPM = `fireRate × 60` |
 | Cargador / Reserva | ✅ IMPLEMENTADO | `mag` / `reserve` (N/A en Melee, no usa munición) |
 | Tiempo de recarga (táctica vs vacía) | ✅ IMPLEMENTADO | `reloadTime` / `reloadTimeEmpty`, **distintos de verdad** y con sonido de recarga temporizado de forma distinta según cuál se dispare (ver sección 8) |
@@ -421,11 +421,11 @@ Dado que **la mayoría de sistemas de producción son compartidos por categoría
 - Ninguno. El arsenal base (68 armas, stats, lógica de disparo/daño/recarga/reload, economía de skins funcional, Weapon Inspect funcional) está genuinamente completo y jugable — no hay ningún bloqueante que impida jugar hoy.
 
 ### P1 — IMPORTANTE
-1. **Identidad visual real por arma** (no solo por categoría) — el hallazgo más repetido de este documento. Empezar por 1-2 armas "insignia" por categoría (11-22 armas) antes de las 68.
-2. **Weapon Inspect: cerrar los 3 gaps concretos** — tecla configurable (settings), movimiento de cámara, sonido mecánico. El sistema base ya existe, esto es un incremento acotado, no una construcción desde cero.
-3. **Diferenciar VFX de disparo/impacto por categoría** — al menos tamaño/color de muzzle flash distinto para Shotgun/Sniper/Pistol/LMG frente al genérico actual.
-4. **Extender `damageFalloff` a las 65 armas restantes** (hoy solo 3 lo tienen).
-5. **Audio espacial/posicional básico** (`PannerNode` de Web Audio, ya disponible en la API que ya se usa) — hoy un disparo suena igual sin importar la distancia.
+1. ~~**Identidad visual real por arma** (no solo por categoría)~~ 🟢 completado parcialmente — 11 armas insignia (1 por categoría) con geometría propia; 57 armas siguen compartiendo silueta de categoría. Ver `BULLET_OPS_PROGRESS.md`.
+2. ~~**Weapon Inspect: cerrar los 3 gaps concretos**~~ 🟢 completado — tecla configurable, movimiento de cámara, sonido mecánico. Ver `BULLET_OPS_PROGRESS.md`.
+3. ~~**Diferenciar VFX de disparo/impacto por categoría**~~ 🟢 completado (muzzle flash) — `MUZZLE_FLASH_PROFILES`, un perfil por categoría no-melee. Ver `BULLET_OPS_PROGRESS.md`.
+4. ~~**Extender `damageFalloff`**~~ 🟢 completado — 56/68 armas (ver sección 2 actualizada arriba). Ver `BULLET_OPS_PROGRESS.md`.
+5. **Audio espacial/posicional básico** (`PannerNode` de Web Audio, ya disponible en la API que ya se usa) — hoy un disparo suena igual sin importar la distancia. *(Pendiente — siguiente en la cola)*
 
 ### P2 — POLISH
 1. Poblar `ATTACHMENT_REGISTRY` con un primer set real (empezar por Optics, el más visible).

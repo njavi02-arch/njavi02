@@ -1,7 +1,7 @@
 {
   "meta": {
     "generatedFrom": "bullet-ops-game.html (WEAPON_CONFIGS, live source of truth)",
-    "generatedAt": "2026-09-11",
+    "generatedAt": "2026-09-14 (damageFalloff field re-synced after extending it from 3 to 56 weapons)",
     "totalWeapons": 68,
     "note": "All stat values below are read directly from the running WEAPON_CONFIGS object at runtime (Node eval of the actual source block), not manually transcribed - zero risk of copy error across 68 entries.",
     "fireModeNote": "Verified in code: every non-melee weapon fires continuously as long as the mouse button is held (gated only by fireCooldown = 1/fireRate), with NO real automatic-vs-semi-automatic-vs-bolt-action distinction implemented - a pistol or sniper rifle here can be held down and will keep firing exactly like an AR/SMG. The only behavioral fire-mode difference that actually exists in code is burst (burstCount>1) vs this default hold-to-fire-repeatedly behavior. Categories/weapons that would traditionally be semi-auto or bolt-action (Pistol, Revolver, Sniper, DMR, Shotgun aside from the fire-rate cap) are NOT enforced as such."
@@ -84,7 +84,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.3,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 19,
+          "end": 55,
+          "minMul": 0.45
+        },
         "fireRateRoundsPerSecond": 18,
         "rpm": 1080,
         "magazineSize": 25,
@@ -145,7 +149,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.8,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 14,
+          "end": 40,
+          "minMul": 0.5
+        },
         "fireRateRoundsPerSecond": 5,
         "rpm": 300,
         "magazineSize": 15,
@@ -336,7 +344,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.4,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 41,
+          "end": 90,
+          "minMul": 0.55
+        },
         "fireRateRoundsPerSecond": 12,
         "rpm": 720,
         "magazineSize": 75,
@@ -397,7 +409,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.6,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 44,
+          "end": 110,
+          "minMul": 0.6
+        },
         "fireRateRoundsPerSecond": 8,
         "rpm": 480,
         "magazineSize": 25,
@@ -458,7 +474,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.4,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 34,
+          "end": 85,
+          "minMul": 0.6
+        },
         "fireRateRoundsPerSecond": 13,
         "rpm": 780,
         "magazineSize": 36,
@@ -519,7 +539,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.25,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 14,
+          "end": 40,
+          "minMul": 0.45
+        },
         "fireRateRoundsPerSecond": 22,
         "rpm": 1320,
         "magazineSize": 20,
@@ -580,7 +604,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.35,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 23,
+          "end": 65,
+          "minMul": 0.45
+        },
         "fireRateRoundsPerSecond": 14,
         "rpm": 840,
         "magazineSize": 30,
@@ -641,7 +669,11 @@
         "pelletDamage": 4.2,
         "pelletCount": 10,
         "headshotMultiplier": 1.2,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 7,
+          "end": 24,
+          "minMul": 0.35
+        },
         "fireRateRoundsPerSecond": 2.4,
         "rpm": 144,
         "magazineSize": 8,
@@ -702,7 +734,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 2,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 83,
+          "end": 150,
+          "minMul": 0.7
+        },
         "fireRateRoundsPerSecond": 2.2,
         "rpm": 132,
         "magazineSize": 10,
@@ -763,7 +799,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 2.1,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 96,
+          "end": 175,
+          "minMul": 0.7
+        },
         "fireRateRoundsPerSecond": 1.6,
         "rpm": 96,
         "magazineSize": 8,
@@ -824,7 +864,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.8,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 72,
+          "end": 130,
+          "minMul": 0.7
+        },
         "fireRateRoundsPerSecond": 3.2,
         "rpm": 192,
         "magazineSize": 15,
@@ -885,7 +929,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.9,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 77,
+          "end": 140,
+          "minMul": 0.7
+        },
         "fireRateRoundsPerSecond": 2.6,
         "rpm": 156,
         "magazineSize": 12,
@@ -946,7 +994,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.75,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 69,
+          "end": 125,
+          "minMul": 0.7
+        },
         "fireRateRoundsPerSecond": 3.6,
         "rpm": 216,
         "magazineSize": 20,
@@ -1007,7 +1059,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.4,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 36,
+          "end": 80,
+          "minMul": 0.55
+        },
         "fireRateRoundsPerSecond": 11,
         "rpm": 660,
         "magazineSize": 50,
@@ -1068,7 +1124,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 2.2,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 22,
+          "end": 55,
+          "minMul": 0.55
+        },
         "fireRateRoundsPerSecond": 2.8,
         "rpm": 168,
         "magazineSize": 6,
@@ -1129,7 +1189,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 2.6,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 26,
+          "end": 65,
+          "minMul": 0.55
+        },
         "fireRateRoundsPerSecond": 1.8,
         "rpm": 108,
         "magazineSize": 6,
@@ -1190,7 +1254,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.8,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 18,
+          "end": 45,
+          "minMul": 0.55
+        },
         "fireRateRoundsPerSecond": 4.5,
         "rpm": 270,
         "magazineSize": 7,
@@ -1251,7 +1319,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 2,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 23,
+          "end": 58,
+          "minMul": 0.55
+        },
         "fireRateRoundsPerSecond": 3.5,
         "rpm": 210,
         "magazineSize": 8,
@@ -1312,7 +1384,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.5,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 12,
+          "end": 35,
+          "minMul": 0.5
+        },
         "fireRateRoundsPerSecond": 11,
         "rpm": 660,
         "magazineSize": 20,
@@ -1373,7 +1449,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.7,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 42,
+          "end": 105,
+          "minMul": 0.6
+        },
         "fireRateRoundsPerSecond": 9,
         "rpm": 540,
         "magazineSize": 20,
@@ -1434,7 +1514,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.45,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 32,
+          "end": 80,
+          "minMul": 0.6
+        },
         "fireRateRoundsPerSecond": 11,
         "rpm": 660,
         "magazineSize": 32,
@@ -1495,7 +1579,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.8,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 48,
+          "end": 120,
+          "minMul": 0.6
+        },
         "fireRateRoundsPerSecond": 6,
         "rpm": 360,
         "magazineSize": 24,
@@ -1556,7 +1644,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.35,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 30,
+          "end": 75,
+          "minMul": 0.6
+        },
         "fireRateRoundsPerSecond": 12,
         "rpm": 720,
         "magazineSize": 28,
@@ -1617,7 +1709,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.55,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 38,
+          "end": 95,
+          "minMul": 0.6
+        },
         "fireRateRoundsPerSecond": 2.5,
         "rpm": 150,
         "magazineSize": 30,
@@ -1678,7 +1774,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.5,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 34,
+          "end": 85,
+          "minMul": 0.6
+        },
         "fireRateRoundsPerSecond": 3.5,
         "rpm": 210,
         "magazineSize": 32,
@@ -1739,7 +1839,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.3,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 36,
+          "end": 90,
+          "minMul": 0.6
+        },
         "fireRateRoundsPerSecond": 11,
         "rpm": 660,
         "magazineSize": 50,
@@ -1800,7 +1904,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.7,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 52,
+          "end": 130,
+          "minMul": 0.6
+        },
         "fireRateRoundsPerSecond": 5,
         "rpm": 300,
         "magazineSize": 18,
@@ -1861,7 +1969,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.2,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 11,
+          "end": 32,
+          "minMul": 0.45
+        },
         "fireRateRoundsPerSecond": 24,
         "rpm": 1440,
         "magazineSize": 18,
@@ -1922,7 +2034,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.3,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 21,
+          "end": 60,
+          "minMul": 0.45
+        },
         "fireRateRoundsPerSecond": 15,
         "rpm": 900,
         "magazineSize": 35,
@@ -1983,7 +2099,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.5,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 21,
+          "end": 60,
+          "minMul": 0.45
+        },
         "fireRateRoundsPerSecond": 10,
         "rpm": 600,
         "magazineSize": 22,
@@ -2044,7 +2164,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.3,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 16,
+          "end": 45,
+          "minMul": 0.45
+        },
         "fireRateRoundsPerSecond": 16,
         "rpm": 960,
         "magazineSize": 26,
@@ -2105,7 +2229,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.35,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 18,
+          "end": 50,
+          "minMul": 0.45
+        },
         "fireRateRoundsPerSecond": 4,
         "rpm": 240,
         "magazineSize": 21,
@@ -2166,7 +2294,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.15,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 12,
+          "end": 35,
+          "minMul": 0.45
+        },
         "fireRateRoundsPerSecond": 26,
         "rpm": 1560,
         "magazineSize": 50,
@@ -2227,7 +2359,11 @@
         "pelletDamage": 6.5,
         "pelletCount": 12,
         "headshotMultiplier": 1.15,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 5,
+          "end": 18,
+          "minMul": 0.35
+        },
         "fireRateRoundsPerSecond": 1,
         "rpm": 60,
         "magazineSize": 2,
@@ -2288,7 +2424,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.6,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 14,
+          "end": 45,
+          "minMul": 0.35
+        },
         "fireRateRoundsPerSecond": 2,
         "rpm": 120,
         "magazineSize": 7,
@@ -2349,7 +2489,11 @@
         "pelletDamage": 3.6,
         "pelletCount": 8,
         "headshotMultiplier": 1.1,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 6,
+          "end": 20,
+          "minMul": 0.35
+        },
         "fireRateRoundsPerSecond": 4.5,
         "rpm": 270,
         "magazineSize": 12,
@@ -2410,7 +2554,11 @@
         "pelletDamage": 4.3,
         "pelletCount": 14,
         "headshotMultiplier": 1.2,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 4,
+          "end": 14,
+          "minMul": 0.35
+        },
         "fireRateRoundsPerSecond": 1.4,
         "rpm": 84,
         "magazineSize": 2,
@@ -2471,7 +2619,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 2.4,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 120,
+          "end": 160,
+          "minMul": 0.85
+        },
         "fireRateRoundsPerSecond": 1.1,
         "rpm": 66,
         "magazineSize": 6,
@@ -2532,7 +2684,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 2.6,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 180,
+          "end": 240,
+          "minMul": 0.85
+        },
         "fireRateRoundsPerSecond": 0.55,
         "rpm": 33,
         "magazineSize": 4,
@@ -2593,7 +2749,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.9,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 98,
+          "end": 130,
+          "minMul": 0.85
+        },
         "fireRateRoundsPerSecond": 1.3,
         "rpm": 78,
         "magazineSize": 6,
@@ -2654,7 +2814,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 2.7,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 173,
+          "end": 230,
+          "minMul": 0.85
+        },
         "fireRateRoundsPerSecond": 0.45,
         "rpm": 27,
         "magazineSize": 3,
@@ -2715,7 +2879,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.3,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 43,
+          "end": 95,
+          "minMul": 0.55
+        },
         "fireRateRoundsPerSecond": 13,
         "rpm": 780,
         "magazineSize": 100,
@@ -2776,7 +2944,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.4,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 34,
+          "end": 75,
+          "minMul": 0.55
+        },
         "fireRateRoundsPerSecond": 11,
         "rpm": 660,
         "magazineSize": 45,
@@ -2837,7 +3009,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.5,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 45,
+          "end": 100,
+          "minMul": 0.55
+        },
         "fireRateRoundsPerSecond": 8,
         "rpm": 480,
         "magazineSize": 60,
@@ -2898,7 +3074,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.2,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 32,
+          "end": 70,
+          "minMul": 0.55
+        },
         "fireRateRoundsPerSecond": 16,
         "rpm": 960,
         "magazineSize": 150,
@@ -2959,7 +3139,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.35,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 13,
+          "end": 38,
+          "minMul": 0.5
+        },
         "fireRateRoundsPerSecond": 14,
         "rpm": 840,
         "magazineSize": 24,
@@ -3020,7 +3204,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 2,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 21,
+          "end": 60,
+          "minMul": 0.5
+        },
         "fireRateRoundsPerSecond": 4.2,
         "rpm": 252,
         "magazineSize": 12,
@@ -3081,7 +3269,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.25,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 11,
+          "end": 30,
+          "minMul": 0.5
+        },
         "fireRateRoundsPerSecond": 18,
         "rpm": 1080,
         "magazineSize": 30,
@@ -3142,7 +3334,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.6,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 15,
+          "end": 42,
+          "minMul": 0.5
+        },
         "fireRateRoundsPerSecond": 8,
         "rpm": 480,
         "magazineSize": 16,
@@ -3874,7 +4070,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 2,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 35,
+          "end": 70,
+          "minMul": 0.65
+        },
         "fireRateRoundsPerSecond": 0.9,
         "rpm": 54,
         "magazineSize": 1,
@@ -3996,7 +4196,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.4,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 23,
+          "end": 45,
+          "minMul": 0.65
+        },
         "fireRateRoundsPerSecond": 20,
         "rpm": 1200,
         "magazineSize": 30,
@@ -4057,7 +4261,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.6,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 45,
+          "end": 90,
+          "minMul": 0.65
+        },
         "fireRateRoundsPerSecond": 0.5,
         "rpm": 30,
         "magazineSize": 3,
@@ -4118,7 +4326,11 @@
         "pelletDamage": null,
         "pelletCount": null,
         "headshotMultiplier": 1.3,
-        "damageFalloff": "NOT IMPLEMENTED (flat damage at all ranges within weapon.range)",
+        "damageFalloff": {
+          "start": 18,
+          "end": 35,
+          "minMul": 0.65
+        },
         "fireRateRoundsPerSecond": 25,
         "rpm": 1500,
         "magazineSize": 40,
