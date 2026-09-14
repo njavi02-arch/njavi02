@@ -612,3 +612,7 @@ K-ICON) o la tarea #84 (auditoría de KRYPTOS-URBAN), salvo que llegue
 una nueva directiva del usuario. Con esto se completan los puntos
 accionables (1-9) del pedido de reorganización; el punto 10
 (ambientación del mapa) queda fuera del alcance de una fase de armas.
+
+Claude Artifact republicado a **Version 42** con todo lo de FASE 16
+(reorganización + los 10 skins) — la v41 anterior estaba atrasada
+desde antes del backlog P1/P2 de la Weapon Bible.
