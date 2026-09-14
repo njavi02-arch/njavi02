@@ -991,6 +991,28 @@ Los dos puntos donde se construye un viewmodel (`WeaponController` real en parti
 
 **Alcance honesto**: quedan 57 armas sin identidad propia (siguen compartiendo la silueta de categoría) — extender esto a las 68 completas es un incremento de producción mucho mayor, listado aparte en `docs/WEAPON_ASSET_BACKLOG.md` (tickets M-*).
 
+### VFX de disparo diferenciado por categoría
+
+Tercer punto del backlog P1. La Weapon Bible documentó que `spawnMuzzleFlash()` era **una única función compartida por las 68 armas** — mismo tamaño/color/duración/nº de partículas sin importar la categoría, contradiciendo directamente la petición explícita del usuario ("una escopeta NO debe sentirse igual que una pistola, un sniper NO debe sentirse igual que un SMG").
+
+**Cambio real**: nuevo `MUZZLE_FLASH_PROFILES`, un perfil por cada una de las 10 categorías no-cuerpo-a-cuerpo (Melee nunca llamaba a `spawnMuzzleFlash()` — dispara `playMeleeSwing()` en su lugar, así que no necesita perfil), con tamaño del sprite/duración/nº de partículas/tamaño de partícula/vida/tasa de emisión/potencia de emisión/color1/color2 propios:
+- **Pistol**: el más pequeño y rápido (diámetro 0.11, 7 partículas, 28ms) — un disparo seco.
+- **SMG**: pequeño pero un punto mayor que la pistola (0.12, 9 partículas, 32ms).
+- **Revolver**: mayor que una pistola semiauto, calibre más grande (0.15, 12 partículas, 40ms).
+- **AR**: el "estándar" de referencia (0.17, 15 partículas, 45ms) — mismos valores que tenía la función compartida antes, para que las 11 ARs no cambien de sensación.
+- **DMR**: intermedio entre AR y Sniper (0.19, 15 partículas, 55ms).
+- **Special**: mismo tamaño que un AR pero con un **acento de color azulado** en vez del naranja estándar (`color1: [0.55,0.8,1]`) — refuerzo visual de identidad "experimental" pedido explícitamente en la Weapon Bible.
+- **Sniper**: grande y alargado en el tiempo (0.23, 17 partículas, 75ms) — mucha pólvora, cañón largo.
+- **LMG**: el más grande y sostenido de las armas de bala (0.24, 20 partículas, 60ms).
+- **Shotgun**: ancho y contundente (0.26, 22 partículas, 65ms, cono de dispersión de partículas casi el doble de ancho que el resto).
+- **Rocket Launcher**: el mayor de todos (0.3, 24 partículas, 90ms), con `color2` desviado hacia un gris-humo en vez de naranja puro, distinto del resto de armas de bala.
+
+`getSharedMuzzleFlashMaterial()` pasa de un único material compartido (`sharedMuzzleFlashMat`) a un **cache por color** (`sharedMuzzleFlashMats`, keyed por RGB) — mismo principio de "un material, reutilizado siempre, nunca uno nuevo por disparo" que ya evitó la fuga de materiales documentada en una sesión anterior (tarea #21), solo que ahora con una entrada por color en vez de una entrada única.
+
+**Probado con Playwright**: las 10 categorías producen un `flash_` con diámetro/color/capacidad de partículas realmente distintos entre sí (comprobado leyendo la malla y el `ParticleSystem` reales, no solo "no crashea"); una categoría inventada/no existente cae al perfil de AR sin lanzar excepción (comprobación defensiva). Prueba en partida real: una Shotgun (BO21) equipada y disparada de verdad en una partida en marcha (mag 6→5, `flash_` real creado en la escena), 0 errores de consola.
+
+**Alcance honesto**: esto diferencia el **muzzle flash de disparo**. Los otros elementos de VFX listados en la Weapon Bible (humo, casquillos, trazadora de bala, camera shake dedicado al disparo, efecto de recarga visual) siguen sin implementar — ver `docs/WEAPON_ASSET_BACKLOG.md` (tickets V-SMOKE/V-SHELL/V-TRACER/V-CAMSHAKE-FIRE).
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.
