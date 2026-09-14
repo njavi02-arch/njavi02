@@ -968,6 +968,29 @@ La Weapon Bible había documentado que el sistema de Inspect (estado `INSPECTING
 - `SoundSynth.playInspect()` confirmado invocado exactamente 1 vez en la transición `IDLE→INSPECTING`, no en cada frame que se mantiene la tecla pulsada.
 - 0 errores de consola en ningún escenario.
 
+### Identidad visual por arma: 11 armas insignia con geometría propia
+
+Segundo punto del backlog P1. La Weapon Bible documentó que `buildWeaponViewmodel(scene, category)` construía **una sola silueta por categoría (11 formas)**, compartida sin diferencia por las 68 armas — el hallazgo central de toda la auditoría. Dar identidad única a las 68 de golpe es un incremento de producción enorme (68 modelos distintos); se empezó, como marcaba el propio backlog, por **1 arma insignia por categoría (11 de 68)** — la elegida en cada caso es la primera arma "plantilla" escrita de esa categoría (BO01/BO11/BO21/BO31/BO32/BO41/BO51/BO52/BO61/BO71/BO81, ya identificadas como tales en los propios comentarios de `WEAPON_CONFIGS`).
+
+**Cambio real**: `buildWeaponViewmodel()` gana un tercer parámetro opcional `weaponId`. Antes de la cadena `if/else` por categoría ya existente (que sigue exactamente igual para las 57 armas restantes), se añaden 11 ramas `if (weaponId === 'BOxx')` con geometría propia real — no solo un recoloreado, sino piezas adicionales/distintas que ninguna otra arma de su categoría tiene:
+- **BO01 VANGUARD** (AR): asa de transporte superior + empuñadura frontal angulada.
+- **BO11 RAZORBACK** (SMG): funda de cañón extendida + culata de alambre plegable (dos varillas, no un bloque sólido).
+- **BO21 BREACHER** (Shotgun): guardamano de bombeo (pump) real, desplazado del resto del cuerpo.
+- **BO31 LONGSHOT** (Sniper): bípode con patas reales + reposa-mejilla elevado en la culata.
+- **BO32 PHANTOM** (DMR): freno de boca cónico visible + empuñadura frontal angulada.
+- **BO41 JUGGERNAUT** (LMG): caja de munición lateral (no un tambor centrado) + funda térmica sobre el cañón.
+- **BO51 SIDEARM** (Pistol): compensador ranurado en la boca + riel de accesorios bajo el armazón.
+- **BO52 MAGNUM** (Revolver): cañón más largo + martillo expuesto + empuñadura más gruesa.
+- **BO61 DEVASTATOR** (Rocket): placa de hombro + anillo de guardamano frontal + mira más grande.
+- **BO71 FANG** (Melee): hoja curva tipo karambit (con `addTorus()`, nueva función helper, para el anillo del dedo) en vez de hoja recta.
+- **BO81 SILENTBOLT** (Special): silueta real de ballesta — brazos + cuerdas angulándose hacia el cuerpo + culata, en vez del bloque genérico "body/limbs/scope".
+
+Los dos puntos donde se construye un viewmodel (`WeaponController` real en partida, y `openWeaponPreview()` de la UI de ARSENAL/CREAR CLASE/TIENDA) ahora pasan el `id` del arma, así que la identidad nueva se ve igual en ambos sitios, no solo en uno.
+
+**Probado con Playwright**: las 11 armas insignia construyen sin errores con las piezas extra esperadas (verificado comparando los nombres de malla reales, no solo "no crashea"); cada una de las 11 tiene una arma no-insignia de la misma categoría (ej. BO02 para BO01) que sigue produciendo exactamente la misma geometría que antes de este cambio, con o sin pasar su propio `weaponId` — confirma que la rama genérica está intacta para las 57 armas restantes. Capturas de pantalla de 4 de las 11 (VANGUARD, FANG, SILENTBOLT, DEVASTATOR) en la previsualización real de ARSENAL confirman visualmente que las piezas nuevas se ven en su sitio, no fuera de la silueta ni superpuestas de forma rota. Prueba adicional en partida real: BO01 equipado y disparado de verdad (cadena `startSwitch()`→`IDLE`→disparo real, munición del cargador bajando 30→28), viewmodel visible con las 7 mallas esperadas, 0 errores de consola.
+
+**Alcance honesto**: quedan 57 armas sin identidad propia (siguen compartiendo la silueta de categoría) — extender esto a las 68 completas es un incremento de producción mucho mayor, listado aparte en `docs/WEAPON_ASSET_BACKLOG.md` (tickets M-*).
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.
