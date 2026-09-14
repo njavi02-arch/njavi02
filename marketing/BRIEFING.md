@@ -66,6 +66,8 @@
 - **Matcha Latte** (5 sabores): NO hay stock físico todavía, está en camino. El usuario pidió dejarlo visible/activo en la web tal cual (no ocultarlo mientras llega) — la política de envíos ya cubre el caso de pedido sin stock (reembolso o alternativa)
 - **Los 15 productos ocultos** (10 archivados + 5 en borrador: café, matchas ceremoniales, accesorios, packs): sin stock confirmado → **decisión: se quedan como están, no se publica nada nuevo por ahora**
 
+| 2026-09-14 | Contenido (parte 2): 2º artículo del blog ("Ceremonial vs. culinario"), guiones listos para grabar de la semana 1 (TikTok/Reels) | Hecho — artículo publicado; guiones en `marketing/contenido-semana-1.md`. Sin conector de TikTok/Instagram en esta sesión — publicar los vídeos es acción manual del usuario |
+
 ## Próximo objetivo
 
 Seguir bajando el TOP 10 de acciones inmediatas del plan de crecimiento. Pendiente de decisión/acción del usuario (no ejecutable solo por API):
