@@ -68,6 +68,8 @@
 
 | 2026-09-14 | Contenido (parte 2): 2º artículo del blog ("Ceremonial vs. culinario"), guiones listos para grabar de la semana 1 (TikTok/Reels) | Hecho — artículo publicado; guiones en `marketing/contenido-semana-1.md`. Sin conector de TikTok/Instagram en esta sesión — publicar los vídeos es acción manual del usuario |
 
+| 2026-09-14 | Contenido (parte 3): 10 pines listos para Pinterest, todos con imagen ya existente salvo uno | Hecho — `marketing/pinterest-primeros-pines.md`. Sin conector de Pinterest — publicar es acción manual del usuario |
+
 ## Próximo objetivo
 
 Seguir bajando el TOP 10 de acciones inmediatas del plan de crecimiento. Pendiente de decisión/acción del usuario (no ejecutable solo por API):
