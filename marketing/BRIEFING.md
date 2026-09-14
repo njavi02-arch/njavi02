@@ -57,6 +57,13 @@
 |---|---|---|
 | 2026-09-14 | Plan de crecimiento y captación 90 días (análisis, canales, SEO, países, B2B, contenido, presupuesto) | Documento publicado: https://claude.ai/code/artifact/c848d4bc-fed7-4bff-873c-4aeb03904ac1 |
 
+| 2026-09-14 | Ejecución TOP 10 (parte 1): restaurar SEO de colecciones Matcha/Matcha Latte, publicar artículo "Matcha vs. café" en el blog, enlazar el blog en el menú principal | Hecho — collectionUpdate x2, articleCreate, menuUpdate (añadiendo, no reemplazando, los items existentes) |
+
 ## Próximo objetivo
 
-_(por definir con el usuario — ver TOP 10 de acciones inmediatas del plan de crecimiento como punto de partida)_
+Seguir bajando el TOP 10 de acciones inmediatas del plan de crecimiento. Pendiente de decisión/acción del usuario (no ejecutable solo por API):
+- Verificar que la tienda no tiene contraseña de "tienda en construcción" activa
+- Decidir qué hacer con los 15 productos no publicados
+- Instalar app de reseñas de producto (requiere elegir app en la App Store)
+- Conectar Google Merchant Center y catálogo de Meta/Instagram Shopping (requieren cuentas externas de Google/Meta)
+- Configurar Meta Pixel (requiere cuenta de Meta Business)
