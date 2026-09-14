@@ -59,6 +59,13 @@
 
 | 2026-09-14 | Ejecución TOP 10 (parte 1): restaurar SEO de colecciones Matcha/Matcha Latte, publicar artículo "Matcha vs. café" en el blog, enlazar el blog en el menú principal | Hecho — collectionUpdate x2, articleCreate, menuUpdate (añadiendo, no reemplazando, los items existentes) |
 
+## Stock real (confirmado por el usuario, 2026-09-14 — no volver a preguntar)
+
+- **Matcha Premium**: 50 kg reales, activo — coincide con lo que ya marca Shopify
+- **ThermoWave**: stock real, activo — sin cambios
+- **Matcha Latte** (5 sabores): NO hay stock físico todavía, está en camino. El usuario pidió dejarlo visible/activo en la web tal cual (no ocultarlo mientras llega) — la política de envíos ya cubre el caso de pedido sin stock (reembolso o alternativa)
+- **Los 15 productos ocultos** (10 archivados + 5 en borrador: café, matchas ceremoniales, accesorios, packs): sin stock confirmado → **decisión: se quedan como están, no se publica nada nuevo por ahora**
+
 ## Próximo objetivo
 
 Seguir bajando el TOP 10 de acciones inmediatas del plan de crecimiento. Pendiente de decisión/acción del usuario (no ejecutable solo por API):
