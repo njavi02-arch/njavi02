@@ -616,3 +616,41 @@ accionables (1-9) del pedido de reorganización; el punto 10
 Claude Artifact republicado a **Version 42** con todo lo de FASE 16
 (reorganización + los 10 skins) — la v41 anterior estaba atrasada
 desde antes del backlog P1/P2 de la Weapon Bible.
+
+## 🎨 FASE 17 — REALISMO VISUAL: PROTOTIPO PBR POR ZONAS (directiva del usuario)
+
+El usuario compartió una captura real del juego señalando que las armas
+"parecen de Roblox" y pidió diagnóstico + veredicto honesto antes de
+tocar nada. Diagnóstico completo (causa raíz: un solo material plano
+para toda el arma, sin PBR, sin textura, sin normal maps, geometría de
+aristas duras) entregado, con veredicto claro: el modelo tiene techo
+sin assets nuevos (bordes biselados reales necesitarían un `.glb`
+proporcionado por el usuario, embebible sin romper el archivo único),
+pero todo lo de materiales/PBR/camuflaje es alcanzable ya. El usuario
+eligió: prototipo en 1 arma primero (no rollout directo a las 68), y
+10 camuflajes militares (no los 17 con especiales).
+
+~~Sistema de materiales PBR por zona + 10 camuflajes militares reales,
+prototipo en BO-31 LONGSHOT~~ 🟢 completado. `buildWeaponViewmodel()`
+gana un parámetro `zone` opcional (metal/rubber/glass/optic_housing/
+shell) — las 4 primeras reciben un `PBRMaterial` real e
+independiente del skin equipado (`getWeaponZoneMaterial()`, cacheado);
+`applySkin()` reescrita para pintar **solo** las piezas `shell` cuando
+existen (el resto del roster, sin etiquetar todavía, sigue con el
+comportamiento de pintar toda la malla, cero regresión). La mira de
+BO-31 se separó en housing (siempre metal oscuro) + una lente de
+cristal real nueva. 10 camuflajes reales (Woodland/Desert/Arctic/
+Jungle/Urban/Digital Tactical/Multicam-Style/Black/Flat Tan/Olive
+Drab) vía `buildCamoMaterial()` — manchas orgánicas/angulares/píxel
+reales en `DynamicTexture`, no colores planos, con normal map real.
+Probado con Playwright: aislamiento de zonas confirmado por identidad
+de material (barrel/grip/lente/housing mantienen el mismo material a
+través de 3 cambios de camuflaje distintos, solo el receiver cambia),
+confirmado visualmente vía la previsualización 3D real con capturas
+de 3 camuflajes distintos, y las 68 armas construyen sin excepción
+(0 regresión). Ver `BULLET_OPS_PROGRESS.md`.
+
+**🎯 Próxima tarea real**: pendiente de que el usuario valide el
+prototipo antes de decidir extenderlo a las 10 armas insignia + 11
+ramas de categoría restantes (cubre las 68 por herencia), y/o un pase
+de microdetalle geométrico (tornillos, ranuras de riel).

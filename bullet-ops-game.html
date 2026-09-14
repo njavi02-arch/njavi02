@@ -3092,6 +3092,177 @@
         // procedural geometry/Canvas2D, same as the rest of this project; no
         // external image or pixel data was copied from that or any other
         // source.
+        // ========== WEAPON ZONE MATERIALS (Metal/Rubber/Glass/Optic Housing) ==========
+        // Real PBR materials for the parts of a weapon that should NEVER
+        // change with an equipped camo - bare barrel/hardware, grip
+        // rubber, optic lens glass and optic housing metal all stay
+        // exactly themselves no matter which skin is equipped (this is
+        // what the user explicitly asked for: "las miras no deben
+        // volverse camufladas", "el cañón no debe perder sus
+        // propiedades"). Built once and cached (module-level) - every
+        // zone-tagged weapon shares the same 4 materials, same discipline
+        // as every other shared-material cache in this file.
+        let weaponZoneMats = {};
+        function getWeaponZoneMaterial(scene, zone) {
+            if (weaponZoneMats[zone]) return weaponZoneMats[zone];
+            const size = 64;
+            let mat;
+            if (zone === 'metal') {
+                // Brushed gunmetal: dark blue-grey base, fine horizontal
+                // scratch lines (brushed-metal grain) + a handful of soft
+                // wear highlights, real metallic/roughness so it actually
+                // reflects the scene's directional light instead of
+                // reading flat like the old StandardMaterial.
+                mat = new BABYLON.PBRMaterial('weaponZone_metal', scene);
+                const tex = new BABYLON.DynamicTexture('weaponZone_metal_tex', size, scene, false);
+                const ctx = tex.getContext();
+                ctx.fillStyle = '#3a3d42';
+                ctx.fillRect(0, 0, size, size);
+                for (let y = 0; y < size; y += 2) {
+                    const g = 20 + Math.random() * 15 | 0;
+                    ctx.strokeStyle = `rgba(${g},${g + 2},${g + 6},0.5)`;
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(size, y); ctx.stroke();
+                }
+                for (let i = 0; i < 14; i++) {
+                    ctx.fillStyle = `rgba(190,195,200,${0.05 + Math.random() * 0.1})`;
+                    ctx.fillRect(Math.random() * size, Math.random() * size, 8 + Math.random() * 14, 1.5);
+                }
+                tex.update();
+                tex.wrapU = tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+                tex.uScale = 2; tex.vScale = 2;
+                mat.albedoTexture = tex;
+                mat.bumpTexture = makeNormalNoise(scene, 'weaponMetal', size, 260, 20, 12);
+                mat.bumpTexture.uScale = 2; mat.bumpTexture.vScale = 2;
+                mat.metallic = 0.85; mat.roughness = 0.32;
+            } else if (zone === 'rubber') {
+                // Matte black grip rubber: near-black base with a diagonal
+                // ridge/checker pattern baked into both albedo and normal,
+                // so the grip texture actually catches light instead of
+                // being a flat black block.
+                mat = new BABYLON.PBRMaterial('weaponZone_rubber', scene);
+                const tex = new BABYLON.DynamicTexture('weaponZone_rubber_tex', size, scene, false);
+                const ctx = tex.getContext();
+                ctx.fillStyle = '#111113';
+                ctx.fillRect(0, 0, size, size);
+                ctx.strokeStyle = 'rgba(40,40,42,0.6)';
+                ctx.lineWidth = 1.2;
+                for (let d = -size; d < size * 2; d += 5) {
+                    ctx.beginPath(); ctx.moveTo(d, 0); ctx.lineTo(d + size, size); ctx.stroke();
+                }
+                tex.update();
+                tex.wrapU = tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+                tex.uScale = 3; tex.vScale = 3;
+                mat.albedoTexture = tex;
+                const normTex = new BABYLON.DynamicTexture('weaponZone_rubber_normal', size, scene, false);
+                const nctx = normTex.getContext();
+                nctx.fillStyle = 'rgb(128,128,255)';
+                nctx.fillRect(0, 0, size, size);
+                nctx.strokeStyle = 'rgb(150,150,255)';
+                nctx.lineWidth = 1.5;
+                for (let d = -size; d < size * 2; d += 5) {
+                    nctx.beginPath(); nctx.moveTo(d, 0); nctx.lineTo(d + size, size); nctx.stroke();
+                }
+                normTex.update();
+                normTex.wrapU = normTex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+                normTex.uScale = 3; normTex.vScale = 3;
+                mat.bumpTexture = normTex;
+                mat.metallic = 0; mat.roughness = 0.88;
+            } else if (zone === 'glass') {
+                // Optic lens: dark green-tinted glass, low roughness for a
+                // real specular glint, semi-transparent so a hint of the
+                // housing behind it still reads.
+                mat = new BABYLON.PBRMaterial('weaponZone_glass', scene);
+                mat.albedoColor = new BABYLON.Color3(0.05, 0.14, 0.1);
+                mat.metallic = 0.1; mat.roughness = 0.06;
+                mat.alpha = 0.75;
+            } else {
+                // optic_housing: scope/sight body, near-black anodized
+                // metal, always dark regardless of the weapon's equipped
+                // camo - a real optic's housing doesn't get painted to
+                // match a Cerakote job.
+                mat = new BABYLON.PBRMaterial('weaponZone_optic', scene);
+                const tex = new BABYLON.DynamicTexture('weaponZone_optic_tex', size, scene, false);
+                const ctx = tex.getContext();
+                ctx.fillStyle = '#141416';
+                ctx.fillRect(0, 0, size, size);
+                for (let i = 0; i < 40; i++) {
+                    ctx.fillStyle = `rgba(60,60,65,${0.05 + Math.random() * 0.08})`;
+                    ctx.fillRect(Math.random() * size, Math.random() * size, 1.5, 1.5);
+                }
+                tex.update();
+                tex.wrapU = tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+                mat.albedoTexture = tex;
+                mat.bumpTexture = makeNormalNoise(scene, 'weaponOptic', size, 150, 14, 0);
+                mat.metallic = 0.7; mat.roughness = 0.4;
+            }
+            weaponZoneMats[zone] = mat;
+            return mat;
+        }
+
+        // Shared builder for the 10 military camo patterns below - draws a
+        // base color + randomized blotches (organic ellipses, blocky
+        // rectangles, or a pixel grid) onto a DynamicTexture, then wraps it
+        // in a real PBRMaterial (metallic/roughness tuned for a matte
+        // tactical paint/Cerakote finish) with a procedural normal map for
+        // genuine surface variation under the scene's real lighting -
+        // unlike the StandardMaterial flat colors the earlier skins above
+        // use.
+        function buildCamoMaterial(scene, name, baseColor, blotchColors, opts) {
+            opts = opts || {};
+            const shape = opts.shape || 'organic';
+            const size = 64;
+            const tex = new BABYLON.DynamicTexture('camo_' + name + '_tex_' + Math.random(), size, scene, false);
+            const ctx = tex.getContext();
+            ctx.fillStyle = baseColor;
+            ctx.fillRect(0, 0, size, size);
+            const count = opts.count || 26;
+            if (shape === 'pixel') {
+                const cell = opts.cell || 8;
+                for (let y = 0; y < size; y += cell) {
+                    for (let x = 0; x < size; x += cell) {
+                        ctx.fillStyle = blotchColors[Math.floor(Math.random() * blotchColors.length)];
+                        ctx.fillRect(x, y, cell, cell);
+                    }
+                }
+            } else if (shape === 'blocky') {
+                for (let i = 0; i < count; i++) {
+                    ctx.fillStyle = blotchColors[Math.floor(Math.random() * blotchColors.length)];
+                    const w = 5 + Math.random() * 10, h = 4 + Math.random() * 8;
+                    ctx.fillRect(Math.random() * size, Math.random() * size, w, h);
+                }
+            } else {
+                for (let i = 0; i < count; i++) {
+                    ctx.fillStyle = blotchColors[Math.floor(Math.random() * blotchColors.length)];
+                    ctx.beginPath();
+                    ctx.ellipse(
+                        Math.random() * size, Math.random() * size,
+                        (opts.minR || 3) + Math.random() * (opts.rRange || 6),
+                        (opts.minR || 2) + Math.random() * (opts.rRange || 5),
+                        Math.random() * Math.PI, 0, Math.PI * 2
+                    );
+                    ctx.fill();
+                }
+            }
+            // Fine speckle over the whole thing - even a "solid" camo
+            // (Black/Tan/Olive) reads as a painted/Cerakoted surface this
+            // way, instead of a flat swatch.
+            for (let i = 0; i < 40; i++) {
+                ctx.fillStyle = `rgba(0,0,0,${0.04 + Math.random() * 0.08})`;
+                ctx.fillRect(Math.random() * size, Math.random() * size, 1, 1);
+            }
+            tex.update();
+            tex.wrapU = BABYLON.Texture.WRAP_ADDRESSMODE;
+            tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+            tex.uScale = opts.scale || 3; tex.vScale = opts.scale || 3;
+            const m = new BABYLON.PBRMaterial('camo_' + name + '_' + Math.random(), scene);
+            m.albedoTexture = tex;
+            m.bumpTexture = makeNormalNoise(scene, 'camo_' + name, size, 200, 14, 0);
+            m.bumpTexture.uScale = tex.uScale; m.bumpTexture.vScale = tex.vScale;
+            m.metallic = opts.metallic !== undefined ? opts.metallic : 0.12;
+            m.roughness = opts.roughness !== undefined ? opts.roughness : 0.6;
+            return m;
+        }
+
         const SKIN_REGISTRY = {
             default: {
                 id: 'default', name: 'Factory', tier: 'common',
@@ -3299,18 +3470,98 @@
                     m.specularPower = 96;
                     return m;
                 }
+            },
+
+            // ========== MILITARY CAMOUFLAGE LIBRARY ==========
+            // Real painted camo patterns (not flat colors) built via
+            // buildCamoMaterial() above - PBR, with a procedural normal
+            // map, matte tactical roughness. On a zone-tagged weapon (see
+            // buildWeaponViewmodel's addBox/addCylinder zone parameter and
+            // applySkin() below) these only paint the meshes tagged
+            // 'shell' - the exterior panels a real Cerakote/paint job
+            // would cover (receiver, stock, handguard, mag). The
+            // barrel/bipod/hardware stay bare metal, the grip stays
+            // rubber, and any optic keeps its own glass/housing
+            // materials, exactly as requested. On a weapon with no zone
+            // tags yet (57/68 today - see docs/WEAPON_ASSET_MAP.md),
+            // applySkin() falls back to painting the whole viewmodel, same
+            // as every skin above.
+            cam_woodland: {
+                id: 'cam_woodland', name: 'Woodland', tier: 'uncommon',
+                materialFactory: (scene) => buildCamoMaterial(scene, 'woodland', '#2b2410',
+                    ['#4a3820', '#3f5424', '#1c1c14', '#6b5a34'], { shape: 'organic', count: 26 })
+            },
+            cam_desert: {
+                id: 'cam_desert', name: 'Desert', tier: 'uncommon',
+                materialFactory: (scene) => buildCamoMaterial(scene, 'desertCam', '#7a6a4a',
+                    ['#8f7d55', '#6b5738', '#a89268'], { shape: 'organic', count: 22 })
+            },
+            cam_arctic: {
+                id: 'cam_arctic', name: 'Arctic', tier: 'uncommon',
+                materialFactory: (scene) => buildCamoMaterial(scene, 'arctic', '#c9cdd2',
+                    ['#e8ebee', '#a8adb5', '#9aa0a8'], { shape: 'organic', count: 20, roughness: 0.45 })
+            },
+            cam_jungle: {
+                id: 'cam_jungle', name: 'Jungle', tier: 'uncommon',
+                materialFactory: (scene) => buildCamoMaterial(scene, 'jungle', '#182a12',
+                    ['#274f1a', '#0f1a0b', '#3a5c22'], { shape: 'organic', count: 32, rRange: 5 })
+            },
+            cam_urban: {
+                id: 'cam_urban', name: 'Urban', tier: 'uncommon',
+                materialFactory: (scene) => buildCamoMaterial(scene, 'urbanCam', '#3a3c3f',
+                    ['#232426', '#55585c', '#101112'], { shape: 'blocky', count: 24 })
+            },
+            cam_digital: {
+                id: 'cam_digital', name: 'Digital Tactical', tier: 'uncommon',
+                materialFactory: (scene) => buildCamoMaterial(scene, 'digitalTac', '#4a4d52',
+                    ['#3a3d42', '#5a5e64', '#26282b', '#6e7278'], { shape: 'pixel', cell: 6, scale: 4 })
+            },
+            cam_multicam: {
+                id: 'cam_multicam', name: 'Multicam-Style', tier: 'rare',
+                materialFactory: (scene) => buildCamoMaterial(scene, 'multicam', '#5c4f34',
+                    ['#7a6a45', '#3f4a2a', '#8f7550', '#2a2418', '#5c6b3f'], { shape: 'organic', count: 34, rRange: 4 })
+            },
+            cam_black: {
+                id: 'cam_black', name: 'Black', tier: 'uncommon',
+                materialFactory: (scene) => buildCamoMaterial(scene, 'blackOp', '#0d0d0e',
+                    ['#141416', '#08080a'], { shape: 'organic', count: 10, rRange: 8, roughness: 0.45, metallic: 0.2 })
+            },
+            cam_tan_op: {
+                id: 'cam_tan_op', name: 'Flat Tan', tier: 'uncommon',
+                materialFactory: (scene) => buildCamoMaterial(scene, 'flatTan', '#8a7550',
+                    ['#93805a', '#7d6848'], { shape: 'organic', count: 10, rRange: 8, roughness: 0.55 })
+            },
+            cam_olive: {
+                id: 'cam_olive', name: 'Olive Drab', tier: 'uncommon',
+                materialFactory: (scene) => buildCamoMaterial(scene, 'oliveDrab', '#3f4a2e',
+                    ['#465232', '#37402a'], { shape: 'organic', count: 10, rRange: 8, roughness: 0.55 })
             }
         };
 
+        // Zone-aware: on a weapon whose viewmodel has 'shell'-tagged
+        // meshes (see buildWeaponViewmodel's addBox/addCylinder zone
+        // parameter), the equipped skin/camo only paints those meshes -
+        // the exterior panels a real paint/Cerakote job would cover. Every
+        // other tagged zone (metal/rubber/glass/optic_housing) already got
+        // its own dedicated, skin-independent material in
+        // getWeaponZoneMaterial() at build time and is never touched here.
+        // A weapon with no zone tags at all (not yet migrated - see
+        // docs/WEAPON_ASSET_MAP.md) falls back to the original whole-mesh
+        // behavior, unchanged.
         function applySkin(weaponViewmodelRoot, skinId, scene) {
+            if (!weaponViewmodelRoot || !weaponViewmodelRoot.getChildMeshes) return null;
             const skin = SKIN_REGISTRY[skinId] || SKIN_REGISTRY.default;
             const mat = skin.materialFactory(scene);
-            if (weaponViewmodelRoot && weaponViewmodelRoot.getChildMeshes) {
-                // Skip the attachment mount mesh (see applyAttachmentVisuals
-                // below) - an equipped optic keeps its own distinct look
-                // (lens/housing color) across a camo change instead of
-                // being silently repainted the same as the rest of the gun.
-                weaponViewmodelRoot.getChildMeshes().forEach(m => { if (!m.name.startsWith('attachment_')) m.material = mat; });
+            // Skip the attachment mount mesh (see applyAttachmentVisuals
+            // below) - an equipped optic keeps its own distinct look
+            // (lens/housing color) across a camo change instead of being
+            // silently repainted the same as the rest of the gun.
+            const meshes = weaponViewmodelRoot.getChildMeshes().filter(m => !m.name.startsWith('attachment_'));
+            const shellMeshes = meshes.filter(m => m.metadata && m.metadata.zone === 'shell');
+            if (shellMeshes.length > 0) {
+                shellMeshes.forEach(m => { m.material = mat; });
+            } else {
+                meshes.forEach(m => { m.material = mat; });
             }
             return mat;
         }
@@ -3378,7 +3629,10 @@
             tan: 150, urban: 150, overgrowth: 150,
             digital: 250, riptide: 300, rustbelt: 300,
             glitch: 550,
-            gold: 500, prism: 700
+            gold: 500, prism: 700,
+            cam_woodland: 150, cam_desert: 150, cam_arctic: 150, cam_jungle: 150,
+            cam_urban: 150, cam_digital: 150, cam_black: 150, cam_tan_op: 150, cam_olive: 150,
+            cam_multicam: 300
         };
         let playerCoins = 500;
         try {
@@ -3808,24 +4062,34 @@
             const tempMat = new BABYLON.StandardMaterial('viewmodel_temp_' + Math.random(), scene);
             tempMat.diffuseColor = new BABYLON.Color3(0.15, 0.15, 0.17);
 
-            function addBox(name, size, position, rotation) {
+            // `zone` (optional, weapon-realism pass): 'metal'/'rubber'/
+            // 'glass'/'optic_housing' get a real, skin-independent PBR
+            // material immediately (see getWeaponZoneMaterial() - never
+            // touched by applySkin()); 'shell' gets tagged so applySkin()
+            // paints only it once the weapon's real skin is applied right
+            // after construction; omitted (undefined) keeps the old
+            // whole-mesh-gets-one-skin-material behavior every weapon not
+            // yet migrated to zones still uses.
+            function addBox(name, size, position, rotation, zone) {
                 const box = BABYLON.MeshBuilder.CreateBox(name, size, scene);
                 box.position = position;
                 if (rotation) box.rotation = rotation;
                 box.parent = root;
                 box.renderingGroupId = 1;
-                box.material = tempMat;
                 box.isPickable = false;
+                if (zone && zone !== 'shell') { box.material = getWeaponZoneMaterial(scene, zone); box.metadata = { zone }; }
+                else { box.material = tempMat; if (zone === 'shell') box.metadata = { zone: 'shell' }; }
                 return box;
             }
-            function addCylinder(name, opts, position, rotation) {
+            function addCylinder(name, opts, position, rotation, zone) {
                 const cyl = BABYLON.MeshBuilder.CreateCylinder(name, opts, scene);
                 cyl.position = position;
                 if (rotation) cyl.rotation = rotation;
                 cyl.parent = root;
                 cyl.renderingGroupId = 1;
-                cyl.material = tempMat;
                 cyl.isPickable = false;
+                if (zone && zone !== 'shell') { cyl.material = getWeaponZoneMaterial(scene, zone); cyl.metadata = { zone }; }
+                else { cyl.material = tempMat; if (zone === 'shell') cyl.metadata = { zone: 'shell' }; }
                 return cyl;
             }
             function addTorus(name, opts, position, rotation) {
@@ -3888,15 +4152,26 @@
             } else if (weaponId === 'BO31') {
                 // LONGSHOT: real bipod legs + a raised cheek riser on the
                 // stock, vs. the plain stock block the other 4 Snipers use.
-                addBox('receiver', { width: 0.085, height: 0.095, depth: 0.62 }, new BABYLON.Vector3(0, 0, 0));
-                addCylinder('barrel', { diameter: 0.032, height: 0.47 }, new BABYLON.Vector3(0, 0, 0.51), new BABYLON.Vector3(Math.PI / 2, 0, 0));
-                addBox('scope', { width: 0.045, height: 0.055, depth: 0.24 }, new BABYLON.Vector3(0, 0.095, 0.1));
-                addBox('mag', { width: 0.052, height: 0.145, depth: 0.062 }, new BABYLON.Vector3(0, -0.145, 0.05));
-                addBox('stock', { width: 0.062, height: 0.105, depth: 0.34 }, new BABYLON.Vector3(0, -0.03, -0.44));
-                addBox('cheekRiser', { width: 0.03, height: 0.03, depth: 0.16 }, new BABYLON.Vector3(0, 0.05, -0.4));
-                addBox('grip', { width: 0.062, height: 0.155, depth: 0.062 }, new BABYLON.Vector3(0, -0.125, -0.14));
-                addBox('bipodLegL', { width: 0.014, height: 0.16, depth: 0.014 }, new BABYLON.Vector3(-0.06, -0.12, 0.68), new BABYLON.Vector3(0, 0, 0.3));
-                addBox('bipodLegR', { width: 0.014, height: 0.16, depth: 0.014 }, new BABYLON.Vector3(0.06, -0.12, 0.68), new BABYLON.Vector3(0, 0, -0.3));
+                //
+                // Weapon-realism pass prototype (user directive, this
+                // session): first weapon with real per-zone PBR materials
+                // instead of one flat StandardMaterial for the whole gun.
+                // 'shell' (receiver/mag/stock/cheekRiser) is what the
+                // equipped camo paints; 'metal' (barrel/bipod) and
+                // 'rubber' (grip) stay skin-independent; the scope splits
+                // into a housing (always dark anodized metal, never camo -
+                // "las miras no deben volverse camufladas") plus a real
+                // glass lens, instead of one plain box.
+                addBox('receiver', { width: 0.085, height: 0.095, depth: 0.62 }, new BABYLON.Vector3(0, 0, 0), null, 'shell');
+                addCylinder('barrel', { diameter: 0.032, height: 0.47 }, new BABYLON.Vector3(0, 0, 0.51), new BABYLON.Vector3(Math.PI / 2, 0, 0), 'metal');
+                addBox('scope', { width: 0.045, height: 0.055, depth: 0.2 }, new BABYLON.Vector3(0, 0.095, 0.08), null, 'optic_housing');
+                addBox('scopeLens', { width: 0.046, height: 0.046, depth: 0.02 }, new BABYLON.Vector3(0, 0.095, 0.2), null, 'glass');
+                addBox('mag', { width: 0.052, height: 0.145, depth: 0.062 }, new BABYLON.Vector3(0, -0.145, 0.05), null, 'shell');
+                addBox('stock', { width: 0.062, height: 0.105, depth: 0.34 }, new BABYLON.Vector3(0, -0.03, -0.44), null, 'shell');
+                addBox('cheekRiser', { width: 0.03, height: 0.03, depth: 0.16 }, new BABYLON.Vector3(0, 0.05, -0.4), null, 'shell');
+                addBox('grip', { width: 0.062, height: 0.155, depth: 0.062 }, new BABYLON.Vector3(0, -0.125, -0.14), null, 'rubber');
+                addBox('bipodLegL', { width: 0.014, height: 0.16, depth: 0.014 }, new BABYLON.Vector3(-0.06, -0.12, 0.68), new BABYLON.Vector3(0, 0, 0.3), 'metal');
+                addBox('bipodLegR', { width: 0.014, height: 0.16, depth: 0.014 }, new BABYLON.Vector3(0.06, -0.12, 0.68), new BABYLON.Vector3(0, 0, -0.3), 'metal');
                 muzzleZ = 0.78;
             } else if (weaponId === 'BO32') {
                 // PHANTOM: angled foregrip + a visible flash hider cone, vs.
@@ -8189,7 +8464,15 @@
             riptide: 'repeating-linear-gradient(0deg, #1c4a5c, #1c4a5c 4px, #2f6b7a 4px, #2f6b7a 8px)',
             rustbelt: 'radial-gradient(circle at 60% 40%, #8a4f1e 0%, #6b3f1a 45%, #4a3018 100%)',
             glitch: 'repeating-linear-gradient(0deg, #0a0a0c, #0a0a0c 2px, #00e0d0 2px, #00e0d0 3px, #0a0a0c 3px, #0a0a0c 5px, #e000a0 5px, #e000a0 6px)',
-            prism: 'linear-gradient(90deg, #ff4d9e, #ffb84d, #7dff8a, #4dc3ff, #b44dff)'
+            prism: 'linear-gradient(90deg, #ff4d9e, #ffb84d, #7dff8a, #4dc3ff, #b44dff)',
+            cam_woodland: 'radial-gradient(circle at 35% 40%, #4a3820 0%, #3f5424 40%, #2b2410 100%)',
+            cam_desert: 'radial-gradient(circle at 40% 35%, #a89268 0%, #8f7d55 40%, #7a6a4a 100%)',
+            cam_arctic: 'radial-gradient(circle at 40% 35%, #e8ebee 0%, #a8adb5 45%, #c9cdd2 100%)',
+            cam_jungle: 'radial-gradient(circle at 35% 40%, #3a5c22 0%, #274f1a 40%, #182a12 100%)',
+            cam_urban: 'repeating-linear-gradient(90deg, #232426, #232426 5px, #55585c 5px, #55585c 10px, #3a3c3f 10px, #3a3c3f 15px)',
+            cam_digital: 'repeating-linear-gradient(45deg, #3a3d42, #3a3d42 4px, #5a5e64 4px, #5a5e64 8px)',
+            cam_multicam: 'radial-gradient(circle at 30% 30%, #8f7550 0%, #7a6a45 25%, #3f4a2a 55%, #5c4f34 100%)',
+            cam_black: '#0d0d0e', cam_tan_op: '#8a7550', cam_olive: '#3f4a2e'
         };
         // Real per-tier color coding for the TIENDA badge (see .sc-tier),
         // so rarity reads visually, not just as text.

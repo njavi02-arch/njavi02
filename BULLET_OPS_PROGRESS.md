@@ -1193,6 +1193,54 @@ Nada de `applySkin()`, `buySkin()`, `equipSkinOnWeapon()`, `renderStoreScreen()`
 
 **Probado con Playwright**: dentro de una partida real (no en el menú, donde `scene` aún no existe), las 10 entradas de `SKIN_REGISTRY` crean un `StandardMaterial` real sin ningún error — confirmado explícitamente que el primer intento fuera de partida sí fallaba (`scene` undefined), descartado como artefacto de metodología de prueba, no un bug real. Capturas de pantalla de 3 de las 5 skins nuevas (Overgrowth, Glitch Array, Prism Shift) aplicadas de verdad sobre BO-01 VANGUARD en juego confirman visualmente patrones reales y distintos entre sí (blotches orgánicos verdes, scanlines cian/magenta, gradiente arcoíris) — no placeholders ni colores planos. Flujo completo de compra/equipar probado con las 5 nuevas: `buySkin()` devuelve `{ok:true}` para las 5, `ownedSkins` las incluye tras la compra, `equipSkinOnWeapon('BO01', 'prism')` + `getEquippedSkin('BO01')` confirma el equipado real. `renderStoreScreen()` genera 9 tarjetas (10 skins menos `default`, que no se vende). 0 errores de consola en todo el flujo.
 
+## 🔧 FASE 17 — REALISMO VISUAL DE ARMAS: PROTOTIPO PBR POR ZONAS (directiva del usuario)
+
+El usuario compartió una captura real del juego (BO-31 LONGSHOT en juego) señalando que las armas "parecen de Roblox" y pidió: (1) diagnóstico de la causa raíz antes de tocar nada, (2) veredicto honesto sobre si el modelo 3D necesita sustituirse, (3) un sistema de camuflajes por zona de material (Metal/Polymer/Rubber/Glass/Optics) que nunca pinte la mira/cañón, (4) verificación real en juego (ADS/disparo/recarga/sprint), no solo en el editor.
+
+### Diagnóstico (antes de modificar nada)
+
+Verificado directamente en el código, no solo en la captura:
+
+- **Un único material para toda el arma**: `buildWeaponViewmodel()` creaba un solo `StandardMaterial` (`tempMat`) y lo asignaba a cada pieza sin excepción; `applySkin()` lo confirmaba, sustituyendo ese material único por **un solo skin para todos los meshes hijos** — cañón, culata, empuñadura y mira compartían literalmente el mismo material.
+- **Materiales no-PBR**: `StandardMaterial`, no `PBRMaterial` — sin control real de metallic/roughness. El mapa (KRYPTOS-URBAN y el resto, desde antes de esta sesión) ya usa `PBRMaterial` con `makePBRConcrete/Brick/Metal/Wood/Asphalt`; las armas se habían quedado fuera de esa mejora.
+- **Cero textura en el arma**: `diffuseColor` plano, sin `DynamicTexture`, mientras que `makeNormalNoise()` y el patrón de ruido ya existían en el proyecto (usados en el mapa y en 3 de los 10 skins) pero nunca se aplicaban al material base del viewmodel.
+- **Sin normal maps** en ninguna pieza de arma.
+- **`specularColor` por defecto** (blanco brillante de `StandardMaterial`), nunca ajustado — brillo plástico genérico en vez de reflejo basado en rugosidad real.
+- **Geometría de aristas duras**: `CreateBox`/`CreateCylinder` sin bisel — confirmado en la captura, la mira es un paralelepípedo perfecto.
+- **Camuflaje inexistente como concepto real**: los 10 skins pintaban toda la malla igual, sin separación Metal/Polymer/Rubber/Glass/Optics.
+
+Descartado como causa: iluminación del mapa (ya auditada en FASE 16, sección 5 de `docs/WEAPON_ASSET_MAP.md` — el arma sí recibe luz real) y escala (también ya auditada como realista).
+
+**Veredicto sobre el modelo**: parcial. Bordes biselados/redondeados reales y curvas orgánicas no son alcanzables con `CreateBox`/`CreateCylinder` — eso necesitaría malla modelada externamente (embebible como data URI base64 sin romper la arquitectura de un solo archivo, pero el usuario tendría que proporcionar el `.glb`/texturas, ya que no hay herramienta de modelado 3D disponible en esta sesión). Todo lo demás (PBR real, texturas procedurales por zona, normal maps, camuflaje real) es alcanzable ya con las herramientas existentes — se comunicó esto al usuario antes de tocar código, junto con una pregunta de alcance (prototipo en 1 arma primero vs. rollout directo a las 68; 10 camuflajes militares vs. 17 con especiales). El usuario eligió: **prototipo en 1 arma primero, 10 camuflajes militares**.
+
+### Cambio real: sistema de materiales PBR por zona (prototipo en BO-31 LONGSHOT)
+
+`buildWeaponViewmodel()`'s `addBox()`/`addCylinder()` ganan un parámetro `zone` opcional (`'metal'` | `'rubber'` | `'glass'` | `'optic_housing'` | `'shell'` | ninguno): las 4 primeras reciben inmediatamente un material PBR real y **skin-independiente** vía `getWeaponZoneMaterial()` (cacheado, compartido entre toda arma zoneada); `'shell'` se etiqueta pero deja el material real para `applySkin()`; sin `zone` mantiene el comportamiento exacto de antes (una sola malla temporal, pintada entera por el skin — así ninguna de las otras 67 armas cambia de comportamiento).
+
+- **Metal** (`getWeaponZoneMaterial(scene,'metal')`): PBR gunmetal cepillado — textura con líneas horizontales finas (grano de cepillado) + realces de desgaste, normal map real vía `makeNormalNoise()`, `metallic:0.85, roughness:0.32`.
+- **Rubber**: PBR negro mate con patrón de rombos diagonal grabado tanto en albedo como en el normal map (la empuñadura real reacciona a la luz), `metallic:0, roughness:0.88`.
+- **Glass** (lente de mira): PBR verde oscuro translúcido, `roughness:0.06` (brillo real de cristal), `alpha:0.75`.
+- **Optic housing** (cuerpo de la mira): PBR negro anodizado con ruido fino + normal map, `metallic:0.7, roughness:0.4` — **siempre oscuro, nunca cambia con el camuflaje equipado**, exactamente lo pedido ("las miras no deben volverse camufladas").
+
+`applySkin()` reescrita para ser consciente de zonas: si el viewmodel tiene meshes etiquetados `'shell'`, el skin/camuflaje equipado **solo** repinta esas piezas (receiver/mag/stock/cheekRiser en BO-31); si no hay ninguna etiqueta (las otras 67 armas, todavía sin migrar), cae al comportamiento original de pintar toda la malla — cero riesgo de regresión para el resto del roster.
+
+BO-31 LONGSHOT: `receiver`/`mag`/`stock`/`cheekRiser` → `shell` (lo que pinta el camuflaje); `barrel`/`bipodLegL`/`bipodLegR` → `metal` (siempre acero desnudo); `grip` → `rubber`; la mira, antes una sola caja, se separó en `scope` (housing, `optic_housing`) + `scopeLens` nueva (`glass`) — primer caso de una pieza óptica con cristal real distinguible del cuerpo.
+
+### Biblioteca de camuflajes militares (10, reales — no colores planos)
+
+Nueva función compartida `buildCamoMaterial(scene, name, baseColor, blotchColors, opts)`: dibuja un color base + manchas aleatorias (elipses orgánicas, rectángulos angulares, o rejilla de píxeles según `opts.shape`) en un `DynamicTexture`, más un speckle fino incluso en los patrones "sólidos" (para que no se vean como un swatch de Photoshop), envuelto en `PBRMaterial` con normal map real vía `makeNormalNoise()` y roughness/metallic ajustado a un acabado mate táctico.
+
+10 entradas nuevas en `SKIN_REGISTRY`: **Woodland** (4 tonos orgánicos marrón/verde/negro), **Desert** (3 tonos arena), **Arctic** (blanco/gris disperso), **Jungle** (verde saturado denso), **Urban** (manchas angulares gris/negro, no orgánicas — lee como urbano), **Digital Tactical** (rejilla de píxeles en grises, distinta de la ya existente "Digital Mesh" verde), **Multicam-Style** (5 tonos en capas), **Black**, **Flat Tan**, **Olive Drab** (los 3 últimos, "sólidos" pero con speckle+normal real, no planos). Precios 150 (300 para Multicam, tier `rare`), resto tier `uncommon` — coherente con el sistema de rareza de FASE 16.
+
+### Probado con Playwright
+
+- **Aislamiento de zonas confirmado por identidad de material**: se equiparon 2 camuflajes distintos sobre BO-31 y se comparó el `uniqueId` del material de cada pieza antes/después — `barrel`/`grip`/`scopeLens`/`scope` (housing) mantuvieron **exactamente el mismo material** en los 3 estados; solo `receiver` cambió de identidad en cada cambio de camuflaje. Confirma que metal/goma/cristal/óptica nunca se repintan, tal como se pidió.
+- **Visual, vía la pantalla de previsualización 3D real** (misma geometría/material que usa el arma en partida): capturas con Woodland, Desert y Multicam-Style muestran patrones orgánicos reales y distintos entre sí en el receiver/culata, mientras el cañón permanece gris metal cepillado y las patas del bípode permanecen oscuras — confirmado visualmente, no solo por datos.
+- **Sin regresión en el resto del roster**: bucle sobre las 68 armas ejecutando `buildWeaponViewmodel()` + `applySkin()` con un camuflaje nuevo — 0 excepciones. BO-01 (sin zonas) sigue compartiendo exactamente 1 material entre sus 7 mallas, comportamiento idéntico al de antes de este cambio.
+- 0 errores de consola en todas las pruebas.
+
+**Alcance honesto**: esto es un prototipo de 1 arma (BO-31), tal como el usuario pidió antes de comprometerse a las 68. Queda pendiente, sujeto a la validación del usuario: extender el sistema de zonas a las 10 armas insignia restantes + las 11 ramas de categoría genérica (cubre las 68 por herencia), un pase de microdetalle geométrico barato (tornillos, ranuras de riel, costuras) y la decisión sobre si migrar los 10 skins de rareza previos (FASE 16) al mismo sistema PBR.
+
 ## 🧪 METODOLOGÍA DE PRUEBAS
 
 Todo lo anterior se verificó **ejecutando el juego real** (Babylon.js servido localmente vía `node_modules/babylonjs/babylon.js`, ya que el proxy de este entorno bloquea el CDN de cdnjs) con Playwright headless: simulando clicks/teclado/mouse reales, leyendo estado del motor en vivo, y tomando capturas de pantalla para verificar visualmente (así se encontraron los bugs de `minZ` y de ADS tapando la pantalla, que no eran detectables solo leyendo el código). No se marcó nada como "hecho" sin antes reproducirlo, corregirlo y volver a probarlo.
