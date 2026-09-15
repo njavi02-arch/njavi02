@@ -80,6 +80,8 @@
 
 | 2026-09-15 | Contenido (parte 4): programar los 9 pines listos (todos salvo el #2) en Metricool → Pinterest, en los tableros reales creados por el usuario | Hecho — 9 posts creados vía `createScheduledPost` (Ritual del Matcha: 4, Recetas Matcha Latte: 5), repartidos del 16 al 20 de septiembre. Los 5 cutouts de Matcha Latte se subieron primero a Shopify Files (`stagedUploadsCreate` + `fileCreate`) para tener URL pública. Falta solo el pin #2 (necesita imagen nueva) |
 
+| 2026-09-15 | Reprogramar los 9 pines a mejores horarios | Hecho — Metricool no tiene datos de "mejor hora" para Pinterest (`getBestTimeToPostByNetwork` solo cubre facebook/instagram/twitter/linkedin/tiktok/youtube), y la cuenta es nueva sin historial propio. Se movieron a horario general recomendado para Pinterest (noches entre semana 20:00-21:00, sábado/domingo mañana y noche), del 16 al 22 de septiembre, vía `updateScheduledPost` sobre los mismos 9 posts |
+
 ## Próximo objetivo
 
 Seguir bajando el TOP 10 de acciones inmediatas del plan de crecimiento. Pendiente de decisión/acción del usuario (no ejecutable solo por API):

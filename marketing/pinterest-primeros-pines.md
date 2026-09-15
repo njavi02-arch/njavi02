@@ -24,7 +24,7 @@
 **Link:** kohiycha.com/products/matcha-premium-1kg
 **Tablero:** Ritual del Matcha
 
-- [x] Programado en Metricool — 2026-09-16 11:00 Europe/Madrid
+- [x] Programado en Metricool — 2026-09-16 20:30 Europe/Madrid (reprogramado a horario nocturno, mejor rendimiento en Pinterest)
 
 ---
 
@@ -47,7 +47,7 @@
 **Link:** kohiycha.com/products/matcha-latte-coco
 **Tablero:** Recetas Matcha Latte
 
-- [x] Programado en Metricool — 2026-09-18 11:00 Europe/Madrid (imagen subida a Shopify Files: `matcha-latte-coco-ebe3d5.png`)
+- [x] Programado en Metricool — 2026-09-19 20:00 Europe/Madrid (sábado noche; imagen subida a Shopify Files: `matcha-latte-coco-ebe3d5.png`)
 
 ---
 
@@ -58,7 +58,7 @@
 **Link:** kohiycha.com/products/matcha-latte-fresa
 **Tablero:** Recetas Matcha Latte
 
-- [x] Programado en Metricool — 2026-09-18 18:00 Europe/Madrid (imagen subida a Shopify Files: `matcha-latte-fresa-ebe3d5.png`)
+- [x] Programado en Metricool — 2026-09-20 10:00 Europe/Madrid (domingo mañana; imagen subida a Shopify Files: `matcha-latte-fresa-ebe3d5.png`)
 
 ---
 
@@ -69,7 +69,7 @@
 **Link:** kohiycha.com/products/matcha-latte-mango
 **Tablero:** Recetas Matcha Latte
 
-- [x] Programado en Metricool — 2026-09-19 11:00 Europe/Madrid (imagen subida a Shopify Files: `matcha-latte-mango-ebe3d5.png`)
+- [x] Programado en Metricool — 2026-09-20 20:00 Europe/Madrid (domingo noche; imagen subida a Shopify Files: `matcha-latte-mango-ebe3d5.png`)
 
 ---
 
@@ -80,7 +80,7 @@
 **Link:** kohiycha.com/products/matcha-latte-organico
 **Tablero:** Recetas Matcha Latte
 
-- [x] Programado en Metricool — 2026-09-19 18:00 Europe/Madrid (imagen subida a Shopify Files: `matcha-latte-organico-ebe3d5.png`)
+- [x] Programado en Metricool — 2026-09-21 20:30 Europe/Madrid (imagen subida a Shopify Files: `matcha-latte-organico-ebe3d5.png`)
 
 ---
 
@@ -91,7 +91,7 @@
 **Link:** kohiycha.com/products/matcha-latte-vainilla
 **Tablero:** Recetas Matcha Latte
 
-- [x] Programado en Metricool — 2026-09-20 11:00 Europe/Madrid (imagen subida a Shopify Files: `matcha-latte-vainilla-ebe3d5.png`)
+- [x] Programado en Metricool — 2026-09-22 20:30 Europe/Madrid (imagen subida a Shopify Files: `matcha-latte-vainilla-ebe3d5.png`)
 
 ---
 
@@ -102,7 +102,7 @@
 **Link:** kohiycha.com/products/vaso-termico-acero-inoxidable
 **Tablero:** Ritual del Matcha
 
-- [x] Programado en Metricool — 2026-09-16 18:00 Europe/Madrid
+- [x] Programado en Metricool — 2026-09-17 21:00 Europe/Madrid (reprogramado a horario nocturno)
 
 ---
 
@@ -113,7 +113,7 @@
 **Link:** kohiycha.com/blogs/news/matcha-vs-cafe-diferencias-cafeina-y-cual-elegir
 **Tablero:** Ritual del Matcha
 
-- [x] Programado en Metricool — 2026-09-17 11:00 Europe/Madrid (imagen: banner de la colección Matcha)
+- [x] Programado en Metricool — 2026-09-18 20:00 Europe/Madrid (imagen: banner de la colección Matcha)
 
 ---
 
@@ -124,7 +124,7 @@
 **Link:** kohiycha.com/collections/matcha
 **Tablero:** Ritual del Matcha
 
-- [x] Programado en Metricool — 2026-09-17 18:00 Europe/Madrid (imagen: banner de la colección Matcha)
+- [x] Programado en Metricool — 2026-09-19 10:00 Europe/Madrid (sábado mañana, mejor slot para Pinterest; imagen: banner de la colección Matcha)
 
 ---
 
