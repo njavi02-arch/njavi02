@@ -1,17 +1,19 @@
 # Primeros pines — Pinterest
 
-> No tengo conector de Pinterest en esta sesión, así que no puedo publicarlos yo directamente
-> (aunque el canal ya aparece activado como venta en tu Shopify — falta subir contenido).
-> Cada pin usa una imagen que **ya existe**, nada por generar. Sube la imagen indicada,
-> copia el título y la descripción tal cual (o ajústalos), y enlaza a la URL indicada.
+> 2026-09-15: conector de Metricool ya activo en esta sesión. Los 9 pines con imagen
+> lista (todos salvo el #2) quedaron programados vía Metricool en los tableros reales
+> "Ritual del Matcha" y "Recetas Matcha Latte" (ambos creados por el usuario y resueltos
+> por nombre sin problema). Los 5 cutouts de Matcha Latte se subieron a Shopify Files
+> para tener URL pública antes de programarlos. Solo queda el #2, que necesita una
+> imagen nueva por crear.
 >
 > Formato recomendado de imagen: vertical, 1000×1500px (ratio 2:3) — Pinterest prioriza vertical.
 
 ---
 
-### Tablero sugerido: crear 2 tableros primero
-- **"Ritual del Matcha"** — producto, preparación, beneficios
-- **"Recetas Matcha Latte"** — recetas, sabores, ideas de consumo
+### Tableros (ya creados en Pinterest por el usuario)
+- **"Ritual del Matcha"** (id Metricool 1139129368189814603) — producto, preparación, beneficios
+- **"Recetas Matcha Latte"** (id Metricool 1139129368189814605) — recetas, sabores, ideas de consumo
 
 ---
 
@@ -22,7 +24,7 @@
 **Link:** kohiycha.com/products/matcha-premium-1kg
 **Tablero:** Ritual del Matcha
 
-- [ ] Publicado
+- [x] Programado en Metricool — 2026-09-16 11:00 Europe/Madrid
 
 ---
 
@@ -45,7 +47,7 @@
 **Link:** kohiycha.com/products/matcha-latte-coco
 **Tablero:** Recetas Matcha Latte
 
-- [ ] Publicado
+- [x] Programado en Metricool — 2026-09-18 11:00 Europe/Madrid (imagen subida a Shopify Files: `matcha-latte-coco-ebe3d5.png`)
 
 ---
 
@@ -56,7 +58,7 @@
 **Link:** kohiycha.com/products/matcha-latte-fresa
 **Tablero:** Recetas Matcha Latte
 
-- [ ] Publicado
+- [x] Programado en Metricool — 2026-09-18 18:00 Europe/Madrid (imagen subida a Shopify Files: `matcha-latte-fresa-ebe3d5.png`)
 
 ---
 
@@ -67,7 +69,7 @@
 **Link:** kohiycha.com/products/matcha-latte-mango
 **Tablero:** Recetas Matcha Latte
 
-- [ ] Publicado
+- [x] Programado en Metricool — 2026-09-19 11:00 Europe/Madrid (imagen subida a Shopify Files: `matcha-latte-mango-ebe3d5.png`)
 
 ---
 
@@ -78,7 +80,7 @@
 **Link:** kohiycha.com/products/matcha-latte-organico
 **Tablero:** Recetas Matcha Latte
 
-- [ ] Publicado
+- [x] Programado en Metricool — 2026-09-19 18:00 Europe/Madrid (imagen subida a Shopify Files: `matcha-latte-organico-ebe3d5.png`)
 
 ---
 
@@ -89,7 +91,7 @@
 **Link:** kohiycha.com/products/matcha-latte-vainilla
 **Tablero:** Recetas Matcha Latte
 
-- [ ] Publicado
+- [x] Programado en Metricool — 2026-09-20 11:00 Europe/Madrid (imagen subida a Shopify Files: `matcha-latte-vainilla-ebe3d5.png`)
 
 ---
 
@@ -100,7 +102,7 @@
 **Link:** kohiycha.com/products/vaso-termico-acero-inoxidable
 **Tablero:** Ritual del Matcha
 
-- [ ] Publicado
+- [x] Programado en Metricool — 2026-09-16 18:00 Europe/Madrid
 
 ---
 
@@ -111,7 +113,7 @@
 **Link:** kohiycha.com/blogs/news/matcha-vs-cafe-diferencias-cafeina-y-cual-elegir
 **Tablero:** Ritual del Matcha
 
-- [ ] Publicado
+- [x] Programado en Metricool — 2026-09-17 11:00 Europe/Madrid (imagen: banner de la colección Matcha)
 
 ---
 
@@ -122,7 +124,7 @@
 **Link:** kohiycha.com/collections/matcha
 **Tablero:** Ritual del Matcha
 
-- [ ] Publicado
+- [x] Programado en Metricool — 2026-09-17 18:00 Europe/Madrid (imagen: banner de la colección Matcha)
 
 ---
 

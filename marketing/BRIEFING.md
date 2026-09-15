@@ -30,8 +30,16 @@
 
 ## Canales NO conectados (requieren que el usuario los vincule primero)
 
-- Instagram / Pinterest (redes sociales)
+- Instagram / TikTok directos (sin conector propio)
 - Cualquier plataforma de anuncios de pago (Meta Ads, Google Ads)
+
+## Canales conectados vía Metricool (añadido 2026-09-15)
+
+- **Metricool** — brand/blogId `6963190`, timezone Europe/Madrid, cuenta de Pinterest conectada `kohicha0532`.
+  Permite programar y publicar pines de Pinterest directamente (`createScheduledPost`).
+  Tableros ya creados por el usuario: "Ritual del Matcha" (id Metricool `1139129368189814603`),
+  "Recetas Matcha Latte" (id Metricool `1139129368189814605`) — el `boardId` se puede pasar como
+  nombre exacto y Metricool lo resuelve solo si es unívoco.
 
 ## Lecciones aprendidas (para no repetir errores)
 
@@ -69,6 +77,8 @@
 | 2026-09-14 | Contenido (parte 2): 2º artículo del blog ("Ceremonial vs. culinario"), guiones listos para grabar de la semana 1 (TikTok/Reels) | Hecho — artículo publicado; guiones en `marketing/contenido-semana-1.md`. Sin conector de TikTok/Instagram en esta sesión — publicar los vídeos es acción manual del usuario |
 
 | 2026-09-14 | Contenido (parte 3): 10 pines listos para Pinterest, todos con imagen ya existente salvo uno | Hecho — `marketing/pinterest-primeros-pines.md`. Sin conector de Pinterest — publicar es acción manual del usuario |
+
+| 2026-09-15 | Contenido (parte 4): programar los 9 pines listos (todos salvo el #2) en Metricool → Pinterest, en los tableros reales creados por el usuario | Hecho — 9 posts creados vía `createScheduledPost` (Ritual del Matcha: 4, Recetas Matcha Latte: 5), repartidos del 16 al 20 de septiembre. Los 5 cutouts de Matcha Latte se subieron primero a Shopify Files (`stagedUploadsCreate` + `fileCreate`) para tener URL pública. Falta solo el pin #2 (necesita imagen nueva) |
 
 ## Próximo objetivo
 
