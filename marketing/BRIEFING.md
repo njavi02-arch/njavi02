@@ -82,6 +82,18 @@
 
 | 2026-09-15 | Reprogramar los 9 pines a mejores horarios | Hecho — Metricool no tiene datos de "mejor hora" para Pinterest (`getBestTimeToPostByNetwork` solo cubre facebook/instagram/twitter/linkedin/tiktok/youtube), y la cuenta es nueva sin historial propio. Se movieron a horario general recomendado para Pinterest (noches entre semana 20:00-21:00, sábado/domingo mañana y noche), del 16 al 22 de septiembre, vía `updateScheduledPost` sobre los mismos 9 posts |
 
+## Decisiones sobre formato de publicación (2026-09-15 — no volver a preguntar)
+
+- **Instagram Reels**: publicar primero como **Trial Reel** (`instagramData.type = "TRIAL_REEL"`,
+  visible solo a no-seguidores, sirve para testear rendimiento) y, pasado un tiempo si va bien,
+  volver a publicar/promocionar como Reel normal al feed. Aplica a los 6 guiones de
+  `marketing/contenido-semana-1.md` en cuanto estén grabados.
+- **TikTok**: no tiene equivalente a los Trial Reels — no hay modo de prueba de audiencia,
+  todo lo publicado sale directo con la privacidad elegida. Ahí se publica normal desde el principio.
+- Bloqueadores para ejecutar esto: (1) conectar Instagram y TikTok en Metricool — solo Pinterest
+  está conectado ahora mismo; (2) grabar los 6 vídeos de `contenido-semana-1.md`, que hoy son
+  solo guiones.
+
 ## Próximo objetivo
 
 Seguir bajando el TOP 10 de acciones inmediatas del plan de crecimiento. Pendiente de decisión/acción del usuario (no ejecutable solo por API):
