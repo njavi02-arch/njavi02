@@ -1,0 +1,57 @@
+<section class="py-32 px-6 md:px-10 bg-[var(--cream-deep)]">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-12 reveal">
+      <div class="gold-rule mx-auto mb-5"></div>
+      <span class="eyebrow text-xs uppercase text-[var(--matcha-700)]">{{ 'general.collection.eyebrow' | t }}</span>
+      <h1 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] mt-3 italic">{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}
+        <div class="text-[var(--brown-700)] mt-5 max-w-xl mx-auto text-sm font-light">{{ collection.description }}</div>
+      {%- endif -%}
+    </div>
+
+    {%- assign types = collection.all_types | compact -%}
+    {%- if section.settings.show_type_filter and types.size > 1 -%}
+      <div class="flex flex-wrap justify-center gap-3 mb-16" data-filter-bar="#collection-grid">
+        <button class="filter-pill px-5 py-2 text-xs tracking-wide uppercase border border-[var(--brown-500)]/30 text-[var(--brown-900)]" data-filter="todos" data-active="true">{{ 'general.filters.all' | t }}</button>
+        {%- for type in types -%}
+          <button class="filter-pill px-5 py-2 text-xs tracking-wide uppercase border border-[var(--brown-500)]/30 text-[var(--brown-900)]" data-filter="{{ type | handle }}">{{ type }}</button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- paginate collection.products by section.settings.products_per_page -%}
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-10" id="collection-grid">
+        {%- for product in collection.products -%}
+          {%- render 'product-card', product: product -%}
+        {%- else -%}
+          <p class="col-span-full text-center text-[var(--brown-500)]">{{ 'general.collection.empty' | t }}</p>
+        {%- endfor -%}
+      </div>
+      <p data-no-results class="hidden text-center text-[var(--brown-500)] mt-10">{{ 'general.filters.no_results' | t }}</p>
+
+      {%- if paginate.pages > 1 -%}
+        <nav class="flex justify-center gap-3 mt-16 text-sm" aria-label="{{ 'general.pagination.label' | t }}">
+          {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}" class="px-4 py-2 border border-[var(--brown-500)]/30">←</a>{%- endif -%}
+          {%- for part in paginate.parts -%}
+            {%- if part.is_link -%}
+              <a href="{{ part.url }}" class="px-4 py-2 border border-[var(--brown-500)]/30">{{ part.title }}</a>
+            {%- else -%}
+              <span class="px-4 py-2 {% if part.title == paginate.current_page %}text-[var(--brown-900)]{% else %}text-[var(--brown-500)]{% endif %}">{{ part.title }}</span>
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if paginate.next -%}<a href="{{ paginate.next.url }}" class="px-4 py-2 border border-[var(--brown-500)]/30">→</a>{%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Página de colección",
+  "settings": [
+    { "type": "checkbox", "id": "show_type_filter", "label": "Mostrar filtro por tipo de producto", "default": true },
+    { "type": "range", "id": "products_per_page", "label": "Productos por página", "min": 6, "max": 48, "step": 6, "default": 12 }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,43 @@
+<section class="py-32 px-6 md:px-10 bg-[var(--cream-deep)] min-h-[60vh]">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-20 reveal">
+      <div class="gold-rule mx-auto mb-6"></div>
+      <h1 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] italic">{{ blog.title }}</h1>
+    </div>
+
+    {%- paginate blog.articles by section.settings.articles_per_page -%}
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {%- for article in blog.articles -%}
+          <a href="{{ article.url }}" class="blog-card bg-[var(--cream)] p-7">
+            {%- if article.image -%}
+              <img src="{{ article.image | image_url: width: 500 }}" alt="{{ article.image.alt | default: article.title | escape }}" class="w-full aspect-[4/3] object-cover mb-5" loading="lazy" width="{{ article.image.width }}" height="{{ article.image.height }}">
+            {%- else -%}
+              <span class="inline-flex items-center justify-center w-12 h-12 rounded-full border border-[var(--gold)]/40 mb-5">{%- render 'icon', name: 'coffee', class: 'w-5 h-5 text-[var(--gold)]' -%}</span>
+            {%- endif -%}
+            <span class="eyebrow text-[0.65rem] uppercase text-[var(--brown-500)]">{{ article.published_at | date: '%d %b %Y' }}</span>
+            <h3 class="font-display text-xl text-[var(--brown-900)] mt-2 mb-2 italic">{{ article.title }}</h3>
+            <p class="text-sm text-[var(--brown-700)] font-light">{{ article.excerpt_or_content | strip_html | truncate: 120 }}</p>
+          </a>
+        {%- else -%}
+          <p class="col-span-full text-center text-[var(--brown-500)]">{{ 'general.blog.empty' | t }}</p>
+        {%- endfor -%}
+      </div>
+
+      {%- if paginate.pages > 1 -%}
+        <nav class="flex justify-center gap-3 mt-16 text-sm">
+          {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}" class="px-4 py-2 border border-[var(--brown-500)]/30">←</a>{%- endif -%}
+          {%- if paginate.next -%}<a href="{{ paginate.next.url }}" class="px-4 py-2 border border-[var(--brown-500)]/30">→</a>{%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Página de blog",
+  "settings": [
+    { "type": "range", "id": "articles_per_page", "label": "Artículos por página", "min": 3, "max": 24, "step": 3, "default": 9 }
+  ]
+}
+{% endschema %}

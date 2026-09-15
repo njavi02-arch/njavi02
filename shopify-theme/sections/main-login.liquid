@@ -1,0 +1,50 @@
+<section class="py-32 px-6 md:px-10 bg-[var(--cream)] min-h-[70vh]">
+  <div class="max-w-md mx-auto">
+    <div class="text-center mb-12 reveal">
+      <div class="gold-rule mx-auto mb-6"></div>
+      <h1 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] italic">{{ 'customer.login.title' | t }}</h1>
+    </div>
+
+    {%- if form.posted_successfully? -%}
+      <p class="text-sm text-[var(--matcha-700)] bg-[var(--matcha-500)]/10 border border-[var(--matcha-500)]/30 px-5 py-4 mb-8 text-center">{{ 'customer.login.recover_success' | t }}</p>
+    {%- endif -%}
+
+    {%- form 'customer_login' -%}
+      {{ form.errors | default_errors }}
+      <div class="flex flex-col gap-4">
+        <label class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'customer.login.email' | t }}
+          <input type="email" name="customer[email]" autocomplete="email" required class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none focus:border-[var(--gold)]" placeholder="tu@email.com">
+        </label>
+        <label class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'customer.login.password' | t }}
+          <input type="password" name="customer[password]" autocomplete="current-password" required class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none focus:border-[var(--gold)]" placeholder="••••••••">
+        </label>
+        <button type="submit" class="bg-[var(--brown-900)] text-[var(--cream)] py-3.5 text-xs tracking-[0.2em] uppercase hover:bg-[var(--brown-700)] transition-colors mt-2">{{ 'customer.login.sign_in' | t }}</button>
+      </div>
+    {%- endform -%}
+
+    <details class="mt-6 text-center">
+      <summary class="cursor-pointer text-xs text-[var(--brown-500)] underline">{{ 'customer.login.forgot_password' | t }}</summary>
+      {%- form 'recover_customer_password' -%}
+        {{ form.errors | default_errors }}
+        <div class="flex flex-col gap-3 mt-4 text-left">
+          <label class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'customer.login.recover_email' | t }}
+            <input type="email" name="email" autocomplete="email" required class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none focus:border-[var(--gold)]" placeholder="tu@email.com">
+          </label>
+          <button type="submit" class="border border-[var(--brown-500)]/40 py-3 text-xs tracking-[0.2em] uppercase text-[var(--brown-900)] hover:bg-[var(--cream-deep)] transition-colors">{{ 'customer.login.recover_submit' | t }}</button>
+        </div>
+      {%- endform -%}
+    </details>
+
+    <p class="text-center text-sm text-[var(--brown-700)] mt-10 pt-8 border-t border-[var(--brown-500)]/15">
+      {{ 'customer.login.no_account' | t }}
+      <a href="{{ routes.account_register_url }}" class="text-[var(--matcha-700)] underline">{{ 'customer.login.create_account' | t }}</a>
+    </p>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Iniciar sesión",
+  "settings": []
+}
+{% endschema %}

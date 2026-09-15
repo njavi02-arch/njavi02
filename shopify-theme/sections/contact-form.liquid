@@ -1,0 +1,58 @@
+<section class="py-32 px-6 md:px-10 bg-[var(--cream)] min-h-[60vh]">
+  <div class="max-w-xl mx-auto">
+    <div class="text-center mb-12 reveal">
+      <div class="gold-rule mx-auto mb-6"></div>
+      <h1 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] italic">{{ section.settings.heading | default: shop.name }}</h1>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="text-sm text-[var(--brown-700)] font-light mt-4 max-w-md mx-auto">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- if form.posted_successfully? -%}
+      <p class="text-sm text-[var(--matcha-700)] bg-[var(--matcha-500)]/10 border border-[var(--matcha-500)]/30 px-5 py-4 mb-8 text-center">{{ 'general.contact.success' | t }}</p>
+    {%- endif -%}
+
+    {%- form 'contact' -%}
+      {{ form.errors | default_errors }}
+      <div class="flex flex-col gap-4">
+        <label class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'general.contact.name' | t }}
+          <input type="text" name="contact[name]" value="{% if customer %}{{ customer.name }}{% endif %}" class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none focus:border-[var(--gold)]">
+        </label>
+        <label class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'general.contact.email' | t }}
+          <input type="email" name="contact[email]" value="{% if customer %}{{ customer.email }}{% endif %}" required class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none focus:border-[var(--gold)]" placeholder="tu@email.com">
+        </label>
+        <label class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'general.contact.phone' | t }}
+          <input type="tel" name="contact[phone]" class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none focus:border-[var(--gold)]">
+        </label>
+        <label class="text-xs uppercase tracking-wide text-[var(--brown-500)]">{{ 'general.contact.message' | t }}
+          <textarea name="contact[body]" rows="5" required class="mt-1 w-full px-4 py-3 border border-[var(--brown-500)]/30 bg-transparent focus:outline-none focus:border-[var(--gold)] resize-none"></textarea>
+        </label>
+        <button type="submit" class="bg-[var(--brown-900)] text-[var(--cream)] py-3.5 text-xs tracking-[0.2em] uppercase hover:bg-[var(--brown-700)] transition-colors mt-2">{{ 'general.contact.submit' | t }}</button>
+      </div>
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Formulario de contacto",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Título",
+      "default": "Contacto"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtítulo"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Formulario de contacto"
+    }
+  ]
+}
+{% endschema %}

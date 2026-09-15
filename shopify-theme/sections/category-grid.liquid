@@ -1,0 +1,104 @@
+<section class="py-28 px-6 md:px-10 bg-[var(--cream)]">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16 reveal">
+      <div class="gold-rule mx-auto mb-5"></div>
+      {%- if section.settings.eyebrow != blank -%}<span class="eyebrow text-xs uppercase text-[var(--matcha-700)]">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      <h2 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] mt-3 italic">{{ section.settings.heading }}</h2>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-5">
+      {%- for block in section.blocks -%}
+        {%- case block.settings.color_scheme -%}
+          {%- when 'dark' -%}
+            {%- assign tile_classes = 'bg-[var(--brown-900)] text-[var(--cream)] border border-[var(--gold)]/20' -%}
+            {%- assign sub_classes = 'text-[var(--cream)]/60' -%}
+          {%- when 'medium' -%}
+            {%- assign tile_classes = 'bg-[var(--brown-700)] text-[var(--cream)] border border-[var(--gold)]/20' -%}
+            {%- assign sub_classes = 'text-[var(--cream)]/60' -%}
+          {%- when 'matcha' -%}
+            {%- assign tile_classes = 'bg-[var(--matcha-700)] text-[var(--cream)] border border-[var(--gold)]/20' -%}
+            {%- assign sub_classes = 'text-[var(--cream)]/60' -%}
+          {%- when 'beige' -%}
+            {%- assign tile_classes = 'bg-[var(--beige)] text-[var(--brown-900)] border border-[var(--brown-900)]/10' -%}
+            {%- assign sub_classes = 'text-[var(--brown-700)]' -%}
+          {%- else -%}
+            {%- assign tile_classes = 'bg-[var(--cream-deep)] text-[var(--brown-900)] border border-[var(--gold)]/40' -%}
+            {%- assign sub_classes = 'text-[var(--brown-700)]' -%}
+        {%- endcase -%}
+        <a href="{{ block.settings.link | default: '#' }}" {% if block.settings.filter_link != blank %}data-filter-link="{{ block.settings.filter_link | handle }}"{% endif %} class="category-tile reveal group flex flex-col items-center justify-center gap-3 py-12 px-4 text-center {{ tile_classes }}" {{ block.shopify_attributes }}>
+          {%- render 'icon', name: block.settings.icon, class: 'w-7 h-7' -%}
+          <span class="text-xs eyebrow uppercase">{{ block.settings.title }}</span>
+          <span class="text-[0.65rem] {{ sub_classes }} font-light">{{ block.settings.subtitle }}</span>
+          <span class="text-[0.65rem] text-[var(--gold)] opacity-0 group-hover:opacity-100 transition-opacity">{{ 'general.category.explore' | t }} →</span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Categorías",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Texto pequeño", "default": "Explorá por categoría" },
+    { "type": "text", "id": "heading", "label": "Título", "default": "Encontrá tu ritual" }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Categoría",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icono",
+          "options": [
+            { "value": "coffee", "label": "Café" },
+            { "value": "leaf", "label": "Hoja" },
+            { "value": "gift", "label": "Regalo" },
+            { "value": "globe", "label": "Globo" },
+            { "value": "recycle", "label": "Reciclaje" },
+            { "value": "bag", "label": "Bolsa" },
+            { "value": "star", "label": "Estrella" }
+          ],
+          "default": "coffee"
+        },
+        { "type": "text", "id": "title", "label": "Título", "default": "Café en grano" },
+        { "type": "text", "id": "subtitle", "label": "Subtítulo", "default": "Tueste artesanal" },
+        { "type": "url", "id": "link", "label": "Enlace (colección real)" },
+        {
+          "type": "text",
+          "id": "filter_link",
+          "label": "Filtro de la grilla de la home (opcional)",
+          "info": "Si coincide con el valor de filtro de un producto destacado en esta misma página, hace scroll y preselecciona ese filtro en vez de navegar."
+        },
+        {
+          "type": "select",
+          "id": "color_scheme",
+          "label": "Combinación de color",
+          "options": [
+            { "value": "dark", "label": "Marrón oscuro" },
+            { "value": "medium", "label": "Marrón medio" },
+            { "value": "cream", "label": "Crema" },
+            { "value": "matcha", "label": "Matcha" },
+            { "value": "beige", "label": "Beige" }
+          ],
+          "default": "cream"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Categorías",
+      "blocks": [
+        { "type": "tile", "settings": { "icon": "coffee", "title": "Café en grano", "subtitle": "Tueste artesanal", "color_scheme": "dark" } },
+        { "type": "tile", "settings": { "icon": "coffee", "title": "Café molido", "subtitle": "Listo para tu cafetera", "color_scheme": "medium" } },
+        { "type": "tile", "settings": { "icon": "gift", "title": "Packs degustación", "subtitle": "Probá varios orígenes", "color_scheme": "cream" } },
+        { "type": "tile", "settings": { "icon": "globe", "title": "Cafés de origen", "subtitle": "Lotes de un solo origen", "color_scheme": "matcha" } },
+        { "type": "tile", "settings": { "icon": "recycle", "title": "Suscripción mensual", "subtitle": "Ahorrá en cada envío", "color_scheme": "beige" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
