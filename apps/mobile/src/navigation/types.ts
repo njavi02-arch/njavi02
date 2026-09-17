@@ -2,6 +2,8 @@ export type AuthStackParamList = {
   Welcome: undefined;
   SignUp: undefined;
   Login: undefined;
+  Terms: undefined;
+  Privacy: undefined;
 };
 
 export type OnboardingStackParamList = {
@@ -33,6 +35,8 @@ export type ProfileStackParamList = {
   Streak: undefined;
   Premium: undefined;
   Settings: undefined;
+  Terms: undefined;
+  Privacy: undefined;
 };
 
 export type RootStackParamList = {

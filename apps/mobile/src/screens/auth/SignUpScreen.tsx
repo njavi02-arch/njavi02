@@ -80,8 +80,15 @@ export function SignUpScreen({ navigation }: Props) {
             textAlign: 'center',
           }}
         >
-          Debes ser mayor de 18 años para usar Orbita. Al continuar aceptas los Términos y la
-          Política de Privacidad.
+          Debes ser mayor de 18 años para usar Orbita. Al continuar aceptas los{' '}
+          <Text style={{ color: theme.colors.primary }} onPress={() => navigation.navigate('Terms')}>
+            Términos
+          </Text>{' '}
+          y la{' '}
+          <Text style={{ color: theme.colors.primary }} onPress={() => navigation.navigate('Privacy')}>
+            Política de Privacidad
+          </Text>
+          .
         </Text>
       </ScrollView>
     </ScreenContainer>

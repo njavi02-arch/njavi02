@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Alert, ScrollView, Switch, Text, View } from 'react-native';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTheme } from '../../theme/ThemeProvider';
 import { ScreenContainer } from '../../components/ScreenContainer';
 import { LoadingState } from '../../components/LoadingState';
@@ -10,6 +11,9 @@ import { supabase } from '../../lib/supabase';
 import { deleteMyAccount } from '../../services/safety';
 import { signOut } from '../../services/auth';
 import type { NotificationPreferencesRow } from '../../types/database';
+import type { ProfileStackParamList } from '../../navigation/types';
+
+type Props = NativeStackScreenProps<ProfileStackParamList, 'Settings'>;
 
 const PREFERENCE_LABELS: { key: keyof Omit<NotificationPreferencesRow, 'profile_id'>; label: string }[] = [
   { key: 'new_message', label: 'Nuevos mensajes' },
@@ -21,7 +25,7 @@ const PREFERENCE_LABELS: { key: keyof Omit<NotificationPreferencesRow, 'profile_
   { key: 'promotions', label: 'Promociones' },
 ];
 
-export function SettingsScreen() {
+export function SettingsScreen({ navigation }: Props) {
   const theme = useTheme();
   const session = useAuthStore((s) => s.session);
   const queryClient = useQueryClient();
@@ -103,6 +107,8 @@ export function SettingsScreen() {
         ))}
 
         <View style={{ marginTop: theme.spacing.xl }}>
+          <Button label="Términos de Servicio" variant="ghost" onPress={() => navigation.navigate('Terms')} style={{ marginBottom: 4 }} />
+          <Button label="Política de Privacidad" variant="ghost" onPress={() => navigation.navigate('Privacy')} style={{ marginBottom: 10 }} />
           <Button label="Cerrar sesión" variant="outline" onPress={() => signOut()} style={{ marginBottom: 10 }} />
           <Button label="Eliminar cuenta" variant="danger" onPress={handleDeleteAccount} loading={deleting} />
         </View>
