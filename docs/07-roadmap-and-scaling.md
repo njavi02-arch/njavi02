@@ -14,13 +14,18 @@ Ordenado por lo que más bloquea un lanzamiento real:
    datos (`premium_subscriptions`, `coin_transactions`) y la UI (`WalletScreen`,
    `PremiumScreen`) ya están listos; falta contratar el servicio y conectar el webhook.
    Implica coste económico real → decisión explícita del usuario.
-3. **Edge Functions desplegadas** — `start-conversation`, `send-super-like`,
-   `redeem-daily-reward`, `push-dispatcher` (arquitectura descrita en
-   `02-architecture.md`). En este MVP, esa lógica vive en Postgres functions
-   `SECURITY DEFINER` llamadas directamente desde el cliente (ya validadas y en uso real
-   por la app), lo cual funciona pero es menos defendible ante un cliente modificado que
-   una Edge Function que además pueda aplicar validaciones adicionales (moderación de
-   texto con servicio externo, verificación de dispositivo, etc.).
+3. **Edge Functions** (`start-conversation`, `send-super-like`, `redeem-daily-reward`,
+   `push-dispatcher`) — **actualizado**: la atomicidad ya no depende de desplegarlas.
+   `supabase/migrations/0002_atomic_actions.sql` mueve "enviar solicitud" y "enviar Super
+   Like" a funciones Postgres `SECURITY DEFINER` (`create_conversation_request`,
+   `send_super_like`) que hacen toda la operación — rate limit, filtro de palabras,
+   cooldown de 30 días, cobro y creación del registro + notificación — en una única
+   transacción de base de datos, validado con tests reales (ver `05-mvp-scope-and-
+   testing.md`). Las Edge Functions siguen siendo la vía recomendada para añadir
+   validaciones que necesiten un servicio externo (moderación de texto con IA,
+   verificación de dispositivo, envío de push) que Postgres no puede hacer por sí solo, y
+   para el dispatcher de push notifications, pero ya no son necesarias solo para
+   garantizar que estas dos acciones sean atómicas.
 4. **Push notifications reales** — requiere credenciales de Apple Push (APNs) y Firebase
    Cloud Messaging, dadas de alta en el proyecto Expo. La tabla `push_tokens` y las
    `notification_preferences` ya existen; falta el paso de registrar el dispositivo desde

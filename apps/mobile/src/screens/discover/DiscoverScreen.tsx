@@ -15,7 +15,6 @@ import { useAuthStore } from '../../store/authStore';
 import { recordProfileView } from '../../services/discover';
 import { sendConversationRequest } from '../../services/conversations';
 import { sendSuperLike } from '../../services/economy';
-import { DEFAULT_APP_CONFIG } from '@orbita/shared';
 import type { DiscoverStackParamList } from '../../navigation/types';
 
 type Props = NativeStackScreenProps<DiscoverStackParamList, 'DiscoverFeed'>;
@@ -66,7 +65,7 @@ export function DiscoverScreen({ navigation }: Props) {
     if (!session || !current || message.trim().length === 0) return;
     setSending(true);
     try {
-      await sendConversationRequest(session.user.id, current.id, message.trim());
+      await sendConversationRequest(current.id, message.trim());
       setFeedback('¡Mensaje enviado! Te avisaremos si responde.');
       queryClient.invalidateQueries({ queryKey: ['wallets'] });
       setTimeout(goNext, 900);
@@ -81,7 +80,7 @@ export function DiscoverScreen({ navigation }: Props) {
     if (!session || !current) return;
     setSending(true);
     try {
-      await sendSuperLike(session.user.id, current.id, undefined, DEFAULT_APP_CONFIG);
+      await sendSuperLike(current.id);
       setFeedback('✨ Super Like enviado');
       queryClient.invalidateQueries({ queryKey: ['wallets'] });
     } catch (e) {

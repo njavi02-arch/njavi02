@@ -78,39 +78,18 @@ export async function countSuperLikesSentToday(senderId: string): Promise<number
   return count ?? 0;
 }
 
-/** Envía un Super Like. Si no quedan gratis hoy, gasta 1 de super_like_credit_wallets
- * (recompensa de racha) o, si tampoco hay, monedas al precio de app_config. */
-export async function sendSuperLike(
-  senderId: string,
-  receiverId: string,
-  message: string | undefined,
-  config: Pick<AppConfig, 'super_like_daily_free' | 'super_like_coin_cost'>,
-): Promise<void> {
-  const sentToday = await countSuperLikesSentToday(senderId);
-  const isFree = sentToday < config.super_like_daily_free;
-
-  if (!isFree) {
-    const wallets = await fetchWallets(senderId);
-    if (wallets.superLikeCredits > 0) {
-      const { error } = await supabase.rpc('spend_super_like_credit', {
-        p_profile_id: senderId,
-        p_reason: 'super_like_sent',
-      });
-      if (error) throw error;
-    } else {
-      const { error } = await supabase.rpc('spend_coins', {
-        p_profile_id: senderId,
-        p_amount: config.super_like_coin_cost,
-        p_reason: 'super_like_sent',
-      });
-      if (error) throw error;
-    }
-  }
-
-  const { error: insertError } = await supabase
-    .from('super_likes')
-    .insert({ sender_id: senderId, receiver_id: receiverId, message: message ?? null });
-  if (insertError) throw insertError;
+/**
+ * Envía un Super Like llamando a send_super_like() (0002_atomic_actions.sql): una única
+ * transacción de servidor que decide el cupo gratis/racha/monedas y crea el registro +
+ * su notificación de forma atómica (antes eran 2-3 llamadas de red separadas desde el
+ * cliente, con el mismo riesgo de inconsistencia que tenía sendConversationRequest).
+ */
+export async function sendSuperLike(receiverId: string, message?: string): Promise<void> {
+  const { error } = await supabase.rpc('send_super_like', {
+    p_receiver_id: receiverId,
+    p_message: message ?? null,
+  });
+  if (error) throw error;
 }
 
 export interface ProfileViewerEntry {

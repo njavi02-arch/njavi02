@@ -2,45 +2,23 @@ import { supabase } from '../lib/supabase';
 import type { ConversationRequestRow, ConversationRow, MessageRow, ProfileRow } from '../types/database';
 
 /**
- * Envía una solicitud de conversación ("Hablar"). En producción esto debería llamar a la
- * Edge Function `start-conversation` (rate limit + filtro de palabras + gasto de crédito
- * en una sola transacción atómica del lado del servidor — ver supabase/functions). Aquí se
- * hace el equivalente en dos pasos desde el cliente porque este MVP no tiene el Edge
- * Function desplegado; ambos pasos están protegidos por RLS y por la función
- * spend_message_credit (SECURITY DEFINER), así que un fallo a mitad de camino no puede
- * dejar el saldo en un estado inconsistente sin la solicitud, ni viceversa sin más que un
- * mensaje sin costear (nunca gasto sin solicitud).
+ * Envía una solicitud de conversación ("Hablar"). Llama a create_conversation_request()
+ * (supabase/migrations/0002_atomic_actions.sql), una función SECURITY DEFINER que hace
+ * en una sola transacción atómica del lado del servidor: comprobar bloqueo, filtrar
+ * palabras prohibidas, aplicar el cooldown de 30 días tras un rechazo, comprobar el rate
+ * limit anti-spam, gastar el crédito de mensaje y crear la solicitud + su notificación.
+ * Sin esto, un fallo de red a mitad de las dos llamadas de red que hacía antes esta
+ * función podía crear una solicitud sin cobrar el crédito; ahora es todo o nada.
  */
 export async function sendConversationRequest(
-  senderId: string,
   receiverId: string,
   firstMessage: string,
 ): Promise<ConversationRequestRow> {
-  const { data: allowed, error: rateLimitError } = await supabase.rpc('check_and_record_rate_limit', {
-    p_profile_id: senderId,
-    p_action_type: 'new_conversation',
-    p_base_limit: 20, // app_config.new_conversation_rate_limit_per_hour — ver ASSUMPTIONS.md
-    p_window: '1 hour',
+  const { data, error } = await supabase.rpc('create_conversation_request', {
+    p_receiver_id: receiverId,
+    p_first_message: firstMessage,
   });
-  if (rateLimitError) throw rateLimitError;
-  if (!allowed) {
-    throw new Error('Has enviado demasiadas solicitudes de conversación nuevas. Inténtalo de nuevo en un rato.');
-  }
-
-  const { data, error } = await supabase
-    .from('conversation_requests')
-    .insert({ sender_id: senderId, receiver_id: receiverId, first_message: firstMessage })
-    .select()
-    .single();
   if (error) throw error;
-
-  const { error: spendError } = await supabase.rpc('spend_message_credit', {
-    p_profile_id: senderId,
-    p_reason: 'conversation_started',
-    p_reference_id: data.id,
-  });
-  if (spendError) throw spendError;
-
   return data as ConversationRequestRow;
 }
 

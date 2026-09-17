@@ -5,6 +5,12 @@ Postgres 16 local, ver `docs/05-mvp-scope-and-testing.md`). Este documento expli
 **porqué** de las decisiones de modelado; para el detalle columna a columna, leer la
 migración, que está comentada.
 
+`supabase/migrations/0002_atomic_actions.sql` añade dos funciones `SECURITY DEFINER` que
+convierten "enviar solicitud de conversación" y "enviar Super Like" en transacciones
+atómicas de servidor (rate limit + cobro + creación del registro + notificación en un
+único paso), en vez de varias llamadas separadas desde el cliente. Ver
+`docs/05-mvp-scope-and-testing.md §4b` para el detalle y la evidencia de pruebas.
+
 ## 1. Mapa de entidades
 
 ```

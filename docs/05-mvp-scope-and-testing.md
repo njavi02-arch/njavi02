@@ -119,6 +119,27 @@ No se ha podido probar el flujo de login completo end-to-end (requiere un usuari
 datos reales, por la misma razón que en el punto 3: no hay proyecto Supabase desplegado en
 este entorno y no se simulan datos.
 
+## 4b. `0002_atomic_actions.sql` — hardening posterior, también validado de verdad
+
+Tras el MVP inicial se detectó que "enviar solicitud de conversación" y "enviar Super
+Like" hacían 2-3 llamadas de red separadas desde el cliente (insertar + cobrar), con el
+riesgo de que un fallo a mitad de camino dejara el sistema en un estado a medias. Se
+corrigió moviendo toda la operación a funciones Postgres `SECURITY DEFINER`
+(`create_conversation_request`, `send_super_like`) que hacen todo en una sola transacción
+atómica — incluida la regla, documentada pero no implementada hasta ahora, de bloquear
+reintentos durante 30 días tras un rechazo (salvo que la otra persona te haya escrito ya).
+
+Validado con 10 escenarios nuevos contra la base de datos real (35/35 en total sumando la
+suite original): solicitud creada + crédito descontado + notificación generada en un solo
+paso; sin créditos suficientes **no se crea ninguna solicitud** (antes de este cambio sí
+se creaba una, aunque no se cobrara — ver el `git log`); el cooldown de 30 días bloquea
+un reintento y dos casos también verificados: si la otra persona ya te escribió, el
+cooldown no aplica; y el Super Like cobra monedas correctamente en cuanto se agota el
+cupo gratis del día. Además se descubrió y cerró una laguna real: antes de este cambio
+**nunca se creaba una notificación** para "nueva solicitud" ni "Super Like recibido"
+porque la tabla `notifications` no tiene policy de INSERT para clientes (a propósito) y
+nada del lado servidor las estaba generando.
+
 ## 5. Qué NO se ha probado (limitaciones honestas de este entorno)
 
 - **No hay simulador iOS/Android ni dispositivo físico** en este entorno remoto: no se

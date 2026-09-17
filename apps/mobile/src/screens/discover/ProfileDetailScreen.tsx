@@ -60,7 +60,7 @@ export function ProfileDetailScreen({ route, navigation }: Props) {
   async function handleSuperLike() {
     if (!session) return;
     try {
-      await sendSuperLike(session.user.id, profileId, undefined, DEFAULT_APP_CONFIG);
+      await sendSuperLike(profileId);
       Alert.alert('✨ Super Like enviado');
       queryClient.invalidateQueries({ queryKey: ['wallets'] });
     } catch (e) {
@@ -72,7 +72,7 @@ export function ProfileDetailScreen({ route, navigation }: Props) {
     if (!session || message.trim().length === 0) return;
     setSendingMessage(true);
     try {
-      await sendConversationRequest(session.user.id, profileId, message.trim());
+      await sendConversationRequest(profileId, message.trim());
       queryClient.invalidateQueries({ queryKey: ['wallets'] });
       Alert.alert('¡Mensaje enviado!', 'Te avisaremos si responde.');
       navigation.goBack();
