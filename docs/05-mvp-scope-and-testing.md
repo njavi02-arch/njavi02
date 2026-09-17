@@ -65,13 +65,61 @@ antigüedad de cuenta.
 
 `tsc --noEmit` sin errores en `packages/shared`.
 
-## 3. App móvil y panel admin
+## 3. App móvil — typecheck y smoke test visual real
 
-Ver el resto de esta sección tras completar la Fase 5 (se actualiza al final de la sesión
-con los resultados de `tsc --noEmit`, y de la comprobación visual vía `expo start --web` +
-capturas de pantalla si el entorno lo permite).
+`npx tsc --noEmit` en `apps/mobile`: **0 errores** sobre todo el código de la app (auth,
+onboarding, descubrimiento, chat, economía, navegación). Durante el desarrollo se
+encontraron y corrigieron 2 bugs reales de tipos/imports (un import cruzado entre
+`services/economy.ts` y `services/discover.ts`, y un conflicto de tipos en la lectura de
+`app_config` por la inferencia automática de columnas de `supabase-js`).
 
-## 4. Qué NO se ha probado (limitaciones honestas de este entorno)
+Más allá del typecheck, se hizo una comprobación **visual real en navegador**, no solo
+estática:
+
+1. `EXPO_OFFLINE=1 npx expo export --platform web` compila los 1252 módulos de la app
+   (Reanimated/Worklets, React Navigation, TanStack Query, Zustand, Supabase JS, todas las
+   pantallas) a un bundle de producción sin errores. (`EXPO_OFFLINE` fue necesario porque
+   la política de red de este entorno bloquea `reactnative.directory` y `api.expo.dev`,
+   que Expo CLI consulta por defecto para comprobar compatibilidad de paquetes y telemetría
+   — no afecta al bundling en sí.)
+2. Ese bundle se sirvió localmente y se abrió con Chromium vía Playwright:
+   - Pantalla de bienvenida (`WelcomeScreen`): logo, gradiente, tipografía Sora/Inter y
+     botones renderizan correctamente, sin errores de consola ni de página.
+   - Navegación a `SignUpScreen`: formulario, validación (botón "Continuar" deshabilitado
+     hasta que el email/contraseña son válidos) y textos legales renderizan correctamente.
+   - Se detectó y corrigió un bug real de robustez durante esta prueba: si
+     `supabase.auth.getSession()` fallaba (sin red o backend mal configurado),
+     `authStore.bootstrap()` no capturaba el error y la app se quedaba en la pantalla de
+     carga para siempre. Ahora cualquier fallo de red al arrancar cae de forma segura a
+     "sin sesión" en vez de colgar la app.
+   - Sin credenciales de Supabase, la app muestra el estado explícito
+     `BackendNotConfigured` en vez de datos falsos (comportamiento verificado).
+
+Lo que **no** se ha podido probar en este entorno: pantallas que requieren un backend real
+conectado (descubrimiento con datos reales, chat en vivo, reclamar racha, etc.) — no se
+simulan con datos falsos porque el brief lo prohíbe explícitamente; están verificadas por
+tipos y por la lógica de `packages/shared` + las 25 validaciones de base de datos, pero no
+visualmente. Tampoco hay simulador iOS/Android en este entorno remoto.
+
+## 4. Panel de administración — build de producción y smoke test real
+
+`npx tsc --noEmit` en `apps/admin`: 0 errores. `next build` (producción, con Turbopack):
+compila con éxito, genera `/` y `/login` como estáticas y `/dashboard`, `/users`,
+`/reports`, `/photos`, `/config` como dinámicas (correcto: leen `cookies()` en cada
+petición para comprobar la sesión de admin).
+
+Comprobación real arrancando el build (`next start`) y con Chromium vía Playwright:
+
+- `/login` renderiza correctamente (formulario, estilos, sin errores de consola).
+- `GET /dashboard` sin cookie de sesión responde `307` a `/login` — confirma que
+  `requireAdmin()` protege de verdad las rutas del panel, no solo a nivel de UI.
+
+No se ha podido probar el flujo de login completo end-to-end (requiere un usuario real en
+`admin_users` de un proyecto Supabase real) ni las acciones de moderación/config contra
+datos reales, por la misma razón que en el punto 3: no hay proyecto Supabase desplegado en
+este entorno y no se simulan datos.
+
+## 5. Qué NO se ha probado (limitaciones honestas de este entorno)
 
 - **No hay simulador iOS/Android ni dispositivo físico** en este entorno remoto: no se
   puede verificar visualmente la app en un simulador nativo. Se compensa con: (a)

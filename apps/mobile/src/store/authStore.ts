@@ -31,19 +31,30 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   bootstrap: async () => {
-    const { data } = await supabase.auth.getSession();
-    set({ session: data.session });
-    if (data.session) {
-      const profile = await getMyProfile(data.session.user.id);
-      set({ profile });
+    // Nunca debe dejar isBootstrapping en true para siempre: sin red o con el backend
+    // mal configurado, la app se quedaría en la pantalla de carga de forma indefinida.
+    try {
+      const { data } = await supabase.auth.getSession();
+      set({ session: data.session });
+      if (data.session) {
+        const profile = await getMyProfile(data.session.user.id);
+        set({ profile });
+      }
+    } catch {
+      set({ session: null, profile: null });
+    } finally {
+      set({ isBootstrapping: false });
     }
-    set({ isBootstrapping: false });
 
     supabase.auth.onAuthStateChange(async (_event, session) => {
       set({ session });
       if (session) {
-        const profile = await getMyProfile(session.user.id);
-        set({ profile });
+        try {
+          const profile = await getMyProfile(session.user.id);
+          set({ profile });
+        } catch {
+          set({ profile: null });
+        }
       } else {
         set({ profile: null });
       }
