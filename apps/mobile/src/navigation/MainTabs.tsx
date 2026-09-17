@@ -8,6 +8,8 @@ import { MessagesNavigator } from './MessagesNavigator';
 import { ProfileNavigator } from './ProfileNavigator';
 import { ActivityScreen } from '../screens/activity/ActivityScreen';
 import { useIncomingRequests } from '../hooks/useConversations';
+import { useRegisterPushNotifications } from '../hooks/useRegisterPushNotifications';
+import { useNotifications } from '../hooks/useNotifications';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -22,6 +24,9 @@ export function MainTabs() {
   const theme = useTheme();
   const { data: requests } = useIncomingRequests();
   const pendingCount = requests?.length ?? 0;
+  const { data: notifications } = useNotifications();
+  const unreadNotifications = notifications?.filter((n) => !n.is_read).length ?? 0;
+  useRegisterPushNotifications();
 
   return (
     <Tab.Navigator
@@ -31,7 +36,12 @@ export function MainTabs() {
         tabBarInactiveTintColor: theme.colors.textSecondary,
         tabBarStyle: { backgroundColor: theme.colors.background, borderTopColor: theme.colors.border },
         tabBarIcon: () => <Text style={{ fontSize: 20 }}>{ICONS[route.name as keyof MainTabParamList]}</Text>,
-        tabBarBadge: route.name === 'Messages' && pendingCount > 0 ? pendingCount : undefined,
+        tabBarBadge:
+          route.name === 'Messages' && pendingCount > 0
+            ? pendingCount
+            : route.name === 'Activity' && unreadNotifications > 0
+              ? unreadNotifications
+              : undefined,
       })}
     >
       <Tab.Screen name="Discover" component={DiscoverNavigator} options={{ title: 'Descubrir' }} />
