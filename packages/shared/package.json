@@ -1,0 +1,17 @@
+{
+  "name": "@orbita/shared",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tipos y lógica de negocio pura compartida entre apps/mobile y apps/admin",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
+  }
+}

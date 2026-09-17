@@ -1,0 +1,20 @@
+{
+  "name": "orbita",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Orbita — app social de descubrimiento y conversación (monorepo)",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "shared:build": "npm run build --workspace=packages/shared",
+    "shared:test": "npm run test --workspace=packages/shared",
+    "mobile": "npm run start --workspace=apps/mobile",
+    "mobile:web": "npm run web --workspace=apps/mobile",
+    "mobile:typecheck": "npm run typecheck --workspace=apps/mobile",
+    "admin": "npm run dev --workspace=apps/admin",
+    "admin:typecheck": "npm run typecheck --workspace=apps/admin",
+    "test": "npm run test --workspace=packages/shared"
+  }
+}
