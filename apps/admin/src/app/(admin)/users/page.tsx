@@ -1,5 +1,5 @@
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
-import { setUserStatus } from './actions';
+import { grantCoinsToUser, setUserStatus } from './actions';
 
 const STATUS_STYLES: Record<string, string> = {
   active: 'bg-emerald-950 text-emerald-400 border-emerald-800',
@@ -67,6 +67,11 @@ export default async function UsersPage({
                 <td className="px-4 py-3">{user.is_premium ? '⭐' : '—'}</td>
                 <td className="px-4 py-3 text-zinc-400">{new Date(user.created_at).toLocaleDateString('es-ES')}</td>
                 <td className="px-4 py-3 text-right space-x-2">
+                  <form action={grantCoinsToUser.bind(null, user.id, 50)} className="inline">
+                    <button className="text-xs text-amber-400 hover:text-amber-300" title="Regalar 50 monedas (p. ej. compensación de soporte)">
+                      +50 🪙
+                    </button>
+                  </form>
                   {user.status !== 'suspended' ? (
                     <form action={setUserStatus.bind(null, user.id, 'suspended')} className="inline">
                       <button className="text-xs text-rose-400 hover:text-rose-300">Suspender</button>
