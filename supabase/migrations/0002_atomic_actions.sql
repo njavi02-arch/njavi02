@@ -82,14 +82,17 @@ begin
     raise exception 'Has enviado demasiadas solicitudes de conversación nuevas. Inténtalo de nuevo en un rato.';
   end if;
 
-  -- Gastar el crédito ANTES de insertar: si no quedan créditos, spend_message_credit
-  -- lanza excepción y no se crea ninguna solicitud (nunca "solicitud gratis" por fallo
-  -- a mitad de camino, que era justo el riesgo que tenía la versión de dos llamadas).
-  perform spend_message_credit(v_sender, 'conversation_started');
-
+  -- Insertar y luego cobrar el crédito referenciando la solicitud creada (mejor rastro de
+  -- auditoría: message_credit_transactions.reference_id apunta a la solicitud que pagó).
+  -- Sigue siendo todo o nada: si spend_message_credit lanza excepción por falta de saldo,
+  -- no hay ningún SAVEPOINT/EXCEPTION que aísle el INSERT anterior, así que Postgres
+  -- deshace TODA la transacción de esta llamada — incluida la solicitud recién insertada.
+  -- Verificado explícitamente con un test real (ver docs/05-mvp-scope-and-testing.md §4b).
   insert into conversation_requests (sender_id, receiver_id, first_message)
     values (v_sender, p_receiver_id, p_first_message)
     returning * into v_request;
+
+  perform spend_message_credit(v_sender, 'conversation_started', v_request.id);
 
   insert into notifications (profile_id, type, payload)
     values (p_receiver_id, 'new_request', jsonb_build_object('requestId', v_request.id, 'senderId', v_sender));
