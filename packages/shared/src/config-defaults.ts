@@ -42,4 +42,6 @@ export const DEFAULT_APP_CONFIG: AppConfig = {
   premium_price_monthly_cents: 999,
   premium_price_yearly_cents: 5999,
   premium_currency: 'EUR',
+  boost_coin_cost: 100,
+  boost_duration_minutes: 30,
 };

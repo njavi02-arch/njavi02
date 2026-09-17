@@ -16,6 +16,17 @@ atómicas de servidor (rate limit + cobro + creación del registro + notificaci�
 automáticamente. Corrige un bug real: ese porcentaje se quedaba en 0% para siempre porque
 ningún cliente lo actualizaba nunca — ver `docs/05-mvp-scope-and-testing.md §4c`.
 
+`supabase/migrations/0004_streak_at_risk_notification.sql` añade
+`notify_streak_at_risk_if_needed()`, que dispara (deduplicado a 1/día) la notificación
+`streak_at_risk` — un tipo definido desde el principio que nunca se usaba.
+
+`supabase/migrations/0005_verification_prompts_boost_flags.sql` añade, tras la
+investigación de mercado documentada en `PRODUCT_BRAIN.md`: `verification_requests` +
+`profiles.is_verified` (verificación por selfie con cola de moderación manual),
+`profile_prompts` (hasta 3 por perfil), lógica real para `profile_boosts` (`activate_boost()`,
+pagado con monedas) y un trigger que puebla `suspicious_activity_flags` por acumulación de
+reportes — dos tablas que existían desde 0001 sin ninguna lógica que las usara.
+
 ## 1. Mapa de entidades
 
 ```

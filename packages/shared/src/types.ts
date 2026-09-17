@@ -98,6 +98,8 @@ export interface AppConfig {
   premium_price_monthly_cents: number;
   premium_price_yearly_cents: number;
   premium_currency: string;
+  boost_coin_cost: number;
+  boost_duration_minutes: number;
 }
 
 export interface Profile {

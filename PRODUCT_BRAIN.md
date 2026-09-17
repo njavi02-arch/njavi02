@@ -150,10 +150,20 @@ reporte, panel admin completo, CI.
 - ~~`profile_completion_pct` nunca se calculaba~~ — corregido con trigger.
 - ~~Silenciar/archivar chat afectaba al usuario equivocado~~ — corregido.
 - ~~Solicitudes/Super Likes no atómicos~~ — corregidos con funciones SECURITY DEFINER.
-- `suspicious_activity_flags` existe pero ninguna lógica escribe en ella todavía — en curso
-  en esta misma sesión.
-- `streak_at_risk` es un tipo de notificación definido que nunca se dispara — en curso.
-- No hay verificación de perfil — en curso.
+- ~~`profiles.last_active_at` nunca se actualizaba~~ (detectado investigando el patrón
+  "activo ahora/hoy" de Hinge/Tinder) — corregido: `touchLastActive()` + heartbeat cada 3
+  min en primer plano. Sin esto, el orden "más activos primero" del feed no significaba
+  nada desde el primer commit.
+- ~~`suspicious_activity_flags` existía sin ninguna lógica que escribiera en ella~~ —
+  corregido: trigger de acumulación de reportes (3+/30 días → señal; 5+/30 días → revisión
+  automática), sin depender de IA de terceros.
+- ~~`streak_at_risk` era un tipo de notificación que nunca se disparaba~~ — corregido
+  (`notify_streak_at_risk_if_needed()`, deduplicado a 1/día) + banner en Descubrir.
+- ~~No había verificación de perfil~~ — corregido: selfie + cola de moderación manual en
+  el panel admin, badge ✅ automático al aprobar.
+- ~~Fake profiles/desconfianza no tenían ninguna señal visible en el perfil~~ — el badge de
+  verificado y "Destacado" (Boost) dan señales visuales que la investigación de mercado
+  identifica como relevantes para la confianza del usuario.
 
 ## OPORTUNIDADES
 
@@ -168,14 +178,34 @@ reporte, panel admin completo, CI.
   nuestra, dejar preparado un filtro "solo verificados" en preferencias de descubrimiento
   (aunque el MVP no lo exponga todavía en UI).
 
-## ROADMAP DINÁMICO (qué construir después de esta sesión)
+## ROADMAP DINÁMICO
 
-1. Estado activo ahora/hoy en Descubrir y perfil.
-2. Aviso de racha en riesgo.
-3. Verificación de perfil (selfie + cola de moderación admin).
-4. Prompts de perfil + sugerencias de primer mensaje por interés compartido.
-5. Boost pagado con monedas.
-6. Señales automáticas de cuentas sospechosas (reportes múltiples, patrón de spam).
-7. (Backlog, no esta sesión) Reacciones a mensajes; filtro "solo verificados" en
-   preferencias; exportación de datos RGPD; Edge Functions reales para moderación de texto
-   con IA cuando exista presupuesto para un servicio externo.
+### Completado en esta sesión (investigación → decisión → construcción → prueba)
+
+1. ~~Estado activo ahora/hoy en Descubrir y perfil~~ — construido, probado (7 tests).
+2. ~~Aviso de racha en riesgo~~ — banner + notificación deduplicada, construido y probado.
+3. ~~Verificación de perfil~~ — selfie + cola de moderación admin, construido y probado
+   (4 escenarios reales contra la base de datos).
+4. ~~Prompts de perfil + sugerencias de primer mensaje~~ — construido y probado (6 tests +
+   3 escenarios de base de datos, incluido un bug real de "editar tu 3er prompt te bloquea
+   a ti mismo" encontrado y corregido antes de llegar a producción).
+5. ~~Boost pagado con monedas~~ — construido y probado (4 escenarios: cobro, bloqueo de
+   doble activación, orden de aparición en el feed).
+6. ~~Señales automáticas de cuentas sospechosas~~ — construido y probado (4 escenarios:
+   umbral de señal, no duplicar, escalado a revisión automática).
+
+Total tras esta sesión: 56 escenarios de base de datos reales + 43 tests unitarios de
+`packages/shared`, todos en verde (ver `docs/05-mvp-scope-and-testing.md`).
+
+### Siguiente (no abordado todavía, con criterio de prioridad)
+
+1. **Reacciones a mensajes en el chat** (Wizz) — mejora el chat, esfuerzo bajo (solo UI +
+   una tabla nueva `message_reactions`); candidato claro para la siguiente sesión.
+   2. **Filtro "solo verificados"** en preferencias de descubrimiento — la columna
+      `is_verified` ya existe, falta exponerlo en `user_preferences` + UI de filtro.
+3. **Exportación de datos (RGPD)** — el modelo relacional ya lo permite, falta construir
+   el endpoint.
+4. **Edge Functions con moderación de texto por IA** — cuando haya presupuesto para un
+   servicio externo; hasta entonces, el filtro de `banned_words` cubre el caso básico.
+5. **Grupos/eventos sociales** — backlog, sin señal de demanda todavía, evaluar tras tener
+   usuarios reales antes de construir.

@@ -51,7 +51,7 @@ export function MyProfileScreen({ navigation }: Props) {
       <ScrollView contentContainerStyle={{ paddingTop: theme.spacing.sm, paddingBottom: theme.spacing.xl }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: theme.spacing.md }}>
           <Text style={{ fontFamily: theme.typography.fontFamilyHeading, fontSize: theme.typography.sizes.h1, color: theme.colors.textPrimary }}>
-            {profile.display_name}
+            {profile.display_name} {profile.is_verified ? '✅' : ''}
           </Text>
           <Button label="Editar" variant="outline" fullWidth={false} onPress={() => navigation.navigate('EditProfile')} />
         </View>
@@ -81,6 +81,9 @@ export function MyProfileScreen({ navigation }: Props) {
         ) : null}
 
         <View style={{ marginTop: theme.spacing.lg }}>
+          {!profile.is_verified ? (
+            <Button label="✅ Verificar mi perfil" variant="outline" onPress={() => navigation.navigate('VerifyProfile')} style={{ marginBottom: 10 }} />
+          ) : null}
           <Button label="🪙 Monedas y tienda" variant="outline" onPress={() => navigation.navigate('Wallet')} style={{ marginBottom: 10 }} />
           <Button label="🔥 Racha diaria" variant="outline" onPress={() => navigation.navigate('Streak')} style={{ marginBottom: 10 }} />
           <Button label="⭐ Orbita Premium" variant="secondary" onPress={() => navigation.navigate('Premium')} style={{ marginBottom: 10 }} />

@@ -64,6 +64,14 @@ export async function claimDailyStreak(): Promise<StreakClaimResult> {
   return data as StreakClaimResult;
 }
 
+/** Dispara (con deduplicación en el servidor, máx. 1/día) la notificación streak_at_risk
+ * cuando corresponde. Devuelve true si se creó una notificación nueva. */
+export async function notifyStreakAtRiskIfNeeded(): Promise<boolean> {
+  const { data, error } = await supabase.rpc('notify_streak_at_risk_if_needed');
+  if (error) throw error;
+  return Boolean(data);
+}
+
 function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
 }
@@ -209,4 +217,37 @@ export async function hasUnlockedPhotos(viewerId: string, targetProfileId: strin
     .maybeSingle();
   if (error) throw error;
   return Boolean(data);
+}
+
+export interface ActiveBoost {
+  id: string;
+  endsAt: string;
+}
+
+/** Boost de visibilidad pagado con monedas (no con dinero real — ver PRODUCT_BRAIN.md).
+ * activate_boost() (0005_verification_prompts_boost_flags.sql) valida que no haya ya uno
+ * activo y cobra las monedas de forma atómica. */
+export async function activateBoost(): Promise<ActiveBoost> {
+  const { data, error } = await supabase.rpc('activate_boost');
+  if (error) throw error;
+  return { id: data.id, endsAt: data.ends_at };
+}
+
+export async function getMyActiveBoost(profileId: string): Promise<ActiveBoost | null> {
+  const { data, error } = await supabase
+    .from('profile_boosts')
+    .select('id, ends_at')
+    .eq('profile_id', profileId)
+    .gt('ends_at', new Date().toISOString())
+    .order('ends_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  return data ? { id: data.id, endsAt: data.ends_at } : null;
+}
+
+export async function getActiveBoostedProfileIds(): Promise<Set<string>> {
+  const { data, error } = await supabase.rpc('get_active_boosted_profile_ids');
+  if (error) throw error;
+  return new Set((data ?? []).map((row: { profile_id: string }) => row.profile_id));
 }

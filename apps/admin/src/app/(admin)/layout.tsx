@@ -7,6 +7,7 @@ const NAV = [
   { href: '/users', label: 'Usuarios', emoji: '👥' },
   { href: '/reports', label: 'Reportes', emoji: '🚩' },
   { href: '/photos', label: 'Moderación de fotos', emoji: '🖼️' },
+  { href: '/verifications', label: 'Verificación de perfiles', emoji: '✅' },
   { href: '/config', label: 'Configuración', emoji: '⚙️' },
 ];
 

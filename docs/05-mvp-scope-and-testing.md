@@ -175,6 +175,44 @@ contra el resto del código). El resultado no fue solo limpieza: varias de esas 
 - Limpieza de la función `blockAndExitConversation` (duplicaba `blockUser` sin hacer lo
   que su nombre prometía) y `getCurrentSession` (redundante con lo que ya hace authStore).
 
+## 4d. Investigación de mercado → 6 funcionalidades nuevas, validadas de verdad
+
+Tras investigar Wizz, Tinder, Bumble, Yubo y Hinge (ver `PRODUCT_BRAIN.md` completo, con
+fuentes) se construyeron seis funcionalidades y se corrigió, de paso, un bug de datos que
+llevaba desde el primer commit:
+
+- **`profiles.last_active_at` nunca se actualizaba** — el feed de descubrimiento decía
+  ordenar "por actividad reciente" pero esa columna se quedaba congelada en la fecha de
+  creación del perfil para siempre. Corregido con un heartbeat cliente (`touchLastActive`,
+  cada 3 min en primer plano + al abrir la app) y usado para un indicador nuevo "Activo
+  ahora"/"Activo hoy" (`packages/shared/src/presence.ts`, 7 tests unitarios sobre los
+  límites exactos de 2h/24h, incluida la protección ante un reloj de dispositivo adelantado).
+- **Verificación de perfil**: selfie real (cámara frontal, no galería) + cola de moderación
+  manual en el panel admin (`/verifications`) + badge ✅ automático al aprobar. 4 escenarios
+  reales: no se puede tener 2 solicitudes pendientes a la vez, aprobar marca el badge,
+  rechazar/revocar lo quita.
+- **Prompts de perfil** (hasta 3, estilo pregunta elegida): 6 tests unitarios de
+  `suggestIcebreakers` + 3 escenarios de base de datos, incluido un **bug real encontrado
+  antes de llegar a producción**: el trigger que limita a 3 prompts contaba mal y bloqueaba
+  editar un prompt ya existente en cuanto había 3 creados — corregido excluyendo la propia
+  posición del recuento.
+- **Sugerencias de primer mensaje** (icebreakers) por interés compartido o prompt de la
+  otra persona — deterministas, sin IA generativa de terceros (ver decisión en
+  PRODUCT_BRAIN.md), mostradas como chips tocables en el composer de Descubrir y del perfil.
+- **Boost de visibilidad pagado con monedas**: 4 escenarios reales — cobra
+  `boost_coin_cost`, bloquea activar un segundo Boost mientras el primero sigue vivo, y los
+  perfiles con Boost activo aparecen primero en el feed (`get_active_boosted_profile_ids()`).
+- **Señales automáticas de cuentas sospechosas** por acumulación de reportes (sin IA de
+  terceros): 4 escenarios — 3 reportes en 30 días generan una señal sin duplicarse en
+  reportes sucesivos, 5 reportes escalan a revisión automática del perfil.
+
+**Total acumulado tras esta ronda: 56/56 escenarios de base de datos reales, 43/43 tests
+unitarios de `packages/shared`.** `tsc --noEmit` limpio en las tres apps, `next build` y
+`eslint` limpios en el panel admin (con las tres páginas nuevas: `/verifications`, la
+sección de señales en `/reports`, y los contadores nuevos en `/dashboard`), y bundle web de
+la app móvil reconstruido y verificado en Chromium sin errores de consola tras cada tanda
+de cambios.
+
 ## 5. Qué NO se ha probado (limitaciones honestas de este entorno)
 
 - **No hay simulador iOS/Android ni dispositivo físico** en este entorno remoto: no se

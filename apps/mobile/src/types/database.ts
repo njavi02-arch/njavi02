@@ -14,6 +14,7 @@ export interface ProfileRow {
   bio: string;
   status: 'active' | 'under_review' | 'suspended' | 'deleted';
   is_premium: boolean;
+  is_verified: boolean;
   premium_until: string | null;
   profile_completion_pct: number;
   onboarding_completed_at: string | null;
@@ -179,6 +180,34 @@ export interface AppConfigRow {
   key: string;
   value: unknown;
   description: string | null;
+}
+
+export interface VerificationRequestRow {
+  id: string;
+  profile_id: string;
+  selfie_url: string;
+  status: 'pending' | 'approved' | 'rejected';
+  reviewed_by: string | null;
+  reviewed_at: string | null;
+  rejection_reason: string | null;
+  created_at: string;
+}
+
+export interface ProfilePromptRow {
+  id: string;
+  profile_id: string;
+  question: string;
+  answer: string;
+  position: number;
+  created_at: string;
+}
+
+export interface ProfileBoostRow {
+  id: string;
+  profile_id: string;
+  starts_at: string;
+  ends_at: string;
+  coin_cost: number;
 }
 
 export interface PushTokenRow {

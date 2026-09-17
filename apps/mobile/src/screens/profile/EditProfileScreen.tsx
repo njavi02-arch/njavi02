@@ -8,11 +8,13 @@ import { ScreenContainer } from '../../components/ScreenContainer';
 import { TextField } from '../../components/TextField';
 import { Chip } from '../../components/Chip';
 import { Button } from '../../components/Button';
+import { ProfilePromptEditor } from '../../components/ProfilePromptEditor';
 import { useAuthStore } from '../../store/authStore';
 import {
   deleteProfilePhoto,
   getPhotosForProfile,
   getProfileInterestIds,
+  getProfilePrompts,
   listInterests,
   setProfileInterestSelected,
   updateMyProfile,
@@ -45,6 +47,12 @@ export function EditProfileScreen({ navigation }: Props) {
     queryFn: () => getProfileInterestIds(profile!.id),
     enabled: Boolean(profile),
   });
+  const promptsQuery = useQuery({
+    queryKey: ['prompts', profile?.id],
+    queryFn: () => getProfilePrompts(profile!.id),
+    enabled: Boolean(profile),
+  });
+  const promptsByPosition = new Map((promptsQuery.data ?? []).map((p) => [p.position, p]));
 
   const photosBySlot = new Map((photosQuery.data ?? []).map((p) => [p.position, p]));
   const selectedInterestIds = new Set(myInterestsQuery.data ?? []);
@@ -170,7 +178,23 @@ export function EditProfileScreen({ navigation }: Props) {
           ))}
         </View>
 
-        <Button label="Guardar cambios" onPress={handleSave} loading={saving} />
+        <Text style={{ color: theme.colors.textSecondary, fontFamily: theme.typography.fontFamilyBodyMedium, marginBottom: theme.spacing.xxs }}>
+          Prompts (hasta 3)
+        </Text>
+        <Text style={{ color: theme.colors.textSecondary, fontSize: theme.typography.sizes.caption, marginBottom: theme.spacing.sm }}>
+          Ayudan a que alguien sepa de qué hablarte al abrir la conversación.
+        </Text>
+        {[0, 1, 2].map((position) => (
+          <ProfilePromptEditor
+            key={position}
+            profileId={profile.id}
+            position={position}
+            existing={promptsByPosition.get(position) ?? null}
+            onChanged={() => queryClient.invalidateQueries({ queryKey: ['prompts', profile.id] })}
+          />
+        ))}
+
+        <Button label="Guardar cambios" onPress={handleSave} loading={saving} style={{ marginTop: theme.spacing.sm }} />
       </ScrollView>
     </ScreenContainer>
   );

@@ -36,6 +36,7 @@ export type ProfileStackParamList = {
   Premium: undefined;
   Settings: undefined;
   BlockedUsers: undefined;
+  VerifyProfile: undefined;
   Terms: undefined;
   Privacy: undefined;
 };

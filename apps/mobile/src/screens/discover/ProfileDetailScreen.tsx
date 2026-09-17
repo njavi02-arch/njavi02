@@ -9,12 +9,15 @@ import { ErrorState } from '../../components/ErrorState';
 import { Button } from '../../components/Button';
 import { TextField } from '../../components/TextField';
 import { PhotoGallery } from '../../components/PhotoGallery';
-import { getPhotosForProfile, getProfileById } from '../../services/profiles';
+import { ActivityBadge } from '../../components/ActivityBadge';
+import { IcebreakerChips } from '../../components/IcebreakerChips';
+import { getPhotosForProfile, getProfileById, getProfileInterestNames, getProfilePrompts } from '../../services/profiles';
 import { hasUnlockedPhotos, unlockPhotos, sendSuperLike } from '../../services/economy';
 import { recordProfileView } from '../../services/discover';
 import { sendConversationRequest } from '../../services/conversations';
 import { blockUser, reportUser } from '../../services/safety';
 import { useAuthStore } from '../../store/authStore';
+import { useMyInterests } from '../../hooks/useMyInterests';
 import { DEFAULT_APP_CONFIG } from '@orbita/shared';
 import type { DiscoverStackParamList } from '../../navigation/types';
 
@@ -32,6 +35,13 @@ export function ProfileDetailScreen({ route, navigation }: Props) {
 
   const profileQuery = useQuery({ queryKey: ['profile', profileId], queryFn: () => getProfileById(profileId) });
   const photosQuery = useQuery({ queryKey: ['photos', profileId], queryFn: () => getPhotosForProfile(profileId) });
+  const promptsQuery = useQuery({ queryKey: ['prompts', profileId], queryFn: () => getProfilePrompts(profileId) });
+  const theirInterestsQuery = useQuery({
+    queryKey: ['profile-interest-names', profileId],
+    queryFn: () => getProfileInterestNames(profileId),
+  });
+  const { data: myInterests } = useMyInterests();
+  const sharedInterests = (theirInterestsQuery.data ?? []).filter((i) => (myInterests ?? []).includes(i));
   const unlockedQuery = useQuery({
     queryKey: ['photo-unlock', session?.user.id, profileId],
     queryFn: () => hasUnlockedPhotos(session!.user.id, profileId),
@@ -129,14 +139,17 @@ export function ProfileDetailScreen({ route, navigation }: Props) {
       <ScrollView contentContainerStyle={{ paddingBottom: theme.spacing.xl, paddingTop: theme.spacing.sm }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: theme.spacing.md }}>
           <Text style={{ color: theme.colors.textPrimary, fontFamily: theme.typography.fontFamilyHeading, fontSize: theme.typography.sizes.h1 }}>
-            {profile.display_name}
+            {profile.display_name} {profile.is_verified ? '✅' : ''}
           </Text>
           <Button label="⋯" variant="ghost" fullWidth={false} onPress={handleReportOrBlock} />
         </View>
 
-        {profile.city ? (
-          <Text style={{ color: theme.colors.textSecondary, marginBottom: theme.spacing.md }}>📍 {profile.city}</Text>
-        ) : null}
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: theme.spacing.md }}>
+          {profile.city ? (
+            <Text style={{ color: theme.colors.textSecondary, marginRight: theme.spacing.sm }}>📍 {profile.city}</Text>
+          ) : null}
+          <ActivityBadge lastActiveAt={profile.last_active_at} />
+        </View>
 
         <PhotoGallery
           photos={photosQuery.data ?? []}
@@ -156,14 +169,27 @@ export function ProfileDetailScreen({ route, navigation }: Props) {
         ) : null}
 
         {profile.bio ? (
-          <Text style={{ color: theme.colors.textPrimary, fontFamily: theme.typography.fontFamilyBody, fontSize: theme.typography.sizes.body, marginTop: theme.spacing.md }}>
+          <Text style={{ color: theme.colors.textPrimary, fontFamily: theme.typography.fontFamilyBody, fontSize: theme.typography.sizes.body, marginTop: theme.spacing.md, marginBottom: theme.spacing.sm }}>
             {profile.bio}
           </Text>
         ) : null}
+
+        {(promptsQuery.data ?? []).map((p) => (
+          <View key={p.id} style={{ backgroundColor: theme.colors.surface, borderRadius: theme.radius.md, padding: theme.spacing.sm, marginBottom: theme.spacing.xs }}>
+            <Text style={{ color: theme.colors.textSecondary, fontSize: theme.typography.sizes.caption, marginBottom: 2 }}>{p.question}</Text>
+            <Text style={{ color: theme.colors.textPrimary, fontFamily: theme.typography.fontFamilyBodyMedium }}>{p.answer}</Text>
+          </View>
+        ))}
       </ScrollView>
 
       {composerOpen ? (
         <View style={{ paddingBottom: theme.spacing.sm }}>
+          <IcebreakerChips
+            otherDisplayName={profile.display_name}
+            sharedInterests={sharedInterests}
+            otherPrompts={promptsQuery.data ?? []}
+            onSelect={setMessage}
+          />
           <TextField
             placeholder={`Hola ${profile.display_name}, ¿qué tal?`}
             value={message}

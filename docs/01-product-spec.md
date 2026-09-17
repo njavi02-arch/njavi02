@@ -69,9 +69,25 @@ perfil, respuesta, super like) idealmente en la primera sesión.
 11. **Premium (estructura)** — entidad de suscripción, gates de features, sin checkout de pago
     real conectado todavía (ver PENDIENTE) pero con simulación de compra vía monedas de
     prueba/admin para poder probar el flujo end-to-end.
-12. **Seguridad** — bloqueo, reporte, rate limiting anti-spam, RLS en toda la base de datos.
-13. **Panel de administración** — usuarios, contenido/reportes, configuración económica
-    (`app_config`), sin valores hardcodeados.
+12. **Seguridad** — bloqueo, reporte, rate limiting anti-spam, RLS en toda la base de datos,
+    señales automáticas de cuentas sospechosas por acumulación de reportes.
+13. **Panel de administración** — usuarios, contenido/reportes, verificación de perfiles,
+    configuración económica (`app_config`), sin valores hardcodeados.
+14. **Verificación de perfil** — selfie + cola de moderación manual, badge ✅ visible en
+    Descubrir/perfil (añadido tras investigar el patrón estándar del sector — ver
+    `PRODUCT_BRAIN.md`).
+15. **Prompts de perfil + sugerencias de primer mensaje** — hasta 3 prompts por perfil;
+    sugerencias de icebreaker por interés compartido en el composer de "Hablar".
+16. **Boost de visibilidad** — pagado con monedas (no dinero real), aparece primero en
+    Descubrir durante un tiempo limitado.
+17. **Estado de actividad** — "Activo ahora"/"Activo hoy" en tarjetas y perfil, y aviso de
+    racha en riesgo para no perder la recompensa diaria.
+
+Ver `PRODUCT_BRAIN.md` para el porqué de cada una de estas tres últimas (14-16 se añadieron
+en una ronda de investigación de mercado posterior al MVP inicial, no estaban en el brief
+original palabra por palabra pero responden directamente a la regla de producto de la
+sección 46: ayudan a iniciar conversaciones, mejoran la confianza/calidad de usuarios, o dan
+un nuevo destino de gasto a la economía ya construida).
 
 ### Explícitamente fuera de este MVP (ver `07-roadmap-and-scaling.md`)
 

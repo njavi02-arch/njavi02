@@ -10,7 +10,11 @@ import { ErrorState } from '../../components/ErrorState';
 import { EmptyState } from '../../components/EmptyState';
 import { Button } from '../../components/Button';
 import { TextField } from '../../components/TextField';
+import { ActivityBadge } from '../../components/ActivityBadge';
+import { StreakAtRiskBanner } from '../../components/StreakAtRiskBanner';
+import { IcebreakerChips } from '../../components/IcebreakerChips';
 import { useDiscoverProfiles } from '../../hooks/useDiscoverProfiles';
+import { useMyInterests } from '../../hooks/useMyInterests';
 import { useAuthStore } from '../../store/authStore';
 import { recordProfileView } from '../../services/discover';
 import { sendConversationRequest } from '../../services/conversations';
@@ -37,6 +41,7 @@ export function DiscoverScreen({ navigation }: Props) {
   const theme = useTheme();
   const session = useAuthStore((s) => s.session);
   const { data: profiles, isLoading, isError, refetch } = useDiscoverProfiles();
+  const { data: myInterests } = useMyInterests();
   const queryClient = useQueryClient();
   const superLikeQuota = useSuperLikeQuota();
 
@@ -57,6 +62,11 @@ export function DiscoverScreen({ navigation }: Props) {
   }, [current?.id, session?.user.id]);
 
   const interestsLabel = useMemo(() => current?.interests.slice(0, 5).join(' · ') ?? '', [current]);
+  const sharedInterests = useMemo(() => {
+    if (!current || !myInterests) return [];
+    const mine = new Set(myInterests);
+    return current.interests.filter((i) => mine.has(i));
+  }, [current, myInterests]);
 
   function goNext() {
     setIndex((i) => i + 1);
@@ -131,6 +141,7 @@ export function DiscoverScreen({ navigation }: Props) {
   return (
     <ScreenContainer padded={false}>
       <ScrollView contentContainerStyle={{ paddingBottom: theme.spacing.xl }}>
+        <StreakAtRiskBanner onPressGoToStreak={() => navigation.getParent()?.navigate('Profile', { screen: 'Streak' })} />
         <Pressable
           onPress={() => navigation.navigate('ProfileDetail', { profileId: current.id })}
           style={{ marginHorizontal: theme.spacing.md, borderRadius: theme.radius.lg, overflow: 'hidden' }}
@@ -143,18 +154,38 @@ export function DiscoverScreen({ navigation }: Props) {
                 <Text style={{ fontSize: 48 }}>👤</Text>
               </View>
             )}
+            {current.isBoosted ? (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: theme.spacing.sm,
+                  left: theme.spacing.sm,
+                  backgroundColor: theme.colors.secondary,
+                  borderRadius: theme.radius.pill,
+                  paddingHorizontal: 10,
+                  paddingVertical: 4,
+                }}
+              >
+                <Text style={{ color: theme.colors.onSecondary, fontSize: theme.typography.sizes.caption, fontFamily: theme.typography.fontFamilyBodySemibold }}>
+                  🚀 Destacado
+                </Text>
+              </View>
+            ) : null}
             <LinearGradient
               colors={['transparent', 'rgba(0,0,0,0.75)']}
               style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 140, justifyContent: 'flex-end', padding: theme.spacing.md }}
             >
               <Text style={{ color: '#fff', fontFamily: theme.typography.fontFamilyHeading, fontSize: theme.typography.sizes.h1 }}>
-                {current.display_name}, {ageFromBirthDate(current.birth_date)}
+                {current.display_name}, {ageFromBirthDate(current.birth_date)} {current.is_verified ? '✅' : ''}
               </Text>
               {current.city ? (
                 <Text style={{ color: '#fff', fontFamily: theme.typography.fontFamilyBody, opacity: 0.9 }}>
                   📍 {current.city}
                 </Text>
               ) : null}
+              <View style={{ marginTop: 4 }}>
+                <ActivityBadge lastActiveAt={current.last_active_at} light />
+              </View>
             </LinearGradient>
           </View>
         </Pressable>
@@ -166,10 +197,16 @@ export function DiscoverScreen({ navigation }: Props) {
             </Text>
           ) : null}
           {interestsLabel ? (
-            <Text style={{ color: theme.colors.textSecondary, fontFamily: theme.typography.fontFamilyBodyMedium, fontSize: theme.typography.sizes.bodySmall }}>
+            <Text style={{ color: theme.colors.textSecondary, fontFamily: theme.typography.fontFamilyBodyMedium, fontSize: theme.typography.sizes.bodySmall, marginBottom: theme.spacing.sm }}>
               {interestsLabel}
             </Text>
           ) : null}
+          {current.prompts.map((p) => (
+            <View key={p.position} style={{ backgroundColor: theme.colors.surface, borderRadius: theme.radius.md, padding: theme.spacing.sm, marginBottom: theme.spacing.xs }}>
+              <Text style={{ color: theme.colors.textSecondary, fontSize: theme.typography.sizes.caption, marginBottom: 2 }}>{p.question}</Text>
+              <Text style={{ color: theme.colors.textPrimary, fontFamily: theme.typography.fontFamilyBodyMedium }}>{p.answer}</Text>
+            </View>
+          ))}
         </View>
 
         {feedback ? (
@@ -181,6 +218,12 @@ export function DiscoverScreen({ navigation }: Props) {
         <View style={{ paddingHorizontal: theme.spacing.md, marginTop: theme.spacing.lg }}>
           {composerOpen ? (
             <View>
+              <IcebreakerChips
+                otherDisplayName={current.display_name}
+                sharedInterests={sharedInterests}
+                otherPrompts={current.prompts}
+                onSelect={setMessage}
+              />
               <TextField
                 placeholder={`Hola ${current.display_name}, ¿qué tal?`}
                 value={message}

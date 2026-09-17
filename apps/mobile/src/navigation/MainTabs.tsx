@@ -10,6 +10,7 @@ import { ActivityScreen } from '../screens/activity/ActivityScreen';
 import { useIncomingRequests } from '../hooks/useConversations';
 import { useRegisterPushNotifications } from '../hooks/useRegisterPushNotifications';
 import { useNotifications } from '../hooks/useNotifications';
+import { useTrackActivity } from '../hooks/useTrackActivity';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -27,6 +28,7 @@ export function MainTabs() {
   const { data: notifications } = useNotifications();
   const unreadNotifications = notifications?.filter((n) => !n.is_read).length ?? 0;
   useRegisterPushNotifications();
+  useTrackActivity();
 
   return (
     <Tab.Navigator

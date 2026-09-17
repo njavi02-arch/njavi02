@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase';
 import type { Gender, SeekingIntent } from '@orbita/shared';
-import type { InterestRow, PhotoRow, ProfileRow } from '../types/database';
+import type { InterestRow, PhotoRow, ProfilePromptRow, ProfileRow } from '../types/database';
 
 export interface OnboardingProfileInput {
   id: string;
@@ -59,10 +59,29 @@ export async function updateMyProfile(userId: string, patch: Partial<ProfileRow>
   if (error) throw error;
 }
 
+/** Actualiza profiles.last_active_at — sin esto, el orden "más activos primero" del feed
+ * de descubrimiento (services/discover.ts) no significaba nada: se detectó en esta sesión
+ * que ninguna pantalla lo actualizaba nunca tras la creación del perfil. */
+export async function touchLastActive(userId: string): Promise<void> {
+  const { error } = await supabase.from('profiles').update({ last_active_at: new Date().toISOString() }).eq('id', userId);
+  if (error) throw error;
+}
+
 export async function listInterests(): Promise<InterestRow[]> {
   const { data, error } = await supabase.from('interests').select('*').order('category');
   if (error) throw error;
   return (data ?? []) as InterestRow[];
+}
+
+export async function getProfileInterestNames(profileId: string): Promise<string[]> {
+  const { data, error } = await supabase
+    .from('profile_interests')
+    .select('interests(name)')
+    .eq('profile_id', profileId);
+  if (error) throw error;
+  return (data ?? [])
+    .map((row: any) => row.interests?.name as string | undefined)
+    .filter((n): n is string => Boolean(n));
 }
 
 export async function getProfileInterestIds(profileId: string): Promise<string[]> {
@@ -144,6 +163,36 @@ export async function uploadProfilePhoto(input: UploadPhotoInput): Promise<Photo
 
 export async function deleteProfilePhoto(photoId: string): Promise<void> {
   const { error } = await supabase.from('photos').delete().eq('id', photoId);
+  if (error) throw error;
+}
+
+export async function getProfilePrompts(profileId: string): Promise<ProfilePromptRow[]> {
+  const { data, error } = await supabase
+    .from('profile_prompts')
+    .select('*')
+    .eq('profile_id', profileId)
+    .order('position');
+  if (error) throw error;
+  return (data ?? []) as ProfilePromptRow[];
+}
+
+export async function upsertProfilePrompt(
+  profileId: string,
+  position: number,
+  question: string,
+  answer: string,
+): Promise<ProfilePromptRow> {
+  const { data, error } = await supabase
+    .from('profile_prompts')
+    .upsert({ profile_id: profileId, position, question, answer }, { onConflict: 'profile_id,position' })
+    .select()
+    .single();
+  if (error) throw error;
+  return data as ProfilePromptRow;
+}
+
+export async function deleteProfilePrompt(promptId: string): Promise<void> {
+  const { error } = await supabase.from('profile_prompts').delete().eq('id', promptId);
   if (error) throw error;
 }
 
