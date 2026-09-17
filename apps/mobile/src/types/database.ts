@@ -167,6 +167,7 @@ export interface UserPreferencesRow {
   max_age: number;
   max_distance_km: number;
   show_me_gender: string[];
+  verified_only: boolean;
 }
 
 export interface BlockRow {

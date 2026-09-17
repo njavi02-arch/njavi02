@@ -33,6 +33,13 @@ ver `PRODUCT_BRAIN.md`): una reacción de un set fijo de 6 emojis por persona y 
 exactamente las reglas de `messages` — solo los participantes de la conversación del mensaje
 pueden ver o insertar reacciones.
 
+`supabase/migrations/0007_discovery_preferences_enforced.sql` añade
+`user_preferences.verified_only`. La corrección de fondo (que `min_age`/`max_age`/
+`show_me_gender` se apliquen de verdad al feed) vive en el cliente
+(`apps/mobile/src/services/discover.ts` + `packages/shared/src/discoveryFilters.ts` para la
+aritmética de fechas), no en SQL — no había ninguna función de servidor que ignorara estas
+columnas, simplemente ningún código las leía todavía.
+
 ## 1. Mapa de entidades
 
 ```

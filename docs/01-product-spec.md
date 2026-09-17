@@ -85,8 +85,13 @@ perfil, respuesta, super like) idealmente en la primera sesión.
 18. **Reacciones a mensajes** — una reacción (de 6 emojis) por persona y mensaje en el chat,
     tipo tapback de iMessage/WhatsApp (patrón investigado en Wizz), sincronizada en tiempo
     real entre ambos participantes.
+19. **Preferencias de descubrimiento aplicadas de verdad + filtro "solo verificados"** — el
+    feed respeta el rango de edad y el género buscado (capturados en el onboarding, antes
+    nunca se usaban — ver `PRODUCT_BRAIN.md` → PROBLEMAS), con una pantalla en
+    Ajustes para cambiarlos después. `max_distance_km` se sigue capturando pero no se aplica
+    todavía: ningún flujo de la app rellena coordenadas reales.
 
-Ver `PRODUCT_BRAIN.md` para el porqué de cada una de estas últimas (14-18 se añadieron en
+Ver `PRODUCT_BRAIN.md` para el porqué de cada una de estas últimas (14-19 se añadieron en
 una ronda de investigación de mercado posterior al MVP inicial, no estaban en el brief
 original palabra por palabra pero responden directamente a la regla de producto de la
 sección 46: ayudan a iniciar conversaciones, mejoran la confianza/calidad de usuarios, mejoran

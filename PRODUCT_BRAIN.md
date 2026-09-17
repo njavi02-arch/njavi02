@@ -164,6 +164,13 @@ reporte, panel admin completo, CI.
 - ~~Fake profiles/desconfianza no tenían ninguna señal visible en el perfil~~ — el badge de
   verificado y "Destacado" (Boost) dan señales visuales que la investigación de mercado
   identifica como relevantes para la confianza del usuario.
+- ~~`user_preferences` (edad mín/máx, género que se busca) se capturaba en el onboarding pero
+  el feed de descubrimiento nunca lo aplicaba~~ — el mismo patrón de bug que
+  `last_active_at`/`profile_completion_pct`: el dato existía, nadie lo leía. Corregido:
+  `fetchDiscoverProfiles()` ahora filtra por rango de `birth_date` (lógica pura y probada en
+  `packages/shared/discoveryFilters.ts`) y `gender`, y hay una pantalla real en
+  Ajustes → "Preferencias de descubrimiento" para poder cambiarlas después del onboarding
+  (antes no existía ninguna forma de editarlas una vez completado el registro).
 
 ## OPORTUNIDADES
 
@@ -201,16 +208,24 @@ reporte, panel admin completo, CI.
    unicidad por persona/mensaje, aislamiento por RLS frente a terceros, cambiar la propia
    reacción).
 
-Total tras esta sesión: 60 escenarios de base de datos reales + 43 tests unitarios de
+8. ~~Filtro "solo verificados" + aplicar de verdad edad/género en el feed~~ — `user_preferences.
+   verified_only` (nueva columna) + corrección del bug real de que edad/género nunca se
+   aplicaban al feed (ver PROBLEMAS) + pantalla de edición en Ajustes. Construido y probado
+   (3 escenarios reales de integración contra Postgres + 6 tests unitarios de la aritmética
+   de fechas de `discoveryFilters.ts`).
+
+Total tras esta sesión: 63 escenarios de base de datos reales + 49 tests unitarios de
 `packages/shared`, todos en verde (ver `docs/05-mvp-scope-and-testing.md`).
 
 ### Siguiente (no abordado todavía, con criterio de prioridad)
 
-1. **Filtro "solo verificados"** en preferencias de descubrimiento — la columna
-   `is_verified` ya existe, falta exponerlo en `user_preferences` + UI de filtro.
-2. **Exportación de datos (RGPD)** — el modelo relacional ya lo permite, falta construir
+1. **Exportación de datos (RGPD)** — el modelo relacional ya lo permite, falta construir
    el endpoint.
-3. **Edge Functions con moderación de texto por IA** — cuando haya presupuesto para un
+2. **Edge Functions con moderación de texto por IA** — cuando haya presupuesto para un
    servicio externo; hasta entonces, el filtro de `banned_words` cubre el caso básico.
+3. **Captura real de geolocalización** — `max_distance_km` sigue sin aplicarse: se captura en
+   el onboarding pero ningún flujo rellena `profiles.latitude/longitude` todavía. Requiere
+   permiso de ubicación + geocodificación, evaluar coste/beneficio y privacidad antes de
+   construir (ver `06-security-and-privacy.md`).
 4. **Grupos/eventos sociales** — backlog, sin señal de demanda todavía, evaluar tras tener
    usuarios reales antes de construir.

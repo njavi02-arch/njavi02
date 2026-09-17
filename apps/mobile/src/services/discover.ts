@@ -1,6 +1,7 @@
+import { ageRangeToBirthDateRange } from '@orbita/shared';
 import { supabase } from '../lib/supabase';
 import { getActiveBoostedProfileIds } from './economy';
-import type { ProfilePromptRow, ProfileRow } from '../types/database';
+import type { ProfilePromptRow, ProfileRow, UserPreferencesRow } from '../types/database';
 
 export interface DiscoverProfile extends ProfileRow {
   photos: { url: string; position: number }[];
@@ -11,27 +12,48 @@ export interface DiscoverProfile extends ProfileRow {
 
 /**
  * Feed de descubrimiento: perfiles activos, distintos del propio usuario, que no hayan
- * recibido ya una solicitud pendiente/aceptada del usuario actual. Orden: primero quien
- * tenga un Boost activo (ver PRODUCT_BRAIN.md — pagado con monedas, no con dinero real),
- * y dentro de cada grupo, quien haya estado activo más recientemente. El filtrado por
- * bloqueos lo aplica la propia RLS de `profiles` (is_blocked_between).
+ * recibido ya una solicitud pendiente/aceptada del usuario actual, dentro del rango de edad,
+ * género y (opcionalmente) verificación que el usuario haya elegido en Ajustes → Preferencias
+ * de descubrimiento (`user_preferences`, editable ahí — antes se capturaba en el onboarding
+ * y nunca se aplicaba al feed, bug real corregido en esta ronda, ver PRODUCT_BRAIN.md).
+ * `max_distance_km` no se aplica todavía: ningún flujo de la app captura latitude/longitude
+ * reales (decisión ya documentada de no simular geolocalización precisa).
+ * Orden: primero quien tenga un Boost activo (ver PRODUCT_BRAIN.md — pagado con monedas, no
+ * con dinero real), y dentro de cada grupo, quien haya estado activo más recientemente. El
+ * filtrado por bloqueos lo aplica la propia RLS de `profiles` (is_blocked_between).
  */
 export async function fetchDiscoverProfiles(currentUserId: string, limit = 20): Promise<DiscoverProfile[]> {
-  const [{ data: alreadyContacted, error: contactedError }, boostedIds] = await Promise.all([
+  const [{ data: alreadyContacted, error: contactedError }, boostedIds, { data: prefsRow, error: prefsError }] = await Promise.all([
     supabase.from('conversation_requests').select('receiver_id').eq('sender_id', currentUserId).in('status', ['pending', 'accepted']),
     getActiveBoostedProfileIds(),
+    supabase.from('user_preferences').select('*').eq('profile_id', currentUserId).single(),
   ]);
   if (contactedError) throw contactedError;
+  if (prefsError) throw prefsError;
+
+  const prefs = prefsRow as UserPreferencesRow;
+  const { minBirthDate, maxBirthDate } = ageRangeToBirthDateRange(prefs.min_age, prefs.max_age);
 
   const excludeIds = new Set((alreadyContacted ?? []).map((r) => r.receiver_id as string));
   excludeIds.add(currentUserId);
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('profiles')
     .select('*, photos(url, position), profile_interests(interests(name)), profile_prompts(question, answer, position)')
     .eq('status', 'active')
+    .gte('birth_date', minBirthDate)
+    .lte('birth_date', maxBirthDate)
     .order('last_active_at', { ascending: false })
     .limit(limit + excludeIds.size);
+
+  if (prefs.show_me_gender.length > 0) {
+    query = query.in('gender', prefs.show_me_gender);
+  }
+  if (prefs.verified_only) {
+    query = query.eq('is_verified', true);
+  }
+
+  const { data, error } = await query;
 
   if (error) throw error;
 

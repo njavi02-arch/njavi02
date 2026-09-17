@@ -234,6 +234,38 @@ en `DELETE`, Postgres solo garantiza la clave primaria en el "old row" salvo
 `packages/shared`, `tsc --noEmit` limpio en `apps/mobile` tras añadir el servicio y la UI de
 reacciones.**
 
+## 4f. Preferencias de descubrimiento aplicadas de verdad (`0007_discovery_preferences_enforced.sql`)
+
+Bug real encontrado revisando el propio `discover.ts` (mismo patrón que `last_active_at` y
+`profile_completion_pct` en rondas anteriores): `user_preferences.min_age`/`max_age`/
+`show_me_gender` se capturaban en el onboarding pero el feed de descubrimiento nunca los leía
+— cualquier persona veía perfiles de cualquier edad y género, sin importar lo que hubiera
+elegido. Corregido en `apps/mobile/src/services/discover.ts`, que ahora consulta
+`user_preferences` y aplica `birth_date` (rango calculado por
+`packages/shared/src/discoveryFilters.ts`), `gender in (...)` y, si `verified_only` está
+activo, `is_verified = true` (columna nueva, siguiente ítem del roadmap tras la investigación
+de mercado — Bumble filtra por verificación). Se añadió también una pantalla real en
+Ajustes → "Preferencias de descubrimiento" para poder cambiarlas después del onboarding, algo
+que antes no existía.
+
+- **6 tests unitarios** de `ageRangeToBirthDateRange` (`packages/shared/src/
+  discoveryFilters.test.ts`): límite superior exacto (cumple la edad mínima hoy mismo queda
+  incluido), límite inferior exacto (cumple la edad máxima+1 mañana queda excluido), rango
+  coherente para edades típicas.
+- **3 escenarios reales contra Postgres** (`08_discovery_prefs_scenarios.sql`): sin
+  `verified_only`, entran los perfiles en rango de edad/género (con RLS activa); con
+  `verified_only=true`, solo entra la persona verificada dentro de ese rango; un perfil fuera
+  de rango de edad queda excluido.
+- `max_distance_km` se sigue capturando en el onboarding pero **no se aplica**: ningún flujo
+  de la app rellena `profiles.latitude/longitude` con coordenadas reales todavía (decisión ya
+  documentada de no simular geolocalización precisa — ver `06-security-and-privacy.md`). Se
+  deja explícito en el código y en `PRODUCT_BRAIN.md` en vez de dejarlo como un hueco
+  silencioso.
+
+**Total acumulado: 63/63 escenarios de base de datos reales, 49/49 tests unitarios de
+`packages/shared`, `tsc --noEmit` limpio en las tres apps, `next build`+`eslint` limpios en
+el panel admin.**
+
 ## 5. Qué NO se ha probado (limitaciones honestas de este entorno)
 
 - **No hay simulador iOS/Android ni dispositivo físico** en este entorno remoto: no se
