@@ -63,6 +63,7 @@ export function ProfileDetailScreen({ route, navigation }: Props) {
       await sendSuperLike(profileId);
       Alert.alert('✨ Super Like enviado');
       queryClient.invalidateQueries({ queryKey: ['wallets'] });
+      queryClient.invalidateQueries({ queryKey: ['super-likes-sent-today'] });
     } catch (e) {
       Alert.alert('No se pudo enviar', e instanceof Error ? e.message : 'Inténtalo de nuevo');
     }

@@ -1,5 +1,4 @@
 import { supabase } from '../lib/supabase';
-import { computeProfileCompletionPct } from '@orbita/shared';
 import type { Gender, SeekingIntent } from '@orbita/shared';
 import type { InterestRow, PhotoRow, ProfileRow } from '../types/database';
 
@@ -148,19 +147,3 @@ export async function deleteProfilePhoto(photoId: string): Promise<void> {
   if (error) throw error;
 }
 
-export function computeCompletionFromProfile(
-  profile: ProfileRow,
-  photoCount: number,
-  interestCount: number,
-): number {
-  return computeProfileCompletionPct({
-    hasName: Boolean(profile.display_name),
-    hasBirthDate: Boolean(profile.birth_date),
-    hasGender: profile.gender !== 'unspecified',
-    hasSeeking: profile.seeking.length > 0,
-    hasCity: Boolean(profile.city),
-    photoCount,
-    hasBio: profile.bio.trim().length > 0,
-    interestCount,
-  });
-}

@@ -107,6 +107,7 @@ export function SettingsScreen({ navigation }: Props) {
         ))}
 
         <View style={{ marginTop: theme.spacing.xl }}>
+          <Button label="Usuarios bloqueados" variant="ghost" onPress={() => navigation.navigate('BlockedUsers')} style={{ marginBottom: 4 }} />
           <Button label="Términos de Servicio" variant="ghost" onPress={() => navigation.navigate('Terms')} style={{ marginBottom: 4 }} />
           <Button label="Política de Privacidad" variant="ghost" onPress={() => navigation.navigate('Privacy')} style={{ marginBottom: 10 }} />
           <Button label="Cerrar sesión" variant="outline" onPress={() => signOut()} style={{ marginBottom: 10 }} />

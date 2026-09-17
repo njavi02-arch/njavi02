@@ -15,6 +15,7 @@ import { useAuthStore } from '../../store/authStore';
 import { recordProfileView } from '../../services/discover';
 import { sendConversationRequest } from '../../services/conversations';
 import { sendSuperLike } from '../../services/economy';
+import { useSuperLikeQuota } from '../../hooks/useSuperLikeQuota';
 import type { DiscoverStackParamList } from '../../navigation/types';
 
 type Props = NativeStackScreenProps<DiscoverStackParamList, 'DiscoverFeed'>;
@@ -37,6 +38,7 @@ export function DiscoverScreen({ navigation }: Props) {
   const session = useAuthStore((s) => s.session);
   const { data: profiles, isLoading, isError, refetch } = useDiscoverProfiles();
   const queryClient = useQueryClient();
+  const superLikeQuota = useSuperLikeQuota();
 
   const [index, setIndex] = useState(0);
   const [composerOpen, setComposerOpen] = useState(false);
@@ -83,6 +85,7 @@ export function DiscoverScreen({ navigation }: Props) {
       await sendSuperLike(current.id);
       setFeedback('✨ Super Like enviado');
       queryClient.invalidateQueries({ queryKey: ['wallets'] });
+      queryClient.invalidateQueries({ queryKey: ['super-likes-sent-today'] });
     } catch (e) {
       setFeedback(e instanceof Error ? e.message : 'No se pudo enviar el Super Like');
     } finally {
@@ -196,11 +199,11 @@ export function DiscoverScreen({ navigation }: Props) {
             <View style={{ flexDirection: 'row' }}>
               <Button label="Pasar" variant="outline" onPress={goNext} fullWidth={false} style={{ marginRight: 8, flex: 1 }} />
               <Button
-                label="✨"
+                label={superLikeQuota.isFree ? '✨' : superLikeQuota.superLikeCredits > 0 ? '✨' : `✨${superLikeQuota.coinCost}`}
                 variant="secondary"
                 onPress={handleSuperLike}
                 fullWidth={false}
-                style={{ marginRight: 8, width: 56 }}
+                style={{ marginRight: 8, width: superLikeQuota.isFree ? 56 : 76 }}
                 disabled={sending}
               />
               <View style={{ flex: 2 }}>

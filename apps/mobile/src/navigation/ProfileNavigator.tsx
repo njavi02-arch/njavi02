@@ -8,6 +8,7 @@ import { WalletScreen } from '../screens/profile/WalletScreen';
 import { StreakScreen } from '../screens/profile/StreakScreen';
 import { PremiumScreen } from '../screens/profile/PremiumScreen';
 import { SettingsScreen } from '../screens/profile/SettingsScreen';
+import { BlockedUsersScreen } from '../screens/profile/BlockedUsersScreen';
 import { TermsScreen } from '../screens/legal/TermsScreen';
 import { PrivacyPolicyScreen } from '../screens/legal/PrivacyPolicyScreen';
 
@@ -29,6 +30,7 @@ export function ProfileNavigator() {
       <Stack.Screen name="Streak" component={StreakScreen} options={{ title: '' }} />
       <Stack.Screen name="Premium" component={PremiumScreen} options={{ title: '' }} />
       <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: '' }} />
+      <Stack.Screen name="BlockedUsers" component={BlockedUsersScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Terms" component={TermsScreen} options={{ title: '' }} />
       <Stack.Screen name="Privacy" component={PrivacyPolicyScreen} options={{ title: '' }} />
     </Stack.Navigator>

@@ -11,6 +11,11 @@ atómicas de servidor (rate limit + cobro + creación del registro + notificaci�
 único paso), en vez de varias llamadas separadas desde el cliente. Ver
 `docs/05-mvp-scope-and-testing.md §4b` para el detalle y la evidencia de pruebas.
 
+`supabase/migrations/0003_profile_completion_trigger.sql` añade triggers en `profiles`,
+`photos` y `profile_interests` que recalculan `profiles.profile_completion_pct`
+automáticamente. Corrige un bug real: ese porcentaje se quedaba en 0% para siempre porque
+ningún cliente lo actualizaba nunca — ver `docs/05-mvp-scope-and-testing.md §4c`.
+
 ## 1. Mapa de entidades
 
 ```

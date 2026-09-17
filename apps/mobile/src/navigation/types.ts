@@ -35,6 +35,7 @@ export type ProfileStackParamList = {
   Streak: undefined;
   Premium: undefined;
   Settings: undefined;
+  BlockedUsers: undefined;
   Terms: undefined;
   Privacy: undefined;
 };

@@ -125,6 +125,28 @@ export async function sendMessage(
   return data as MessageRow;
 }
 
+/** Sube una foto de chat al bucket `photos` (mismo bucket que las fotos de perfil, bajo
+ * el prefijo chat/ — ver docs/07-roadmap-and-scaling.md sobre la configuración de Storage
+ * pendiente) y devuelve su URL pública para pasársela a sendImageMessage. */
+export async function uploadChatImage(
+  conversationId: string,
+  senderId: string,
+  fileUri: string,
+  contentType: string,
+): Promise<string> {
+  const ext = contentType.split('/')[1] ?? 'jpg';
+  const storagePath = `chat/${conversationId}/${senderId}-${Date.now()}.${ext}`;
+
+  const response = await fetch(fileUri);
+  const blob = await response.blob();
+
+  const { error } = await supabase.storage.from('photos').upload(storagePath, blob, { contentType });
+  if (error) throw error;
+
+  const { data } = supabase.storage.from('photos').getPublicUrl(storagePath);
+  return data.publicUrl;
+}
+
 export async function sendImageMessage(
   conversationId: string,
   senderId: string,

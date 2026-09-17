@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Alert, FlatList, KeyboardAvoidingView, Platform, Pressable, Text, View } from 'react-native';
+import { Alert, FlatList, Image, KeyboardAvoidingView, Platform, Pressable, Text, View } from 'react-native';
 import dayjs from 'dayjs';
+import * as ImagePicker from 'expo-image-picker';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTheme } from '../../theme/ThemeProvider';
 import { ScreenContainer } from '../../components/ScreenContainer';
@@ -12,11 +13,13 @@ import {
   getConversation,
   listMessages,
   markMessagesAsRead,
+  sendImageMessage,
   sendMessage,
   subscribeToConversationMessages,
   subscribeToTypingPresence,
   archiveConversation,
   muteConversation,
+  uploadChatImage,
 } from '../../services/conversations';
 import { blockUser, reportUser } from '../../services/safety';
 import type { MessageRow } from '../../types/database';
@@ -35,6 +38,7 @@ export function ChatScreen({ route, navigation }: Props) {
   const [isUserA, setIsUserA] = useState<boolean | null>(null);
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
+  const [sendingImage, setSendingImage] = useState(false);
   const [typingUsers, setTypingUsers] = useState<string[]>([]);
   const typingRef = useRef<{ setTyping: (t: boolean) => void; unsubscribe: () => void } | null>(null);
   const listRef = useRef<FlatList<MessageRow>>(null);
@@ -102,6 +106,24 @@ export function ChatScreen({ route, navigation }: Props) {
     }
   }
 
+  async function handleSendImage() {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) return;
+
+    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.7 });
+    if (result.canceled || !result.assets[0]) return;
+
+    setSendingImage(true);
+    try {
+      const imageUrl = await uploadChatImage(conversationId, selfId, result.assets[0].uri, 'image/jpeg');
+      await sendImageMessage(conversationId, selfId, imageUrl);
+    } catch (e) {
+      Alert.alert('No se pudo enviar la foto', e instanceof Error ? e.message : 'Inténtalo de nuevo');
+    } finally {
+      setSendingImage(false);
+    }
+  }
+
   function openMenu() {
     if (isUserA === null) return; // todavía no sabemos si somos user_a o user_b — evita
     // silenciar/archivar la mitad equivocada de la conversación (bug real corregido).
@@ -163,23 +185,35 @@ export function ChatScreen({ route, navigation }: Props) {
                 </Text>
               );
             }
+            const isImage = item.message_type === 'image';
             return (
               <View
                 style={{
                   alignSelf: isMine ? 'flex-end' : 'flex-start',
-                  backgroundColor: isMine ? theme.colors.primary : theme.colors.surface,
+                  backgroundColor: isImage ? 'transparent' : isMine ? theme.colors.primary : theme.colors.surface,
                   borderRadius: theme.radius.md,
                   borderBottomRightRadius: isMine ? 4 : theme.radius.md,
                   borderBottomLeftRadius: isMine ? theme.radius.md : 4,
-                  paddingVertical: 10,
-                  paddingHorizontal: 14,
+                  paddingVertical: isImage ? 0 : 10,
+                  paddingHorizontal: isImage ? 0 : 14,
                   marginBottom: 8,
                   maxWidth: '78%',
+                  overflow: 'hidden',
                 }}
               >
-                <Text style={{ color: isMine ? theme.colors.onPrimary : theme.colors.textPrimary }}>{item.content}</Text>
-                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 4 }}>
-                  <Text style={{ fontSize: 10, color: isMine ? theme.colors.onPrimary : theme.colors.textSecondary, opacity: 0.75 }}>
+                {isImage && item.image_url ? (
+                  <Image source={{ uri: item.image_url }} style={{ width: 220, height: 220, borderRadius: theme.radius.md }} resizeMode="cover" />
+                ) : (
+                  <Text style={{ color: isMine ? theme.colors.onPrimary : theme.colors.textPrimary }}>{item.content}</Text>
+                )}
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: isImage ? 2 : 4 }}>
+                  <Text
+                    style={{
+                      fontSize: 10,
+                      color: isImage ? theme.colors.textSecondary : isMine ? theme.colors.onPrimary : theme.colors.textSecondary,
+                      opacity: 0.75,
+                    }}
+                  >
                     {dayjs(item.created_at).format('HH:mm')}
                   </Text>
                   {isMine ? (
@@ -187,7 +221,7 @@ export function ChatScreen({ route, navigation }: Props) {
                       style={{
                         fontSize: 10,
                         marginLeft: 4,
-                        color: item.status === 'read' ? theme.colors.success : theme.colors.onPrimary,
+                        color: item.status === 'read' ? theme.colors.success : isImage ? theme.colors.textSecondary : theme.colors.onPrimary,
                         opacity: item.status === 'read' ? 1 : 0.75,
                       }}
                     >
@@ -207,6 +241,14 @@ export function ChatScreen({ route, navigation }: Props) {
         ) : null}
 
         <View style={{ flexDirection: 'row', alignItems: 'flex-end', padding: theme.spacing.md }}>
+          <Button
+            label="📷"
+            variant="outline"
+            onPress={handleSendImage}
+            fullWidth={false}
+            loading={sendingImage}
+            style={{ width: 48, height: 48, paddingHorizontal: 0, marginRight: 8 }}
+          />
           <View style={{ flex: 1, marginRight: 8 }}>
             <TextField value={draft} onChangeText={handleChangeDraft} placeholder="Escribe un mensaje…" style={{ marginBottom: 0 }} />
           </View>

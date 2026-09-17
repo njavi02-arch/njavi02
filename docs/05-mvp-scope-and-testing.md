@@ -140,6 +140,41 @@ cupo gratis del día. Además se descubrió y cerró una laguna real: antes de e
 porque la tabla `notifications` no tiene policy de INSERT para clientes (a propósito) y
 nada del lado servidor las estaba generando.
 
+## 4c. Auditoría de código muerto → 8 huecos reales encontrados y cerrados
+
+Tras el MVP, se hizo un barrido sistemático buscando funciones de servicio exportadas que
+ningún componente llamaba (`grep` de cada `export function` de `apps/mobile/src/services`
+contra el resto del código). El resultado no fue solo limpieza: varias de esas funciones
+"muertas" eran features completas que faltaba conectar a la UI, o revelaban bugs reales:
+
+- **`profile_completion_pct` nunca se calculaba** — el bug más importante de este barrido.
+  `computeCompletionFromProfile` existía pero nadie la llamaba, así que el porcentaje de
+  "perfil completado" que se le promete al usuario en el onboarding se quedaba clavado en
+  0% para siempre. Corregido con un trigger de base de datos
+  (`0003_profile_completion_trigger.sql`) que recalcula el porcentaje automáticamente en
+  cuanto cambian nombre/fecha/género/busca/ciudad/bio/fotos/intereses — más robusto que
+  depender de que cada pantalla del cliente se acuerde de llamar a una función, que es
+  justo lo que había fallado la primera vez. Validado con 5 escenarios nuevos (40/40 en
+  total): perfil mínimo, tras completar campos, con 3 fotos sin intereses, 100% con todo
+  completo, y que borrar una foto hace bajar el % de nuevo.
+- **`isUserA` hardcodeado a `true`** en `ChatScreen` al silenciar/archivar — para la mitad
+  de los usuarios (los que son `user_b` de la conversación) esas acciones actualizaban la
+  fila equivocada. Corregido calculando `isUserA` de verdad a partir de la conversación.
+- **Sin recuperación de contraseña** — `requestPasswordReset` existía sin ningún enlace en
+  `LoginScreen`. Añadido "¿Olvidaste tu contraseña?" con manejo de error real (probado con
+  Playwright: sin backend disponible, el fallo de red se captura y se muestra sin que la
+  app se rompa).
+- **Sin forma de deshacer un bloqueo** — `unblockUser`/`listMyBlocks` existían sin ninguna
+  pantalla; una vez bloqueabas a alguien por error no había recurso. Añadida la pantalla
+  "Usuarios bloqueados" en Ajustes.
+- **Fotos en el chat, pedidas explícitamente en el brief (sección 10), sin botón** —
+  `sendImageMessage` existía pero `ChatScreen` no tenía ningún selector de imagen.
+  Añadido el botón 📷 en el composer, subida a Storage y renderizado de mensajes de
+  imagen en la conversación.
+- **`grantCoinsToUser` sin botón** en el panel admin — añadido "+50 🪙" por fila de usuario.
+- Limpieza de la función `blockAndExitConversation` (duplicaba `blockUser` sin hacer lo
+  que su nombre prometía) y `getCurrentSession` (redundante con lo que ya hace authStore).
+
 ## 5. Qué NO se ha probado (limitaciones honestas de este entorno)
 
 - **No hay simulador iOS/Android ni dispositivo físico** en este entorno remoto: no se

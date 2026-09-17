@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { unregisterAllPushTokens } from './notifications';
 import type { ReportRow } from '../types/database';
 
 export async function blockUser(blockerId: string, blockedId: string): Promise<void> {
@@ -11,13 +12,21 @@ export async function unblockUser(blockerId: string, blockedId: string): Promise
   if (error) throw error;
 }
 
-export async function listMyBlocks(blockerId: string) {
+export interface BlockedUserEntry {
+  id: string;
+  blocked_id: string;
+  created_at: string;
+  blocked: { display_name: string } | null;
+}
+
+export async function listMyBlocks(blockerId: string): Promise<BlockedUserEntry[]> {
   const { data, error } = await supabase
     .from('blocks')
     .select('id, blocked_id, created_at, blocked:profiles!blocks_blocked_id_fkey(display_name)')
-    .eq('blocker_id', blockerId);
+    .eq('blocker_id', blockerId)
+    .order('created_at', { ascending: false });
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []) as unknown as BlockedUserEntry[];
 }
 
 export interface ReportInput {
@@ -65,4 +74,7 @@ export async function deleteMyAccount(userId: string): Promise<void> {
     })
     .eq('id', userId);
   if (error) throw error;
+
+  // Una cuenta eliminada no debe poder recibir push a partir de ahora.
+  await unregisterAllPushTokens(userId).catch(() => {});
 }

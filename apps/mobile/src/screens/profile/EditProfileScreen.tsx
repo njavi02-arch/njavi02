@@ -49,11 +49,17 @@ export function EditProfileScreen({ navigation }: Props) {
   const photosBySlot = new Map((photosQuery.data ?? []).map((p) => [p.position, p]));
   const selectedInterestIds = new Set(myInterestsQuery.data ?? []);
 
+  // profiles.profile_completion_pct se recalcula solo en la base de datos (trigger,
+  // ver supabase/migrations/0003_profile_completion_trigger.sql) en cuanto cambian
+  // fotos/intereses/bio/etc. — pero authStore.profile es una copia local, así que hay
+  // que refrescarla después de cada cambio para que el % que se ve en MyProfileScreen
+  // no se quede desactualizado.
   async function handleToggleInterest(interestId: string) {
     if (!profile) return;
     const nowSelected = !selectedInterestIds.has(interestId);
     await setProfileInterestSelected(profile.id, interestId, nowSelected);
     queryClient.invalidateQueries({ queryKey: ['profile-interests', profile.id] });
+    await refreshProfile();
   }
 
   async function handlePickPhoto(position: number) {
@@ -67,6 +73,7 @@ export function EditProfileScreen({ navigation }: Props) {
     try {
       await uploadProfilePhoto({ profileId: profile.id, position, fileUri: result.assets[0].uri, contentType: 'image/jpeg' });
       queryClient.invalidateQueries({ queryKey: ['photos', profile.id] });
+      await refreshProfile();
     } catch (e) {
       Alert.alert('No se pudo subir la foto', e instanceof Error ? e.message : 'Inténtalo de nuevo');
     } finally {
@@ -78,6 +85,7 @@ export function EditProfileScreen({ navigation }: Props) {
     if (!profile) return;
     await deleteProfilePhoto(photoId);
     queryClient.invalidateQueries({ queryKey: ['photos', profile.id] });
+    await refreshProfile();
   }
 
   async function handleSave() {
