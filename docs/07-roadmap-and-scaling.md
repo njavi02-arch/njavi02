@@ -46,20 +46,25 @@ Ordenado por lo que más bloquea un lanzamiento real:
 - **Gesto de swipe** en Descubrir: implementado con botones (`Pasar`/`Hablar`/`Super Like`),
   tal como pide el brief como interacción principal; el swipe lateral opcional mencionado
   en `04-ux-ui-flows.md` no está implementado todavía.
-- **Boost de visibilidad**: modelo de datos (`profile_boosts`) listo, sin UI — mencionado
-  como función futura en el propio brief (sección 15).
 - **Logros/badges** más allá del porcentaje de perfil completado y la racha: el brief pide
   gamificación "integrada de forma natural, sin elementos innecesarios" — se ha priorizado
   monedas + racha + Super Likes (los sistemas explícitamente detallados) antes que añadir
   más mecánicas no especificadas.
-- **Exportación de datos del usuario** (portabilidad RGPD): no implementada; el modelo
-  relacional lo permite (todas las tablas de negocio tienen `profile_id`), falta construir
-  el endpoint/Edge Function que genere el export.
-- **CI**: no se ha configurado un pipeline (GitHub Actions) que ejecute
-  `npm run test`/`typecheck` en cada PR — recomendado en cuanto haya colaboración en equipo.
+- **Captura real de geolocalización**: `user_preferences.max_distance_km` se captura en el
+  onboarding pero no se aplica al feed — ningún flujo rellena `profiles.latitude/longitude`
+  con coordenadas reales todavía. Requiere permiso de ubicación + geocodificación; evaluar
+  coste/beneficio y privacidad antes de construir (ver `06-security-and-privacy.md`).
 - **Rate limiting a escala**: `rate_limit_events` en Postgres es válido para el volumen de
   un MVP; con tráfico alto, migrar a un almacén en memoria (Upstash Redis, por ejemplo) con
   la misma interfaz (`check_and_record_rate_limit`) para no reescribir las llamadas.
+
+Ya resuelto en rondas posteriores de esta misma sesión (se deja constancia aquí porque este
+documento los listaba como pendientes): **Boost de visibilidad** tiene UI completa
+(`WalletScreen`, tag "🚀 Destacado" en Descubrir, pagado con monedas) · **exportación de
+datos del usuario** (RGPD) está construida (`export_my_data()` + Ajustes → "Exportar mis
+datos", ver `06-security-and-privacy.md §6`) · **CI** existe en
+`.github/workflows/ci.yml` (tests + typecheck de `packages/shared`, typecheck de
+`apps/mobile`, typecheck+lint de `apps/admin` en cada push/PR).
 
 ## 3. Preparación para escalar
 
