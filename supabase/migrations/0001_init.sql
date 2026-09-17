@@ -990,12 +990,39 @@ as $$
 declare
   v_balance integer;
 begin
+  if p_amount <= 0 then
+    raise exception 'grant_super_like_credits requiere un importe positivo';
+  end if;
+
   insert into super_like_credit_wallets (profile_id, balance) values (p_profile_id, 0)
     on conflict (profile_id) do nothing;
 
   update super_like_credit_wallets set balance = balance + p_amount, updated_at = now()
     where profile_id = p_profile_id
     returning balance into v_balance;
+
+  return v_balance;
+end;
+$$;
+
+-- Simétrica a spend_coins/spend_message_credit — evita que el cliente tenga que "gastar"
+-- llamando a grant_ con un importe negativo (inconsistente con el resto de la economía).
+create or replace function spend_super_like_credit(p_profile_id uuid, p_reason text default 'super_like_sent')
+returns integer
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_balance integer;
+begin
+  update super_like_credit_wallets set balance = balance - 1, updated_at = now()
+    where profile_id = p_profile_id and balance >= 1
+    returning balance into v_balance;
+
+  if not found then
+    raise exception 'No quedan Super Likes de racha disponibles';
+  end if;
 
   return v_balance;
 end;

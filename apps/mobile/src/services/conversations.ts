@@ -1,0 +1,231 @@
+import { supabase } from '../lib/supabase';
+import type { ConversationRequestRow, ConversationRow, MessageRow, ProfileRow } from '../types/database';
+
+/**
+ * Envía una solicitud de conversación ("Hablar"). En producción esto debería llamar a la
+ * Edge Function `start-conversation` (rate limit + filtro de palabras + gasto de crédito
+ * en una sola transacción atómica del lado del servidor — ver supabase/functions). Aquí se
+ * hace el equivalente en dos pasos desde el cliente porque este MVP no tiene el Edge
+ * Function desplegado; ambos pasos están protegidos por RLS y por la función
+ * spend_message_credit (SECURITY DEFINER), así que un fallo a mitad de camino no puede
+ * dejar el saldo en un estado inconsistente sin la solicitud, ni viceversa sin más que un
+ * mensaje sin costear (nunca gasto sin solicitud).
+ */
+export async function sendConversationRequest(
+  senderId: string,
+  receiverId: string,
+  firstMessage: string,
+): Promise<ConversationRequestRow> {
+  const { data: allowed, error: rateLimitError } = await supabase.rpc('check_and_record_rate_limit', {
+    p_profile_id: senderId,
+    p_action_type: 'new_conversation',
+    p_base_limit: 20, // app_config.new_conversation_rate_limit_per_hour — ver ASSUMPTIONS.md
+    p_window: '1 hour',
+  });
+  if (rateLimitError) throw rateLimitError;
+  if (!allowed) {
+    throw new Error('Has enviado demasiadas solicitudes de conversación nuevas. Inténtalo de nuevo en un rato.');
+  }
+
+  const { data, error } = await supabase
+    .from('conversation_requests')
+    .insert({ sender_id: senderId, receiver_id: receiverId, first_message: firstMessage })
+    .select()
+    .single();
+  if (error) throw error;
+
+  const { error: spendError } = await supabase.rpc('spend_message_credit', {
+    p_profile_id: senderId,
+    p_reason: 'conversation_started',
+    p_reference_id: data.id,
+  });
+  if (spendError) throw spendError;
+
+  return data as ConversationRequestRow;
+}
+
+export interface IncomingRequest extends ConversationRequestRow {
+  sender: Pick<ProfileRow, 'id' | 'display_name'> & { photo_url: string | null };
+}
+
+export async function listIncomingRequests(receiverId: string): Promise<IncomingRequest[]> {
+  const { data, error } = await supabase
+    .from('conversation_requests')
+    .select('*, sender:profiles!conversation_requests_sender_id_fkey(id, display_name, photos(url, position))')
+    .eq('receiver_id', receiverId)
+    .eq('status', 'pending')
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+
+  return (data ?? []).map((row: any) => ({
+    ...row,
+    sender: {
+      id: row.sender.id,
+      display_name: row.sender.display_name,
+      photo_url:
+        [...(row.sender.photos ?? [])].sort((a: any, b: any) => a.position - b.position)[0]?.url ?? null,
+    },
+  }));
+}
+
+export async function acceptConversationRequest(requestId: string): Promise<string> {
+  const { data, error } = await supabase.rpc('accept_conversation_request', { p_request_id: requestId });
+  if (error) throw error;
+  return data as string;
+}
+
+export async function declineConversationRequest(requestId: string): Promise<void> {
+  const { error } = await supabase.rpc('decline_conversation_request', { p_request_id: requestId });
+  if (error) throw error;
+}
+
+export interface ConversationSummary extends ConversationRow {
+  otherProfile: Pick<ProfileRow, 'id' | 'display_name'> & { photo_url: string | null };
+  lastMessage: Pick<MessageRow, 'content' | 'message_type' | 'sender_id' | 'created_at'> | null;
+  unreadCount: number;
+}
+
+export async function listConversations(currentUserId: string): Promise<ConversationSummary[]> {
+  const { data, error } = await supabase
+    .from('conversations')
+    .select(
+      `*,
+       user_a:profiles!conversations_user_a_id_fkey(id, display_name, photos(url, position)),
+       user_b:profiles!conversations_user_b_id_fkey(id, display_name, photos(url, position)),
+       messages(content, message_type, sender_id, created_at, status)`,
+    )
+    .or(`user_a_id.eq.${currentUserId},user_b_id.eq.${currentUserId}`)
+    .order('last_message_at', { ascending: false });
+
+  if (error) throw error;
+
+  return (data ?? []).map((row: any) => {
+    const other = row.user_a_id === currentUserId ? row.user_b : row.user_a;
+    const messages = [...(row.messages ?? [])].sort(
+      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    );
+    return {
+      ...row,
+      otherProfile: {
+        id: other.id,
+        display_name: other.display_name,
+        photo_url: [...(other.photos ?? [])].sort((a: any, b: any) => a.position - b.position)[0]?.url ?? null,
+      },
+      lastMessage: messages[0] ?? null,
+      unreadCount: messages.filter((m) => m.sender_id !== currentUserId && m.status !== 'read').length,
+    };
+  });
+}
+
+export async function listMessages(conversationId: string): Promise<MessageRow[]> {
+  const { data, error } = await supabase
+    .from('messages')
+    .select('*')
+    .eq('conversation_id', conversationId)
+    .order('created_at', { ascending: true });
+  if (error) throw error;
+  return (data ?? []) as MessageRow[];
+}
+
+export async function sendMessage(
+  conversationId: string,
+  senderId: string,
+  content: string,
+): Promise<MessageRow> {
+  const { data, error } = await supabase
+    .from('messages')
+    .insert({ conversation_id: conversationId, sender_id: senderId, content, message_type: 'text' })
+    .select()
+    .single();
+  if (error) throw error;
+  return data as MessageRow;
+}
+
+export async function sendImageMessage(
+  conversationId: string,
+  senderId: string,
+  imageUrl: string,
+): Promise<MessageRow> {
+  const { data, error } = await supabase
+    .from('messages')
+    .insert({ conversation_id: conversationId, sender_id: senderId, image_url: imageUrl, message_type: 'image' })
+    .select()
+    .single();
+  if (error) throw error;
+  return data as MessageRow;
+}
+
+export async function markMessagesAsRead(conversationId: string, readerId: string): Promise<void> {
+  const { error } = await supabase
+    .from('messages')
+    .update({ status: 'read', read_at: new Date().toISOString() })
+    .eq('conversation_id', conversationId)
+    .neq('sender_id', readerId)
+    .neq('status', 'read');
+  if (error) throw error;
+}
+
+/** Suscripción Realtime a los mensajes nuevos de una conversación (ver docs/02-architecture.md §4). */
+export function subscribeToConversationMessages(
+  conversationId: string,
+  onInsert: (message: MessageRow) => void,
+) {
+  const channel = supabase
+    .channel(`conversation:${conversationId}`)
+    .on(
+      'postgres_changes',
+      { event: 'INSERT', schema: 'public', table: 'messages', filter: `conversation_id=eq.${conversationId}` },
+      (payload) => onInsert(payload.new as MessageRow),
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}
+
+/** Canal de Presence para el indicador "escribiendo..." — no persiste en tabla. */
+export function subscribeToTypingPresence(
+  conversationId: string,
+  selfId: string,
+  onTypingChange: (typingUserIds: string[]) => void,
+) {
+  const channel = supabase.channel(`typing:${conversationId}`, { config: { presence: { key: selfId } } });
+
+  channel
+    .on('presence', { event: 'sync' }, () => {
+      const state = channel.presenceState<{ typing: boolean }>();
+      const typingIds = Object.entries(state)
+        .filter(([, entries]) => entries.some((e) => e.typing))
+        .map(([id]) => id)
+        .filter((id) => id !== selfId);
+      onTypingChange(typingIds);
+    })
+    .subscribe();
+
+  return {
+    setTyping: (typing: boolean) => channel.track({ typing }),
+    unsubscribe: () => supabase.removeChannel(channel),
+  };
+}
+
+export async function blockAndExitConversation(conversationId: string, blockerId: string, blockedId: string) {
+  const { error: blockError } = await supabase.from('blocks').insert({ blocker_id: blockerId, blocked_id: blockedId });
+  if (blockError) throw blockError;
+}
+
+export async function archiveConversation(conversationId: string, isUserA: boolean) {
+  const { error } = await supabase
+    .from('conversations')
+    .update(isUserA ? { archived_by_a: true } : { archived_by_b: true })
+    .eq('id', conversationId);
+  if (error) throw error;
+}
+
+export async function muteConversation(conversationId: string, isUserA: boolean, muted: boolean) {
+  const { error } = await supabase
+    .from('conversations')
+    .update(isUserA ? { muted_by_a: muted } : { muted_by_b: muted })
+    .eq('id', conversationId);
+  if (error) throw error;
+}
