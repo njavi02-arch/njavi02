@@ -90,8 +90,11 @@ perfil, respuesta, super like) idealmente en la primera sesión.
     nunca se usaban — ver `PRODUCT_BRAIN.md` → PROBLEMAS), con una pantalla en
     Ajustes para cambiarlos después. `max_distance_km` se sigue capturando pero no se aplica
     todavía: ningún flujo de la app rellena coordenadas reales.
+20. **Exportación de datos personales (RGPD)** — Ajustes → "Exportar mis datos" genera un
+    JSON completo de los datos del usuario y lo comparte vía el share sheet nativo del
+    sistema operativo.
 
-Ver `PRODUCT_BRAIN.md` para el porqué de cada una de estas últimas (14-19 se añadieron en
+Ver `PRODUCT_BRAIN.md` para el porqué de cada una de estas últimas (14-20 se añadieron en
 una ronda de investigación de mercado posterior al MVP inicial, no estaban en el brief
 original palabra por palabra pero responden directamente a la regla de producto de la
 sección 46: ayudan a iniciar conversaciones, mejoran la confianza/calidad de usuarios, mejoran

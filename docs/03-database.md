@@ -40,6 +40,12 @@ pueden ver o insertar reacciones.
 aritmética de fechas), no en SQL — no había ninguna función de servidor que ignorara estas
 columnas, simplemente ningún código las leía todavía.
 
+`supabase/migrations/0008_gdpr_data_export.sql` añade `export_my_data()`: derecho de
+acceso/portabilidad RGPD (ver `06-security-and-privacy.md §6`). Es `SECURITY DEFINER` pero
+opera siempre sobre `auth.uid()`, nunca recibe un `profile_id` como parámetro — a diferencia
+de las funciones de economía (que sí actúan sobre otro perfil, el receptor), esta nunca
+podría exportar los datos de otra persona aunque alguien intentara forzarlo.
+
 ## 1. Mapa de entidades
 
 ```

@@ -59,6 +59,15 @@ export async function reportUser(input: ReportInput): Promise<void> {
   if (error) throw error;
 }
 
+/** Derecho de acceso/portabilidad (RGPD, ver docs/06-security-and-privacy.md §6): pide al
+ * servidor un export completo de los datos propios vía export_my_data() (SECURITY DEFINER,
+ * siempre acotada a auth.uid() — nunca puede exportar los datos de otra persona). */
+export async function exportMyData(): Promise<Record<string, unknown>> {
+  const { data, error } = await supabase.rpc('export_my_data');
+  if (error) throw error;
+  return data as Record<string, unknown>;
+}
+
 export async function deleteMyAccount(userId: string): Promise<void> {
   // Soft delete + anonimización — ver docs/03-database.md §2 y docs/06-security-and-privacy.md.
   const { error } = await supabase

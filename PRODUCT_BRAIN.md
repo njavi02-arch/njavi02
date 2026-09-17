@@ -213,19 +213,23 @@ reporte, panel admin completo, CI.
    aplicaban al feed (ver PROBLEMAS) + pantalla de edición en Ajustes. Construido y probado
    (3 escenarios reales de integración contra Postgres + 6 tests unitarios de la aritmética
    de fechas de `discoveryFilters.ts`).
+9. ~~Exportación de datos personales (RGPD)~~ — `export_my_data()`, SECURITY DEFINER acotada
+   siempre a `auth.uid()` (nunca puede exportar los datos de otra persona), con UI real en
+   Ajustes que escribe el JSON a un archivo y lo comparte vía el share sheet nativo
+   (`expo-file-system` + `expo-sharing`, dependencias nuevas instaladas esta ronda).
+   Construido y probado (6 escenarios reales contra Postgres, incluido que el export de una
+   persona nunca incluye los reportes que otros presentaron contra ella).
 
-Total tras esta sesión: 63 escenarios de base de datos reales + 49 tests unitarios de
+Total tras esta sesión: 69 escenarios de base de datos reales + 49 tests unitarios de
 `packages/shared`, todos en verde (ver `docs/05-mvp-scope-and-testing.md`).
 
 ### Siguiente (no abordado todavía, con criterio de prioridad)
 
-1. **Exportación de datos (RGPD)** — el modelo relacional ya lo permite, falta construir
-   el endpoint.
-2. **Edge Functions con moderación de texto por IA** — cuando haya presupuesto para un
+1. **Edge Functions con moderación de texto por IA** — cuando haya presupuesto para un
    servicio externo; hasta entonces, el filtro de `banned_words` cubre el caso básico.
-3. **Captura real de geolocalización** — `max_distance_km` sigue sin aplicarse: se captura en
+2. **Captura real de geolocalización** — `max_distance_km` sigue sin aplicarse: se captura en
    el onboarding pero ningún flujo rellena `profiles.latitude/longitude` todavía. Requiere
    permiso de ubicación + geocodificación, evaluar coste/beneficio y privacidad antes de
    construir (ver `06-security-and-privacy.md`).
-4. **Grupos/eventos sociales** — backlog, sin señal de demanda todavía, evaluar tras tener
+3. **Grupos/eventos sociales** — backlog, sin señal de demanda todavía, evaluar tras tener
    usuarios reales antes de construir.

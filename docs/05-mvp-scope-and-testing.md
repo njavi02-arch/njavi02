@@ -266,6 +266,31 @@ que antes no existía.
 `packages/shared`, `tsc --noEmit` limpio en las tres apps, `next build`+`eslint` limpios en
 el panel admin.**
 
+## 4g. Exportación de datos personales — RGPD (`0008_gdpr_data_export.sql`)
+
+`export_my_data()`, `SECURITY DEFINER` pero siempre acotada a `auth.uid()` (nunca recibe un
+`profile_id`, a diferencia de las funciones de economía que sí actúan sobre otro perfil —
+aquí no hay forma de exportar los datos de otra persona). Devuelve un JSON con perfil, fotos,
+intereses, prompts, preferencias, saldos y transacciones de monedas/créditos, racha,
+conversaciones+mensajes, solicitudes de conversación enviadas/recibidas, Super Likes
+enviados, reportes presentados, bloqueos creados, solicitudes de verificación y boosts.
+
+**6 escenarios reales contra Postgres** (`09_gdpr_export_scenarios.sql`): sin sesión activa
+lanza excepción (nunca devuelve datos de nadie); el export incluye el perfil propio; incluye
+la conversación real con su mensaje; **no** incluye el reporte que otra persona presentó
+contra el usuario (mismo principio de "sin represalias" que ya aplica la policy
+`reports_select_own`); incluye el saldo de créditos de mensaje.
+
+UI real: Ajustes → "Exportar mis datos" escribe el JSON a un archivo local
+(`expo-file-system`, API `File`/`Paths`) y lo comparte con el share sheet nativo
+(`expo-sharing`) — el usuario decide dónde guardarlo o a quién enviarlo, sin necesidad de
+ningún servicio de envío de email propio.
+
+**Total acumulado: 69/69 escenarios de base de datos reales, 49/49 tests unitarios de
+`packages/shared`, `tsc --noEmit` limpio en las tres apps (incluida la reconstrucción del
+bundle web tras añadir `expo-file-system`/`expo-sharing`), `next build`+`eslint` limpios en
+el panel admin.**
+
 ## 5. Qué NO se ha probado (limitaciones honestas de este entorno)
 
 - **No hay simulador iOS/Android ni dispositivo físico** en este entorno remoto: no se

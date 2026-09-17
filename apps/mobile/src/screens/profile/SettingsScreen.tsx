@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Alert, ScrollView, Switch, Text, View } from 'react-native';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { File, Paths } from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 import type { Gender } from '@orbita/shared';
 import { useTheme } from '../../theme/ThemeProvider';
 import { ScreenContainer } from '../../components/ScreenContainer';
@@ -11,7 +13,7 @@ import { Chip } from '../../components/Chip';
 import { Stepper } from '../../components/Stepper';
 import { useAuthStore } from '../../store/authStore';
 import { supabase } from '../../lib/supabase';
-import { deleteMyAccount } from '../../services/safety';
+import { deleteMyAccount, exportMyData } from '../../services/safety';
 import { signOut } from '../../services/auth';
 import type { NotificationPreferencesRow, UserPreferencesRow } from '../../types/database';
 import type { ProfileStackParamList } from '../../navigation/types';
@@ -39,6 +41,7 @@ export function SettingsScreen({ navigation }: Props) {
   const session = useAuthStore((s) => s.session);
   const queryClient = useQueryClient();
   const [deleting, setDeleting] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   const { data: prefs, isLoading } = useQuery({
     queryKey: ['notification-preferences', session?.user.id],
@@ -86,6 +89,27 @@ export function SettingsScreen({ navigation }: Props) {
     const next = has ? discoveryPrefs.show_me_gender.filter((g) => g !== value) : [...discoveryPrefs.show_me_gender, value];
     if (next.length === 0) return; // siempre debe quedar al menos una opción, o el feed se vaciaría sin explicación
     updateDiscoveryPreference({ show_me_gender: next });
+  }
+
+  async function handleExportData() {
+    setExporting(true);
+    try {
+      const data = await exportMyData();
+      const file = new File(Paths.cache, `orbita-mis-datos-${Date.now()}.json`);
+      file.create({ overwrite: true });
+      file.write(JSON.stringify(data, null, 2));
+
+      const canShare = await Sharing.isAvailableAsync();
+      if (canShare) {
+        await Sharing.shareAsync(file.uri, { mimeType: 'application/json', dialogTitle: 'Tus datos de Orbita' });
+      } else {
+        Alert.alert('Exportación lista', `Tus datos se guardaron en ${file.uri}, pero este dispositivo no puede compartir archivos.`);
+      }
+    } catch (e) {
+      Alert.alert('No se pudo exportar', e instanceof Error ? e.message : 'Inténtalo de nuevo');
+    } finally {
+      setExporting(false);
+    }
   }
 
   function handleDeleteAccount() {
@@ -207,6 +231,7 @@ export function SettingsScreen({ navigation }: Props) {
           <Button label="Usuarios bloqueados" variant="ghost" onPress={() => navigation.navigate('BlockedUsers')} style={{ marginBottom: 4 }} />
           <Button label="Términos de Servicio" variant="ghost" onPress={() => navigation.navigate('Terms')} style={{ marginBottom: 4 }} />
           <Button label="Política de Privacidad" variant="ghost" onPress={() => navigation.navigate('Privacy')} style={{ marginBottom: 10 }} />
+          <Button label="Exportar mis datos" variant="outline" onPress={handleExportData} loading={exporting} style={{ marginBottom: 10 }} />
           <Button label="Cerrar sesión" variant="outline" onPress={() => signOut()} style={{ marginBottom: 10 }} />
           <Button label="Eliminar cuenta" variant="danger" onPress={handleDeleteAccount} loading={deleting} />
         </View>

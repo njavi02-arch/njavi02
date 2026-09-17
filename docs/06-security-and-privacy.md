@@ -66,8 +66,13 @@ retenidos).
 Lo que la arquitectura ya soporta:
 - **Minimización de datos**: ubicación se guarda como ciudad + coordenadas aproximadas
   (redondeadas), nunca tracking continuo de GPS.
-- **Derecho de acceso/portabilidad**: estructura relacional permite generar un export por
-  `profile_id` (pendiente de construir el endpoint concreto, ver PENDIENTE).
+- **Derecho de acceso/portabilidad**: `export_my_data()` (`supabase/migrations/
+  0008_gdpr_data_export.sql`, SECURITY DEFINER pero siempre acotada a `auth.uid()` — nunca
+  puede exportar los datos de otra persona) genera un JSON con perfil, fotos, intereses,
+  prompts, preferencias, saldos y transacciones de economía, racha, conversaciones y
+  mensajes, solicitudes de conversación, reportes presentados (no los recibidos, para no
+  exponer quién te reportó), bloqueos y solicitudes de verificación/boost. Construido y
+  probado (Ajustes → "Exportar mis datos", comparte el archivo vía el share sheet nativo).
 - **Derecho al olvido**: borrado de cuenta = soft delete + anonimización inmediata de campos
   identificables, purga física tras periodo de gracia (ver `03-database.md §2`).
 - **Consentimiento**: tabla `notification_preferences` y flags de consentimiento de
