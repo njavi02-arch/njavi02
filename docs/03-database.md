@@ -27,6 +27,12 @@ investigación de mercado documentada en `PRODUCT_BRAIN.md`: `verification_reque
 pagado con monedas) y un trigger que puebla `suspicious_activity_flags` por acumulación de
 reportes — dos tablas que existían desde 0001 sin ninguna lógica que las usara.
 
+`supabase/migrations/0006_message_reactions.sql` añade `message_reactions` (patrón Wizz —
+ver `PRODUCT_BRAIN.md`): una reacción de un set fijo de 6 emojis por persona y mensaje
+(`unique (message_id, profile_id)`, como un tapback, no acumulable), con RLS que replica
+exactamente las reglas de `messages` — solo los participantes de la conversación del mensaje
+pueden ver o insertar reacciones.
+
 ## 1. Mapa de entidades
 
 ```

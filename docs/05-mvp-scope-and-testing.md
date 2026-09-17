@@ -213,6 +213,27 @@ sección de señales en `/reports`, y los contadores nuevos en `/dashboard`), y 
 la app móvil reconstruido y verificado en Chromium sin errores de consola tras cada tanda
 de cambios.
 
+## 4e. Reacciones a mensajes (`0006_message_reactions.sql`) — siguiente ítem del roadmap
+
+Patrón Wizz (tapback, no acumulable — ver `PRODUCT_BRAIN.md`). `message_reactions` con
+`unique (message_id, profile_id)` y RLS que replica exactamente las reglas de `messages`.
+4 escenarios reales contra Postgres: un participante puede reaccionar, solo una reacción por
+persona y mensaje (el `unique` bloquea la segunda), un tercero ajeno a la conversación no ve
+ninguna reacción por RLS, un participante puede cambiar su propia reacción (`update`).
+
+UI: long-press sobre un mensaje abre un selector de los 6 emojis permitidos; las reacciones
+existentes se agrupan por emoji con contador bajo la burbuja; tocar el emoji con el que ya
+reaccionaste lo retira (toggle); sincronizado en tiempo real entre ambos participantes vía un
+canal de Realtime sobre `message_reactions` (filtrado en cliente por los ids de mensaje ya
+cargados, ya que la tabla no tiene columna `conversation_id` para filtrar en el propio canal;
+en `DELETE`, Postgres solo garantiza la clave primaria en el "old row" salvo
+`REPLICA IDENTITY FULL`, así que el borrado local se aplica por `id` de la reacción, no por
+`message_id`).
+
+**Total acumulado: 60/60 escenarios de base de datos reales, 43/43 tests unitarios de
+`packages/shared`, `tsc --noEmit` limpio en `apps/mobile` tras añadir el servicio y la UI de
+reacciones.**
+
 ## 5. Qué NO se ha probado (limitaciones honestas de este entorno)
 
 - **No hay simulador iOS/Android ni dispositivo físico** en este entorno remoto: no se

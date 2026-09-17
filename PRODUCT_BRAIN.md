@@ -138,7 +138,7 @@ reporte, panel admin completo, CI.
 | Aviso de racha en riesgo | Retención | **Construir ya** — cierra un hueco real (enum sin usar) |
 | Boost pagado con monedas | Monetización | **Construir ya** — reutiliza tabla ya existente |
 | Señales automáticas de cuentas sospechosas | Seguridad | **Construir ya** — cierra hueco real (tabla sin lógica) |
-| Reacciones a mensajes (Wizz) | Mejora el chat | Backlog — no imprescindible para el bucle central |
+| Reacciones a mensajes (Wizz) | Mejora el chat | **Construida** — una reacción por persona y mensaje, con RLS y Realtime |
 | Video/voz en directo (Yubo) | Descubrir | Descartado — cambia el modelo de infraestructura por completo |
 | IA generativa para sugerir conversación (Hinge) | Iniciar conversación | Descartado por ahora — requiere servicio de pago externo |
 | Grupos/eventos sociales | Descubrir | Backlog — no mencionado en el brief, evaluar demanda real primero |
@@ -193,19 +193,24 @@ reporte, panel admin completo, CI.
    doble activación, orden de aparición en el feed).
 6. ~~Señales automáticas de cuentas sospechosas~~ — construido y probado (4 escenarios:
    umbral de señal, no duplicar, escalado a revisión automática).
+7. ~~Reacciones a mensajes en el chat~~ (patrón Wizz — tapback tipo iMessage/WhatsApp, una
+   reacción por persona y mensaje, no acumulable) — `message_reactions` con RLS espejo de
+   `messages` (solo participantes ven/reaccionan), long-press en el mensaje abre el selector
+   de 6 emojis, badges agregados por emoji bajo cada burbuja, sincronizado en tiempo real vía
+   Realtime entre ambos participantes. Construido y probado (4 escenarios reales: reaccionar,
+   unicidad por persona/mensaje, aislamiento por RLS frente a terceros, cambiar la propia
+   reacción).
 
-Total tras esta sesión: 56 escenarios de base de datos reales + 43 tests unitarios de
+Total tras esta sesión: 60 escenarios de base de datos reales + 43 tests unitarios de
 `packages/shared`, todos en verde (ver `docs/05-mvp-scope-and-testing.md`).
 
 ### Siguiente (no abordado todavía, con criterio de prioridad)
 
-1. **Reacciones a mensajes en el chat** (Wizz) — mejora el chat, esfuerzo bajo (solo UI +
-   una tabla nueva `message_reactions`); candidato claro para la siguiente sesión.
-   2. **Filtro "solo verificados"** en preferencias de descubrimiento — la columna
-      `is_verified` ya existe, falta exponerlo en `user_preferences` + UI de filtro.
-3. **Exportación de datos (RGPD)** — el modelo relacional ya lo permite, falta construir
+1. **Filtro "solo verificados"** en preferencias de descubrimiento — la columna
+   `is_verified` ya existe, falta exponerlo en `user_preferences` + UI de filtro.
+2. **Exportación de datos (RGPD)** — el modelo relacional ya lo permite, falta construir
    el endpoint.
-4. **Edge Functions con moderación de texto por IA** — cuando haya presupuesto para un
+3. **Edge Functions con moderación de texto por IA** — cuando haya presupuesto para un
    servicio externo; hasta entonces, el filtro de `banned_words` cubre el caso básico.
-5. **Grupos/eventos sociales** — backlog, sin señal de demanda todavía, evaluar tras tener
+4. **Grupos/eventos sociales** — backlog, sin señal de demanda todavía, evaluar tras tener
    usuarios reales antes de construir.

@@ -82,12 +82,15 @@ perfil, respuesta, super like) idealmente en la primera sesión.
     Descubrir durante un tiempo limitado.
 17. **Estado de actividad** — "Activo ahora"/"Activo hoy" en tarjetas y perfil, y aviso de
     racha en riesgo para no perder la recompensa diaria.
+18. **Reacciones a mensajes** — una reacción (de 6 emojis) por persona y mensaje en el chat,
+    tipo tapback de iMessage/WhatsApp (patrón investigado en Wizz), sincronizada en tiempo
+    real entre ambos participantes.
 
-Ver `PRODUCT_BRAIN.md` para el porqué de cada una de estas tres últimas (14-16 se añadieron
-en una ronda de investigación de mercado posterior al MVP inicial, no estaban en el brief
+Ver `PRODUCT_BRAIN.md` para el porqué de cada una de estas últimas (14-18 se añadieron en
+una ronda de investigación de mercado posterior al MVP inicial, no estaban en el brief
 original palabra por palabra pero responden directamente a la regla de producto de la
-sección 46: ayudan a iniciar conversaciones, mejoran la confianza/calidad de usuarios, o dan
-un nuevo destino de gasto a la economía ya construida).
+sección 46: ayudan a iniciar conversaciones, mejoran la confianza/calidad de usuarios, mejoran
+el chat, o dan un nuevo destino de gasto a la economía ya construida).
 
 ### Explícitamente fuera de este MVP (ver `07-roadmap-and-scaling.md`)
 

@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import type { ConversationRequestRow, ConversationRow, MessageRow, ProfileRow } from '../types/database';
+import type { ConversationRequestRow, ConversationRow, MessageReactionRow, MessageRow, ProfileRow, ReactionEmoji } from '../types/database';
 
 /**
  * Envía una solicitud de conversación ("Hablar"). Llama a create_conversation_request()
@@ -212,6 +212,69 @@ export function subscribeToTypingPresence(
   return {
     setTyping: (typing: boolean) => channel.track({ typing }),
     unsubscribe: () => supabase.removeChannel(channel),
+  };
+}
+
+/** Reacciones de todos los mensajes de una conversación (una consulta para toda la lista,
+ * en vez de una por mensaje). */
+export async function listReactions(conversationId: string): Promise<MessageReactionRow[]> {
+  const { data, error } = await supabase
+    .from('message_reactions')
+    .select('*, messages!inner(conversation_id)')
+    .eq('messages.conversation_id', conversationId);
+  if (error) throw error;
+  return (data ?? []) as MessageReactionRow[];
+}
+
+/** Reacciona o cambia la propia reacción a un mensaje (una por persona y mensaje —
+ * supabase/migrations/0006_message_reactions.sql). */
+export async function reactToMessage(
+  messageId: string,
+  profileId: string,
+  emoji: ReactionEmoji,
+): Promise<MessageReactionRow> {
+  const { data, error } = await supabase
+    .from('message_reactions')
+    .upsert({ message_id: messageId, profile_id: profileId, emoji }, { onConflict: 'message_id,profile_id' })
+    .select()
+    .single();
+  if (error) throw error;
+  return data as MessageReactionRow;
+}
+
+export async function removeReaction(messageId: string, profileId: string): Promise<void> {
+  const { error } = await supabase
+    .from('message_reactions')
+    .delete()
+    .eq('message_id', messageId)
+    .eq('profile_id', profileId);
+  if (error) throw error;
+}
+
+/** Suscripción Realtime a reacciones nuevas/editadas/borradas de toda la conversación.
+ * Se suscribe a nivel de tabla (sin filtro por conversation_id, que no existe en esta
+ * tabla) y el propio handler descarta lo que no toque a esta conversación comparando
+ * contra los ids de mensaje ya cargados en pantalla. En DELETE, Postgres solo garantiza
+ * la clave primaria en el "old row" (replica identity por defecto), así que el payload
+ * de borrado solo trae `id`, no `message_id`. */
+export function subscribeToReactions(
+  conversationId: string,
+  onChange: (event: 'INSERT' | 'UPDATE' | 'DELETE', reaction: MessageReactionRow | { id: string }) => void,
+) {
+  const channel = supabase
+    .channel(`reactions:${conversationId}`)
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'message_reactions' },
+      (payload) => {
+        const row = (payload.eventType === 'DELETE' ? payload.old : payload.new) as MessageReactionRow;
+        onChange(payload.eventType as 'INSERT' | 'UPDATE' | 'DELETE', row);
+      },
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
   };
 }
 

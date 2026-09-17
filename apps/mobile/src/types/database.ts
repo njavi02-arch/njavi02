@@ -74,6 +74,17 @@ export interface MessageRow {
   read_at: string | null;
 }
 
+export const REACTION_EMOJIS = ['❤️', '😂', '👍', '😮', '😢', '🔥'] as const;
+export type ReactionEmoji = (typeof REACTION_EMOJIS)[number];
+
+export interface MessageReactionRow {
+  id: string;
+  message_id: string;
+  profile_id: string;
+  emoji: ReactionEmoji;
+  created_at: string;
+}
+
 export interface SuperLikeRow {
   id: string;
   sender_id: string;
