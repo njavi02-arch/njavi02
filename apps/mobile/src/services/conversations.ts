@@ -95,6 +95,12 @@ export async function listConversations(currentUserId: string): Promise<Conversa
   });
 }
 
+export async function getConversation(conversationId: string): Promise<ConversationRow> {
+  const { data, error } = await supabase.from('conversations').select('*').eq('id', conversationId).single();
+  if (error) throw error;
+  return data as ConversationRow;
+}
+
 export async function listMessages(conversationId: string): Promise<MessageRow[]> {
   const { data, error } = await supabase
     .from('messages')
@@ -185,11 +191,6 @@ export function subscribeToTypingPresence(
     setTyping: (typing: boolean) => channel.track({ typing }),
     unsubscribe: () => supabase.removeChannel(channel),
   };
-}
-
-export async function blockAndExitConversation(conversationId: string, blockerId: string, blockedId: string) {
-  const { error: blockError } = await supabase.from('blocks').insert({ blocker_id: blockerId, blocked_id: blockedId });
-  if (blockError) throw blockError;
 }
 
 export async function archiveConversation(conversationId: string, isUserA: boolean) {

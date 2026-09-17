@@ -9,6 +9,7 @@ import { TextField } from '../../components/TextField';
 import { Button } from '../../components/Button';
 import { useAuthStore } from '../../store/authStore';
 import {
+  getConversation,
   listMessages,
   markMessagesAsRead,
   sendMessage,
@@ -31,6 +32,7 @@ export function ChatScreen({ route, navigation }: Props) {
 
   const [messages, setMessages] = useState<MessageRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isUserA, setIsUserA] = useState<boolean | null>(null);
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
   const [typingUsers, setTypingUsers] = useState<string[]>([]);
@@ -57,6 +59,9 @@ export function ChatScreen({ route, navigation }: Props) {
         setLoading(false);
         markMessagesAsRead(conversationId, selfId).catch(() => {});
       }
+    });
+    getConversation(conversationId).then((conversation) => {
+      if (mounted) setIsUserA(conversation.user_a_id === selfId);
     });
 
     const unsubscribeMessages = subscribeToConversationMessages(conversationId, (message) => {
@@ -98,10 +103,12 @@ export function ChatScreen({ route, navigation }: Props) {
   }
 
   function openMenu() {
+    if (isUserA === null) return; // todavía no sabemos si somos user_a o user_b — evita
+    // silenciar/archivar la mitad equivocada de la conversación (bug real corregido).
     Alert.alert(otherDisplayName, undefined, [
       {
         text: 'Silenciar',
-        onPress: () => muteConversation(conversationId, true, true).catch(() => {}),
+        onPress: () => muteConversation(conversationId, isUserA, true).catch(() => {}),
       },
       {
         text: 'Bloquear',
@@ -122,7 +129,7 @@ export function ChatScreen({ route, navigation }: Props) {
         text: 'Eliminar conversación',
         style: 'destructive',
         onPress: () =>
-          archiveConversation(conversationId, true)
+          archiveConversation(conversationId, isUserA)
             .then(() => navigation.goBack())
             .catch((e) => Alert.alert('Error', e.message)),
       },

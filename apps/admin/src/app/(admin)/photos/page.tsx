@@ -1,6 +1,14 @@
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { moderatePhoto } from './actions';
 
+interface PendingPhoto {
+  id: string;
+  url: string;
+  position: number;
+  created_at: string;
+  profile: { display_name: string } | null;
+}
+
 export default async function PhotosPage() {
   const { data: photos, error } = await supabaseAdmin
     .from('photos')
@@ -17,7 +25,7 @@ export default async function PhotosPage() {
       {(photos ?? []).length === 0 ? <p className="text-zinc-500">No hay fotos pendientes de revisión. 🎉</p> : null}
 
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        {(photos ?? []).map((photo: any) => (
+        {((photos ?? []) as unknown as PendingPhoto[]).map((photo) => (
           <div key={photo.id} className="rounded-xl overflow-hidden border border-zinc-800 bg-zinc-900">
             <div className="relative w-full aspect-[3/4] bg-zinc-800">
               {/* eslint-disable-next-line @next/next/no-img-element */}

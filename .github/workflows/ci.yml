@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test-and-typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias del monorepo
+        run: npm ci
+
+      - name: Tests de packages/shared
+        run: npm run test --workspace=packages/shared
+
+      - name: Typecheck de packages/shared
+        run: npm run typecheck --workspace=packages/shared
+
+      - name: Typecheck de apps/mobile
+        run: npm run typecheck --workspace=apps/mobile
+
+      - name: Typecheck de apps/admin
+        run: npm run typecheck --workspace=apps/admin
+
+      - name: Lint de apps/admin
+        run: npm run lint --workspace=apps/admin
