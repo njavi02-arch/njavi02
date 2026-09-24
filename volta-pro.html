@@ -1853,7 +1853,7 @@
                                 </div>
                                 <div class="profile-stat">
                                     <span class="profile-stat-label">Monedas</span>
-                                    <span class="profile-stat-value" id="coinCount">450</span>
+                                    <span class="profile-stat-value" id="coinCount">0</span>
                                 </div>
                             </div>
 
@@ -1932,9 +1932,27 @@
                             </div>
 
                             <div class="profile-section">
+                                <div class="profile-label">🎁 Racha Diaria</div>
+                                <div style="background: linear-gradient(135deg, #FF6B6B 0%, #FF8E72 100%); color: white; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
+                                    <div style="font-size: 24px; font-weight: bold;" id="streakDisplay">Día 1</div>
+                                    <div style="font-size: 12px; margin-top: 4px;" id="streakRewardDisplay">+50 monedas</div>
+                                </div>
+                            </div>
+
+                            <div class="profile-section">
+                                <div class="profile-label">💬 Mensajes</div>
+                                <button style="width: 100%; padding: 12px; background: linear-gradient(135deg, #00B8E6, #0090FF); color: #fff; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-bottom: 8px;" onclick="openModal('messagePackagesModal'); document.getElementById('modalCoins').textContent = coins;">
+                                    Comprar Paquetes 📦
+                                </button>
+                            </div>
+
+                            <div class="profile-section">
                                 <div class="profile-label">Premium</div>
-                                <button style="width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; border-radius: 10px; font-weight: 700; cursor: pointer;">
+                                <button style="width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-bottom: 8px;">
                                     Activar • €2.99/mes
+                                </button>
+                                <button style="width: 100%; padding: 12px; background: #f0f0f0; color: #333; border: 1px solid #ddd; border-radius: 10px; font-weight: 700; cursor: pointer;" onclick="openModal('premiumComparisonModal')">
+                                    Comparar con WIZZ 📊
                                 </button>
                             </div>
                         </div>
@@ -1989,7 +2007,7 @@
             </div>
 
             <div class="stat-card">
-                <div class="stat-card-value">450</div>
+                <div class="stat-card-value">0</div>
                 <div class="stat-card-label">Monedas</div>
             </div>
 
@@ -2149,6 +2167,135 @@
                 <div class="filters-actions">
                     <button class="btn-apply-filters" onclick="applyFilters()">Aplicar Filtros</button>
                     <button class="btn-clear-filters" onclick="clearAllFilters()">Limpiar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PREMIUM COMPARISON MODAL -->
+    <div class="modal-overlay" id="premiumComparisonModal">
+        <div class="modal" style="max-height: 90vh; overflow-y: auto;">
+            <button class="modal-close" onclick="closeModal('premiumComparisonModal')">✕</button>
+            <div class="modal-header">
+                <div class="modal-title">Premium vs WIZZ</div>
+            </div>
+            <div class="modal-divider"></div>
+            <div class="modal-content" style="padding: 20px;">
+                <table style="width: 100%; border-collapse: collapse; color: var(--text-light); font-size: 12px;">
+                    <tr style="background: var(--bg-light); border-bottom: 2px solid var(--primary);">
+                        <th style="padding: 12px; text-align: left; color: var(--primary);">Feature</th>
+                        <th style="padding: 12px; text-align: center; color: var(--primary);">YUIZZ ✨</th>
+                        <th style="padding: 12px; text-align: center; color: #999;">WIZZ</th>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--border-light);">
+                        <td style="padding: 12px;">Precio Mensual</td>
+                        <td style="padding: 12px; text-align: center; color: var(--primary); font-weight: bold;">€2.99</td>
+                        <td style="padding: 12px; text-align: center;">€4.99</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--border-light);">
+                        <td style="padding: 12px;">Likes Ilimitados</td>
+                        <td style="padding: 12px; text-align: center;">✅</td>
+                        <td style="padding: 12px; text-align: center;">✅</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--border-light);">
+                        <td style="padding: 12px;">Super Likes Extras</td>
+                        <td style="padding: 12px; text-align: center;">✅ (15/día)</td>
+                        <td style="padding: 12px; text-align: center;">✅ (10/día)</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--border-light);">
+                        <td style="padding: 12px;">Ver Quién Hizo Like</td>
+                        <td style="padding: 12px; text-align: center;">✅</td>
+                        <td style="padding: 12px; text-align: center;">✅</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--border-light);">
+                        <td style="padding: 12px;">Rebordes Ilimitados</td>
+                        <td style="padding: 12px; text-align: center;">✅</td>
+                        <td style="padding: 12px; text-align: center;">❌</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--border-light);">
+                        <td style="padding: 12px;">Filtros Avanzados</td>
+                        <td style="padding: 12px; text-align: center;">✅</td>
+                        <td style="padding: 12px; text-align: center;">€2.99 Extra</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--border-light);">
+                        <td style="padding: 12px;">Hot Hour Diaria</td>
+                        <td style="padding: 12px; text-align: center;">✅ Gratis</td>
+                        <td style="padding: 12px; text-align: center;">❌</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--border-light);">
+                        <td style="padding: 12px;">Racha de Recompensas (7 días)</td>
+                        <td style="padding: 12px; text-align: center;">✅ 500€ Bonus</td>
+                        <td style="padding: 12px; text-align: center;">❌</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--border-light);">
+                        <td style="padding: 12px;">Compra de Paquetes Mensajes</td>
+                        <td style="padding: 12px; text-align: center;">✅ 50/100/200</td>
+                        <td style="padding: 12px; text-align: center;">❌</td>
+                    </tr>
+                </table>
+                <div style="margin-top: 20px; padding: 15px; background: var(--primary); color: white; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 18px; font-weight: bold;">¡Más valor por menos precio!</div>
+                    <div style="font-size: 12px; margin-top: 5px;">Obtén Premium desde €2.99/mes</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MESSAGE PACKAGES MODAL -->
+    <div class="modal-overlay" id="messagePackagesModal">
+        <div class="modal" style="max-height: 90vh; overflow-y: auto;">
+            <button class="modal-close" onclick="closeModal('messagePackagesModal')">✕</button>
+            <div class="modal-header">
+                <div class="modal-title">Comprar Mensajes 💬</div>
+            </div>
+            <div class="modal-divider"></div>
+            <div class="modal-content" style="padding: 20px;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 32px; font-weight: bold; color: var(--primary);">Tus Monedas: <span id="modalCoins">0</span></div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+                    <!-- 50 Messages Package -->
+                    <div style="padding: 15px; border: 2px solid var(--border-light); border-radius: 12px; cursor: pointer; transition: all 0.3s;" onclick="buyMessagePackage(50, 299)" onmouseover="this.style.borderColor=getComputedStyle(document.documentElement).getPropertyValue('--primary'); this.style.boxShadow='0 4px 12px rgba(0,122,255,0.3)'" onmouseout="this.style.borderColor=getComputedStyle(document.documentElement).getPropertyValue('--border-light'); this.style.boxShadow='none'">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 18px; font-weight: bold;">50 Mensajes</div>
+                                <div style="font-size: 12px; color: #999; margin-top: 5px;">Envía 50 mensajes sin límite</div>
+                            </div>
+                            <div style="font-size: 24px; font-weight: bold; color: var(--primary);">299 💰</div>
+                        </div>
+                    </div>
+
+                    <!-- 100 Messages Package -->
+                    <div style="padding: 15px; border: 2px solid var(--primary); border-radius: 12px; background: rgba(0,122,255,0.05); cursor: pointer; transition: all 0.3s;" onclick="buyMessagePackage(100, 499)" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,122,255,0.3)'" onmouseout="this.style.boxShadow='none'">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 18px; font-weight: bold;">⭐ 100 Mensajes</div>
+                                <div style="font-size: 12px; color: #999; margin-top: 5px;">Más popular - Ahorra 40 monedas</div>
+                            </div>
+                            <div style="font-size: 24px; font-weight: bold; color: var(--primary);">499 💰</div>
+                        </div>
+                    </div>
+
+                    <!-- 200 Messages Package -->
+                    <div style="padding: 15px; border: 2px solid var(--border-light); border-radius: 12px; cursor: pointer; transition: all 0.3s;" onclick="buyMessagePackage(200, 799)" onmouseover="this.style.borderColor=getComputedStyle(document.documentElement).getPropertyValue('--primary'); this.style.boxShadow='0 4px 12px rgba(0,122,255,0.3)'" onmouseout="this.style.borderColor=getComputedStyle(document.documentElement).getPropertyValue('--border-light'); this.style.boxShadow='none'">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 18px; font-weight: bold;">200 Mensajes</div>
+                                <div style="font-size: 12px; color: #999; margin-top: 5px;">Mejor valor - Ahorra 100 monedas</div>
+                            </div>
+                            <div style="font-size: 24px; font-weight: bold; color: var(--primary);">799 💰</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; padding: 15px; background: var(--bg-light); border-radius: 8px; border: 1px solid var(--border-light);">
+                    <div style="font-size: 12px; color: #999;">
+                        ℹ️ <strong>¿No tienes monedas?</strong><br>
+                        • Completa tu racha diaria para obtener recompensas<br>
+                        • Gana monedas cada 24 horas<br>
+                        • Día 7: Obtén 500 monedas + 50 mensajes gratis
+                    </div>
                 </div>
             </div>
         </div>
@@ -2664,7 +2811,21 @@
             { name: 'Gatos', emoji: '🐱', members: 4230, img: 'https://images.unsplash.com/photo-1514888286974-6c03bf1bfdff?w=400&h=300&fit=crop' },
         ];
 
-        let coins = 450;
+        let coins = 0;
+        let dailyStreak = 0;
+        let lastStreakDate = null;
+        let registrationDate = null;
+        let freeHotHourEndsAt = null;
+
+        const streakRewards = [
+            { day: 1, coins: 50, description: '50 monedas' },
+            { day: 2, coins: 75, description: '75 monedas' },
+            { day: 3, coins: 100, description: '100 monedas' },
+            { day: 4, coins: 150, description: '150 monedas' },
+            { day: 5, coins: 200, description: '200 monedas' },
+            { day: 6, coins: 300, description: '300 monedas' },
+            { day: 7, coins: 500, description: '500 monedas + 50 mensajes gratis' }
+        };
         let currentProfile = 0;
         let currentPhotoIndex = 0;
         let isHotHourActive = true; // DEMO MODE - siempre activo
@@ -2707,7 +2868,8 @@
         // Guardar datos en localStorage
         function saveData() {
             localStorage.setItem('yuizzData', JSON.stringify({
-                coins, userLikes, userMatches, userMessages, notifications, isDarkMode
+                coins, userLikes, userMatches, userMessages, notifications, isDarkMode,
+                dailyStreak, lastStreakDate, registrationDate, freeHotHourEndsAt
             }));
         }
 
@@ -2721,10 +2883,75 @@
                 userMessages = data.userMessages;
                 notifications = data.notifications;
                 isDarkMode = data.isDarkMode || false;
+                dailyStreak = data.dailyStreak || 0;
+                lastStreakDate = data.lastStreakDate;
+                registrationDate = data.registrationDate || new Date().toISOString().split('T')[0];
+                freeHotHourEndsAt = data.freeHotHourEndsAt;
                 if (isDarkMode) {
                     document.body.classList.add('dark-mode');
                 }
                 updateCoins();
+                checkDailyReward();
+            } else {
+                // First time user - set registration date and free Hot Hour for 2 days
+                registrationDate = new Date().toISOString().split('T')[0];
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 2);
+                freeHotHourEndsAt = tomorrow.toISOString().split('T')[0];
+                coins = 0;
+                dailyStreak = 1;
+                claimDailyReward();
+            }
+        }
+
+        function isHotHourFree() {
+            const today = new Date().toISOString().split('T')[0];
+            return !freeHotHourEndsAt || today <= freeHotHourEndsAt;
+        }
+
+        function checkDailyReward() {
+            const today = new Date().toISOString().split('T')[0];
+            if (lastStreakDate !== today) {
+                dailyStreak = (lastStreakDate && new Date(today).getTime() - new Date(lastStreakDate).getTime() === 86400000) ? dailyStreak + 1 : 1;
+                if (dailyStreak > 7) dailyStreak = 1;
+                claimDailyReward();
+            }
+        }
+
+        function claimDailyReward() {
+            const reward = streakRewards[Math.min(dailyStreak - 1, 6)];
+            coins += reward.coins;
+            lastStreakDate = new Date().toISOString().split('T')[0];
+            updateCoins();
+            saveData();
+            showNotification(`🎁 ¡Recompensa de Día ${dailyStreak}!`, `+${reward.coins} monedas`);
+        }
+
+        function buyMessagePackage(msgCount, cost) {
+            if (coins < cost) {
+                alert(`❌ No tienes suficientes monedas\n\nNecesitas: ${cost}\nTienes: ${coins}\n\nDiferencia: ${cost - coins}`);
+                return;
+            }
+            coins -= cost;
+            updateCoins();
+            saveData();
+            closeModal('messagePackagesModal');
+            alert(`✅ ¡Comprado!\n\n${msgCount} mensajes desbloqueados\nMonedas gastadas: ${cost}`);
+        }
+
+        function showNotification(title, message) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification(title, { body: message, icon: '💬' });
+            }
+        }
+
+        function updateStreakDisplay() {
+            const streakDisplay = document.getElementById('streakDisplay');
+            const rewardDisplay = document.getElementById('streakRewardDisplay');
+            if (streakDisplay && rewardDisplay) {
+                const reward = streakRewards[Math.min(dailyStreak - 1, 6)];
+                streakDisplay.textContent = `Día ${dailyStreak} de 7`;
+                rewardDisplay.textContent = `+${reward.coins} monedas - ${reward.description}`;
             }
         }
 
@@ -2914,10 +3141,12 @@
         }
 
         function showHotHourInfo() {
+            const isFree = isHotHourFree();
+            const status = isFree ? '🆓 GRATIS (Primeros 2 días)' : '💰 DE PAGO';
             if (isHotHourActive) {
-                alert(`🔥 HOT HOUR ACTIVA (11 PM - 12 AM)\n\n✓ GRATIS - Sin pago\n✓ Conexiones sin límites\n✓ Perfil mostrado a más gente\n✓ Mensajes instantáneos\n✓ Gente buscando encuentros\n\nEsta es la hora de mayor actividad. ¡Aprovecha!`);
+                alert(`🔥 HOT HOUR ACTIVA (11 PM - 12 AM)\n\n${status}\n✓ Conexiones sin límites\n✓ Perfil mostrado a más gente\n✓ Mensajes instantáneos\n✓ Gente buscando encuentros\n\nEsta es la hora de mayor actividad. ¡Aprovecha!`);
             } else {
-                alert(`🔥 HOT HOUR (11 PM - 12 AM)\n\nFuera de la hora hot:\n• Conexiones básicas: €0.99\n• Premium: €2.99/mes\n• Filtros de relación: €2.99\n\n⏰ Próxima hot hour: HOY a las 11 PM`);
+                alert(`🔥 HOT HOUR (11 PM - 12 AM)\n\n${status}\n\nFuera de la hora hot:\n• Conexiones básicas: €0.99\n• Premium: €2.99/mes\n• Filtros de relación: €2.99\n\n⏰ Próxima hot hour: HOY a las 11 PM`);
             }
         }
 
@@ -2977,6 +3206,8 @@
                 renderCommunities();
             } else if (screenId === 'screen-activity') {
                 renderNotifications();
+            } else if (screenId === 'screen-profile') {
+                updateStreakDisplay();
             }
         }
 
