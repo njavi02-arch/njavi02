@@ -192,13 +192,23 @@ export function DiscoverScreen({ navigation }: Props) {
               style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 140, justifyContent: 'flex-end', padding: theme.spacing.md }}
             >
               <Text style={{ color: '#fff', fontFamily: theme.typography.fontFamilyHeading, fontSize: theme.typography.sizes.h1 }}>
-                {current.display_name}, {ageFromBirthDate(current.birth_date)} {current.is_verified ? '✅' : ''}
+                {current.display_name}, {ageFromBirthDate(current.birth_date)}
               </Text>
-              {current.city ? (
-                <Text style={{ color: '#fff', fontFamily: theme.typography.fontFamilyBody, opacity: 0.9 }}>
-                  📍 {current.city}
-                </Text>
-              ) : null}
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 6, gap: 8 }}>
+                {current.city ? (
+                  <Text style={{ color: '#fff', fontFamily: theme.typography.fontFamilyBody, opacity: 0.9 }}>
+                    📍 {current.city}
+                  </Text>
+                ) : null}
+                {current.is_verified && <Text style={{ color: '#fff', fontSize: 14 }}>✅</Text>}
+              </View>
+              {sharedInterests.length > 0 && (
+                <View style={{ marginTop: 6, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2, alignSelf: 'flex-start' }}>
+                  <Text style={{ color: '#fff', fontSize: 12, fontFamily: theme.typography.fontFamilyBodySemibold }}>
+                    ❤️ {sharedInterests.length} intereses
+                  </Text>
+                </View>
+              )}
               <View style={{ marginTop: 4 }}>
                 <ActivityBadge lastActiveAt={current.last_active_at} light />
               </View>

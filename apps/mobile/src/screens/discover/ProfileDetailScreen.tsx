@@ -144,12 +144,45 @@ export function ProfileDetailScreen({ route, navigation }: Props) {
           <Button label="⋯" variant="ghost" fullWidth={false} onPress={handleReportOrBlock} />
         </View>
 
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: theme.spacing.md }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: theme.spacing.md, flexWrap: 'wrap', gap: theme.spacing.sm }}>
+          <Text style={{ color: theme.colors.textSecondary }}>
+            {new Date().getFullYear() - new Date(profile.birth_date).getFullYear()} años
+          </Text>
           {profile.city ? (
-            <Text style={{ color: theme.colors.textSecondary, marginRight: theme.spacing.sm }}>📍 {profile.city}</Text>
+            <Text style={{ color: theme.colors.textSecondary }}>📍 {profile.city}</Text>
           ) : null}
           <ActivityBadge lastActiveAt={profile.last_active_at} />
         </View>
+
+        {sharedInterests.length > 0 && (
+          <View
+            style={{
+              backgroundColor: theme.colors.secondary,
+              borderRadius: theme.radius.md,
+              padding: theme.spacing.md,
+              marginBottom: theme.spacing.md,
+            }}
+          >
+            <Text style={{ color: theme.colors.onSecondary, fontFamily: theme.typography.fontFamilyBodySemibold, marginBottom: theme.spacing.sm }}>
+              ❤️ {sharedInterests.length} intereses en común
+            </Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing.xs }}>
+              {sharedInterests.map((interest) => (
+                <View
+                  key={interest}
+                  style={{
+                    backgroundColor: 'rgba(255,255,255,0.2)',
+                    borderRadius: theme.radius.pill,
+                    paddingHorizontal: theme.spacing.sm,
+                    paddingVertical: 4,
+                  }}
+                >
+                  <Text style={{ color: theme.colors.onSecondary, fontSize: 12 }}>{interest}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
 
         <PhotoGallery
           photos={photosQuery.data ?? []}
