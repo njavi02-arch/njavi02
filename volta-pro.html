@@ -5,12 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YUIZZ - Conexiones Reales</title>
     <style>
+        :root {
+            --primary: #007AFF;
+            --primary-dark: #0051D5;
+            --accent: #00B8E6;
+            --bg-light: #FFFFFF;
+            --bg-dark: #0A0E27;
+            --text-light: #000000;
+            --text-dark: #FFFFFF;
+            --border-light: #E5E5EA;
+            --border-dark: #2C2C3E;
+            --card-light: #FFFFFF;
+            --card-dark: #1A1D3A;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
-            color: #333;
+            background: var(--bg-light);
+            color: var(--text-light);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background: var(--bg-dark);
+            color: var(--text-dark);
         }
 
         .simulator {
@@ -35,19 +55,29 @@
         }
 
         .phone-screen {
-            background: #fff;
+            background: var(--bg-light);
             border-radius: 45px;
             height: 100%;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             position: relative;
+            transition: background 0.3s;
+        }
+
+        body.dark-mode .phone-screen {
+            background: var(--bg-dark);
         }
 
         .notch {
             height: 25px;
-            background: #fff;
+            background: var(--bg-light);
             border-radius: 0 0 20px 20px;
+            transition: background 0.3s;
+        }
+
+        body.dark-mode .notch {
+            background: var(--bg-dark);
         }
 
         .screen-content {
@@ -72,18 +102,24 @@
         /* HEADER */
         .header {
             padding: 12px 16px;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid var(--border-light);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #fff;
+            background: var(--bg-light);
             z-index: 10;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        body.dark-mode .header {
+            background: var(--bg-dark);
+            border-bottom: 1px solid var(--border-dark);
         }
 
         .header-title {
             font-size: 18px;
             font-weight: 700;
-            color: #000;
+            color: var(--primary);
         }
 
         .header-btn {
@@ -98,9 +134,15 @@
             justify-content: center;
             border-radius: 50%;
             transition: background 0.2s;
+            color: var(--text-light);
         }
 
-        .header-btn:hover { background: #f0f0f0; }
+        body.dark-mode .header-btn {
+            color: var(--text-dark);
+        }
+
+        .header-btn:hover { background: var(--border-light); }
+        body.dark-mode .header-btn:hover { background: var(--border-dark); }
 
         /* DISCOVER SCREEN */
         .discover-container {
@@ -112,7 +154,7 @@
 
         .profile-card {
             flex: 1;
-            background: #fff;
+            background: var(--card-light);
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -120,12 +162,18 @@
             flex-direction: column;
             margin-bottom: 12px;
             position: relative;
+            transition: background 0.3s;
+        }
+
+        body.dark-mode .profile-card {
+            background: var(--card-dark);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
         .card-photo {
             width: 100%;
             height: 60%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -148,7 +196,7 @@
             position: absolute;
             top: 12px;
             right: 12px;
-            background: #ff6b9d;
+            background: var(--accent);
             color: #fff;
             padding: 4px 12px;
             border-radius: 20px;
@@ -161,6 +209,14 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            background: var(--card-light);
+            color: var(--text-light);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.dark-mode .card-info {
+            background: var(--card-dark);
+            color: var(--text-dark);
         }
 
         .card-header {
@@ -173,12 +229,16 @@
         .card-name {
             font-size: 18px;
             font-weight: 700;
-            color: #000;
+            color: var(--text-light);
+        }
+
+        body.dark-mode .card-name {
+            color: var(--text-dark);
         }
 
         .card-meta {
             font-size: 13px;
-            color: #666;
+            color: var(--primary);
             margin-top: 2px;
         }
 
@@ -206,12 +266,18 @@
         }
 
         .tag {
-            background: #f0f0f0;
-            color: #333;
+            background: var(--border-light);
+            color: var(--text-light);
             padding: 4px 10px;
             border-radius: 12px;
             font-size: 10px;
             font-weight: 600;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.dark-mode .tag {
+            background: var(--border-dark);
+            color: var(--text-dark);
         }
 
         .card-counter {
@@ -220,11 +286,19 @@
             margin-top: 8px;
         }
 
+        body.dark-mode .card-counter {
+            color: #666;
+        }
+
         .card-bio {
             font-size: 12px;
             color: #555;
             margin-top: 8px;
             line-height: 1.4;
+        }
+
+        body.dark-mode .card-bio {
+            color: #aaa;
         }
 
         .card-socials {
@@ -279,9 +353,9 @@
 
         .btn-action {
             padding: 12px;
-            border: 1px solid #e0e0e0;
+            border: 1px solid var(--border-light);
             border-radius: 12px;
-            background: #fff;
+            background: var(--card-light);
             cursor: pointer;
             font-weight: 700;
             font-size: 11px;
@@ -290,27 +364,36 @@
             align-items: center;
             justify-content: center;
             gap: 4px;
+            color: var(--text-light);
+        }
+
+        body.dark-mode .btn-action {
+            background: var(--card-dark);
+            border-color: var(--border-dark);
+            color: var(--text-dark);
         }
 
         .btn-action:active { transform: scale(0.95); }
 
         .btn-pass {
             color: #666;
-            border-color: #e0e0e0;
+            border-color: var(--border-light);
         }
-        .btn-pass:hover { background: #f9f9f9; }
+        body.dark-mode .btn-pass { color: #999; border-color: var(--border-dark); }
+        .btn-pass:hover { background: var(--border-light); }
+        body.dark-mode .btn-pass:hover { background: var(--border-dark); }
 
         .btn-like {
-            background: #ff6b9d;
+            background: #FF2D55;
             color: #fff;
-            border-color: #ff6b9d;
+            border-color: #FF2D55;
         }
         .btn-like:hover { opacity: 0.9; }
 
         .btn-super {
-            background: #667eea;
+            background: var(--primary);
             color: #fff;
-            border-color: #667eea;
+            border-color: var(--primary);
         }
         .btn-super:hover { opacity: 0.9; }
 
@@ -319,12 +402,18 @@
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 0;
-            border-top: 1px solid #e0e0e0;
-            background: #fff;
+            border-top: 1px solid var(--border-light);
+            background: var(--bg-light);
             padding-bottom: 12px;
             position: sticky;
             bottom: 0;
             z-index: 5;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        body.dark-mode .tab-bar {
+            background: var(--bg-dark);
+            border-top: 1px solid var(--border-dark);
         }
 
         .tab {
@@ -342,8 +431,10 @@
             transition: color 0.2s;
         }
 
+        body.dark-mode .tab { color: #666; }
         .tab:hover { color: #666; }
-        .tab.active { color: #667eea; }
+        body.dark-mode .tab:hover { color: #999; }
+        .tab.active { color: var(--primary); }
 
         .tab-icon { font-size: 20px; }
 
@@ -356,11 +447,25 @@
             width: 100%;
             padding: 10px 12px;
             border-radius: 20px;
-            background: #f0f0f0;
+            background: var(--border-light);
             border: none;
             font-size: 13px;
             margin-bottom: 12px;
             font-family: inherit;
+            color: var(--text-light);
+            transition: background 0.3s;
+        }
+
+        body.dark-mode .search-bar {
+            background: var(--border-dark);
+            color: var(--text-dark);
+        }
+
+        .search-bar::placeholder {
+            color: #999;
+        }
+        body.dark-mode .search-bar::placeholder {
+            color: #666;
         }
 
         .dating-filters {
@@ -474,7 +579,7 @@
         }
 
         .chat-item {
-            background: #f9f9f9;
+            background: var(--card-light);
             border-radius: 12px;
             padding: 12px;
             margin-bottom: 8px;
@@ -484,12 +589,17 @@
             transition: background 0.2s;
         }
 
-        .chat-item:hover { background: #f0f0f0; }
+        body.dark-mode .chat-item {
+            background: var(--card-dark);
+        }
+
+        .chat-item:hover { background: var(--border-light); }
+        body.dark-mode .chat-item:hover { background: var(--border-dark); }
 
         .chat-avatar {
             width: 50px;
             height: 50px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -506,8 +616,12 @@
         .chat-name {
             font-size: 13px;
             font-weight: 700;
-            color: #000;
+            color: var(--text-light);
             margin-bottom: 2px;
+        }
+
+        body.dark-mode .chat-name {
+            color: var(--text-dark);
         }
 
         .chat-message {
@@ -526,7 +640,7 @@
         .chat-unread {
             width: 20px;
             height: 20px;
-            background: #667eea;
+            background: var(--primary);
             color: #fff;
             border-radius: 50%;
             display: flex;
@@ -539,19 +653,29 @@
         /* PROFILE SCREEN */
         .profile-container {
             padding: 16px;
+            background: var(--bg-light);
+            transition: background 0.3s;
+        }
+
+        body.dark-mode .profile-container {
+            background: var(--bg-dark);
         }
 
         .profile-header {
             text-align: center;
             margin-bottom: 20px;
             padding-bottom: 16px;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        body.dark-mode .profile-header {
+            border-bottom: 1px solid var(--border-dark);
         }
 
         .profile-avatar {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -563,13 +687,21 @@
         .profile-name {
             font-size: 18px;
             font-weight: 700;
-            color: #000;
+            color: var(--text-light);
+        }
+
+        body.dark-mode .profile-name {
+            color: var(--text-dark);
         }
 
         .profile-meta {
             font-size: 13px;
             color: #666;
             margin-top: 4px;
+        }
+
+        body.dark-mode .profile-meta {
+            color: #999;
         }
 
         .profile-section {
@@ -585,11 +717,19 @@
             letter-spacing: 0.5px;
         }
 
+        body.dark-mode .profile-label {
+            color: #666;
+        }
+
         .profile-stat {
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        body.dark-mode .profile-stat {
+            border-bottom: 1px solid var(--border-dark);
         }
 
         .profile-stat-label {
@@ -597,42 +737,65 @@
             color: #666;
         }
 
+        body.dark-mode .profile-stat-label {
+            color: #999;
+        }
+
         .profile-stat-value {
             font-size: 13px;
             font-weight: 700;
-            color: #000;
+            color: var(--text-light);
+        }
+
+        body.dark-mode .profile-stat-value {
+            color: var(--text-dark);
         }
 
         /* SIDEBAR */
         .sidebar {
-            background: #fff;
+            background: var(--card-light);
             border-radius: 12px;
             padding: 20px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             height: fit-content;
             position: sticky;
             top: 40px;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        body.dark-mode .sidebar {
+            background: var(--card-dark);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
         .sidebar-title {
             font-size: 14px;
             font-weight: 700;
-            color: #000;
+            color: var(--text-light);
             margin-bottom: 16px;
         }
 
+        body.dark-mode .sidebar-title {
+            color: var(--text-dark);
+        }
+
         .stat-card {
-            background: #f9f9f9;
+            background: var(--border-light);
             border-radius: 12px;
             padding: 12px;
             margin-bottom: 12px;
             text-align: center;
+            transition: background 0.3s;
+        }
+
+        body.dark-mode .stat-card {
+            background: var(--border-dark);
         }
 
         .stat-card-value {
             font-size: 20px;
             font-weight: 700;
-            color: #667eea;
+            color: var(--primary);
             margin-bottom: 4px;
         }
 
@@ -640,6 +803,10 @@
             font-size: 11px;
             color: #999;
             font-weight: 600;
+        }
+
+        body.dark-mode .stat-card-label {
+            color: #666;
         }
 
         .feature-list {
@@ -651,12 +818,17 @@
         .feature-list li {
             padding: 8px 0;
             color: #666;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        body.dark-mode .feature-list li {
+            color: #999;
+            border-bottom: 1px solid var(--border-dark);
         }
 
         .feature-list li:before {
             content: "✓ ";
-            color: #667eea;
+            color: var(--primary);
             font-weight: 700;
             margin-right: 6px;
         }
@@ -678,13 +850,18 @@
         .modal-overlay.active { display: flex; }
 
         .modal {
-            background: #fff;
+            background: var(--card-light);
             border-radius: 16px;
             padding: 20px;
             max-width: 320px;
             width: 90%;
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             animation: slideUp 0.3s ease;
+            transition: background 0.3s;
+        }
+
+        body.dark-mode .modal {
+            background: var(--card-dark);
         }
 
         @keyframes slideUp {
@@ -705,8 +882,12 @@
         .modal-title {
             font-size: 16px;
             font-weight: 700;
-            color: #000;
+            color: var(--text-light);
             margin-bottom: 4px;
+        }
+
+        body.dark-mode .modal-title {
+            color: var(--text-dark);
         }
 
         .modal-subtitle {
@@ -714,10 +895,18 @@
             color: #666;
         }
 
+        body.dark-mode .modal-subtitle {
+            color: #999;
+        }
+
         .modal-divider {
             height: 1px;
-            background: #e0e0e0;
+            background: var(--border-light);
             margin: 12px 0;
+        }
+
+        body.dark-mode .modal-divider {
+            background: var(--border-dark);
         }
 
         .modal-content {
@@ -725,6 +914,10 @@
             color: #666;
             margin-bottom: 16px;
             line-height: 1.5;
+        }
+
+        body.dark-mode .modal-content {
+            color: #999;
         }
 
         .modal-buttons {
@@ -743,17 +936,23 @@
         }
 
         .btn-primary {
-            background: #667eea;
+            background: var(--primary);
             color: #fff;
         }
         .btn-primary:hover { opacity: 0.9; }
 
         .btn-secondary {
-            background: #f0f0f0;
-            color: #333;
-            border: 1px solid #e0e0e0;
+            background: var(--border-light);
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
         }
-        .btn-secondary:hover { background: #e8e8e8; }
+        body.dark-mode .btn-secondary {
+            background: var(--border-dark);
+            color: var(--text-dark);
+            border-color: var(--border-dark);
+        }
+        .btn-secondary:hover { background: var(--card-light); opacity: 0.8; }
+        body.dark-mode .btn-secondary:hover { background: var(--card-dark); }
 
         .modal-close {
             position: absolute;
@@ -766,7 +965,9 @@
             color: #999;
         }
 
-        .modal-close:hover { color: #333; }
+        body.dark-mode .modal-close { color: #666; }
+        .modal-close:hover { color: var(--text-light); }
+        body.dark-mode .modal-close:hover { color: var(--text-dark); }
 
         /* ANIMATIONS */
         @keyframes slideIn {
@@ -827,6 +1028,29 @@
         }
 
         /* RESPONSIVE */
+        /* INPUTS */
+        input[type="text"],
+        textarea {
+            background: var(--card-light);
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s;
+        }
+
+        body.dark-mode input[type="text"],
+        body.dark-mode textarea {
+            background: var(--card-dark);
+            color: var(--text-dark);
+            border-color: var(--border-dark);
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+
         @media (max-width: 1024px) {
             .simulator {
                 grid-template-columns: 1fr;
@@ -867,13 +1091,14 @@
                                 <div class="header-title">YUIZZ</div>
                             </div>
                             <div style="display: flex; gap: 4px;">
+                                <button class="header-btn" onclick="toggleDarkMode()" title="Tema Oscuro">🌙</button>
                                 <button class="header-btn" onclick="toggleHotHour()" title="Toggle Hot Hour">🔥</button>
                                 <button class="header-btn" onclick="showHotHourInfo()" title="Info">ℹ️</button>
                             </div>
                         </div>
 
                         <!-- HOT HOUR BANNER -->
-                        <div id="hotHourBanner" style="background: linear-gradient(135deg, #FF1493 0%, #FF69B4 100%); padding: 12px 16px; text-align: center; color: white; font-weight: 700; border-bottom: 2px solid #FF1493; cursor: pointer;" onclick="showHotHourInfo()">
+                        <div id="hotHourBanner" style="background: linear-gradient(135deg, #FF2D55 0%, #FF453A 100%); padding: 12px 16px; text-align: center; color: white; font-weight: 700; border-bottom: 2px solid #FF2D55; cursor: pointer; transition: all 0.3s;" onclick="showHotHourInfo()">
                             🔥 HOT HOUR 11 PM - 12 AM ⚡ GRATIS • Conexiones sin límites
                         </div>
 
@@ -968,6 +1193,15 @@
                                     <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">💫 Disco</button>
                                     <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🌴 Latin</button>
                                     <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">☕ Lo-fi</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🎼 Bossa Nova</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🎸 Acústica</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🌙 Synthwave</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🤖 Vaporwave</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">👻 Dubstep</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🌊 Deep House</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🎺 Tropical House</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🔥 Reggae Fusion</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">💃 Dancehall</button>
                                 </div>
                             </div>
 
@@ -1134,6 +1368,15 @@
                                     <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">💫 Disco</button>
                                     <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🌴 Latin</button>
                                     <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">☕ Lo-fi</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🎼 Bossa Nova</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🎸 Acústica</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🌙 Synthwave</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🤖 Vaporwave</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">👻 Dubstep</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🌊 Deep House</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🎺 Tropical House</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🔥 Reggae Fusion</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">💃 Dancehall</button>
                                 </div>
                             </div>
 
@@ -1305,6 +1548,226 @@
                 socials: { instagram: 'claudia.reggaeton', tiktok: 'claudiareg21', snapchat: 'claudiareg', telegram: 'claudiabeat' },
                 interests: ['🎤 Reggaeton', '🎉 Fiestas'],
                 emoji: '💃'
+            },
+            {
+                name: 'Valentina',
+                age: 27,
+                location: 'Madrid',
+                bio: 'Artista visual 🎨. Viajo por trabajo y disfruto del arte urbano',
+                song: 'Rosalía - Aute Cuture',
+                genre: 'Indie Pop',
+                socials: { instagram: 'valentina.art', tiktok: 'vartist27', snapchat: 'valart', telegram: 'valcreative' },
+                interests: ['🎨 Arte', '✈️ Viajes'],
+                emoji: '👩‍🎨'
+            },
+            {
+                name: 'Isabelle',
+                age: 24,
+                location: 'Barcelona',
+                bio: 'Fitness coach 💪. Creo en el equilibrio entre ejercicio y diversión',
+                song: 'The Weeknd - Blinding Lights',
+                genre: 'Electrónica',
+                socials: { instagram: 'isabelle.fit', tiktok: 'isabfit24', snapchat: 'isafit', telegram: 'isafitness' },
+                interests: ['💪 Fitness', '🥗 Salud'],
+                emoji: '💃'
+            },
+            {
+                name: 'Lucía',
+                age: 23,
+                location: 'Sevilla',
+                bio: 'Estudiante de medicina 📚. Amante del cine y las series',
+                song: 'Billie Eilish - Therefore I Am',
+                genre: 'Pop',
+                socials: { instagram: 'lucia.med', tiktok: 'luciamed23', snapchat: 'luciastar', telegram: 'luciastudent' },
+                interests: ['📚 Cultura', '🎬 Cine'],
+                emoji: '👩‍🎓'
+            },
+            {
+                name: 'Aitana',
+                age: 25,
+                location: 'Valencia',
+                bio: 'Chef pastelera 🍰. Hago dulces y rompo corazones',
+                song: 'Bad Bunny - Dakiti',
+                genre: 'Reggaeton',
+                socials: { instagram: 'aitana.sweets', tiktok: 'aitanasweets', snapchat: 'aitanacakes', telegram: 'aitanabaker' },
+                interests: ['🍰 Repostería', '👨‍🍳 Cocina'],
+                emoji: '👩‍🍳'
+            },
+            {
+                name: 'Carmen',
+                age: 26,
+                location: 'Bilbao',
+                bio: 'Fotógrafa de moda 📸. Trabajo en la industria creative',
+                song: 'Fleetwood Mac - Dreams',
+                genre: 'Indie Pop',
+                socials: { instagram: 'carmen.photo', tiktok: 'carmenphoto26', snapchat: 'carmenphotog', telegram: 'carmenpics' },
+                interests: ['📸 Fotografía', '👗 Moda'],
+                emoji: '👩‍💼'
+            },
+            {
+                name: 'Beatriz',
+                age: 22,
+                location: 'Málaga',
+                bio: 'Bailarina profesional 💃. Amo la salsa y el bachata',
+                song: 'Grupo Manía - Lloraras',
+                genre: 'Salsa',
+                socials: { instagram: 'beatriz.dance', tiktok: 'beatrizdance22', snapchat: 'beatdancer', telegram: 'beatdancing' },
+                interests: ['💃 Baile', '🎵 Música'],
+                emoji: '💃'
+            },
+            {
+                name: 'Renata',
+                age: 28,
+                location: 'Granada',
+                bio: 'Guía turística 🗺️. Conozco cada rincón y adoro descubrir nuevos lugares',
+                song: 'The Script - Breakeven',
+                genre: 'Rock',
+                socials: { instagram: 'renata.travel', tiktok: 'renataguide28', snapchat: 'renattravel', telegram: 'renataexplore' },
+                interests: ['🌍 Viajes', '⛰️ Aventura'],
+                emoji: '🗺️'
+            },
+            {
+                name: 'Natalia',
+                age: 25,
+                location: 'Zaragoza',
+                bio: 'Emprendedora tech 💻. Estoy revolucionando el mercado fintech',
+                song: 'Dua Lipa - Don\'t Start Now',
+                genre: 'Pop',
+                socials: { instagram: 'natalia.tech', tiktok: 'nataliatech25', snapchat: 'nataliacode', telegram: 'nataliastartup' },
+                interests: ['💻 Tecnología', '📈 Negocios'],
+                emoji: '👩‍💻'
+            },
+            {
+                name: 'Adriana',
+                age: 24,
+                location: 'Palma de Mallorca',
+                bio: 'Instructora de yoga 🧘. Vivo en la playa y amo la naturaleza',
+                song: 'Khruangbin - Maria Tambien',
+                genre: 'Lo-fi',
+                socials: { instagram: 'adriana.yoga', tiktok: 'adrianayoga24', snapchat: 'adrianazenlove', telegram: 'adrianapeaceful' },
+                interests: ['🧘 Yoga', '🌊 Playa'],
+                emoji: '🧘‍♀️'
+            },
+            {
+                name: 'Elena',
+                age: 26,
+                location: 'Murcia',
+                bio: 'Astrónoma aficionada 🌌. Descubro universos cada noche',
+                song: 'Coldplay - Yellow',
+                genre: 'Indie Pop',
+                socials: { instagram: 'elena.astronomy', tiktok: 'elenaastro26', snapchat: 'elenasky', telegram: 'elenastargazer' },
+                interests: ['🌌 Ciencia', '🔭 Astronomía'],
+                emoji: '🔭'
+            },
+            {
+                name: 'Martina',
+                age: 23,
+                location: 'Las Palmas',
+                bio: 'Surfista 🏄. La ola perfecta es mi droga',
+                song: 'Jack Johnson - Better Together',
+                genre: 'Reggae',
+                socials: { instagram: 'martina.surf', tiktok: 'martinasurf23', snapchat: 'martinasurfqueen', telegram: 'martinawaves' },
+                interests: ['🏄 Surf', '🌊 Playa'],
+                emoji: '🏄‍♀️'
+            },
+            {
+                name: 'Alejandra',
+                age: 25,
+                location: 'Córdoba',
+                bio: 'Diseñadora gráfica 🎨. Creo identidades visuales increíbles',
+                song: 'Disclosure - Latch',
+                genre: 'Electrónica',
+                socials: { instagram: 'alejandra.design', tiktok: 'aledesign25', snapchat: 'alegrafica', telegram: 'aledesignstudio' },
+                interests: ['🎨 Diseño', '💡 Creatividad'],
+                emoji: '👩‍🎨'
+            },
+            {
+                name: 'Rocío',
+                age: 27,
+                location: 'Cádiz',
+                bio: 'Marinera y pescadora 🎣. Amo el mar más que cualquier cosa',
+                song: 'Vetusta Morla - La Deriva',
+                genre: 'Rock',
+                socials: { instagram: 'rocio.fisher', tiktok: 'rociofisher27', snapchat: 'rociomar', telegram: 'rociosea' },
+                interests: ['🌊 Mar', '🎣 Pesca'],
+                emoji: '⛵'
+            },
+            {
+                name: 'Diana',
+                age: 24,
+                location: 'Huelva',
+                bio: 'Psicóloga 🧠. Entiendo las complejidades del ser humano',
+                song: 'Amy Winehouse - Back to Black',
+                genre: 'Jazz',
+                socials: { instagram: 'diana.psych', tiktok: 'dianapsych24', snapchat: 'dianamind', telegram: 'dianacounseling' },
+                interests: ['🧠 Psicología', '📚 Lectura'],
+                emoji: '👩‍⚕️'
+            },
+            {
+                name: 'Fabiola',
+                age: 22,
+                location: 'Jaén',
+                bio: 'Modelando vidas 💄. Trabajo en la industria de la belleza',
+                song: 'Ariana Grande - Thank U, Next',
+                genre: 'Pop',
+                socials: { instagram: 'fabiola.beauty', tiktok: 'fabiola.beauty22', snapchat: 'fabiolamakeup', telegram: 'fabiolabeauty' },
+                interests: ['💄 Belleza', '👗 Moda'],
+                emoji: '💄'
+            },
+            {
+                name: 'Gabriela',
+                age: 26,
+                location: 'Almería',
+                bio: 'Veterinaria 🐾. Los animales son mi pasión',
+                song: 'Foster the People - Pumped Up Kicks',
+                genre: 'Indie Pop',
+                socials: { instagram: 'gabriela.vet', tiktok: 'gabrielavets26', snapchat: 'gabivets', telegram: 'gabrielapets' },
+                interests: ['🐾 Animales', '🏥 Salud'],
+                emoji: '👩‍⚕️'
+            },
+            {
+                name: 'Lorena',
+                age: 25,
+                location: 'Ávila',
+                bio: 'Historiadora 📖. Reconstruyo el pasado, construyo el futuro',
+                song: 'Florence + The Machine - Dog Days Are Over',
+                genre: 'Rock',
+                socials: { instagram: 'lorena.history', tiktok: 'lorenahist25', snapchat: 'lorenahistory', telegram: 'lorenapast' },
+                interests: ['📖 Historia', '🏛️ Cultura'],
+                emoji: '📚'
+            },
+            {
+                name: 'Susana',
+                age: 23,
+                location: 'Toledo',
+                bio: 'Pintora y soñadora 🎨. El arte es mi lenguaje',
+                song: 'Aurora - Exist For Love',
+                genre: 'Indie Pop',
+                socials: { instagram: 'susana.paint', tiktok: 'susanapaint23', snapchat: 'susanaartist', telegram: 'susanacanvas' },
+                interests: ['🎨 Arte', '🖼️ Pintura'],
+                emoji: '🎨'
+            },
+            {
+                name: 'Verónica',
+                age: 28,
+                location: 'Ciudad Real',
+                bio: 'Ingeniera aeronáutica 🛩️. Construyo el futuro volador',
+                song: 'Queens of the Stone Age - Song for the Dead',
+                genre: 'Rock',
+                socials: { instagram: 'veronica.engineer', tiktok: 'veronicaeng28', snapchat: 'veroengineering', telegram: 'veronicasky' },
+                interests: ['🛩️ Aviación', '🔧 Ingeniería'],
+                emoji: '👩‍🔬'
+            },
+            {
+                name: 'Milagros',
+                age: 24,
+                location: 'Segovia',
+                bio: 'Chef de cocina molecular 🍽️. Experimento con sabores',
+                song: 'Anderson .Paak - Come Down',
+                genre: 'R&B',
+                socials: { instagram: 'milagros.chef', tiktok: 'milagroscooking24', snapchat: 'milagroscuisine', telegram: 'milagrosdelish' },
+                interests: ['👨‍🍳 Cocina', '🍷 Gastronomía'],
+                emoji: '👨‍🍳'
             }
         ];
 
@@ -1347,6 +1810,7 @@
         let coins = 450;
         let currentProfile = 0;
         let isHotHourActive = true; // DEMO MODE - siempre activo
+        let isDarkMode = false;
         let userLikes = [];
         let userMatches = [];
         let userMessages = [];
@@ -1360,12 +1824,32 @@
             3: true,   // Luna likes back
             4: false,  // Sophia no like
             5: true,   // Claudia likes back
+            6: true,   // Valentina likes back
+            7: false,  // Isabelle no like
+            8: true,   // Lucía likes back
+            9: true,   // Aitana likes back
+            10: false, // Carmen no like
+            11: true,  // Beatriz likes back
+            12: true,  // Renata likes back
+            13: false, // Natalia no like
+            14: true,  // Adriana likes back
+            15: true,  // Elena likes back
+            16: false, // Martina no like
+            17: true,  // Alejandra likes back
+            18: true,  // Rocío likes back
+            19: false, // Diana no like
+            20: true,  // Fabiola likes back
+            21: true,  // Gabriela likes back
+            22: false, // Lorena no like
+            23: true,  // Susana likes back
+            24: false, // Verónica no like
+            25: true,  // Milagros likes back
         };
 
         // Guardar datos en localStorage
         function saveData() {
             localStorage.setItem('yuizzData', JSON.stringify({
-                coins, userLikes, userMatches, userMessages, notifications
+                coins, userLikes, userMatches, userMessages, notifications, isDarkMode
             }));
         }
 
@@ -1378,8 +1862,23 @@
                 userMatches = data.userMatches;
                 userMessages = data.userMessages;
                 notifications = data.notifications;
+                isDarkMode = data.isDarkMode || false;
+                if (isDarkMode) {
+                    document.body.classList.add('dark-mode');
+                }
                 updateCoins();
             }
+        }
+
+        // DARK MODE TOGGLE
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+            saveData();
         }
 
         // HOT HOUR SYSTEM
