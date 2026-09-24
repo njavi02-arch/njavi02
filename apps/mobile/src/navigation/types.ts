@@ -26,6 +26,10 @@ export type MessagesStackParamList = {
 export type DiscoverStackParamList = {
   DiscoverFeed: undefined;
   ProfileDetail: { profileId: string };
+  Community: undefined;
+  CreatePost: undefined;
+  HashtagFeed: { hashtagId: string; hashtagName: string };
+  PostDetail: { postId: string };
 };
 
 export type ProfileStackParamList = {

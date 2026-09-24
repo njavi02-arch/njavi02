@@ -228,3 +228,81 @@ export interface PushTokenRow {
   expo_push_token: string;
   platform: 'ios' | 'android' | 'web';
 }
+
+// ===== COMMUNITY SYSTEM =====
+
+export interface HashtagRow {
+  id: string;
+  name: string;
+  category: string;
+  description: string | null;
+  created_at: string;
+}
+
+export interface PostRow {
+  id: string;
+  author_id: string;
+  content: string;
+  media_urls: string[] | null;
+  likes_count: number;
+  comments_count: number;
+  shares_count: number;
+  is_archived: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PostWithAuthor extends PostRow {
+  author: ProfileRow;
+  hashtags: HashtagRow[];
+  liked_by_me: boolean;
+}
+
+export interface CommentRow {
+  id: string;
+  post_id: string;
+  author_id: string;
+  content: string;
+  likes_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CommentWithAuthor extends CommentRow {
+  author: ProfileRow;
+  liked_by_me: boolean;
+}
+
+export interface PostLikeRow {
+  id: string;
+  post_id: string;
+  liker_id: string;
+  created_at: string;
+}
+
+export interface CommentLikeRow {
+  id: string;
+  comment_id: string;
+  liker_id: string;
+  created_at: string;
+}
+
+export interface HashtagFollowerRow {
+  user_id: string;
+  hashtag_id: string;
+  created_at: string;
+}
+
+export interface IcebreakerPackRow {
+  id: string;
+  pack_number: number;
+  phrases: string[];
+  created_at: string;
+}
+
+export interface InteractionTrackingRow {
+  user_id: string;
+  total_interactions: number;
+  current_pack: number;
+  last_pack_rotation: string;
+}
