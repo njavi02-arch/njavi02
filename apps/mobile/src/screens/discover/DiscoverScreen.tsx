@@ -69,6 +69,17 @@ export function DiscoverScreen({ navigation }: Props) {
     return current.interests.filter((i) => mine.has(i));
   }, [current, myInterests]);
 
+  const motivationalMessage = useMemo(() => {
+    if (!current) return null;
+    const messages = [
+      sharedInterests.length > 0 ? `¡${sharedInterests.length} intereses en común! 🎯` : null,
+      current.is_verified ? '✅ Perfil verificado - Más confiable' : null,
+      current.bio && current.bio.length > 50 ? '📝 Perfil completo - Interesante' : null,
+      current.interests.length >= 5 ? '🎨 Muchos intereses en común' : null,
+    ].filter(Boolean);
+    return messages.length > 0 ? messages[Math.floor(Math.random() * messages.length)] : null;
+  }, [current, sharedInterests]);
+
   const goNext = useCallback(() => {
     Animated.sequence([
       Animated.timing(cardScaleAnim, {
@@ -234,6 +245,24 @@ export function DiscoverScreen({ navigation }: Props) {
             </View>
           ))}
         </View>
+
+        {motivationalMessage ? (
+          <View
+            style={{
+              backgroundColor: theme.colors.surfaceElevated,
+              borderRadius: theme.radius.md,
+              paddingHorizontal: theme.spacing.md,
+              paddingVertical: theme.spacing.sm,
+              marginHorizontal: theme.spacing.md,
+              marginTop: theme.spacing.sm,
+              marginBottom: theme.spacing.sm,
+            }}
+          >
+            <Text style={{ textAlign: 'center', color: theme.colors.primary, fontFamily: theme.typography.fontFamilyBodyMedium }}>
+              {motivationalMessage}
+            </Text>
+          </View>
+        ) : null}
 
         {feedback ? (
           <Text style={{ textAlign: 'center', color: theme.colors.secondary, marginTop: theme.spacing.sm, fontFamily: theme.typography.fontFamilyBodyMedium }}>
