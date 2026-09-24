@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YUIZZ - Conexiones Reales API v2</title>
+    <style>
+        :root {
+            --primary: #007AFF;
+            --accent: #00B8E6;
+            --bg: #FFFFFF;
+            --text: #000;
+            --border: #E5E5EA;
+            --success: #34C759;
+            --danger: #FF3B30;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .screen {
+            display: none;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* LOGIN SCREEN */
+        .login-screen {
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #666;
+        }
+
+        input {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        button {
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #0051D5;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #E5E5EA;
+            color: #000;
+        }
+
+        .btn-secondary:hover {
+            background: #D1D1D6;
+        }
+
+        .form-divider {
+            text-align: center;
+            color: #999;
+            margin: 20px 0;
+        }
+
+        .error {
+            color: var(--danger);
+            font-size: 14px;
+            padding: 10px;
+            background: #FFE5E5;
+            border-radius: 6px;
+        }
+
+        .success {
+            color: var(--success);
+            font-size: 14px;
+            padding: 10px;
+            background: #E5F5E5;
+            border-radius: 6px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* DISCOVER SCREEN */
+        .discover-screen {
+            gap: 15px;
+        }
+
+        .profile-card {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .profile-photo {
+            width: 100%;
+            height: 300px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .profile-name {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .profile-meta {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .profile-bio {
+            color: #555;
+            font-size: 14px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: space-around;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 32px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .pass-btn {
+            background: #f0f0f0;
+            border-color: #ddd;
+        }
+
+        .like-btn {
+            background: #FFE5E5;
+            border-color: var(--danger);
+        }
+
+        .super-like-btn {
+            background: #FFE5B8;
+            border-color: #FFA500;
+        }
+
+        /* MESSAGES SCREEN */
+        .messages-screen {
+            gap: 15px;
+        }
+
+        .chat-item {
+            padding: 15px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chat-item:hover {
+            background: #f9f9f9;
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .chat-name {
+            font-weight: 600;
+        }
+
+        .chat-status {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .chat-preview {
+            font-size: 14px;
+            color: #999;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* PROFILE SCREEN */
+        .profile-screen {
+            gap: 20px;
+        }
+
+        .stat-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* NAVIGATION */
+        .nav-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 10px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: #666;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: #333;
+            color: white;
+            border-radius: 8px;
+            display: none;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            display: block;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen" class="screen login-screen active">
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 40px;">
+            <h1 style="font-size: 42px; margin-bottom: 10px;">YUIZZ</h1>
+            <p style="color: #666;">Conexiones Reales</p>
+        </div>
+
+        <form id="login-form" class="login-form">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="login-email" placeholder="tu@email.com" required>
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="login-password" placeholder="••••••••" required>
+            </div>
+            <div id="login-error" class="error" style="display: none;"></div>
+            <button type="submit" id="login-btn">Iniciar Sesión</button>
+        </form>
+
+        <div class="form-divider">o</div>
+
+        <button type="button" id="toggle-register" class="btn-secondary">Crear Cuenta Nueva</button>
+    </div>
+</div>
+
+<!-- REGISTER SCREEN -->
+<div id="register-screen" class="screen login-screen">
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="font-size: 36px; margin-bottom: 10px;">Crear Cuenta</h1>
+        </div>
+
+        <form id="register-form" class="login-form">
+            <div class="form-group">
+                <label>Nombre de usuario</label>
+                <input type="text" id="register-username" placeholder="tunombre" required>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="register-email" placeholder="tu@email.com" required>
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="register-password" placeholder="••••••••" required>
+            </div>
+            <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" id="register-first-name" placeholder="Tu nombre">
+            </div>
+            <div class="form-group">
+                <label>Apellido</label>
+                <input type="text" id="register-last-name" placeholder="Tu apellido">
+            </div>
+            <div id="register-error" class="error" style="display: none;"></div>
+            <button type="submit" id="register-btn">Crear Cuenta</button>
+        </form>
+
+        <div class="form-divider">o</div>
+
+        <button type="button" id="toggle-login" class="btn-secondary">Volver a Login</button>
+    </div>
+</div>
+
+<!-- MAIN APP SCREEN -->
+<div id="app-screen" class="screen">
+    <div class="container">
+        <div class="header">
+            <h1 class="title">YUIZZ</h1>
+            <div class="header-actions">
+                <button class="icon-btn" id="theme-toggle">🌙</button>
+                <button class="icon-btn" id="logout-btn">🚪</button>
+            </div>
+        </div>
+
+        <div class="nav-bar">
+            <button class="nav-btn active" data-screen="discover">Descubrir</button>
+            <button class="nav-btn" data-screen="messages">💬</button>
+            <button class="nav-btn" data-screen="profile">Perfil</button>
+        </div>
+
+        <!-- DISCOVER TAB -->
+        <div id="discover-tab" class="discover-screen">
+            <div id="profiles-container"></div>
+        </div>
+
+        <!-- MESSAGES TAB -->
+        <div id="messages-tab" class="messages-screen" style="display: none;">
+            <div id="chats-container"></div>
+        </div>
+
+        <!-- PROFILE TAB -->
+        <div id="profile-tab" class="profile-screen" style="display: none;">
+            <div class="stat-card">
+                <div>
+                    <div class="stat-label">Rachas</div>
+                    <div class="stat-value" id="streak-display">0</div>
+                </div>
+                <button id="claim-reward-btn" class="action-btn like-btn">🎁</button>
+            </div>
+
+            <div class="stat-card">
+                <div>
+                    <div class="stat-label">Monedas</div>
+                    <div class="stat-value" id="coins-display">0</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div>
+                    <div class="stat-label">Visualizaciones</div>
+                    <div class="stat-value" id="views-display">0</div>
+                </div>
+            </div>
+
+            <button id="buy-coins-btn" class="btn-secondary">💰 Comprar Monedas</button>
+            <button id="premium-btn" class="btn-secondary">⭐ Upgrade a Premium</button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST NOTIFICATION -->
+<div id="toast" class="toast"></div>
+
+<!-- SCRIPTS -->
+<script>
+    // ========================================
+    // API CLIENT
+    // ========================================
+    const API_URL = 'http://localhost:3001';
+    let authToken = null;
+    let currentUser = null;
+
+    class API {
+        static async fetch(endpoint, options = {}) {
+            const headers = {
+                'Content-Type': 'application/json',
+                ...options.headers
+            };
+
+            if (authToken) {
+                headers.Authorization = `Bearer ${authToken}`;
+            }
+
+            const response = await fetch(`${API_URL}${endpoint}`, {
+                ...options,
+                headers
+            });
+
+            if (response.status === 401) {
+                logout();
+                return null;
+            }
+
+            return await response.json();
+        }
+
+        static register(email, password, username, firstName, lastName) {
+            return this.fetch('/api/auth/register', {
+                method: 'POST',
+                body: JSON.stringify({ email, password, username, firstName, lastName })
+            });
+        }
+
+        static login(email, password) {
+            return this.fetch('/api/auth/login', {
+                method: 'POST',
+                body: JSON.stringify({ email, password })
+            });
+        }
+
+        static getProfile() {
+            return this.fetch('/api/users/profile');
+        }
+
+        static updateProfile(data) {
+            return this.fetch('/api/users/profile', {
+                method: 'PUT',
+                body: JSON.stringify(data)
+            });
+        }
+
+        static getDiscoverProfiles() {
+            return this.fetch('/api/discover');
+        }
+
+        static like(targetUserId) {
+            return this.fetch('/api/interactions/like', {
+                method: 'POST',
+                body: JSON.stringify({ targetUserId })
+            });
+        }
+
+        static pass(targetUserId) {
+            return this.fetch('/api/interactions/pass', {
+                method: 'POST',
+                body: JSON.stringify({ targetUserId })
+            });
+        }
+
+        static superLike(targetUserId) {
+            return this.fetch('/api/interactions/super-like', {
+                method: 'POST',
+                body: JSON.stringify({ targetUserId })
+            });
+        }
+
+        static getChats() {
+            return this.fetch('/api/messages/chats');
+        }
+
+        static sendMessage(receiverId, content) {
+            return this.fetch('/api/messages/send', {
+                method: 'POST',
+                body: JSON.stringify({ receiverId, content })
+            });
+        }
+
+        static getCoins() {
+            return this.fetch('/api/coins');
+        }
+
+        static claimReward() {
+            return this.fetch('/api/streaks/claim', {
+                method: 'POST'
+            });
+        }
+    }
+
+    // ========================================
+    // UI UTILITIES
+    // ========================================
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.style.background = type === 'error' ? '#FF3B30' : '#34C759';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function showError(elementId, message) {
+        const el = document.getElementById(elementId);
+        if (el) {
+            el.textContent = message;
+            el.style.display = 'block';
+        }
+    }
+
+    function hideError(elementId) {
+        const el = document.getElementById(elementId);
+        if (el) {
+            el.style.display = 'none';
+        }
+    }
+
+    // ========================================
+    // AUTH
+    // ========================================
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        const btn = document.getElementById('login-btn');
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="loading"></span>';
+
+        hideError('login-error');
+
+        const result = await API.login(email, password);
+
+        if (result.error) {
+            showError('login-error', result.error);
+            btn.disabled = false;
+            btn.innerHTML = 'Iniciar Sesión';
+        } else {
+            authToken = result.token;
+            localStorage.setItem('auth_token', authToken);
+            showToast('¡Bienvenido!');
+            showScreen('app-screen');
+            loadApp();
+        }
+    });
+
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const username = document.getElementById('register-username').value;
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+        const firstName = document.getElementById('register-first-name').value;
+        const lastName = document.getElementById('register-last-name').value;
+        const btn = document.getElementById('register-btn');
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="loading"></span>';
+
+        hideError('register-error');
+
+        const result = await API.register(email, password, username, firstName, lastName);
+
+        if (result.error) {
+            showError('register-error', result.error);
+            btn.disabled = false;
+            btn.innerHTML = 'Crear Cuenta';
+        } else {
+            authToken = result.token;
+            localStorage.setItem('auth_token', authToken);
+            showToast('¡Cuenta creada!');
+            showScreen('app-screen');
+            loadApp();
+        }
+    });
+
+    document.getElementById('toggle-register').addEventListener('click', () => {
+        hideError('login-error');
+        showScreen('register-screen');
+    });
+
+    document.getElementById('toggle-login').addEventListener('click', () => {
+        hideError('register-error');
+        showScreen('login-screen');
+    });
+
+    function logout() {
+        authToken = null;
+        localStorage.removeItem('auth_token');
+        currentUser = null;
+        showScreen('login-screen');
+        showToast('Sesión cerrada', 'info');
+    }
+
+    document.getElementById('logout-btn').addEventListener('click', logout);
+
+    // ========================================
+    // APP LOADING
+    // ========================================
+    async function loadApp() {
+        // Load user profile
+        const profile = await API.getProfile();
+        if (profile) {
+            currentUser = profile;
+            updateUI();
+        }
+
+        // Load discover profiles
+        await loadDiscoverProfiles();
+
+        // Load chats
+        await loadChats();
+    }
+
+    async function loadDiscoverProfiles() {
+        const profiles = await API.getDiscoverProfiles();
+        const container = document.getElementById('profiles-container');
+
+        if (!profiles || profiles.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #999;">No hay más perfiles disponibles</p>';
+            return;
+        }
+
+        container.innerHTML = profiles.map(profile => `
+            <div class="profile-card" data-user-id="${profile.id}">
+                <div class="profile-photo">📷 ${profile.first_name}</div>
+                <div class="profile-info">
+                    <div class="profile-name">${profile.first_name} ${profile.last_name}, ${profile.age || '?'}</div>
+                    <div class="profile-meta">${profile.city || 'Ubicación'} • ${profile.gender || '?'}</div>
+                    <div class="profile-bio">${profile.bio || ''}</div>
+                </div>
+                <div class="card-actions">
+                    <button class="action-btn pass-btn" onclick="handlePass('${profile.id}')">👋</button>
+                    <button class="action-btn like-btn" onclick="handleLike('${profile.id}')">❤️</button>
+                    <button class="action-btn super-like-btn" onclick="handleSuperLike('${profile.id}')">⭐</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function handlePass(userId) {
+        const result = await API.pass(userId);
+        if (result && result.success) {
+            showToast('Pasado');
+            removeProfileCard(userId);
+        }
+    }
+
+    async function handleLike(userId) {
+        const result = await API.like(userId);
+        if (result && result.success) {
+            showToast(result.matched ? '¡¡MATCH!! 🎉' : '❤️ Like enviado');
+            removeProfileCard(userId);
+        }
+    }
+
+    async function handleSuperLike(userId) {
+        const result = await API.superLike(userId);
+        if (result && result.success) {
+            showToast('⭐ Super Like enviado');
+            removeProfileCard(userId);
+            await updateCoinsDisplay();
+        } else if (result && result.error) {
+            showError('login-error', result.error);
+        }
+    }
+
+    function removeProfileCard(userId) {
+        const card = document.querySelector(`[data-user-id="${userId}"]`);
+        if (card) {
+            card.style.opacity = '0';
+            setTimeout(() => card.remove(), 300);
+        }
+    }
+
+    async function loadChats() {
+        const chats = await API.getChats();
+        const container = document.getElementById('chats-container');
+
+        if (!chats || chats.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #999;">No hay chats aún</p>';
+            return;
+        }
+
+        container.innerHTML = chats.map(chat => `
+            <div class="chat-item">
+                <div class="chat-header">
+                    <div class="chat-name">${chat.user_id_1 === currentUser.id ? 'Usuario' : 'Tú'}</div>
+                    <div class="chat-status">🟢 En línea</div>
+                </div>
+                <div class="chat-preview">Último mensaje...</div>
+            </div>
+        `).join('');
+    }
+
+    function updateUI() {
+        updateCoinsDisplay();
+        updateStreakDisplay();
+    }
+
+    async function updateCoinsDisplay() {
+        const coins = await API.getCoins();
+        if (coins) {
+            document.getElementById('coins-display').textContent = coins.coins || 0;
+        }
+    }
+
+    async function updateStreakDisplay() {
+        const profile = await API.getProfile();
+        if (profile) {
+            document.getElementById('streak-display').textContent = profile.daily_streaks?.[0]?.current_streak || 0;
+        }
+    }
+
+    document.getElementById('claim-reward-btn').addEventListener('click', async () => {
+        const result = await API.claimReward();
+        if (result && result.success) {
+            showToast(`🎁 +${result.reward} monedas!`);
+            await updateCoinsDisplay();
+            await updateStreakDisplay();
+        } else if (result && result.error) {
+            showToast(result.error, 'error');
+        }
+    });
+
+    // ========================================
+    // NAVIGATION
+    // ========================================
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('[id$="-tab"]').forEach(t => t.style.display = 'none');
+
+            btn.classList.add('active');
+            const screenName = btn.getAttribute('data-screen');
+            document.getElementById(`${screenName}-tab`).style.display = 'flex';
+        });
+    });
+
+    // ========================================
+    // THEME
+    // ========================================
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+    });
+
+    // ========================================
+    // INIT
+    // ========================================
+    window.addEventListener('load', () => {
+        authToken = localStorage.getItem('auth_token');
+        if (authToken) {
+            showScreen('app-screen');
+            loadApp();
+        } else {
+            showScreen('login-screen');
+        }
+
+        // Load theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    });
+</script>
+
+</body>
+</html>
