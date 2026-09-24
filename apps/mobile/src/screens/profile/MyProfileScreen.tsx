@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTheme } from '../../theme/ThemeProvider';
 import { ScreenContainer } from '../../components/ScreenContainer';
@@ -9,7 +10,7 @@ import { Button } from '../../components/Button';
 import { PhotoGallery } from '../../components/PhotoGallery';
 import { useAuthStore } from '../../store/authStore';
 import { getPhotosForProfile } from '../../services/profiles';
-import { useAppConfig, useWallets } from '../../hooks/useEconomy';
+import { useAppConfig, useWallets, useDailyStreak } from '../../hooks/useEconomy';
 import { signOut } from '../../services/auth';
 import type { ProfileStackParamList } from '../../navigation/types';
 
@@ -32,11 +33,23 @@ export function MyProfileScreen({ navigation }: Props) {
   const profile = useAuthStore((s) => s.profile);
   const { data: config } = useAppConfig();
   const { data: wallets } = useWallets();
+  const { data: streak } = useDailyStreak();
   const photosQuery = useQuery({
     queryKey: ['photos', profile?.id],
     queryFn: () => getPhotosForProfile(profile!.id),
     enabled: Boolean(profile),
   });
+
+  const claimedToday = useMemo(
+    () => streak?.last_checkin_date === dayjs().format('YYYY-MM-DD'),
+    [streak?.last_checkin_date],
+  );
+
+  const nextRewardDay = useMemo(() => {
+    if (!config || !streak) return null;
+    const reward = config.streak_rewards.find((r) => r.day === streak.next_reward_day);
+    return reward;
+  }, [config, streak]);
 
   if (!profile) {
     return (
@@ -69,6 +82,29 @@ export function MyProfileScreen({ navigation }: Props) {
           <StatPill label="Monedas" value={wallets?.coins ?? '—'} />
           <StatPill label="Créditos msj." value={wallets?.messageCredits ?? '—'} />
         </View>
+
+        {!claimedToday && nextRewardDay && (
+          <View
+            style={{
+              backgroundColor: theme.colors.primary,
+              borderRadius: theme.radius.md,
+              padding: theme.spacing.md,
+              marginBottom: theme.spacing.md,
+              borderLeftWidth: 4,
+              borderLeftColor: theme.colors.secondary,
+            }}
+          >
+            <Text style={{ color: theme.colors.onPrimary, fontFamily: theme.typography.fontFamilyHeadingSemibold, fontSize: 16, marginBottom: 8 }}>
+              🎉 Racha: Día {streak?.next_reward_day} listo
+            </Text>
+            <Text style={{ color: theme.colors.onPrimary, opacity: 0.9, marginBottom: 12 }}>
+              {nextRewardDay.coins > 0 && `${nextRewardDay.coins} 🪙`}
+              {nextRewardDay.superLikes > 0 && (nextRewardDay.coins > 0 ? ' + ' : '') + `${nextRewardDay.superLikes} ✨`}
+              {nextRewardDay.messageCredits > 0 && (nextRewardDay.coins > 0 || nextRewardDay.superLikes > 0 ? ' + ' : '') + `${nextRewardDay.messageCredits} 💬`}
+            </Text>
+            <Button label="Reclamar ahora" onPress={() => navigation.navigate('Streak')} />
+          </View>
+        )}
 
         <PhotoGallery
           photos={photosQuery.data?.map((p) => ({ url: p.url, position: p.position })) ?? []}
