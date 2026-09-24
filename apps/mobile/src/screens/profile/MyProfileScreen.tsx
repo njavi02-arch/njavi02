@@ -8,6 +8,7 @@ import { ScreenContainer } from '../../components/ScreenContainer';
 import { LoadingState } from '../../components/LoadingState';
 import { Button } from '../../components/Button';
 import { PhotoGallery } from '../../components/PhotoGallery';
+import { ProfileStrengthIndicator } from '../../components/ProfileStrengthIndicator';
 import { useAuthStore } from '../../store/authStore';
 import { getPhotosForProfile } from '../../services/profiles';
 import { useAppConfig, useWallets, useDailyStreak } from '../../hooks/useEconomy';
@@ -82,6 +83,11 @@ export function MyProfileScreen({ navigation }: Props) {
           <StatPill label="Monedas" value={wallets?.coins ?? '—'} />
           <StatPill label="Créditos msj." value={wallets?.messageCredits ?? '—'} />
         </View>
+
+        <ProfileStrengthIndicator
+          completionPct={profile.profile_completion_pct}
+          onPressAction={() => navigation.navigate('EditProfile')}
+        />
 
         {!claimedToday && nextRewardDay && (
           <View
