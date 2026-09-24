@@ -40,10 +40,20 @@ export function StepBasics() {
       <TextField
         label="Fecha de nacimiento"
         value={draft.birthDate ?? ''}
-        onChangeText={(birthDate) => setPartial({ birthDate })}
+        onChangeText={(text) => {
+          const digitsOnly = text.replace(/\D/g, '');
+          let formatted = '';
+
+          if (digitsOnly.length >= 1) formatted = digitsOnly.substring(0, 4);
+          if (digitsOnly.length >= 5) formatted += '-' + digitsOnly.substring(4, 6);
+          if (digitsOnly.length >= 7) formatted += '-' + digitsOnly.substring(6, 8);
+
+          setPartial({ birthDate: formatted });
+        }}
         placeholder="AAAA-MM-DD"
-        keyboardType="numbers-and-punctuation"
+        keyboardType="number-pad"
         error={birthDateError ?? undefined}
+        maxLength={10}
       />
     </View>
   );
