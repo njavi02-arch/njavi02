@@ -12,6 +12,7 @@ import { ProfileStrengthIndicator } from '../../components/ProfileStrengthIndica
 import { useAuthStore } from '../../store/authStore';
 import { getPhotosForProfile } from '../../services/profiles';
 import { useAppConfig, useWallets, useDailyStreak } from '../../hooks/useEconomy';
+import { useProfileViewsCount } from '../../hooks/useProfileViews';
 import { signOut } from '../../services/auth';
 import type { ProfileStackParamList } from '../../navigation/types';
 
@@ -35,6 +36,7 @@ export function MyProfileScreen({ navigation }: Props) {
   const { data: config } = useAppConfig();
   const { data: wallets } = useWallets();
   const { data: streak } = useDailyStreak();
+  const { data: viewsCount = 0 } = useProfileViewsCount();
   const photosQuery = useQuery({
     queryKey: ['photos', profile?.id],
     queryFn: () => getPhotosForProfile(profile!.id),
@@ -88,6 +90,34 @@ export function MyProfileScreen({ navigation }: Props) {
           completionPct={profile.profile_completion_pct}
           onPressAction={() => navigation.navigate('EditProfile')}
         />
+
+        {viewsCount > 0 && (
+          <View
+            style={{
+              backgroundColor: theme.colors.surfaceElevated,
+              borderRadius: theme.radius.md,
+              padding: theme.spacing.md,
+              marginBottom: theme.spacing.md,
+              borderLeftWidth: 4,
+              borderLeftColor: '#FF6B9D',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <Text style={{ color: theme.colors.textPrimary, fontFamily: theme.typography.fontFamilyHeadingSemibold, fontSize: 16, marginBottom: 4 }}>
+                👀 {viewsCount} personas te vieron
+              </Text>
+              <Text style={{ color: theme.colors.textSecondary, fontSize: 12 }}>
+                Alguien está interesado en ti
+              </Text>
+            </View>
+            {viewsCount > 5 && (
+              <Text style={{ fontSize: 20, marginLeft: 8 }}>🔥</Text>
+            )}
+          </View>
+        )}
 
         {!claimedToday && nextRewardDay && (
           <View
