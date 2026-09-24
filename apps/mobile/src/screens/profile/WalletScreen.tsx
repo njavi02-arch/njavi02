@@ -155,10 +155,41 @@ export function WalletScreen() {
           </View>
         ))}
 
+        <Text style={{ fontFamily: theme.typography.fontFamilyHeadingSemibold, fontSize: theme.typography.sizes.h3, color: theme.colors.textPrimary, marginBottom: theme.spacing.sm, marginTop: theme.spacing.lg }}>
+          ⭐ Gana monedas gratis
+        </Text>
+
+        <View style={{ backgroundColor: theme.colors.surface, borderRadius: theme.radius.md, padding: theme.spacing.md, marginBottom: theme.spacing.lg, borderLeftWidth: 4, borderLeftColor: theme.colors.primary }}>
+          <View style={{ marginBottom: theme.spacing.sm }}>
+            <Text style={{ color: theme.colors.textPrimary, fontFamily: theme.typography.fontFamilyBodySemibold }}>📱 Login diario: +20 🪙</Text>
+            <Text style={{ color: theme.colors.textSecondary, fontSize: 12 }}>Accede cada día para acumular una racha</Text>
+          </View>
+
+          <View style={{ marginBottom: theme.spacing.sm }}>
+            <Text style={{ color: theme.colors.textPrimary, fontFamily: theme.typography.fontFamilyBodySemibold }}>🔥 Racha de 7 días: hasta +100 🪙</Text>
+            <Text style={{ color: theme.colors.textSecondary, fontSize: 12 }}>Día 7 = 100 monedas + 10 Super Likes</Text>
+          </View>
+
+          <View style={{ marginBottom: theme.spacing.sm }}>
+            <Text style={{ color: theme.colors.textPrimary, fontFamily: theme.typography.fontFamilyBodySemibold }}>❤️ Me gusta en posts: +2 🪙</Text>
+            <Text style={{ color: theme.colors.textSecondary, fontSize: 12 }}>Hasta 50/día en la sección Comunidad</Text>
+          </View>
+
+          <View style={{ marginBottom: theme.spacing.sm }}>
+            <Text style={{ color: theme.colors.textPrimary, fontFamily: theme.typography.fontFamilyBodySemibold }}>💬 Comentarios: +5 🪙</Text>
+            <Text style={{ color: theme.colors.textSecondary, fontSize: 12 }}>Participa en conversaciones</Text>
+          </View>
+
+          <View>
+            <Text style={{ color: theme.colors.textPrimary, fontFamily: theme.typography.fontFamilyBodySemibold }}>✅ Perfil completo: +30 🪙</Text>
+            <Text style={{ color: theme.colors.textSecondary, fontSize: 12 }}>Bonus por completar tu perfil</Text>
+          </View>
+        </View>
+
         <Text style={{ color: theme.colors.textSecondary, fontSize: theme.typography.sizes.caption, marginTop: theme.spacing.md }}>
           Las monedas se usan para Super Likes extra, desbloquear fotos, revelar
-          admiradores secretos y activar Boosts. También puedes conseguirlas gratis con la
-          racha diaria.
+          admiradores secretos y activar Boosts. Con la racha diaria y participación
+          activa, ¡nunca necesitarás pagar! 🎉
         </Text>
       </ScrollView>
     </ScreenContainer>

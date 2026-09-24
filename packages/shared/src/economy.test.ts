@@ -36,15 +36,16 @@ describe('applyBalanceDelta', () => {
 
 describe('super likes', () => {
   it('coste en monedas viene de la config', () => {
-    expect(superLikeCoinCost(DEFAULT_APP_CONFIG)).toBe(20);
+    expect(superLikeCoinCost(DEFAULT_APP_CONFIG)).toBe(10);
   });
 
   it('permite super like gratis si no se ha usado el cupo diario', () => {
     expect(canSendFreeSuperLike(0, DEFAULT_APP_CONFIG)).toBe(true);
+    expect(canSendFreeSuperLike(2, DEFAULT_APP_CONFIG)).toBe(true);
   });
 
   it('no permite super like gratis si ya se agotó el cupo diario', () => {
-    expect(canSendFreeSuperLike(1, DEFAULT_APP_CONFIG)).toBe(false);
+    expect(canSendFreeSuperLike(3, DEFAULT_APP_CONFIG)).toBe(false);
   });
 });
 
@@ -75,14 +76,14 @@ describe('fotos bloqueadas (brief sección 5)', () => {
 
   it('premium desbloquea gratis (coste 0), usuario normal paga la config', () => {
     expect(photoUnlockCoinCost(DEFAULT_APP_CONFIG, true)).toBe(0);
-    expect(photoUnlockCoinCost(DEFAULT_APP_CONFIG, false)).toBe(50);
+    expect(photoUnlockCoinCost(DEFAULT_APP_CONFIG, false)).toBe(25);
   });
 });
 
 describe('admiradores secretos', () => {
   it('coste de revelar identidad: gratis premium, config si no', () => {
     expect(secretAdmirerRevealCoinCost(DEFAULT_APP_CONFIG, true)).toBe(0);
-    expect(secretAdmirerRevealCoinCost(DEFAULT_APP_CONFIG, false)).toBe(30);
+    expect(secretAdmirerRevealCoinCost(DEFAULT_APP_CONFIG, false)).toBe(15);
   });
 });
 
@@ -130,16 +131,18 @@ describe('racha diaria de 7 días (brief sección 12)', () => {
     expect(result.streak.currentStreak).toBe(1);
   });
 
-  it('el día 4 da 5 Super Likes (recompensa especial) y no monedas', () => {
+  it('el día 4 da 7 Super Likes (recompensa especial) y no monedas', () => {
     const reward = streakRewardForDay(4, DEFAULT_APP_CONFIG);
-    expect(reward.superLikes).toBe(5);
+    expect(reward.superLikes).toBe(7);
     expect(reward.coins).toBe(0);
     expect(reward.isSpecial).toBe(true);
   });
 
-  it('el día 7 da 50 créditos de mensaje (brief literal: "Enviar 50 mensajes")', () => {
+  it('el día 7 da gran recompensa: 100 monedas, 10 Super Likes y 75 créditos de mensaje', () => {
     const reward = streakRewardForDay(7, DEFAULT_APP_CONFIG);
-    expect(reward.messageCredits).toBe(50);
+    expect(reward.coins).toBe(100);
+    expect(reward.superLikes).toBe(10);
+    expect(reward.messageCredits).toBe(75);
     expect(reward.isSpecial).toBe(true);
   });
 
@@ -241,12 +244,12 @@ describe('edad mínima (brief sección 16/24 — 18 años duros)', () => {
 });
 
 describe('rate limiting por antigüedad de cuenta (antispam)', () => {
-  it('cuenta nueva (< 48h) tiene el límite reducido por el factor configurado', () => {
-    expect(effectiveRateLimit(20, 5, DEFAULT_APP_CONFIG)).toBe(6); // floor(20 * 0.3) = 6
+  it('cuenta nueva (< 24h) tiene el límite reducido por el factor configurado', () => {
+    expect(effectiveRateLimit(20, 5, DEFAULT_APP_CONFIG)).toBe(10); // floor(20 * 0.5) = 10
   });
 
-  it('cuenta madura (>= 48h) usa el límite base completo', () => {
-    expect(effectiveRateLimit(20, 72, DEFAULT_APP_CONFIG)).toBe(20);
+  it('cuenta madura (>= 24h) usa el límite base completo', () => {
+    expect(effectiveRateLimit(20, 48, DEFAULT_APP_CONFIG)).toBe(20);
   });
 
   it('el límite reducido nunca baja de 1', () => {

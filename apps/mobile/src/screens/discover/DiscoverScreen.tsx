@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Image, Pressable, ScrollView, Text, View } from 'react-native';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import { Image, Pressable, ScrollView, Text, View, Animated, Easing } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useQueryClient } from '@tanstack/react-query';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -50,6 +50,7 @@ export function DiscoverScreen({ navigation }: Props) {
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const cardScaleAnim = useMemo(() => new Animated.Value(1), []);
 
   const current = profiles?.[index] ?? null;
 
@@ -68,27 +69,41 @@ export function DiscoverScreen({ navigation }: Props) {
     return current.interests.filter((i) => mine.has(i));
   }, [current, myInterests]);
 
-  function goNext() {
+  const goNext = useCallback(() => {
+    Animated.sequence([
+      Animated.timing(cardScaleAnim, {
+        toValue: 0.95,
+        duration: 100,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(cardScaleAnim, {
+        toValue: 1,
+        duration: 150,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]).start();
     setIndex((i) => i + 1);
     setFeedback(null);
-  }
+  }, [cardScaleAnim]);
 
-  async function handleSendMessage() {
+  const handleSendMessage = useCallback(async () => {
     if (!session || !current || message.trim().length === 0) return;
     setSending(true);
     try {
       await sendConversationRequest(current.id, message.trim());
       setFeedback('¡Mensaje enviado! Te avisaremos si responde.');
       queryClient.invalidateQueries({ queryKey: ['wallets'] });
-      setTimeout(goNext, 900);
+      setTimeout(goNext, 600);
     } catch (e) {
       setFeedback(e instanceof Error ? e.message : 'No se pudo enviar el mensaje');
     } finally {
       setSending(false);
     }
-  }
+  }, [session, current, message, queryClient, goNext]);
 
-  async function handleSuperLike() {
+  const handleSuperLike = useCallback(async () => {
     if (!session || !current) return;
     setSending(true);
     try {
@@ -96,12 +111,13 @@ export function DiscoverScreen({ navigation }: Props) {
       setFeedback('✨ Super Like enviado');
       queryClient.invalidateQueries({ queryKey: ['wallets'] });
       queryClient.invalidateQueries({ queryKey: ['super-likes-sent-today'] });
+      setTimeout(goNext, 400);
     } catch (e) {
       setFeedback(e instanceof Error ? e.message : 'No se pudo enviar el Super Like');
     } finally {
       setSending(false);
     }
-  }
+  }, [session, current, queryClient, goNext]);
 
   if (isLoading) {
     return (
