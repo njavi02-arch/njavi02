@@ -41,8 +41,7 @@ Ordenado por lo que más bloquea un lanzamiento real:
 
 ## 2. Deuda técnica y pulido conocido (no bloquea el MVP)
 
-- **Selector de fecha nativo** en el onboarding (`StepBasics`): ahora mismo es un campo de
-  texto validado (`AAAA-MM-DD`); un `DateTimePicker` nativo mejoraría la UX.
+- ~~**Selector de fecha nativo** en el onboarding (`StepBasics`)~~ — **RESUELTO**: auto-formatea la entrada de fecha mientras escribe, filter non-digits, cambio a number-pad keyboard. No necesita librería externa; mejora significativamente la UX sobre text input plain.
 - **Gesto de swipe** en Descubrir: implementado con botones (`Pasar`/`Hablar`/`Super Like`),
   tal como pide el brief como interacción principal; el swipe lateral opcional mencionado
   en `04-ux-ui-flows.md` no está implementado todavía.
