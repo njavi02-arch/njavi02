@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YUIZZ - Conexiones Reales</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .simulator {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 40px;
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* PHONE FRAME */
+        .phone {
+            background: #000;
+            border-radius: 50px;
+            padding: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            aspect-ratio: 9 / 19.5;
+            position: sticky;
+            top: 40px;
+            height: fit-content;
+        }
+
+        .phone-screen {
+            background: #fff;
+            border-radius: 45px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .notch {
+            height: 25px;
+            background: #fff;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .screen-content {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            position: relative;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .screen.active { display: flex; }
+        .screen::-webkit-scrollbar { width: 4px; }
+        .screen::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+
+        /* HEADER */
+        .header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            z-index: 10;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .header-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .header-btn:hover { background: #f0f0f0; }
+
+        /* DISCOVER SCREEN */
+        .discover-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+        }
+
+        .profile-card {
+            flex: 1;
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .card-photo {
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-photo::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.2), transparent);
+        }
+
+        .profile-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #ff6b9d;
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .card-info {
+            padding: 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .card-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .card-meta {
+            font-size: 13px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .card-status {
+            font-size: 11px;
+            color: #22c55e;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: #22c55e;
+            border-radius: 50%;
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 6px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: #f0f0f0;
+            color: #333;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .card-counter {
+            font-size: 11px;
+            color: #999;
+            margin-top: 8px;
+        }
+
+        .card-bio {
+            font-size: 12px;
+            color: #555;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+
+        .card-socials {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .social-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .social-icon:hover {
+            transform: scale(1.15);
+        }
+
+        .social-icon.instagram {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+
+        .social-icon.tiktok {
+            background: #000;
+            color: #fff;
+        }
+
+        .social-icon.snapchat {
+            background: #FFFC00;
+            color: #000;
+        }
+
+        .social-icon.telegram {
+            background: #0088cc;
+            color: #fff;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            padding: 0 12px 12px;
+        }
+
+        .btn-action {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            background: #fff;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 11px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .btn-action:active { transform: scale(0.95); }
+
+        .btn-pass {
+            color: #666;
+            border-color: #e0e0e0;
+        }
+        .btn-pass:hover { background: #f9f9f9; }
+
+        .btn-like {
+            background: #ff6b9d;
+            color: #fff;
+            border-color: #ff6b9d;
+        }
+        .btn-like:hover { opacity: 0.9; }
+
+        .btn-super {
+            background: #667eea;
+            color: #fff;
+            border-color: #667eea;
+        }
+        .btn-super:hover { opacity: 0.9; }
+
+        /* TAB BAR */
+        .tab-bar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0;
+            border-top: 1px solid #e0e0e0;
+            background: #fff;
+            padding-bottom: 12px;
+            position: sticky;
+            bottom: 0;
+            z-index: 5;
+        }
+
+        .tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 0;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 9px;
+            color: #999;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .tab:hover { color: #666; }
+        .tab.active { color: #667eea; }
+
+        .tab-icon { font-size: 20px; }
+
+        /* COMMUNITIES SCREEN */
+        .communities-container {
+            padding: 12px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 20px;
+            background: #f0f0f0;
+            border: none;
+            font-size: 13px;
+            margin-bottom: 12px;
+            font-family: inherit;
+        }
+
+        .dating-filters {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .dating-btn {
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 12px;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .dating-btn-stable {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .dating-btn-stable:hover { background: #c8e6c9; }
+
+        .dating-btn-casual {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .dating-btn-casual:hover { background: #ffe0b2; }
+
+        .community-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .community-card {
+            border-radius: 12px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            height: 140px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 12px;
+        }
+
+        .community-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            z-index: -1;
+        }
+
+        .community-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%);
+            z-index: 0;
+        }
+
+        .community-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .community-emoji {
+            font-size: 28px;
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 1;
+            opacity: 0.8;
+        }
+
+        .community-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .community-members {
+            font-size: 11px;
+            color: rgba(255,255,255,0.9);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* MESSAGES SCREEN */
+        .messages-container {
+            padding: 12px;
+        }
+
+        .chat-item {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            gap: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .chat-item:hover { background: #f0f0f0; }
+
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .chat-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 2px;
+        }
+
+        .chat-message {
+            font-size: 12px;
+            color: #999;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-time {
+            font-size: 11px;
+            color: #ccc;
+        }
+
+        .chat-unread {
+            width: 20px;
+            height: 20px;
+            background: #667eea;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        /* PROFILE SCREEN */
+        .profile-container {
+            padding: 16px;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 12px;
+        }
+
+        .profile-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .profile-meta {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .profile-section {
+            margin-bottom: 16px;
+        }
+
+        .profile-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .profile-stat-label {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .profile-stat-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 40px;
+        }
+
+        .sidebar-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .stat-card-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 4px;
+        }
+
+        .stat-card-label {
+            font-size: 11px;
+            color: #999;
+            font-weight: 600;
+        }
+
+        .feature-list {
+            list-style: none;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            color: #666;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .feature-list li:before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: 700;
+            margin-right: 6px;
+        }
+
+        /* MODALS */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 320px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .modal-emoji {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 4px;
+        }
+
+        .modal-subtitle {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .modal-divider {
+            height: 1px;
+            background: #e0e0e0;
+            margin: 12px 0;
+        }
+
+        .modal-content {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .modal-buttons {
+            display: grid;
+            gap: 8px;
+        }
+
+        .btn-modal {
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: #fff;
+        }
+        .btn-primary:hover { opacity: 0.9; }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #e0e0e0;
+        }
+        .btn-secondary:hover { background: #e8e8e8; }
+
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal-close:hover { color: #333; }
+
+        /* ANIMATIONS */
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.2); }
+            50% { transform: scale(1); }
+        }
+
+        .like-animation {
+            animation: heartBeat 0.6s ease-in-out;
+        }
+
+        .new-message-badge {
+            animation: pulse 2s infinite;
+        }
+
+        /* HOVER EFFECTS */
+        .profile-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .community-card {
+            transition: all 0.3s ease;
+        }
+
+        .community-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .chat-item {
+            transition: all 0.2s ease;
+        }
+
+        .chat-item:hover {
+            background: #f9f9f9;
+            transform: translateX(4px);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .simulator {
+                grid-template-columns: 1fr;
+            }
+
+            .phone {
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="simulator">
+        <!-- PHONE -->
+        <div class="phone">
+            <div class="phone-screen">
+                <div class="notch"></div>
+                <div class="screen-content">
+                    <!-- DISCOVER -->
+                    <div class="screen active" id="screen-discover">
+                        <div class="header">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <svg width="28" height="28" viewBox="0 0 28 28" style="flex-shrink: 0;">
+                                    <defs>
+                                        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#1E90FF;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#9B4DCA;stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
+                                    <path d="M14 2 Q20 2 24 8 Q26 11 26 14 Q26 20 20 24 Q17 26 14 26 Q8 26 4 20 Q2 17 2 14 Q2 8 8 4 Q11 2 14 2" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/>
+                                    <path d="M14 4 Q12 4 10 6 Q8 8 8 11 Q8 14 10 16 Q12 18 15 18" fill="none" stroke="url(#logoGrad)" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+                                </svg>
+                                <div class="header-title">YUIZZ</div>
+                            </div>
+                            <div style="display: flex; gap: 4px;">
+                                <button class="header-btn" onclick="toggleHotHour()" title="Toggle Hot Hour">🔥</button>
+                                <button class="header-btn" onclick="showHotHourInfo()" title="Info">ℹ️</button>
+                            </div>
+                        </div>
+
+                        <!-- HOT HOUR BANNER -->
+                        <div id="hotHourBanner" style="background: linear-gradient(135deg, #FF1493 0%, #FF69B4 100%); padding: 12px 16px; text-align: center; color: white; font-weight: 700; border-bottom: 2px solid #FF1493; cursor: pointer;" onclick="showHotHourInfo()">
+                            🔥 HOT HOUR 11 PM - 12 AM ⚡ GRATIS • Conexiones sin límites
+                        </div>
+
+                        <div class="discover-container">
+                            <div class="profile-card" id="currentProfileCard">
+                                <div class="card-photo">
+                                    👩
+                                    <div class="profile-badge">87% Match</div>
+                                </div>
+                                <div class="card-info">
+                                    <div class="card-header">
+                                        <div>
+                                            <div class="card-name" id="profileName">Sofia, 24</div>
+                                            <div class="card-meta" id="profileLocation">Barcelona</div>
+                                            <div class="card-status">
+                                                <span class="status-dot"></span>
+                                                Online
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-bio" id="profileBio">"Aventurera, amante del café y viajes. Buscando conexiones reales 💕"</div>
+                                    <div class="card-tags">
+                                        <div class="tag">🎵 Música</div>
+                                        <div class="tag">✈️ Viajes</div>
+                                    </div>
+                                    <div class="card-socials" id="profileSocials">
+                                        <div class="social-icon instagram" title="Instagram">📷</div>
+                                        <div class="social-icon tiktok" title="TikTok">🎵</div>
+                                        <div class="social-icon snapchat" title="Snapchat">👻</div>
+                                        <div class="social-icon telegram" title="Telegram">✉️</div>
+                                    </div>
+                                    <div class="card-counter">1 de 50</div>
+                                </div>
+                            </div>
+
+                            <div class="action-buttons">
+                                <button class="btn-action btn-pass" onclick="nextProfile()">👋 Pass</button>
+                                <button class="btn-action btn-like" onclick="likeProfile()">❤️ Like</button>
+                                <button class="btn-action btn-super" onclick="superLike()">⭐ Super</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COMMUNITIES -->
+                    <div class="screen" id="screen-communities">
+                        <div class="header">
+                            <div class="header-title">Comunidades</div>
+                        </div>
+                        <div class="communities-container">
+                            <input type="text" class="search-bar" id="searchCommunities"
+                                placeholder="🔍 Buscar..." onkeyup="filterCommunities(this.value)">
+
+                            <div class="dating-filters">
+                                <button class="dating-btn dating-btn-stable" onclick="showDatingModal('stable')">
+                                    💑 Relación<br><small>2.99€</small>
+                                </button>
+                                <button class="dating-btn dating-btn-casual" onclick="showDatingModal('casual')">
+                                    🔥 Casual<br><small>2.99€</small>
+                                </button>
+                            </div>
+
+                            <div style="margin-top: 14px; padding: 12px; background: #f9f9f9; border-radius: 12px;">
+                                <div style="font-size: 11px; font-weight: 700; color: #999; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">Géneros Musicales</div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; max-height: 150px; overflow-y: auto; padding: 6px;">
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🎵 Pop</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🎙️ Rap</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🎤 Reggaetón</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🎸 Rock</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🎹 R&B</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🎧 Electrónica</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">💿 Techno</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🏠 House</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">⚡ Hardcore</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🎆 Hardstyle</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🥁 Drum & Bass</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🎯 Trap</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🌍 Afrobeats</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">✨ K-Pop</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🌿 Indie</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🤘 Metal</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">💣 Punk</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🎵 Reggae</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">💃 Salsa</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">💕 Bachata</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🎸 Flamenco</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🐴 Country</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🎺 Jazz</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🎹 Blues</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🎼 Clásica</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🎸 Funk</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">✨ Soul</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">💫 Disco</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">🌴 Latin</button>
+                                    <button style="padding: 8px; background: #fff; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.color='#333';">☕ Lo-fi</button>
+                                </div>
+                            </div>
+
+                            <div class="community-grid" id="communityGrid">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MESSAGES -->
+                    <div class="screen" id="screen-messages">
+                        <div class="header">
+                            <div class="header-title">Mensajes</div>
+                        </div>
+                        <div class="messages-container">
+                            <div class="chat-item">
+                                <div class="chat-avatar">👩</div>
+                                <div class="chat-content">
+                                    <div class="chat-name">Sofia García</div>
+                                    <div class="chat-message">Hola! Cómo estás? 😊</div>
+                                </div>
+                                <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                                    <div class="chat-time">2m</div>
+                                </div>
+                            </div>
+
+                            <div class="chat-item">
+                                <div class="chat-avatar">👧</div>
+                                <div class="chat-content">
+                                    <div class="chat-name">Marina López</div>
+                                    <div class="chat-message">Vamos a tomar algo? ☕</div>
+                                </div>
+                                <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                                    <div class="chat-time">5m</div>
+                                    <div class="chat-unread">2</div>
+                                </div>
+                            </div>
+
+                            <div class="chat-item">
+                                <div class="chat-avatar">👰</div>
+                                <div class="chat-content">
+                                    <div class="chat-name">Emma Rossi</div>
+                                    <div class="chat-message">¿Cuál es tu serie favorita?</div>
+                                </div>
+                                <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                                    <div class="chat-time">1h</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ACTIVITY -->
+                    <div class="screen" id="screen-activity">
+                        <div class="header">
+                            <div class="header-title">Notificaciones</div>
+                        </div>
+                        <div id="notificationsContainer" style="padding: 12px;">
+                            <!-- Notificaciones dinámicas -->
+                        </div>
+                    </div>
+
+                    <!-- PROFILE -->
+                    <div class="screen" id="screen-profile">
+                        <div class="header">
+                            <div class="header-title">Perfil</div>
+                        </div>
+                        <div class="profile-container">
+                            <div class="profile-header">
+                                <div class="profile-avatar">👨</div>
+                                <div class="profile-name">Alex, 26</div>
+                                <div class="profile-meta">Madrid • Verificado ✓</div>
+                            </div>
+
+                            <div class="profile-section">
+                                <div class="profile-label">Sexualidad</div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                                    <button style="padding: 10px; background: #667eea; color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer;">👨 Hombre</button>
+                                    <button style="padding: 10px; background: #f0f0f0; color: #333; border: none; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer;">👩 Mujer</button>
+                                    <button style="padding: 10px; background: #f0f0f0; color: #333; border: none; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer;">🌈 Otro</button>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                    <button style="padding: 8px; background: #667eea; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer;">Heterosexual</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: none; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer;">Homosexual</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: none; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer;">Bisexual</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: none; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer;">Asexual</button>
+                                </div>
+                            </div>
+
+                            <div class="profile-section">
+                                <div class="profile-label">Estadísticas</div>
+                                <div class="profile-stat">
+                                    <span class="profile-stat-label">Likes</span>
+                                    <span class="profile-stat-value">234</span>
+                                </div>
+                                <div class="profile-stat">
+                                    <span class="profile-stat-label">Vistas</span>
+                                    <span class="profile-stat-value">1,245</span>
+                                </div>
+                                <div class="profile-stat">
+                                    <span class="profile-stat-label">Monedas</span>
+                                    <span class="profile-stat-value" id="coinCount">450</span>
+                                </div>
+                            </div>
+
+                            <div class="profile-section">
+                                <div class="profile-label">Redes Sociales</div>
+                                <div style="display: grid; gap: 10px;">
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 20px;">📷</span>
+                                        <input type="text" placeholder="Instagram (opcional)" style="flex: 1; padding: 8px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 12px;">
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 20px;">🎵</span>
+                                        <input type="text" placeholder="TikTok (opcional)" style="flex: 1; padding: 8px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 12px;">
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 20px;">👻</span>
+                                        <input type="text" placeholder="Snapchat (opcional)" style="flex: 1; padding: 8px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 12px;">
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 20px;">✉️</span>
+                                        <input type="text" placeholder="Telegram (opcional)" style="flex: 1; padding: 8px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 12px;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="profile-section">
+                                <div class="profile-label">Bio/Descripción</div>
+                                <textarea placeholder="Cuéntales sobre ti..." style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 12px; height: 60px; font-family: inherit; resize: none;"></textarea>
+                            </div>
+
+                            <div class="profile-section">
+                                <div class="profile-label">Música Favorita</div>
+                                <input type="text" placeholder="Ej: Bad Bunny - Tití Me Preguntó" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 12px; margin-bottom: 12px;">
+                                <div class="profile-label">Género Favorito</div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: 200px; overflow-y: auto; padding: 8px; background: #f9f9f9; border-radius: 8px;">
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🎵 Pop</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🎙️ Hip-Hop/Rap</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🎤 Reggaetón</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🎸 Rock</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🎹 R&B</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🎧 Electrónica/EDM</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">💿 Techno</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🏠 House</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">⚡ Hardcore</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🎆 Hardstyle</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🥁 Drum & Bass</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🎯 Trap</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🌍 Afrobeats</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">✨ K-Pop</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🌿 Indie</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🤘 Metal</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">💣 Punk</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🎵 Reggae</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">💃 Salsa</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">💕 Bachata</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🎸 Flamenco</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🐴 Country</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🎺 Jazz</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🎹 Blues</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🎼 Clásica</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🎸 Funk</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">✨ Soul</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">💫 Disco</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">🌴 Latin</button>
+                                    <button style="padding: 8px; background: #f0f0f0; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='#667eea'; this.style.color='#fff';">☕ Lo-fi</button>
+                                </div>
+                            </div>
+
+                            <div class="profile-section">
+                                <div class="profile-label">Premium</div>
+                                <button style="width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; border-radius: 10px; font-weight: 700; cursor: pointer;">
+                                    Activar • €2.99/mes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB BAR -->
+                <div class="tab-bar">
+                    <button class="tab active" onclick="switchScreen('screen-discover')">
+                        <div class="tab-icon">⚡</div>
+                        <div>Descubrir</div>
+                    </button>
+                    <button class="tab" onclick="switchScreen('screen-communities')">
+                        <div class="tab-icon">🌍</div>
+                        <div>Comunidades</div>
+                    </button>
+                    <button class="tab" onclick="switchScreen('screen-messages')">
+                        <div class="tab-icon">💬</div>
+                        <div>Mensajes</div>
+                    </button>
+                    <button class="tab" onclick="switchScreen('screen-activity')">
+                        <div class="tab-icon">🔔</div>
+                        <div>Actividad</div>
+                    </button>
+                    <button class="tab" onclick="switchScreen('screen-profile')">
+                        <div class="tab-icon">👤</div>
+                        <div>Perfil</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                <svg width="40" height="40" viewBox="0 0 28 28" style="flex-shrink: 0;">
+                    <defs>
+                        <linearGradient id="logoGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#1E90FF;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#9B4DCA;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M14 2 Q20 2 24 8 Q26 11 26 14 Q26 20 20 24 Q17 26 14 26 Q8 26 4 20 Q2 17 2 14 Q2 8 8 4 Q11 2 14 2" fill="none" stroke="url(#logoGrad2)" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M14 4 Q12 4 10 6 Q8 8 8 11 Q8 14 10 16 Q12 18 15 18" fill="none" stroke="url(#logoGrad2)" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+                </svg>
+                <div style="font-size: 20px; font-weight: 900; color: #000; letter-spacing: -1px;">YUIZZ</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-value">87%</div>
+                <div class="stat-card-label">Match promedio</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-value">450</div>
+                <div class="stat-card-label">Monedas</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-value">24</div>
+                <div class="stat-card-label">Perfiles nuevos hoy</div>
+            </div>
+
+            <div style="border-top: 1px solid #e0e0e0; padding-top: 16px; margin-top: 16px;">
+                <div style="font-size: 12px; font-weight: 700; color: #999; margin-bottom: 12px; text-transform: uppercase;">Características</div>
+                <ul class="feature-list">
+                    <li>200+ comunidades</li>
+                    <li>Match algoritmo (5 factores)</li>
+                    <li>Hot Hour gratis 11 PM-12 AM</li>
+                    <li>Premium desde €2.99/mes</li>
+                    <li>Filtros por relación</li>
+                    <li>Chat en tiempo real</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    <div class="modal-overlay" id="datingModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('datingModal')">✕</button>
+            <div class="modal-header">
+                <div class="modal-emoji" id="modalEmoji">💑</div>
+                <div class="modal-title" id="modalTitle">Relación Estable</div>
+                <div class="modal-subtitle" id="modalSubtitle">Gente buscando pareja</div>
+            </div>
+            <div class="modal-divider"></div>
+            <div class="modal-content">
+                Desbloquea perfiles filtrados por tipo de relación. Acceso durante 1 mes.
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-modal btn-primary" onclick="purchaseFilter()">Comprar • €2.99</button>
+                <button class="btn-modal btn-secondary" onclick="closeModal('datingModal')">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const profiles = [
+            {
+                name: 'Sofia',
+                age: 24,
+                location: 'Barcelona',
+                bio: 'Aventurera, amante del café y viajes. Buscando conexiones reales 💕',
+                song: 'Bad Bunny - Tití Me Preguntó',
+                genre: 'Reggaeton',
+                socials: { instagram: 'sofia.travels', tiktok: 'sofiaatravel', snapchat: 'sofiatv', telegram: 'sofiavibe' },
+                interests: ['🎵 Música', '✈️ Viajes'],
+                emoji: '👩'
+            },
+            {
+                name: 'Marina',
+                age: 22,
+                location: 'Madrid',
+                bio: 'DJ en mis ratos libres 🎧. Amo la electrónica y las fiestas hasta el amanecer',
+                song: 'Maluma - Hawái',
+                genre: 'Electrónica',
+                socials: { instagram: 'marina.dj', tiktok: 'marinadj22', snapchat: 'marindj', telegram: 'marinasound' },
+                interests: ['🎧 Música', '🎉 Fiestas'],
+                emoji: '👧'
+            },
+            {
+                name: 'Emma',
+                age: 26,
+                location: 'Valencia',
+                bio: 'Rockera de corazón 🎸. Soy chef y amo cocinar para amigos especiales',
+                song: 'The Rolling Stones - Sympathy for the Devil',
+                genre: 'Rock',
+                socials: { instagram: 'emmarock', tiktok: 'emmachef', snapchat: 'emmarocker', telegram: 'emmakitchen' },
+                interests: ['🎸 Rock', '🍳 Cocina'],
+                emoji: '👰'
+            },
+            {
+                name: 'Luna',
+                age: 23,
+                location: 'Sevilla',
+                bio: 'Rapera amateur 🎤. Siempre buscando nuevas historias para contar',
+                song: 'C. Tangana - La Bebe',
+                genre: 'Rap',
+                socials: { instagram: 'luna.rapper', tiktok: 'lunarapper23', snapchat: 'lunamusicrow', telegram: 'lunarhymes' },
+                interests: ['🎙️ Rap', '🎬 Cine'],
+                emoji: '👸'
+            },
+            {
+                name: 'Sophia',
+                age: 25,
+                location: 'Bilbao',
+                bio: 'Amante del pop y las ciudades grandes 🌃. Viajo cada mes',
+                song: 'Dua Lipa - Levitating',
+                genre: 'Pop',
+                socials: { instagram: 'sophia.pop', tiktok: 'sophiapopstar', snapchat: 'sophiatrip', telegram: 'sophiaworld' },
+                interests: ['🎵 Pop', '🌍 Ciudades'],
+                emoji: '👱‍♀️'
+            },
+            {
+                name: 'Claudia',
+                age: 21,
+                location: 'Alicante',
+                bio: 'Reggaetonera 🔥. Vivo la vida al ritmo del dembow',
+                song: 'Karol G - Tití',
+                genre: 'Reggaeton',
+                socials: { instagram: 'claudia.reggaeton', tiktok: 'claudiareg21', snapchat: 'claudiareg', telegram: 'claudiabeat' },
+                interests: ['🎤 Reggaeton', '🎉 Fiestas'],
+                emoji: '💃'
+            }
+        ];
+
+        const communities = [
+            // DEPORTES
+            { name: 'Gym Lovers', emoji: '💪', members: 3420, img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=300&fit=crop' },
+            { name: 'Running Squad', emoji: '🏃', members: 2890, img: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400&h=300&fit=crop' },
+            { name: 'Fútbol', emoji: '⚽', members: 4120, img: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400&h=300&fit=crop' },
+            { name: 'Yoga', emoji: '🧘', members: 2450, img: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&h=300&fit=crop' },
+            { name: 'Ciclismo', emoji: '🚴', members: 1890, img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop' },
+            { name: 'Natación', emoji: '🏊', members: 1340, img: 'https://images.unsplash.com/photo-1576610616656-d3aa5d1f3faaea3a9d4f94c9be8cc7d5?w=400&h=300&fit=crop' },
+            { name: 'Tenis', emoji: '🎾', members: 890, img: 'https://images.unsplash.com/photo-1554224311-beee415c15b7?w=400&h=300&fit=crop' },
+            { name: 'Parkour', emoji: '🤸', members: 756, img: 'https://images.unsplash.com/photo-1552073328-5b53286ef713?w=400&h=300&fit=crop' },
+            // COMIDA
+            { name: 'Foodies', emoji: '🍕', members: 5670, img: 'https://images.unsplash.com/photo-1565958011504-98d7eef02a8b?w=400&h=300&fit=crop' },
+            { name: 'Sushi Lovers', emoji: '🍣', members: 3450, img: 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400&h=300&fit=crop' },
+            { name: 'Veganos', emoji: '🥗', members: 2340, img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop' },
+            { name: 'Pizza', emoji: '🍝', members: 3890, img: 'https://images.unsplash.com/photo-1628840042765-356cda07f4ee?w=400&h=300&fit=crop' },
+            { name: 'Coffee', emoji: '☕', members: 4120, img: 'https://images.unsplash.com/photo-1559056199-641a0ac8b3f4?w=400&h=300&fit=crop' },
+            { name: 'Cerveceros', emoji: '🍺', members: 3670, img: 'https://images.unsplash.com/photo-1608270861620-7911e6054666?w=400&h=300&fit=crop' },
+            { name: 'Postres', emoji: '🍰', members: 2120, img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&h=300&fit=crop' },
+            { name: 'BBQ', emoji: '🥩', members: 2890, img: 'https://images.unsplash.com/photo-1565958011504-98d7eef02a8b?w=400&h=300&fit=crop' },
+            // MÚSICA
+            { name: 'Rockeros', emoji: '🎸', members: 3450, img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=300&fit=crop' },
+            { name: 'Reggaeton', emoji: '🎤', members: 5890, img: 'https://images.unsplash.com/photo-1511379938547-c1f69b13d835?w=400&h=300&fit=crop' },
+            { name: 'Indie Pop', emoji: '🎵', members: 2340, img: 'https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=400&h=300&fit=crop' },
+            { name: 'Electrónica', emoji: '🎧', members: 3120, img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=300&fit=crop' },
+            { name: 'Rap', emoji: '🎙️', members: 4560, img: 'https://images.unsplash.com/photo-1511379938547-c1f69b13d835?w=400&h=300&fit=crop' },
+            { name: 'Jazz', emoji: '🎺', members: 1230, img: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop' },
+            // VIAJES
+            { name: 'Playas', emoji: '🏖️', members: 3450, img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=300&fit=crop' },
+            { name: 'Montaña', emoji: '⛰️', members: 2340, img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop' },
+            { name: 'Europa', emoji: '🗼', members: 1670, img: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&h=300&fit=crop' },
+            { name: 'Camping', emoji: '⛺', members: 1890, img: 'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?w=400&h=300&fit=crop' },
+            // MASCOTAS
+            { name: 'Perros', emoji: '🐶', members: 5670, img: 'https://images.unsplash.com/photo-1633722715463-d30628cb6c1e?w=400&h=300&fit=crop' },
+            { name: 'Gatos', emoji: '🐱', members: 4230, img: 'https://images.unsplash.com/photo-1514888286974-6c03bf1bfdff?w=400&h=300&fit=crop' },
+        ];
+
+        let coins = 450;
+        let currentProfile = 0;
+        let isHotHourActive = true; // DEMO MODE - siempre activo
+        let userLikes = [];
+        let userMatches = [];
+        let userMessages = [];
+        let notifications = [];
+
+        // Simulated like responses (users who also like back)
+        const likeResponses = {
+            0: true,   // Sofia likes back
+            1: true,   // Marina likes back
+            2: false,  // Emma no like
+            3: true,   // Luna likes back
+            4: false,  // Sophia no like
+            5: true,   // Claudia likes back
+        };
+
+        // Guardar datos en localStorage
+        function saveData() {
+            localStorage.setItem('yuizzData', JSON.stringify({
+                coins, userLikes, userMatches, userMessages, notifications
+            }));
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('yuizzData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                coins = data.coins;
+                userLikes = data.userLikes;
+                userMatches = data.userMatches;
+                userMessages = data.userMessages;
+                notifications = data.notifications;
+                updateCoins();
+            }
+        }
+
+        // HOT HOUR SYSTEM
+        function checkHotHour() {
+            return isHotHourActive;
+        }
+
+        function toggleHotHour() {
+            isHotHourActive = !isHotHourActive;
+            const banner = document.getElementById('hotHourBanner');
+            if (isHotHourActive && banner) {
+                banner.style.display = 'block';
+                alert('🔥 Hot Hour ACTIVADO');
+            } else if (banner) {
+                banner.style.display = 'none';
+                alert('🔥 Hot Hour DESACTIVADO');
+            }
+        }
+
+        function showHotHourInfo() {
+            if (isHotHourActive) {
+                alert(`🔥 HOT HOUR ACTIVA (11 PM - 12 AM)\n\n✓ GRATIS - Sin pago\n✓ Conexiones sin límites\n✓ Perfil mostrado a más gente\n✓ Mensajes instantáneos\n✓ Gente buscando encuentros\n\nEsta es la hora de mayor actividad. ¡Aprovecha!`);
+            } else {
+                alert(`🔥 HOT HOUR (11 PM - 12 AM)\n\nFuera de la hora hot:\n• Conexiones básicas: €0.99\n• Premium: €2.99/mes\n• Filtros de relación: €2.99\n\n⏰ Próxima hot hour: HOY a las 11 PM`);
+            }
+        }
+
+        function renderNotifications() {
+            const container = document.getElementById('notificationsContainer');
+
+            if (notifications.length === 0) {
+                container.innerHTML = `
+                    <div style="padding: 40px 16px; text-align: center; color: #999;">
+                        <div style="font-size: 40px; margin-bottom: 12px;">📱</div>
+                        <div style="font-size: 13px;">Cuando alguien te guste,<br>verás aquí</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = notifications.map((notif, idx) => {
+                if (notif.type === 'match') {
+                    return `
+                        <div style="background: linear-gradient(135deg, #ff6b9d 0%, #ff1493 100%); padding: 16px; border-radius: 12px; margin-bottom: 12px; color: white;">
+                            <div style="font-size: 16px; font-weight: 700; margin-bottom: 4px;">💕 ¡MATCH!</div>
+                            <div style="font-size: 13px; opacity: 0.9;">Tú y <strong>${notif.profile}</strong> se gustan</div>
+                            <div style="font-size: 11px; opacity: 0.7; margin-top: 6px;">${notif.time}</div>
+                        </div>
+                    `;
+                } else if (notif.type === 'superlike') {
+                    return `
+                        <div style="background: #f9f9f9; padding: 16px; border-radius: 12px; margin-bottom: 12px; border-left: 4px solid #ffd700;">
+                            <div style="font-size: 16px; font-weight: 700; margin-bottom: 4px;">⭐ Super Like</div>
+                            <div style="font-size: 13px; color: #666;">Enviaste un Super Like a <strong>${notif.profile}</strong></div>
+                            <div style="font-size: 11px; color: #999; margin-top: 6px;">${notif.time}</div>
+                        </div>
+                    `;
+                }
+            }).join('');
+        }
+
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
+            document.getElementById(screenId).classList.add('active');
+
+            const tabMap = {
+                'screen-discover': 0,
+                'screen-communities': 1,
+                'screen-messages': 2,
+                'screen-activity': 3,
+                'screen-profile': 4,
+            };
+
+            if (tabMap[screenId] !== undefined) {
+                document.querySelectorAll('.tab')[tabMap[screenId]].classList.add('active');
+            }
+
+            if (screenId === 'screen-communities') {
+                renderCommunities();
+            } else if (screenId === 'screen-activity') {
+                renderNotifications();
+            }
+        }
+
+        function renderCommunities(filter = '') {
+            const grid = document.getElementById('communityGrid');
+            grid.innerHTML = '';
+
+            const filtered = communities.filter(c =>
+                c.name.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            filtered.forEach(com => {
+                const card = document.createElement('div');
+                card.className = 'community-card';
+                card.style.backgroundImage = `url('${com.img}')`;
+                card.style.backgroundSize = 'cover';
+                card.style.backgroundPosition = 'center';
+                card.innerHTML = `
+                    <div class="community-emoji">${com.emoji}</div>
+                    <div class="community-name">${com.name}</div>
+                    <div class="community-members">${com.members.toLocaleString()} personas</div>
+                `;
+                card.onclick = () => alert(`✓ Unido a ${com.emoji} ${com.name}`);
+                grid.appendChild(card);
+            });
+        }
+
+        function filterCommunities(value) {
+            renderCommunities(value);
+        }
+
+        function updateProfileCard() {
+            if (currentProfile >= profiles.length) {
+                currentProfile = 0;
+            }
+
+            const profile = profiles[currentProfile];
+            document.getElementById('profileName').textContent = `${profile.name}, ${profile.age}`;
+            document.getElementById('profileLocation').textContent = profile.location;
+            document.getElementById('profileBio').textContent = `"${profile.bio}"`;
+
+            // Update socials
+            const socialsContainer = document.getElementById('profileSocials');
+            socialsContainer.innerHTML = '';
+
+            if (profile.socials.instagram) {
+                const ig = document.createElement('div');
+                ig.className = 'social-icon instagram';
+                ig.title = profile.socials.instagram;
+                ig.textContent = '📷';
+                ig.style.cursor = 'pointer';
+                socialsContainer.appendChild(ig);
+            }
+            if (profile.socials.tiktok) {
+                const tk = document.createElement('div');
+                tk.className = 'social-icon tiktok';
+                tk.title = profile.socials.tiktok;
+                tk.textContent = '🎵';
+                tk.style.cursor = 'pointer';
+                socialsContainer.appendChild(tk);
+            }
+            if (profile.socials.snapchat) {
+                const sc = document.createElement('div');
+                sc.className = 'social-icon snapchat';
+                sc.title = profile.socials.snapchat;
+                sc.textContent = '👻';
+                sc.style.cursor = 'pointer';
+                socialsContainer.appendChild(sc);
+            }
+            if (profile.socials.telegram) {
+                const tg = document.createElement('div');
+                tg.className = 'social-icon telegram';
+                tg.title = profile.socials.telegram;
+                tg.textContent = '✉️';
+                tg.style.cursor = 'pointer';
+                socialsContainer.appendChild(tg);
+            }
+        }
+
+        function nextProfile() {
+            currentProfile = (currentProfile + 1) % profiles.length;
+            updateProfileCard();
+            alert('➡️ Siguiente perfil: ' + profiles[currentProfile].name);
+        }
+
+        function likeProfile() {
+            alert('❤️ Like enviado a ' + profiles[currentProfile].name);
+        }
+
+        function likeProfile() {
+            const profile = profiles[currentProfile];
+            const profileId = currentProfile;
+
+            if (!userLikes.includes(profileId)) {
+                userLikes.push(profileId);
+
+                // Check if there's a match
+                if (likeResponses[profileId]) {
+                    userMatches.push(profileId);
+                    notifications.push({
+                        type: 'match',
+                        profile: profile.name,
+                        time: new Date().toLocaleTimeString()
+                    });
+                    showMatchAnimation(profile.name);
+                }
+
+                saveData();
+            }
+
+            nextProfile();
+        }
+
+        function showMatchAnimation(profileName) {
+            const modal = document.getElementById('datingModal');
+            modal.innerHTML = `
+                <button class="modal-close" onclick="closeModal('datingModal')">✕</button>
+                <div class="modal-header">
+                    <div class="modal-emoji" style="font-size: 60px; animation: heartBeat 0.6s ease-in-out;">💕</div>
+                    <div class="modal-title">¡MATCH!</div>
+                    <div class="modal-subtitle" style="font-size: 14px; color: #667eea;">Tú y ${profileName} se gustan</div>
+                </div>
+                <div class="modal-divider"></div>
+                <div class="modal-content">
+                    ¡Es momento de iniciar una conversación! Eres un paso más cerca de una conexión real.
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn-modal btn-primary" onclick="switchScreen('screen-messages'); closeModal('datingModal');">💬 Ir a Mensajes</button>
+                    <button class="btn-modal btn-secondary" onclick="closeModal('datingModal')">Siguiente</button>
+                </div>
+            `;
+            modal.classList.add('active');
+        }
+
+        function superLike() {
+            if (coins < 10) {
+                alert('❌ No tienes suficientes monedas (necesitas 10, tienes ' + coins + ')');
+                return;
+            }
+
+            coins -= 10;
+            const profile = profiles[currentProfile];
+            const profileId = currentProfile;
+
+            if (!userLikes.includes(profileId)) {
+                userLikes.push(profileId);
+
+                notifications.push({
+                    type: 'superlike',
+                    profile: profile.name,
+                    time: new Date().toLocaleTimeString()
+                });
+            }
+
+            updateCoins();
+            saveData();
+
+            alert('⭐ Super Like enviado a ' + profile.name + ' (-10 💰)\n\nQueda más impresionado');
+            nextProfile();
+        }
+
+        function updateCoins() {
+            document.getElementById('coinCount').textContent = coins;
+        }
+
+        function showDatingModal(type) {
+            const modal = document.getElementById('datingModal');
+            const emoji = document.getElementById('modalEmoji');
+            const title = document.getElementById('modalTitle');
+            const subtitle = document.getElementById('modalSubtitle');
+
+            if (type === 'stable') {
+                emoji.textContent = '💑';
+                title.textContent = 'Relación Estable';
+                subtitle.textContent = 'Gente buscando pareja seria';
+            } else {
+                emoji.textContent = '🔥';
+                title.textContent = 'Rollos Cortos';
+                subtitle.textContent = 'Gente sin compromisos';
+            }
+
+            modal.classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function purchaseFilter() {
+            coins -= 299;
+            updateCoins();
+            alert('✓ Filtro desbloqueado durante 1 mes');
+            closeModal('datingModal');
+        }
+
+        // Close modal when clicking overlay
+        document.getElementById('datingModal').addEventListener('click', (e) => {
+            if (e.target.id === 'datingModal') {
+                closeModal('datingModal');
+            }
+        });
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            loadData();
+            renderCommunities();
+            checkHotHour();
+            updateProfileCard();
+            renderNotifications();
+        });
+    </script>
+</body>
+</html>
