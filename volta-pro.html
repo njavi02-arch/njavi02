@@ -180,6 +180,14 @@
             font-size: 80px;
             position: relative;
             overflow: hidden;
+            flex-direction: column;
+        }
+
+        #photoElement {
+            font-size: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .card-photo::after {
@@ -190,6 +198,51 @@
             right: 0;
             height: 40px;
             background: linear-gradient(180deg, rgba(0,0,0,0.2), transparent);
+        }
+
+        .photo-counter {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(0,0,0,0.4);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        .photo-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: rgba(0,0,0,0.3);
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            z-index: 3;
+        }
+
+        .photo-nav:hover {
+            background: rgba(0,0,0,0.5);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .photo-prev {
+            left: 12px;
+        }
+
+        .photo-next {
+            right: 12px;
         }
 
         .profile-badge {
@@ -1345,9 +1398,12 @@
 
                         <div class="discover-container">
                             <div class="profile-card" id="currentProfileCard">
-                                <div class="card-photo">
-                                    👩
+                                <div class="card-photo" id="cardPhotoContainer">
+                                    <div id="photoElement">👩</div>
+                                    <div class="photo-counter" id="photoCounter">1/5</div>
                                     <div class="profile-badge">87% Match</div>
+                                    <button class="photo-nav photo-prev" onclick="prevPhoto()">‹</button>
+                                    <button class="photo-nav photo-next" onclick="nextPhoto()">›</button>
                                 </div>
                                 <div class="card-info">
                                     <div class="card-header">
@@ -1728,7 +1784,8 @@
                 genre: 'Reggaeton',
                 socials: { instagram: 'sofia.travels', tiktok: 'sofiaatravel', snapchat: 'sofiatv', telegram: 'sofiavibe' },
                 interests: ['🎵 Música', '✈️ Viajes'],
-                emoji: '👩'
+                emoji: '👩',
+                photos: ['👩', '🏖️', '☕', '✈️', '🎭']
             },
             {
                 name: 'Marina',
@@ -1739,7 +1796,8 @@
                 genre: 'Electrónica',
                 socials: { instagram: 'marina.dj', tiktok: 'marinadj22', snapchat: 'marindj', telegram: 'marinasound' },
                 interests: ['🎧 Música', '🎉 Fiestas'],
-                emoji: '👧'
+                emoji: '👧',
+                photos: ['👧', '🎧', '🎧🔊', '🎉', '💃']
             },
             {
                 name: 'Emma',
@@ -1750,7 +1808,8 @@
                 genre: 'Rock',
                 socials: { instagram: 'emmarock', tiktok: 'emmachef', snapchat: 'emmarocker', telegram: 'emmakitchen' },
                 interests: ['🎸 Rock', '🍳 Cocina'],
-                emoji: '👰'
+                emoji: '👰',
+                photos: ['👰', '🎸', '🍳', '🍽️', '🎸🔥']
             },
             {
                 name: 'Luna',
@@ -1761,7 +1820,8 @@
                 genre: 'Rap',
                 socials: { instagram: 'luna.rapper', tiktok: 'lunarapper23', snapchat: 'lunamusicrow', telegram: 'lunarhymes' },
                 interests: ['🎙️ Rap', '🎬 Cine'],
-                emoji: '👸'
+                emoji: '👸',
+                photos: ['👸', '🎤', '🎬', '🎞️', '🎤👑']
             },
             {
                 name: 'Sophia',
@@ -1772,7 +1832,8 @@
                 genre: 'Pop',
                 socials: { instagram: 'sophia.pop', tiktok: 'sophiapopstar', snapchat: 'sophiatrip', telegram: 'sophiaworld' },
                 interests: ['🎵 Pop', '🌍 Ciudades'],
-                emoji: '👱‍♀️'
+                emoji: '👱‍♀️',
+                photos: ['👱‍♀️', '🌃', '✈️', '🏙️', '🎵']
             },
             {
                 name: 'Claudia',
@@ -1783,7 +1844,8 @@
                 genre: 'Reggaeton',
                 socials: { instagram: 'claudia.reggaeton', tiktok: 'claudiareg21', snapchat: 'claudiareg', telegram: 'claudiabeat' },
                 interests: ['🎤 Reggaeton', '🎉 Fiestas'],
-                emoji: '💃'
+                emoji: '💃',
+                photos: ['💃', '🎤', '🎵', '🎉', '💃🔥']
             },
             {
                 name: 'Valentina',
@@ -1794,7 +1856,8 @@
                 genre: 'Indie Pop',
                 socials: { instagram: 'valentina.art', tiktok: 'vartist27', snapchat: 'valart', telegram: 'valcreative' },
                 interests: ['🎨 Arte', '✈️ Viajes'],
-                emoji: '👩‍🎨'
+                emoji: '👩‍🎨',
+                photos: ['👩‍🎨', '🎨', '🖼️', '✈️', '🎭']
             },
             {
                 name: 'Isabelle',
@@ -1805,7 +1868,8 @@
                 genre: 'Electrónica',
                 socials: { instagram: 'isabelle.fit', tiktok: 'isabfit24', snapchat: 'isafit', telegram: 'isafitness' },
                 interests: ['💪 Fitness', '🥗 Salud'],
-                emoji: '💃'
+                emoji: '💃',
+                photos: ['💃', '💪', '🏋️', '🥗', '🏃']
             },
             {
                 name: 'Lucía',
@@ -1816,7 +1880,8 @@
                 genre: 'Pop',
                 socials: { instagram: 'lucia.med', tiktok: 'luciamed23', snapchat: 'luciastar', telegram: 'luciastudent' },
                 interests: ['📚 Cultura', '🎬 Cine'],
-                emoji: '👩‍🎓'
+                emoji: '👩‍🎓',
+                photos: ['👩‍🎓', '📚', '🎬', '🩺', '🎭']
             },
             {
                 name: 'Aitana',
@@ -1827,7 +1892,8 @@
                 genre: 'Reggaeton',
                 socials: { instagram: 'aitana.sweets', tiktok: 'aitanasweets', snapchat: 'aitanacakes', telegram: 'aitanabaker' },
                 interests: ['🍰 Repostería', '👨‍🍳 Cocina'],
-                emoji: '👩‍🍳'
+                emoji: '👩‍🍳',
+                photos: ['👩‍🍳', '🍰', '🧁', '🍪', '👨‍🍳🔥']
             },
             {
                 name: 'Carmen',
@@ -1838,7 +1904,8 @@
                 genre: 'Indie Pop',
                 socials: { instagram: 'carmen.photo', tiktok: 'carmenphoto26', snapchat: 'carmenphotog', telegram: 'carmenpics' },
                 interests: ['📸 Fotografía', '👗 Moda'],
-                emoji: '👩‍💼'
+                emoji: '👩‍💼',
+                photos: ['👩‍💼', '📸', '👗', '🎨', '✨']
             },
             {
                 name: 'Beatriz',
@@ -1849,7 +1916,8 @@
                 genre: 'Salsa',
                 socials: { instagram: 'beatriz.dance', tiktok: 'beatrizdance22', snapchat: 'beatdancer', telegram: 'beatdancing' },
                 interests: ['💃 Baile', '🎵 Música'],
-                emoji: '💃'
+                emoji: '💃',
+                photos: ['💃', '🎤', '💃🔥', '🎵', '🎉']
             },
             {
                 name: 'Renata',
@@ -1860,7 +1928,8 @@
                 genre: 'Rock',
                 socials: { instagram: 'renata.travel', tiktok: 'renataguide28', snapchat: 'renattravel', telegram: 'renataexplore' },
                 interests: ['🌍 Viajes', '⛰️ Aventura'],
-                emoji: '🗺️'
+                emoji: '🗺️',
+                photos: ['🗺️', '🏔️', '✈️', '🌍', '⛰️']
             },
             {
                 name: 'Natalia',
@@ -1871,7 +1940,8 @@
                 genre: 'Pop',
                 socials: { instagram: 'natalia.tech', tiktok: 'nataliatech25', snapchat: 'nataliacode', telegram: 'nataliastartup' },
                 interests: ['💻 Tecnología', '📈 Negocios'],
-                emoji: '👩‍💻'
+                emoji: '👩‍💻',
+                photos: ['👩‍💻', '💻', '📊', '🚀', '💡']
             },
             {
                 name: 'Adriana',
@@ -1882,7 +1952,8 @@
                 genre: 'Lo-fi',
                 socials: { instagram: 'adriana.yoga', tiktok: 'adrianayoga24', snapchat: 'adrianazenlove', telegram: 'adrianapeaceful' },
                 interests: ['🧘 Yoga', '🌊 Playa'],
-                emoji: '🧘‍♀️'
+                emoji: '🧘‍♀️',
+                photos: ['🧘‍♀️', '🏖️', '🌊', '🧘', '☀️']
             },
             {
                 name: 'Elena',
@@ -1893,7 +1964,8 @@
                 genre: 'Indie Pop',
                 socials: { instagram: 'elena.astronomy', tiktok: 'elenaastro26', snapchat: 'elenasky', telegram: 'elenastargazer' },
                 interests: ['🌌 Ciencia', '🔭 Astronomía'],
-                emoji: '🔭'
+                emoji: '🔭',
+                photos: ['🔭', '🌌', '✨', '🌠', '🪐']
             },
             {
                 name: 'Martina',
@@ -1904,7 +1976,8 @@
                 genre: 'Reggae',
                 socials: { instagram: 'martina.surf', tiktok: 'martinasurf23', snapchat: 'martinasurfqueen', telegram: 'martinawaves' },
                 interests: ['🏄 Surf', '🌊 Playa'],
-                emoji: '🏄‍♀️'
+                emoji: '🏄‍♀️',
+                photos: ['🏄‍♀️', '🌊', '🏖️', '🏄', '☀️🌴']
             },
             {
                 name: 'Alejandra',
@@ -1915,7 +1988,8 @@
                 genre: 'Electrónica',
                 socials: { instagram: 'alejandra.design', tiktok: 'aledesign25', snapchat: 'alegrafica', telegram: 'aledesignstudio' },
                 interests: ['🎨 Diseño', '💡 Creatividad'],
-                emoji: '👩‍🎨'
+                emoji: '👩‍🎨',
+                photos: ['👩‍🎨', '🎨', '💻', '🖼️', '✨']
             },
             {
                 name: 'Rocío',
@@ -1926,7 +2000,8 @@
                 genre: 'Rock',
                 socials: { instagram: 'rocio.fisher', tiktok: 'rociofisher27', snapchat: 'rociomar', telegram: 'rociosea' },
                 interests: ['🌊 Mar', '🎣 Pesca'],
-                emoji: '⛵'
+                emoji: '⛵',
+                photos: ['⛵', '🌊', '🎣', '🏝️', '⚓']
             },
             {
                 name: 'Diana',
@@ -1937,7 +2012,8 @@
                 genre: 'Jazz',
                 socials: { instagram: 'diana.psych', tiktok: 'dianapsych24', snapchat: 'dianamind', telegram: 'dianacounseling' },
                 interests: ['🧠 Psicología', '📚 Lectura'],
-                emoji: '👩‍⚕️'
+                emoji: '👩‍⚕️',
+                photos: ['👩‍⚕️', '📚', '🧠', '☕', '💭']
             },
             {
                 name: 'Fabiola',
@@ -1948,7 +2024,8 @@
                 genre: 'Pop',
                 socials: { instagram: 'fabiola.beauty', tiktok: 'fabiola.beauty22', snapchat: 'fabiolamakeup', telegram: 'fabiolabeauty' },
                 interests: ['💄 Belleza', '👗 Moda'],
-                emoji: '💄'
+                emoji: '💄',
+                photos: ['💄', '💅', '👗', '✨', '😍']
             },
             {
                 name: 'Gabriela',
@@ -1959,7 +2036,8 @@
                 genre: 'Indie Pop',
                 socials: { instagram: 'gabriela.vet', tiktok: 'gabrielavets26', snapchat: 'gabivets', telegram: 'gabrielapets' },
                 interests: ['🐾 Animales', '🏥 Salud'],
-                emoji: '👩‍⚕️'
+                emoji: '👩‍⚕️',
+                photos: ['👩‍⚕️', '🐾', '🐕', '🐈', '💉']
             },
             {
                 name: 'Lorena',
@@ -1970,7 +2048,8 @@
                 genre: 'Rock',
                 socials: { instagram: 'lorena.history', tiktok: 'lorenahist25', snapchat: 'lorenahistory', telegram: 'lorenapast' },
                 interests: ['📖 Historia', '🏛️ Cultura'],
-                emoji: '📚'
+                emoji: '📚',
+                photos: ['📚', '📖', '🏛️', '🕰️', '🎓']
             },
             {
                 name: 'Susana',
@@ -1981,7 +2060,8 @@
                 genre: 'Indie Pop',
                 socials: { instagram: 'susana.paint', tiktok: 'susanapaint23', snapchat: 'susanaartist', telegram: 'susanacanvas' },
                 interests: ['🎨 Arte', '🖼️ Pintura'],
-                emoji: '🎨'
+                emoji: '🎨',
+                photos: ['🎨', '🖌️', '🖼️', '🌈', '✨']
             },
             {
                 name: 'Verónica',
@@ -1992,7 +2072,8 @@
                 genre: 'Rock',
                 socials: { instagram: 'veronica.engineer', tiktok: 'veronicaeng28', snapchat: 'veroengineering', telegram: 'veronicasky' },
                 interests: ['🛩️ Aviación', '🔧 Ingeniería'],
-                emoji: '👩‍🔬'
+                emoji: '👩‍🔬',
+                photos: ['👩‍🔬', '🛩️', '🔧', '⚙️', '🚀']
             },
             {
                 name: 'Milagros',
@@ -2003,7 +2084,8 @@
                 genre: 'R&B',
                 socials: { instagram: 'milagros.chef', tiktok: 'milagroscooking24', snapchat: 'milagroscuisine', telegram: 'milagrosdelish' },
                 interests: ['👨‍🍳 Cocina', '🍷 Gastronomía'],
-                emoji: '👨‍🍳'
+                emoji: '👨‍🍳',
+                photos: ['👨‍🍳', '🍽️', '🥘', '🍷', '✨🔥']
             }
         ];
 
@@ -2045,6 +2127,7 @@
 
         let coins = 450;
         let currentProfile = 0;
+        let currentPhotoIndex = 0;
         let isHotHourActive = true; // DEMO MODE - siempre activo
         let isDarkMode = false;
         let userLikes = [];
@@ -2369,10 +2452,12 @@
                 currentProfile = 0;
             }
 
+            currentPhotoIndex = 0;
             const profile = profiles[currentProfile];
             document.getElementById('profileName').textContent = `${profile.name}, ${profile.age}`;
             document.getElementById('profileLocation').textContent = profile.location;
             document.getElementById('profileBio').textContent = `"${profile.bio}"`;
+            updatePhotoDisplay();
 
             // Update socials
             const socialsContainer = document.getElementById('profileSocials');
@@ -2410,6 +2495,30 @@
                 tg.style.cursor = 'pointer';
                 socialsContainer.appendChild(tg);
             }
+        }
+
+        function updatePhotoDisplay() {
+            const profile = profiles[currentProfile];
+            const photos = profile.photos || [profile.emoji];
+            const photoElement = document.getElementById('photoElement');
+            const photoCounter = document.getElementById('photoCounter');
+
+            photoElement.textContent = photos[currentPhotoIndex];
+            photoCounter.textContent = `${currentPhotoIndex + 1}/${photos.length}`;
+        }
+
+        function nextPhoto() {
+            const profile = profiles[currentProfile];
+            const photos = profile.photos || [profile.emoji];
+            currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
+            updatePhotoDisplay();
+        }
+
+        function prevPhoto() {
+            const profile = profiles[currentProfile];
+            const photos = profile.photos || [profile.emoji];
+            currentPhotoIndex = (currentPhotoIndex - 1 + photos.length) % photos.length;
+            updatePhotoDisplay();
         }
 
         function nextProfile() {
