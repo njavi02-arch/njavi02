@@ -1,0 +1,33 @@
+<section id="club" class="py-28 px-6 md:px-10 bg-[var(--brown-900)] text-[var(--cream)] grain-texture">
+  <div class="max-w-2xl mx-auto text-center reveal">
+    <div class="gold-rule mx-auto mb-6"></div>
+    {%- if section.settings.eyebrow != blank -%}<span class="eyebrow text-xs uppercase text-[var(--gold)]">{{ section.settings.eyebrow }}</span>{%- endif -%}
+    <h2 class="font-display text-3xl md:text-4xl mt-4 mb-5 italic">{{ section.settings.heading }}</h2>
+    {%- if section.settings.subheading != blank -%}
+      <p class="text-[var(--cream)]/70 mb-10 font-light">{{ section.settings.subheading }}</p>
+    {%- endif -%}
+
+    {%- form 'customer', id: 'newsletter-form-' | append: section.id, class: 'flex flex-col sm:flex-row gap-3 justify-center', data-newsletter-form: true, data-message-target: 'newsletter-message-' | append: section.id -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <input type="email" name="contact[email]" required placeholder="tu@email.com" class="flex-1 max-w-sm px-5 py-3.5 text-[var(--brown-900)] bg-[var(--cream)] placeholder:text-[var(--brown-500)] focus:outline-none">
+      <button type="submit" class="btn-outline text-[var(--gold)] px-8 py-3.5 text-xs tracking-[0.2em] uppercase">
+        {{ section.settings.button_text | default: 'Unirme ahora' }}
+      </button>
+    {%- endform -%}
+    <p id="newsletter-message-{{ section.id }}" class="text-sm text-[var(--gold)] mt-5 hidden">{{ section.settings.success_message }}</p>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Texto pequeño", "default": "Club KOHI & CHA" },
+    { "type": "text", "id": "heading", "label": "Título", "default": "Únete al club del café" },
+    { "type": "textarea", "id": "subheading", "label": "Subtítulo", "default": "10% de descuento en tu primera compra, novedades exclusivas y contenido sobre café y matcha directo a tu correo." },
+    { "type": "text", "id": "button_text", "label": "Texto del botón", "default": "Unirme ahora" },
+    { "type": "text", "id": "success_message", "label": "Mensaje de éxito", "default": "¡Gracias por unirte! Revisá tu correo para confirmar tu 10% de descuento." }
+  ],
+  "presets": [{ "name": "Newsletter" }]
+}
+{% endschema %}

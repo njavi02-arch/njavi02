@@ -1,0 +1,135 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {}
+    },
+    "category-grid": {
+      "type": "category-grid",
+      "blocks": {
+        "tile-1": { "type": "tile", "settings": { "icon": "coffee", "title": "Café en grano", "subtitle": "Tueste artesanal", "link": "#tienda", "filter_link": "Cafe", "color_scheme": "dark" } },
+        "tile-2": { "type": "tile", "settings": { "icon": "coffee", "title": "Café molido", "subtitle": "Listo para tu cafetera", "link": "#tienda", "filter_link": "Cafe", "color_scheme": "medium" } },
+        "tile-3": { "type": "tile", "settings": { "icon": "gift", "title": "Packs degustación", "subtitle": "Probá varios orígenes", "link": "#tienda", "filter_link": "Regalos", "color_scheme": "cream" } },
+        "tile-4": { "type": "tile", "settings": { "icon": "globe", "title": "Cafés de origen", "subtitle": "Lotes de un solo origen", "link": "#tienda", "filter_link": "Matcha", "color_scheme": "matcha" } },
+        "tile-5": { "type": "tile", "settings": { "icon": "recycle", "title": "Suscripción mensual", "subtitle": "Ahorrá en cada envío", "link": "#producto-cafe", "color_scheme": "beige" } }
+      },
+      "block_order": ["tile-1", "tile-2", "tile-3", "tile-4", "tile-5"]
+    },
+    "featured-collection": {
+      "type": "featured-collection",
+      "settings": {
+        "collection": "destacados"
+      },
+      "blocks": {
+        "filter-1": { "type": "filter", "settings": { "label": "Café", "type_value": "Cafe" } },
+        "filter-2": { "type": "filter", "settings": { "label": "Matcha", "type_value": "Matcha" } },
+        "filter-3": { "type": "filter", "settings": { "label": "Accesorios", "type_value": "Accesorios" } },
+        "filter-4": { "type": "filter", "settings": { "label": "Packs regalo", "type_value": "Regalos" } }
+      },
+      "block_order": ["filter-1", "filter-2", "filter-3", "filter-4"]
+    },
+    "featured-product-vaso": {
+      "type": "featured-product",
+      "settings": {
+        "product": "vaso-termico-coffee",
+        "anchor_id": "producto",
+        "eyebrow": "Producto Signature",
+        "description": "Vaso térmico de acero inoxidable con doble pared aislante y tapa abatible antiderrames. Pensado para acompañar tu rutina de café con estilo, dentro y fuera de casa.",
+        "show_selling_plans": false,
+        "background": "cream"
+      },
+      "blocks": {
+        "bullet-1": { "type": "bullet", "settings": { "text": "Acero inoxidable de doble pared, aislamiento térmico" } },
+        "bullet-2": { "type": "bullet", "settings": { "text": "Tapa abatible antiderrames" } },
+        "bullet-3": { "type": "bullet", "settings": { "text": "Disponible en varios colores y tamaños" } }
+      },
+      "block_order": ["bullet-1", "bullet-2", "bullet-3"]
+    },
+    "featured-product-cafe": {
+      "type": "featured-product",
+      "settings": {
+        "product": "blend-signature",
+        "anchor_id": "producto-cafe",
+        "eyebrow": "Café de especialidad",
+        "description": "Un blend equilibrado de lotes seleccionados, tostado en pequeñas cantidades para conservar su aroma. Pensado para quienes buscan una taza con carácter cada mañana.",
+        "show_selling_plans": true,
+        "background": "deep"
+      }
+    },
+    "brand-story": {
+      "type": "brand-story",
+      "blocks": {
+        "story-1": { "type": "story", "settings": { "heading": "Nuestro café tiene una historia", "text": "Seleccionamos cada grano pensando en una experiencia única, desde el cafetal hasta tu taza.", "image_position": "left" } },
+        "story-2": { "type": "story", "settings": { "heading": "El ritual del matcha, llevado a otro nivel", "text": "Molienda de piedra y una ceremonia pensada para pausar, respirar y disfrutar el momento.", "image_position": "right" } }
+      },
+      "block_order": ["story-1", "story-2"]
+    },
+    "philosophy": {
+      "type": "philosophy",
+      "settings": {},
+      "blocks": {
+        "col-1": { "type": "column", "settings": { "heading": "Nuestra historia", "text": "KOHI & CHA nació del encuentro entre el café de especialidad y la ceremonia del té: la idea de traer ese ritual a la rutina diaria, sin perder el detalle artesanal." } },
+        "col-2": { "type": "column", "settings": { "heading": "Origen de los productos", "text": "Trabajamos con orígenes seleccionados y proveedores que comparten nuestro estándar de calidad, lote a lote." } },
+        "col-3": { "type": "column", "settings": { "heading": "Calidad de ingredientes", "text": "Tueste en pequeños lotes y molienda tradicional de matcha, cuidando cada paso antes de que llegue a tu taza." } },
+        "col-4": { "type": "column", "settings": { "heading": "Compromiso sostenible", "text": "Elegimos proveedores y envases pensando en el impacto, no solo en el producto final." } }
+      },
+      "block_order": ["col-1", "col-2", "col-3", "col-4"]
+    },
+    "sustainability": {
+      "type": "sustainability",
+      "blocks": {
+        "col-1": { "type": "column", "settings": { "icon": "leaf", "heading": "Productos ecológicos", "text": "Origen certificado y cultivos respetuosos con la tierra." } },
+        "col-2": { "type": "column", "settings": { "icon": "recycle", "heading": "Envases responsables", "text": "Materiales reciclables o reutilizables en todo el packaging." } },
+        "col-3": { "type": "column", "settings": { "icon": "globe", "heading": "Compromiso con el planeta", "text": "Decisiones pensadas para reducir nuestro impacto, envío a envío." } }
+      },
+      "block_order": ["col-1", "col-2", "col-3"]
+    },
+    "exclusive-collection": {
+      "type": "exclusive-collection",
+      "blocks": {
+        "card-1": { "type": "card", "settings": { "tag": "Edición limitada", "title": "Vaso Térmico COFFEE", "subtitle": "El favorito de la comunidad KOHI & CHA, en varios colores." } },
+        "card-2": { "type": "card", "settings": { "tag": "Pack premium", "title": "Matcha Ceremonial", "subtitle": "Recién llegado, molienda de piedra grado ceremonial." } },
+        "card-3": { "type": "card", "settings": { "tag": "Regalo especial", "title": "Set de Iniciación", "subtitle": "Café, matcha y vaso térmico en un solo pack." } }
+      },
+      "block_order": ["card-1", "card-2", "card-3"]
+    },
+    "reviews-carousel": {
+      "type": "reviews-carousel",
+      "blocks": {
+        "review-1": { "type": "review", "settings": { "name": "María G.", "initials": "MG", "rating": 5, "date": "2026-06-02", "text": "El vaso térmico mantiene el café caliente toda la mañana y el diseño es precioso." } },
+        "review-2": { "type": "review", "settings": { "name": "Javier R.", "initials": "JR", "rating": 5, "date": "2026-05-18", "text": "Se nota la calidad artesanal en cada detalle. Ya pedí el pack de regalo para toda mi familia." } },
+        "review-3": { "type": "review", "settings": { "name": "Sofía L.", "initials": "SL", "rating": 5, "date": "2026-06-21", "text": "La experiencia de compra se siente premium de principio a fin. Volvería a comprar sin dudarlo." } },
+        "review-4": { "type": "review", "settings": { "name": "Diego F.", "initials": "DF", "rating": 4, "date": "2026-04-30", "text": "Muy contento con la compra, el producto llegó rápido y la calidad supera mis expectativas." } },
+        "review-5": { "type": "review", "settings": { "name": "Lucía P.", "initials": "LP", "rating": 5, "date": "2026-05-05", "text": "Llevo varias semanas usando el matcha por las mañanas y la diferencia con lo que compraba antes es notable." } },
+        "review-6": { "type": "review", "settings": { "name": "Martín A.", "initials": "MA", "rating": 4, "date": "2026-03-22", "text": "Buen producto en general. El envío tardó un par de días más de lo esperado pero valió la pena." } },
+        "review-7": { "type": "review", "settings": { "name": "Carla N.", "initials": "CN", "rating": 5, "date": "2026-06-10", "text": "Regalé el set de iniciación y fue un éxito total. La presentación es muy cuidada." } },
+        "review-8": { "type": "review", "settings": { "name": "Tomás V.", "initials": "TV", "rating": 5, "date": "2026-05-27", "text": "Compré el blend signature y es de lo mejor que probé en mucho tiempo. Aroma increíble." } }
+      },
+      "block_order": ["review-1", "review-2", "review-3", "review-4", "review-5", "review-6", "review-7", "review-8"]
+    },
+    "featured-blog": {
+      "type": "featured-blog",
+      "settings": {
+        "blog": "news"
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "category-grid",
+    "featured-collection",
+    "featured-product-vaso",
+    "featured-product-cafe",
+    "brand-story",
+    "philosophy",
+    "sustainability",
+    "exclusive-collection",
+    "reviews-carousel",
+    "featured-blog",
+    "newsletter"
+  ]
+}

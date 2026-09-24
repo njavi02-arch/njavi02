@@ -1,0 +1,53 @@
+<div class="fixed top-0 left-0 w-full z-50 bg-[var(--brown-900)] text-[var(--cream)]">
+  <div class="max-w-7xl mx-auto flex items-center justify-center md:justify-between gap-8 px-6 md:px-10 py-2 text-[0.68rem] tracking-[0.2em] uppercase overflow-x-auto whitespace-nowrap">
+    {%- for block in section.blocks -%}
+      <span
+        class="inline-flex items-center gap-2 {% if block.settings.show_from == 'sm' %}hidden sm:inline-flex{% elsif block.settings.show_from == 'md' %}hidden md:inline-flex{% elsif block.settings.show_from == 'lg' %}hidden lg:inline-flex{% endif %}"
+        {{ block.shopify_attributes }}
+      >{%- if block.settings.icon != 'none' -%}{%- render 'icon', name: block.settings.icon, class: 'w-3.5 h-3.5 text-[var(--gold)]' -%}{%- endif -%}{{ block.settings.text }}</span>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Barra de beneficios",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Mensaje",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icono",
+          "options": [
+            { "value": "none", "label": "Sin icono" },
+            { "value": "coffee", "label": "Café" },
+            { "value": "truck", "label": "Envío" },
+            { "value": "leaf", "label": "Hoja" },
+            { "value": "star", "label": "Estrella" },
+            { "value": "gift", "label": "Regalo" }
+          ],
+          "default": "leaf"
+        },
+        { "type": "text", "id": "text", "label": "Texto", "default": "Envío gratis +80€" },
+        {
+          "type": "select",
+          "id": "show_from",
+          "label": "Visible desde",
+          "options": [
+            { "value": "all", "label": "Siempre" },
+            { "value": "sm", "label": "Pantallas pequeñas en adelante" },
+            { "value": "md", "label": "Pantallas medianas en adelante" },
+            { "value": "lg", "label": "Pantallas grandes en adelante" }
+          ],
+          "default": "all"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6
+}
+{% endschema %}

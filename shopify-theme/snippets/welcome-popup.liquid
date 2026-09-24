@@ -1,0 +1,41 @@
+{%- if settings.enable_welcome_popup -%}
+  <div id="welcome-backdrop" class="popup-backdrop" data-countdown-minutes="{{ settings.welcome_countdown_minutes | default: 30 }}">
+    <div id="welcome-popup" class="welcome-popup">
+      <button id="welcome-close" class="popup-close" aria-label="{{ 'general.password_page.close' | t }}">&times;</button>
+
+      <div id="welcome-form-view">
+        <span class="inline-flex items-center justify-center w-14 h-14 rounded-full border border-[var(--gold)]/50 mb-6">
+          {%- render 'icon', name: 'coffee', class: 'w-6 h-6 text-[var(--gold)]' -%}
+        </span>
+        <h3 class="font-display text-3xl italic mb-3 text-[var(--cream)]">{{ settings.welcome_heading | default: 'Bienvenido a KOHI & CHA' }}</h3>
+        <p class="text-sm text-[var(--cream)]/70 mb-7 font-light">{{ settings.welcome_body | default: 'Conseguí un 10% de descuento en tu primera compra.' }}</p>
+
+        {%- form 'customer', id: 'welcome-form', class: 'flex flex-col gap-3' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter,welcome-popup">
+          <input type="text" id="welcome-name" name="contact[first_name]" required placeholder="{{ 'customer.register.first_name' | t }}" class="px-4 py-3 bg-[var(--cream)] text-[var(--brown-900)] placeholder:text-[var(--brown-500)] focus:outline-none text-sm">
+          <input type="email" id="welcome-email" name="contact[email]" required placeholder="tu@email.com" class="px-4 py-3 bg-[var(--cream)] text-[var(--brown-900)] placeholder:text-[var(--brown-500)] focus:outline-none text-sm">
+          <button type="submit" class="bg-[var(--gold)] text-[var(--brown-900)] py-3.5 text-xs tracking-[0.2em] uppercase mt-2 hover:bg-[var(--cream)] transition-colors">{{ 'general.newsletter.submit' | t }}</button>
+        {%- endform -%}
+      </div>
+
+      <div id="welcome-confirmation-view" class="hidden">
+        <div class="gold-rule mx-auto mb-5"></div>
+        <h3 class="font-display text-2xl italic mb-3 text-[var(--cream)]">{{ 'general.newsletter.thanks' | t }} <span id="welcome-name-display"></span>!</h3>
+        {%- if settings.welcome_discount_code != blank -%}
+          <p class="text-sm text-[var(--cream)]/70 mb-5 font-light">{{ 'general.newsletter.code_intro' | t }}</p>
+          <a href="{{ shop.url }}/discount/{{ settings.welcome_discount_code }}?redirect=%2F" class="block border border-[var(--gold)] text-[var(--gold)] text-lg tracking-[0.2em] py-3 mb-5 hover:bg-[var(--gold)] hover:text-[var(--brown-900)] transition-colors">{{ settings.welcome_discount_code }}</a>
+        {%- endif -%}
+        <button id="welcome-continue" class="text-xs tracking-[0.2em] uppercase text-[var(--cream)]/70 hover:text-[var(--cream)] underline">{{ 'general.newsletter.continue' | t }}</button>
+      </div>
+
+      <p class="text-[0.65rem] text-[var(--cream)]/40 mt-6 font-light">{{ 'general.newsletter.disclaimer' | t }}</p>
+    </div>
+  </div>
+
+  {%- if settings.welcome_discount_code != blank -%}
+    <div id="discount-countdown" class="discount-countdown hidden">
+      <span id="discount-countdown-text">{{ 'general.newsletter.countdown_text' | t }}</span>
+      <span id="discount-countdown-timer" class="font-display italic">--:--</span>
+    </div>
+  {%- endif -%}
+{%- endif -%}

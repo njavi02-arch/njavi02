@@ -1,0 +1,35 @@
+{% comment %}
+  KOHI & CHA wordmark, built live in the theme (not a flattened photo) so it
+  recolors with the palette and stays crisp at any size. Two variants:
+  - 'full'    : ring + two-line wordmark + Japanese subtext (footer, hero-adjacent)
+  - 'compact' : small ring + single-line wordmark (header nav, mobile menu)
+  Params: variant (default 'compact'), tone ('dark' text on light bg, or 'light' text on dark bg)
+{% endcomment %}
+{%- assign logo_variant = variant | default: 'compact' -%}
+{%- assign logo_tone = tone | default: 'dark' -%}
+{%- if logo_tone == 'light' -%}
+  {%- assign ink_color = 'var(--cream)' -%}
+{%- else -%}
+  {%- assign ink_color = 'var(--brown-900)' -%}
+{%- endif -%}
+
+{%- if settings.logo_image -%}
+  <img src="{{ settings.logo_image | image_url: width: 240 }}" alt="{{ shop.name }}" class="{% if logo_variant == 'full' %}h-16 w-16{% else %}h-9 w-9{% endif %} object-contain" width="{{ settings.logo_image.width }}" height="{{ settings.logo_image.height }}">
+{%- else -%}
+  {%- if logo_variant == 'full' -%}
+    <div class="flex flex-col items-center text-center" style="color: {{ ink_color }};">
+      <svg viewBox="0 0 60 60" class="w-12 h-12 mb-3" fill="none" stroke="var(--gold)" stroke-width="1.1">
+        <circle cx="30" cy="30" r="26"></circle>
+      </svg>
+      <span class="font-display italic text-2xl tracking-wide leading-none">KOHI &amp; CHA</span>
+      <span class="mt-2 text-[0.55rem] tracking-[0.35em] uppercase" style="color: var(--gold);">プレミアム フュージョン ボタニカルズ</span>
+    </div>
+  {%- else -%}
+    <span class="inline-flex items-center gap-2.5">
+      <svg viewBox="0 0 32 32" class="w-6 h-6 shrink-0" fill="none" stroke="var(--gold)" stroke-width="1.4">
+        <circle cx="16" cy="16" r="13.5"></circle>
+      </svg>
+      <span class="font-display italic text-2xl tracking-wide leading-none">KOHI &amp; CHA</span>
+    </span>
+  {%- endif -%}
+{%- endif -%}

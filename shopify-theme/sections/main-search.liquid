@@ -1,0 +1,40 @@
+<section class="py-32 px-6 md:px-10 bg-[var(--cream)] min-h-[60vh]">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16 reveal">
+      <div class="gold-rule mx-auto mb-5"></div>
+      <h1 class="font-display text-4xl md:text-5xl text-[var(--brown-900)] italic">{{ 'general.search.title' | t }}</h1>
+      <form action="{{ routes.search_url }}" method="get" role="search" class="flex items-center gap-3 max-w-lg mx-auto mt-10 bg-[var(--cream-deep)] px-6 py-4">
+        <input type="text" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}" class="flex-1 bg-transparent focus:outline-none text-[var(--brown-900)]">
+        <input type="hidden" name="type" value="product">
+        <button type="submit" aria-label="{{ 'general.search.title' | t }}">{%- render 'icon', name: 'search', class: 'w-5 h-5 text-[var(--brown-700)]' -%}</button>
+      </form>
+    </div>
+
+    {%- if search.performed -%}
+      {%- if search.results_count > 0 -%}
+        <p class="text-center text-sm text-[var(--brown-500)] mb-10">{{ 'general.search.results_count' | t: count: search.results_count }}</p>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}
+              {%- render 'product-card', product: item -%}
+            {%- else -%}
+              <a href="{{ item.url }}" class="blog-card bg-[var(--cream-deep)] p-7">
+                <h3 class="font-display text-lg text-[var(--brown-900)] mb-2 italic">{{ item.title }}</h3>
+                <p class="text-sm text-[var(--brown-700)] font-light">{{ item.content | strip_html | truncate: 90 }}</p>
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- else -%}
+        <p class="text-center text-[var(--brown-500)]">{{ 'general.search.no_results' | t: terms: search.terms }}</p>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Página de búsqueda",
+  "settings": []
+}
+{% endschema %}

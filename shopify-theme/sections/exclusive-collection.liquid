@@ -1,0 +1,58 @@
+<section id="exclusiva" class="py-32 px-6 md:px-10 bg-[#1c110b] text-[var(--cream)] grain-texture">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-20 reveal">
+      <div class="gold-rule mx-auto mb-6"></div>
+      {%- if section.settings.eyebrow != blank -%}<span class="eyebrow text-xs uppercase text-[var(--gold)]">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      <h2 class="font-display text-4xl md:text-5xl mt-3 italic">{{ section.settings.heading }}</h2>
+      {%- if section.settings.subheading != blank -%}
+        <p class="text-[var(--cream)]/60 text-sm mt-5 max-w-xl mx-auto font-light">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      {%- for block in section.blocks -%}
+        {%- assign product = block.settings.product -%}
+        <a href="{{ product.url | default: '#' }}" class="exclusive-card reveal border border-[var(--gold)]/25 p-10 block" {{ block.shopify_attributes }}>
+          {%- if block.settings.tag != blank -%}
+            <span class="tag-pill inline-block border border-[var(--gold)] text-[var(--gold)] mb-6">{{ block.settings.tag }}</span>
+          {%- endif -%}
+          <h3 class="font-display text-2xl mb-2 italic">{{ block.settings.title | default: product.title }}</h3>
+          <p class="text-sm text-[var(--cream)]/60 font-light">{{ block.settings.subtitle }}</p>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Selección exclusiva",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Texto pequeño", "default": "Colección privada" },
+    { "type": "text", "id": "heading", "label": "Título", "default": "Selección exclusiva" },
+    { "type": "textarea", "id": "subheading", "label": "Subtítulo", "default": "Ediciones limitadas, packs premium y regalos especiales pensados para quienes buscan algo distinto." }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Tarjeta",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Producto (opcional, define el enlace)" },
+        { "type": "text", "id": "tag", "label": "Etiqueta", "default": "Edición limitada" },
+        { "type": "text", "id": "title", "label": "Título (si se deja vacío usa el del producto)" },
+        { "type": "text", "id": "subtitle", "label": "Subtítulo", "default": "El favorito de la comunidad KOHI & CHA." }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Selección exclusiva",
+      "blocks": [
+        { "type": "card", "settings": { "tag": "Edición limitada", "title": "Vaso Térmico COFFEE", "subtitle": "El favorito de la comunidad KOHI & CHA, en 5 colores." } },
+        { "type": "card", "settings": { "tag": "Pack premium", "title": "Matcha Ceremonial", "subtitle": "Recién llegado, molienda de piedra grado ceremonial." } },
+        { "type": "card", "settings": { "tag": "Regalo especial", "title": "Set de Iniciación", "subtitle": "Café, matcha y vaso térmico en un solo pack." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

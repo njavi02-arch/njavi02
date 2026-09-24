@@ -1,0 +1,11 @@
+<div id="search-overlay">
+  <div class="max-w-2xl mx-auto mt-32 px-6">
+    <form action="{{ routes.search_url }}" method="get" role="search" class="flex items-center gap-3 bg-[var(--cream)] px-6 py-4">
+      {%- render 'icon', name: 'search', class: 'w-5 h-5 text-[var(--brown-700)]' -%}
+      <input id="search-input" type="text" name="q" placeholder="{{ 'general.search.placeholder' | t }}" autocomplete="off" class="flex-1 bg-transparent focus:outline-none text-[var(--brown-900)]">
+      <input type="hidden" name="type" value="product">
+      <button type="button" id="search-close" class="text-2xl leading-none text-[var(--brown-700)]" aria-label="{{ 'general.search.close' | t }}">&times;</button>
+    </form>
+    <div id="search-results" class="bg-[var(--cream)] mt-1 max-h-[50vh] overflow-y-auto"></div>
+  </div>
+</div>
