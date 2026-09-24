@@ -18,3 +18,8 @@ orbita-*.html
 .expo/
 dist/
 build/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
