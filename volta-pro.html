@@ -3003,13 +3003,28 @@
 
         // CHAT SYSTEM
         let chats = [
-            { id: 0, name: 'Sofia García', emoji: '👩', lastMessage: 'Hola! Cómo estás? 😊', time: '2m', unread: 0, online: true, messages: [] },
-            { id: 1, name: 'Marina López', emoji: '👧', lastMessage: 'Vamos a tomar algo? ☕', time: '5m', unread: 2, online: true, messages: [] },
-            { id: 2, name: 'Emma Rossi', emoji: '👰', lastMessage: '¿Cuál es tu serie favorita?', time: '1h', unread: 0, online: false, messages: [] }
+            { id: 0, name: 'Sofia García', emoji: '👩', lastMessage: 'Hola! Cómo estás? 😊', time: '2m', unread: 0, online: true, lastActiveTime: Date.now() - 2000, messages: [] },
+            { id: 1, name: 'Marina López', emoji: '👧', lastMessage: 'Vamos a tomar algo? ☕', time: '5m', unread: 2, online: true, lastActiveTime: Date.now() - 5000, messages: [] },
+            { id: 2, name: 'Emma Rossi', emoji: '👰', lastMessage: '¿Cuál es tu serie favorita?', time: '1h', unread: 0, online: false, lastActiveTime: Date.now() - 3600000, messages: [] }
         ];
 
         let currentChat = null;
         let chatMessages = {};
+
+        function getOnlineStatus(chat) {
+            const now = Date.now();
+            const diff = now - chat.lastActiveTime;
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+
+            if (chat.online) return '🟢 en línea';
+            if (seconds < 60) return `⏱️ hace ${seconds}s`;
+            if (minutes < 60) return `⏱️ hace ${minutes}m`;
+            if (hours < 24) return `⏱️ hace ${hours}h`;
+            return `⏱️ hace ${days}d`;
+        }
 
         function renderMessagesList() {
             const container = document.getElementById('messagesList');
@@ -3019,6 +3034,7 @@
                     <div class="chat-content">
                         <div class="chat-name">${chat.name}</div>
                         <div class="chat-message">${chat.lastMessage}</div>
+                        <div style="font-size: 11px; color: #999; margin-top: 4px;">${getOnlineStatus(chat)}</div>
                     </div>
                     <div style="display: flex; flex-direction: column; align-items: flex-end;">
                         <div class="chat-time">${chat.time}</div>
@@ -3034,7 +3050,7 @@
             // Update header
             document.getElementById('chatAvatar').textContent = currentChat.emoji;
             document.getElementById('chatName').textContent = currentChat.name;
-            document.getElementById('chatStatus').textContent = currentChat.online ? 'Online' : 'Offline';
+            document.getElementById('chatStatus').textContent = getOnlineStatus(currentChat);
 
             // Clear unread
             currentChat.unread = 0;
