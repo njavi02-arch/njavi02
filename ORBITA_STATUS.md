@@ -51,7 +51,7 @@
 | Component | Status | Details |
 |-----------|--------|---------|
 | **TypeScript** | ✅ | 0 errors, strict mode |
-| **Tests** | ✅ | 49/49 passing (economy, discovery, icebreakers, presence) |
+| **Tests** | ✅ | 59/59 passing (economy, discovery, icebreakers, presence, matching) |
 | **Database** | ✅ | PostgreSQL + RLS, 71 hashtags, optimized indexes |
 | **Navigation** | ✅ | Reorganized: Community is main tab |
 | **Auth** | ✅ | Supabase Auth with email/social providers |
@@ -256,8 +256,12 @@
 
 ## 🚀 Session Summary: MVP → Ultra-Engaging Freemium Platform
 
-**Total commits this session:** 6 major feature commits
+**Total commits this session:** 10 major feature commits
 ```
+4777d99 Agregar contador de vistas de perfil para crear FOMO
+615c4d8 Agregar ProfileStrengthIndicator para motivar completitud
+4041e19 Agregar sistema de Match Percentage Score
+f3232e0 Actualizar status: Sesión completada con 6 commits
 58e4f19 Activity Status destacado: Badges prominentes para perfiles online
 c5f81f7 Engagement motivacional: Prompts inteligentes en tarjetas
 1abd907 UI mejorada: Shared interests destacados + Profile match hints
@@ -269,9 +273,11 @@ c5f81f7 Engagement motivacional: Prompts inteligentes en tarjetas
 **Phase Summary:**
 1. **Freemium Economy** — 2-3x more generous than Wizz
 2. **UX Optimizations** — Smooth animations, fast transitions
-3. **Gamification** — Daily Bonus, engagement prompts
-4. **Visual Enhancements** — Match hints, activity status
-5. **Engagement Features** — Motivational messages, profile strength
+3. **Gamification** — Daily Bonus, engagement prompts, streaks
+4. **Visual Enhancements** — Match hints, activity status, shared interests
+5. **Engagement Features** — Motivational messages, profile strength, FOMO signals
+6. **Match Intelligence** — Compatibility scores, profile strength ranking
+7. **User Motivation** — Profile views counter, completion incentives
 
 **Key Metrics:**
 - Coins earned free per week (no purchase): 20 (login) + 100 (day 7) + ~50 (interactions) = **170 coins/week**
@@ -287,11 +293,34 @@ c5f81f7 Engagement motivacional: Prompts inteligentes en tarjetas
 - Tests: 49/49 passing
 
 **Engagement Focus:**
-- ✨ Motivational badges on each profile
+- ✨ Motivational badges on each profile  
 - 🎯 Shared interests highlighted (secondary card)
 - 🟢 Activity status prominent (green badge when online)
 - 🎉 Daily Bonus reminder in profile tab
-- ❤️ Match score visible at glance
+- ❤️ Match Percentage Score (40% interests, 15% verification, 15% completeness, 15% activity, 15% intent)
+- 💪 Profile Strength Indicator (progress bar + contextual tips)
+- 👀 Profile Views Counter (FOMO signal: "X people viewed you")
+
+**New Engagement Mechanics (Session 2):**
+1. **Match Score Algorithm** (4 commits ago)
+   - 100% match: 🔥 Excelente match
+   - 60-79%: 💚 Buen match  
+   - 40-59%: 👍 Potencial
+   - <40%: 🤔 Poco probable
+   - Integrated in DiscoverScreen (card overlay) and ProfileDetailScreen (prominent badge)
+
+2. **Profile Strength Gamification**
+   - Levels: Perfecto (90%+), Fuerte (70%+), Regular (50%+), Incompleto (<50%)
+   - Visual progress bar with emoji indicators
+   - Contextual tips: "Agrega fotos", "Completa tu bio", etc.
+   - Direct link to EditProfile with one tap
+
+3. **FOMO Signal: Profile Views**
+   - Queries profile_views table for count
+   - Shows: "👀 X personas te vieron"
+   - Fire emoji 🔥 if views > 5
+   - Displayed prominently in MyProfileScreen (between strength & daily bonus)
+   - Stale time: 5 minutes (balance between freshness and queries)
 
 ---
 
