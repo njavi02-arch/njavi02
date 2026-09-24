@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Alert, ScrollView, Text, View } from 'react-native';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { calculateMatchScore, DEFAULT_APP_CONFIG } from '@orbita/shared';
 import { useTheme } from '../../theme/ThemeProvider';
 import { ScreenContainer } from '../../components/ScreenContainer';
 import { LoadingState } from '../../components/LoadingState';
@@ -10,6 +11,7 @@ import { Button } from '../../components/Button';
 import { TextField } from '../../components/TextField';
 import { PhotoGallery } from '../../components/PhotoGallery';
 import { ActivityBadge } from '../../components/ActivityBadge';
+import { MatchScoreBadge } from '../../components/MatchScoreBadge';
 import { IcebreakerChips } from '../../components/IcebreakerChips';
 import { getPhotosForProfile, getProfileById, getProfileInterestNames, getProfilePrompts } from '../../services/profiles';
 import { hasUnlockedPhotos, unlockPhotos, sendSuperLike } from '../../services/economy';
@@ -18,7 +20,6 @@ import { sendConversationRequest } from '../../services/conversations';
 import { blockUser, reportUser } from '../../services/safety';
 import { useAuthStore } from '../../store/authStore';
 import { useMyInterests } from '../../hooks/useMyInterests';
-import { DEFAULT_APP_CONFIG } from '@orbita/shared';
 import type { DiscoverStackParamList } from '../../navigation/types';
 
 type Props = NativeStackScreenProps<DiscoverStackParamList, 'ProfileDetail'>;
@@ -42,6 +43,22 @@ export function ProfileDetailScreen({ route, navigation }: Props) {
   });
   const { data: myInterests } = useMyInterests();
   const sharedInterests = (theirInterestsQuery.data ?? []).filter((i) => (myInterests ?? []).includes(i));
+
+  const matchScore = useMemo(() => {
+    if (!profileQuery.data || !session) return null;
+    const profile = useAuthStore.getState().profile;
+    if (!profile) return null;
+    return calculateMatchScore(
+      myInterests ?? [],
+      theirInterestsQuery.data ?? [],
+      profileQuery.data.is_verified,
+      profileQuery.data.profile_completion_pct,
+      profileQuery.data.last_active_at,
+      (profile.seeking as any) ?? [],
+      (profileQuery.data.seeking as any) ?? [],
+    );
+  }, [profileQuery.data, myInterests, theirInterestsQuery.data, session]);
+
   const unlockedQuery = useQuery({
     queryKey: ['photo-unlock', session?.user.id, profileId],
     queryFn: () => hasUnlockedPhotos(session!.user.id, profileId),
@@ -153,6 +170,12 @@ export function ProfileDetailScreen({ route, navigation }: Props) {
           ) : null}
           <ActivityBadge lastActiveAt={profile.last_active_at} prominent />
         </View>
+
+        {matchScore && (
+          <View style={{ marginBottom: theme.spacing.md }}>
+            <MatchScoreBadge percentage={matchScore.percentage} size="large" prominent />
+          </View>
+        )}
 
         {sharedInterests.length > 0 && (
           <View

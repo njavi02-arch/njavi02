@@ -3,6 +3,7 @@ import { Image, Pressable, ScrollView, Text, View, Animated, Easing } from 'reac
 import { LinearGradient } from 'expo-linear-gradient';
 import { useQueryClient } from '@tanstack/react-query';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { calculateMatchScore } from '@orbita/shared';
 import { useTheme } from '../../theme/ThemeProvider';
 import { ScreenContainer } from '../../components/ScreenContainer';
 import { LoadingState } from '../../components/LoadingState';
@@ -11,6 +12,7 @@ import { EmptyState } from '../../components/EmptyState';
 import { Button } from '../../components/Button';
 import { TextField } from '../../components/TextField';
 import { ActivityBadge } from '../../components/ActivityBadge';
+import { MatchScoreBadge } from '../../components/MatchScoreBadge';
 import { StreakAtRiskBanner } from '../../components/StreakAtRiskBanner';
 import { IcebreakerChips } from '../../components/IcebreakerChips';
 import { useDiscoverProfiles } from '../../hooks/useDiscoverProfiles';
@@ -68,6 +70,21 @@ export function DiscoverScreen({ navigation }: Props) {
     const mine = new Set(myInterests);
     return current.interests.filter((i) => mine.has(i));
   }, [current, myInterests]);
+
+  const matchScore = useMemo(() => {
+    if (!current || !session) return null;
+    const profile = useAuthStore.getState().profile;
+    if (!profile) return null;
+    return calculateMatchScore(
+      myInterests ?? [],
+      current.interests,
+      current.is_verified,
+      current.profile_completion_pct,
+      current.last_active_at,
+      (profile.seeking as any) ?? [],
+      (current.seeking as any) ?? [],
+    );
+  }, [current, myInterests, session]);
 
   const motivationalMessage = useMemo(() => {
     if (!current) return null;
@@ -200,7 +217,7 @@ export function DiscoverScreen({ navigation }: Props) {
             ) : null}
             <LinearGradient
               colors={['transparent', 'rgba(0,0,0,0.75)']}
-              style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 140, justifyContent: 'flex-end', padding: theme.spacing.md }}
+              style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 160, justifyContent: 'flex-end', padding: theme.spacing.md }}
             >
               <Text style={{ color: '#fff', fontFamily: theme.typography.fontFamilyHeading, fontSize: theme.typography.sizes.h1 }}>
                 {current.display_name}, {ageFromBirthDate(current.birth_date)}
@@ -213,6 +230,23 @@ export function DiscoverScreen({ navigation }: Props) {
                 ) : null}
                 {current.is_verified && <Text style={{ color: '#fff', fontSize: 14 }}>✅</Text>}
               </View>
+              {matchScore && (
+                <View style={{ marginTop: 6 }}>
+                  <View
+                    style={{
+                      backgroundColor: 'rgba(255,255,255,0.15)',
+                      borderRadius: theme.radius.pill,
+                      paddingHorizontal: 10,
+                      paddingVertical: 4,
+                      alignSelf: 'flex-start',
+                    }}
+                  >
+                    <Text style={{ color: '#fff', fontSize: 12, fontFamily: theme.typography.fontFamilyBodySemibold }}>
+                      💕 {matchScore.percentage}% Match
+                    </Text>
+                  </View>
+                </View>
+              )}
               {sharedInterests.length > 0 && (
                 <View style={{ marginTop: 6, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2, alignSelf: 'flex-start' }}>
                   <Text style={{ color: '#fff', fontSize: 12, fontFamily: theme.typography.fontFamilyBodySemibold }}>

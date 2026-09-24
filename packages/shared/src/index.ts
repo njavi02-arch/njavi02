@@ -4,3 +4,4 @@ export * from './economy';
 export * from './presence';
 export * from './icebreakers';
 export * from './discoveryFilters';
+export * from './matching';
