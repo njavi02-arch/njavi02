@@ -144,6 +144,85 @@
         .header-btn:hover { background: var(--border-light); }
         body.dark-mode .header-btn:hover { background: var(--border-dark); }
 
+        /* LANGUAGE SELECTOR */
+        .language-selector {
+            position: relative;
+        }
+
+        .language-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+            color: var(--text-light);
+        }
+
+        body.dark-mode .language-btn {
+            color: var(--text-dark);
+        }
+
+        .language-btn:hover { background: var(--border-light); }
+        body.dark-mode .language-btn:hover { background: var(--border-dark); }
+
+        .language-dropdown {
+            display: none;
+            position: absolute;
+            top: 40px;
+            right: 0;
+            background: var(--card-light);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 100;
+            min-width: 120px;
+        }
+
+        body.dark-mode .language-dropdown {
+            background: var(--card-dark);
+            border-color: var(--border-dark);
+        }
+
+        .language-dropdown.active { display: block; }
+
+        .language-option {
+            padding: 10px 16px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 14px;
+            transition: background 0.2s;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        body.dark-mode .language-option {
+            color: var(--text-dark);
+        }
+
+        .language-option:hover {
+            background: var(--border-light);
+        }
+
+        body.dark-mode .language-option:hover {
+            background: var(--border-dark);
+        }
+
+        .language-option.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
         /* DISCOVER SCREEN */
         .discover-container {
             flex: 1;
@@ -1384,7 +1463,21 @@
                                 </svg>
                                 <div class="header-title">YUIZZ</div>
                             </div>
-                            <div style="display: flex; gap: 4px;">
+                            <div style="display: flex; gap: 4px; align-items: center;">
+                                <div class="language-selector">
+                                    <button class="language-btn" onclick="toggleLanguageDropdown()" title="Idioma">🌍</button>
+                                    <div class="language-dropdown" id="languageDropdown">
+                                        <button class="language-option" onclick="changeLanguage('es')" id="lang-es">
+                                            🇪🇸 Español
+                                        </button>
+                                        <button class="language-option" onclick="changeLanguage('en')" id="lang-en">
+                                            🇬🇧 English
+                                        </button>
+                                        <button class="language-option" onclick="changeLanguage('pt')" id="lang-pt">
+                                            🇵🇹 Português
+                                        </button>
+                                    </div>
+                                </div>
                                 <button class="header-btn" onclick="toggleDarkMode()" title="Tema Oscuro">🌙</button>
                                 <button class="header-btn" onclick="toggleHotHour()" title="Toggle Hot Hour">🔥</button>
                                 <button class="header-btn" onclick="showHotHourInfo()" title="Info">ℹ️</button>
@@ -1774,6 +1867,164 @@
     </div>
 
     <script>
+        // 🌍 Multi-language Support
+        const translations = {
+            es: {
+                discover: 'Descubrir',
+                messages: 'Mensajes',
+                profile: 'Perfil',
+                communities: 'Comunidades',
+                activity: 'Actividad',
+                filters: 'Filtros',
+                search: 'Buscar...',
+                like: 'Me gusta',
+                pass: 'Pasar',
+                superLike: 'Super Like',
+                match: '¡MATCH!',
+                coins: 'Monedas',
+                premium: 'Premium',
+                buyCoins: 'Comprar Monedas',
+                newMessages: 'Nuevos Mensajes',
+                noMessages: 'Sin mensajes',
+                typeMessage: 'Escribe un mensaje...',
+                send: 'Enviar',
+                profileSettings: 'Ajustes de Perfil',
+                editProfile: 'Editar Perfil',
+                darkMode: 'Modo Oscuro',
+                logout: 'Cerrar Sesión',
+                age: 'Años',
+                location: 'Ubicación',
+                bio: 'Biografía',
+                interests: 'Intereses',
+                music: 'Música',
+                socials: 'Redes Sociales',
+                hoursHot: 'Horas Hot (11 PM - 12 AM)',
+                freeAccess: 'Acceso Gratuito',
+                language: 'Idioma',
+                connections: 'Conexiones',
+                myProfile: 'Mi Perfil',
+                editGenre: 'Editar Género'
+            },
+            en: {
+                discover: 'Discover',
+                messages: 'Messages',
+                profile: 'Profile',
+                communities: 'Communities',
+                activity: 'Activity',
+                filters: 'Filters',
+                search: 'Search...',
+                like: 'Like',
+                pass: 'Pass',
+                superLike: 'Super Like',
+                match: 'MATCH!',
+                coins: 'Coins',
+                premium: 'Premium',
+                buyCoins: 'Buy Coins',
+                newMessages: 'New Messages',
+                noMessages: 'No messages',
+                typeMessage: 'Type a message...',
+                send: 'Send',
+                profileSettings: 'Profile Settings',
+                editProfile: 'Edit Profile',
+                darkMode: 'Dark Mode',
+                logout: 'Logout',
+                age: 'Years',
+                location: 'Location',
+                bio: 'Biography',
+                interests: 'Interests',
+                music: 'Music',
+                socials: 'Social Media',
+                hoursHot: 'Hot Hours (11 PM - 12 AM)',
+                freeAccess: 'Free Access',
+                language: 'Language',
+                connections: 'Connections',
+                myProfile: 'My Profile',
+                editGenre: 'Edit Genre'
+            },
+            pt: {
+                discover: 'Descobrir',
+                messages: 'Mensagens',
+                profile: 'Perfil',
+                communities: 'Comunidades',
+                activity: 'Atividade',
+                filters: 'Filtros',
+                search: 'Pesquisar...',
+                like: 'Curtir',
+                pass: 'Passar',
+                superLike: 'Super Like',
+                match: 'CORRESPONDÊNCIA!',
+                coins: 'Moedas',
+                premium: 'Premium',
+                buyCoins: 'Comprar Moedas',
+                newMessages: 'Novas Mensagens',
+                noMessages: 'Sem mensagens',
+                typeMessage: 'Digite uma mensagem...',
+                send: 'Enviar',
+                profileSettings: 'Configurações do Perfil',
+                editProfile: 'Editar Perfil',
+                darkMode: 'Modo Escuro',
+                logout: 'Sair',
+                age: 'Anos',
+                location: 'Localização',
+                bio: 'Biografia',
+                interests: 'Interesses',
+                music: 'Música',
+                socials: 'Redes Sociais',
+                hoursHot: 'Horas Quentes (11 PM - 12 AM)',
+                freeAccess: 'Acesso Gratuito',
+                language: 'Idioma',
+                connections: 'Conexões',
+                myProfile: 'Meu Perfil',
+                editGenre: 'Editar Gênero'
+            }
+        };
+
+        let currentLanguage = localStorage.getItem('yuizzLanguage') || 'es';
+
+        function t(key) {
+            return translations[currentLanguage]?.[key] || translations.es[key];
+        }
+
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('yuizzLanguage', lang);
+            updateLanguageButtons();
+            document.getElementById('languageDropdown').classList.remove('active');
+            renderAppUI();
+        }
+
+        function renderAppUI() {
+            // Update tab labels
+            const tabs = document.querySelectorAll('.tab div:last-child');
+            const tabLabels = ['discover', 'communities', 'messages', 'activity', 'profile'];
+            tabs.forEach((tab, idx) => {
+                if (tabLabels[idx]) {
+                    const label = tabLabels[idx];
+                    if (label === 'discover') tab.textContent = t('discover');
+                    else if (label === 'communities') tab.textContent = t('communities');
+                    else if (label === 'messages') tab.textContent = t('messages');
+                    else if (label === 'activity') tab.textContent = t('activity');
+                    else if (label === 'profile') tab.textContent = t('profile');
+                }
+            });
+
+            // Update header titles
+            const messagesTitle = document.getElementById('messagesTitle');
+            if (messagesTitle) messagesTitle.textContent = t('messages');
+
+            // Update search placeholder
+            const searchInput = document.querySelector('input[placeholder*="Buscar"], input[placeholder*="Search"], input[placeholder*="Pesquisar"]');
+            if (searchInput) searchInput.placeholder = t('search');
+
+            // Update chat input placeholder
+            const chatInput = document.querySelector('input[placeholder*="Escribe"], input[placeholder*="Type"], input[placeholder*="Digite"]');
+            if (chatInput) chatInput.placeholder = t('typeMessage');
+
+            // Update notifications section
+            const notificationsSection = document.querySelector('.notifications-section h3');
+            if (notificationsSection) notificationsSection.textContent = t('newMessages');
+        }
+
         const profiles = [
             {
                 name: 'Sofia',
@@ -2187,6 +2438,20 @@
                 }
                 updateCoins();
             }
+        }
+
+        // LANGUAGE SELECTOR
+        function toggleLanguageDropdown() {
+            const dropdown = document.getElementById('languageDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        function updateLanguageButtons() {
+            document.querySelectorAll('.language-option').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const activeBtn = document.getElementById(`lang-${currentLanguage}`);
+            if (activeBtn) activeBtn.classList.add('active');
         }
 
         // DARK MODE TOGGLE
@@ -2647,6 +2912,8 @@
         // Initialize on load
         window.addEventListener('load', () => {
             loadData();
+            updateLanguageButtons();
+            renderAppUI();
             renderCommunities();
             checkHotHour();
             updateProfileCard();
