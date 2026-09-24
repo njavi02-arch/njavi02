@@ -1101,6 +1101,146 @@
         .modal-close:hover { color: var(--text-light); }
         body.dark-mode .modal-close:hover { color: var(--text-dark); }
 
+        /* ADVANCED FILTERS */
+        .filters-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin: 16px 0;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        body.dark-mode .filter-label {
+            color: var(--text-dark);
+        }
+
+        .filter-input,
+        .filter-select {
+            padding: 10px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            background: var(--bg-light);
+            color: var(--text-light);
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        body.dark-mode .filter-input,
+        body.dark-mode .filter-select {
+            background: var(--card-dark);
+            border-color: var(--border-dark);
+            color: var(--text-dark);
+        }
+
+        .filter-input:focus,
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .filter-range {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .filter-range input {
+            flex: 1;
+        }
+
+        .range-value {
+            min-width: 40px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .filter-checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .filter-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: var(--border-light);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 13px;
+        }
+
+        body.dark-mode .filter-checkbox {
+            background: var(--border-dark);
+        }
+
+        .filter-checkbox input {
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .filter-checkbox:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .filters-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-apply-filters {
+            flex: 1;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-apply-filters:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-clear-filters {
+            flex: 1;
+            padding: 12px;
+            background: var(--border-light);
+            color: var(--text-light);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        body.dark-mode .btn-clear-filters {
+            background: var(--border-dark);
+            color: var(--text-dark);
+        }
+
+        .btn-clear-filters:hover {
+            background: var(--border-dark);
+        }
+
         /* CHAT SCREEN */
         .chat-screen {
             display: flex;
@@ -1484,6 +1624,13 @@
                             </div>
                         </div>
 
+                        <!-- FILTERS BAR -->
+                        <div style="padding: 12px 16px; display: flex; gap: 8px; border-bottom: 1px solid var(--border-light); background: var(--bg-light); transition: background 0.3s, border-color 0.3s;">
+                            <button onclick="openModal('filtersModal')" style="flex: 1; padding: 8px 12px; background: var(--primary); color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='var(--primary-dark)'" onmouseout="this.style.background='var(--primary)'">
+                                🔎 Filtros Avanzados
+                            </button>
+                        </div>
+
                         <!-- HOT HOUR BANNER -->
                         <div id="hotHourBanner" style="background: linear-gradient(135deg, #FF2D55 0%, #FF453A 100%); padding: 12px 16px; text-align: center; color: white; font-weight: 700; border-bottom: 2px solid #FF2D55; cursor: pointer; transition: all 0.3s;" onclick="showHotHourInfo()">
                             🔥 HOT HOUR 11 PM - 12 AM ⚡ GRATIS • Conexiones sin límites
@@ -1862,6 +2009,98 @@
             <div class="modal-buttons">
                 <button class="btn-modal btn-primary" onclick="purchaseFilter()">Comprar • €2.99</button>
                 <button class="btn-modal btn-secondary" onclick="closeModal('datingModal')">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADVANCED FILTERS MODAL -->
+    <div class="modal-overlay" id="filtersModal">
+        <div class="modal" style="max-height: 90vh; overflow-y: auto;">
+            <button class="modal-close" onclick="closeModal('filtersModal')">✕</button>
+            <div class="modal-header">
+                <div class="modal-title">Filtros Avanzados</div>
+            </div>
+            <div class="modal-divider"></div>
+            <div class="modal-content">
+                <div class="filters-grid">
+                    <!-- Age Range -->
+                    <div class="filter-group">
+                        <label class="filter-label">Rango de Edad</label>
+                        <div class="filter-range">
+                            <input type="number" class="filter-input" id="ageMin" placeholder="Min" min="18" max="100" value="18">
+                            <span>-</span>
+                            <input type="number" class="filter-input" id="ageMax" placeholder="Max" min="18" max="100" value="50">
+                        </div>
+                    </div>
+
+                    <!-- Location/Distance -->
+                    <div class="filter-group">
+                        <label class="filter-label">Distancia (km)</label>
+                        <div class="filter-range">
+                            <input type="range" class="filter-input" id="distanceFilter" min="1" max="100" value="50" oninput="updateDistanceValue(this.value)">
+                            <span class="range-value" id="distanceValue">50 km</span>
+                        </div>
+                    </div>
+
+                    <!-- Music Genres -->
+                    <div class="filter-group">
+                        <label class="filter-label">Géneros de Música</label>
+                        <div class="filter-checkbox-group" id="genreFilters">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="Rock"> Rock
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="Pop"> Pop
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="Reggaeton"> Reggaeton
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="Electrónica"> Electrónica
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="Rap"> Rap
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="Jazz"> Jazz
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="Indie Pop"> Indie Pop
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="Salsa"> Salsa
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Online Status -->
+                    <div class="filter-group">
+                        <label class="filter-label">Estado</label>
+                        <div class="filter-checkbox-group">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" id="onlineOnly"> Solo en línea
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Verified Profiles -->
+                    <div class="filter-group">
+                        <label class="filter-label">Perfiles</label>
+                        <div class="filter-checkbox-group">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" id="verifiedOnly"> Solo verificados
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" id="hasPhotos"> Con fotos
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filters-actions">
+                    <button class="btn-apply-filters" onclick="applyFilters()">Aplicar Filtros</button>
+                    <button class="btn-clear-filters" onclick="clearAllFilters()">Limpiar</button>
+                </div>
             </div>
         </div>
     </div>
@@ -2909,9 +3148,120 @@
             }
         });
 
+        // ADVANCED FILTERS SYSTEM
+        let currentFilters = {
+            ageMin: 18,
+            ageMax: 50,
+            distance: 50,
+            genres: [],
+            onlineOnly: false,
+            verifiedOnly: false,
+            hasPhotos: false
+        };
+
+        function updateDistanceValue(value) {
+            document.getElementById('distanceValue').textContent = value + ' km';
+        }
+
+        function applyFilters() {
+            // Get filter values
+            currentFilters.ageMin = parseInt(document.getElementById('ageMin').value) || 18;
+            currentFilters.ageMax = parseInt(document.getElementById('ageMax').value) || 50;
+            currentFilters.distance = parseInt(document.getElementById('distanceFilter').value) || 50;
+            currentFilters.onlineOnly = document.getElementById('onlineOnly').checked;
+            currentFilters.verifiedOnly = document.getElementById('verifiedOnly').checked;
+            currentFilters.hasPhotos = document.getElementById('hasPhotos').checked;
+
+            // Get selected genres
+            currentFilters.genres = [];
+            document.querySelectorAll('#genreFilters input:checked').forEach(checkbox => {
+                currentFilters.genres.push(checkbox.value);
+            });
+
+            // Save filters to localStorage
+            localStorage.setItem('yuizzFilters', JSON.stringify(currentFilters));
+
+            // Re-render profiles with filters applied
+            updateProfileCard();
+            closeModal('filtersModal');
+
+            // Show feedback
+            showNotification('Filtros aplicados ✅');
+        }
+
+        function clearAllFilters() {
+            // Reset form
+            document.getElementById('ageMin').value = 18;
+            document.getElementById('ageMax').value = 50;
+            document.getElementById('distanceFilter').value = 50;
+            document.getElementById('distanceValue').textContent = '50 km';
+            document.getElementById('onlineOnly').checked = false;
+            document.getElementById('verifiedOnly').checked = false;
+            document.getElementById('hasPhotos').checked = false;
+            document.querySelectorAll('#genreFilters input').forEach(cb => cb.checked = false);
+
+            // Reset filters
+            currentFilters = {
+                ageMin: 18,
+                ageMax: 50,
+                distance: 50,
+                genres: [],
+                onlineOnly: false,
+                verifiedOnly: false,
+                hasPhotos: false
+            };
+            localStorage.removeItem('yuizzFilters');
+
+            // Re-render
+            updateProfileCard();
+            showNotification('Filtros limpios ✅');
+        }
+
+        function filterProfiles(profilesList) {
+            return profilesList.filter(profile => {
+                // Age filter
+                if (profile.age < currentFilters.ageMin || profile.age > currentFilters.ageMax) {
+                    return false;
+                }
+
+                // Genre filter
+                if (currentFilters.genres.length > 0 && !currentFilters.genres.includes(profile.genre)) {
+                    return false;
+                }
+
+                // Photos filter
+                if (currentFilters.hasPhotos && (!profile.photos || profile.photos.length === 0)) {
+                    return false;
+                }
+
+                return true;
+            });
+        }
+
+        function loadFiltersFromStorage() {
+            const saved = localStorage.getItem('yuizzFilters');
+            if (saved) {
+                currentFilters = JSON.parse(saved);
+                // Update UI with saved filters
+                document.getElementById('ageMin').value = currentFilters.ageMin;
+                document.getElementById('ageMax').value = currentFilters.ageMax;
+                document.getElementById('distanceFilter').value = currentFilters.distance;
+                document.getElementById('distanceValue').textContent = currentFilters.distance + ' km';
+                document.getElementById('onlineOnly').checked = currentFilters.onlineOnly;
+                document.getElementById('verifiedOnly').checked = currentFilters.verifiedOnly;
+                document.getElementById('hasPhotos').checked = currentFilters.hasPhotos;
+
+                currentFilters.genres.forEach(genre => {
+                    const checkbox = Array.from(document.querySelectorAll('#genreFilters input')).find(cb => cb.value === genre);
+                    if (checkbox) checkbox.checked = true;
+                });
+            }
+        }
+
         // Initialize on load
         window.addEventListener('load', () => {
             loadData();
+            loadFiltersFromStorage();
             updateLanguageButtons();
             renderAppUI();
             renderCommunities();
