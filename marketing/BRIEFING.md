@@ -84,6 +84,8 @@
 
 | 2026-09-24 | Auditoría y mejora de profesionalidad web (ecommerce expert) | Hecho — Página Contacto: borrada dirección física y NIF (solo email + teléfono). Aviso Legal: NIF corregido (B44984136). Colecciones: agregadas descripciones profesionales a Accesorios, Regalos, Destacados, Packs Premium, Matcha Latte. Página Sobre Nosotros: reescrita de forma concisa y profesional. Descripción de Matcha: reorganizada en párrafos claros. Resultado: web más seria, sin exposición de datos innecesarios, con UX profesional en todas las colecciones |
 
+| 2026-09-24 | Integración de galería de 6 imágenes en Sobre Nosotros | Hecho — Descargadas 7 imágenes de Adobe Stock (image 07 corrupta). Subidas a Shopify mediante stagedUploadsCreate + fileCreate. URLs permanentes en CDN de Shopify. Página Sobre Nosotros actualizada con grid responsive 4-columnas + texto profesional. Imágenes: 01-Quién hay detrás, 02-Nuestra misión, 03-Nuestra visión, 04-Qué es el matcha, 05-Propiedades y beneficios, 06-Recetas Kohi & Cha. **Todas las imágenes ahora visibles en la web** |
+
 ## Decisiones sobre formato de publicación (2026-09-15 — no volver a preguntar)
 
 - **Instagram Reels**: publicar primero como **Trial Reel** (`instagramData.type = "TRIAL_REEL"`,
