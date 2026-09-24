@@ -151,7 +151,7 @@ export function ProfileDetailScreen({ route, navigation }: Props) {
           {profile.city ? (
             <Text style={{ color: theme.colors.textSecondary }}>📍 {profile.city}</Text>
           ) : null}
-          <ActivityBadge lastActiveAt={profile.last_active_at} />
+          <ActivityBadge lastActiveAt={profile.last_active_at} prominent />
         </View>
 
         {sharedInterests.length > 0 && (

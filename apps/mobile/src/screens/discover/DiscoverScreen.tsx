@@ -220,8 +220,8 @@ export function DiscoverScreen({ navigation }: Props) {
                   </Text>
                 </View>
               )}
-              <View style={{ marginTop: 4 }}>
-                <ActivityBadge lastActiveAt={current.last_active_at} light />
+              <View style={{ marginTop: 6 }}>
+                <ActivityBadge lastActiveAt={current.last_active_at} light prominent />
               </View>
             </LinearGradient>
           </View>
