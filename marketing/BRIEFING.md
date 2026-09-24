@@ -82,6 +82,8 @@
 
 | 2026-09-15 | Reprogramar los 9 pines a mejores horarios | Hecho — Metricool no tiene datos de "mejor hora" para Pinterest (`getBestTimeToPostByNetwork` solo cubre facebook/instagram/twitter/linkedin/tiktok/youtube), y la cuenta es nueva sin historial propio. Se movieron a horario general recomendado para Pinterest (noches entre semana 20:00-21:00, sábado/domingo mañana y noche), del 16 al 22 de septiembre, vía `updateScheduledPost` sobre los mismos 9 posts |
 
+| 2026-09-24 | Auditoría y mejora de profesionalidad web (ecommerce expert) | Hecho — Página Contacto: borrada dirección física y NIF (solo email + teléfono). Aviso Legal: NIF corregido (B44984136). Colecciones: agregadas descripciones profesionales a Accesorios, Regalos, Destacados, Packs Premium, Matcha Latte. Página Sobre Nosotros: reescrita de forma concisa y profesional. Descripción de Matcha: reorganizada en párrafos claros. Resultado: web más seria, sin exposición de datos innecesarios, con UX profesional en todas las colecciones |
+
 ## Decisiones sobre formato de publicación (2026-09-15 — no volver a preguntar)
 
 - **Instagram Reels**: publicar primero como **Trial Reel** (`instagramData.type = "TRIAL_REEL"`,
