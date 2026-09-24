@@ -9,9 +9,9 @@ import { EmptyState } from '../../components/EmptyState';
 import { listHashtags, getPostsForFeed } from '../../services/community';
 import type { HashtagRow, PostWithAuthor } from '../../types/database';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { DiscoverStackParamList } from '../../navigation/types';
+import type { CommunityStackParamList } from '../../navigation/types';
 
-type Props = NativeStackScreenProps<DiscoverStackParamList, 'Community'>;
+type Props = NativeStackScreenProps<CommunityStackParamList, 'CommunityFeed'>;
 
 export function CommunityScreen({ navigation }: Props) {
   const theme = useTheme();

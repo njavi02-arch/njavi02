@@ -8,9 +8,9 @@ import { EmptyState } from '../../components/EmptyState';
 import { getPostsByHashtag } from '../../services/community';
 import type { PostWithAuthor } from '../../types/database';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { DiscoverStackParamList } from '../../navigation/types';
+import type { CommunityStackParamList } from '../../navigation/types';
 
-type Props = NativeStackScreenProps<DiscoverStackParamList, 'HashtagFeed'>;
+type Props = NativeStackScreenProps<CommunityStackParamList, 'HashtagFeed'>;
 
 export function HashtagFeedScreen({ route, navigation }: Props) {
   const theme = useTheme();

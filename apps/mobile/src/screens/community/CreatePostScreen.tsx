@@ -7,8 +7,9 @@ import { Button } from '../../components/Button';
 import { listHashtags, createPost } from '../../services/community';
 import { useAuthStore } from '../../store/authStore';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { CommunityStackParamList } from '../../navigation/types';
 
-type Props = NativeStackScreenProps<any, 'CreatePost'>;
+type Props = NativeStackScreenProps<CommunityStackParamList, 'CreatePost'>;
 
 export function CreatePostScreen({ navigation }: Props) {
   const theme = useTheme();

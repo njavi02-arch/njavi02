@@ -12,6 +12,7 @@ export type OnboardingStackParamList = {
 
 export type MainTabParamList = {
   Discover: undefined;
+  Community: undefined;
   Messages: undefined;
   Activity: undefined;
   Profile: undefined;
@@ -26,7 +27,10 @@ export type MessagesStackParamList = {
 export type DiscoverStackParamList = {
   DiscoverFeed: undefined;
   ProfileDetail: { profileId: string };
-  Community: undefined;
+};
+
+export type CommunityStackParamList = {
+  CommunityFeed: undefined;
   CreatePost: undefined;
   HashtagFeed: { hashtagId: string; hashtagName: string };
   PostDetail: { postId: string };

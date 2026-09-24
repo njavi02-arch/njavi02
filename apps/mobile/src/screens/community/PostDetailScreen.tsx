@@ -7,9 +7,9 @@ import { LoadingState } from '../../components/LoadingState';
 import { getPostsForFeed, getCommentsForPost, addComment } from '../../services/community';
 import type { PostWithAuthor, CommentWithAuthor } from '../../types/database';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { DiscoverStackParamList } from '../../navigation/types';
+import type { CommunityStackParamList } from '../../navigation/types';
 
-type Props = NativeStackScreenProps<DiscoverStackParamList, 'PostDetail'>;
+type Props = NativeStackScreenProps<CommunityStackParamList, 'PostDetail'>;
 
 export function PostDetailScreen({ route, navigation }: Props) {
   const theme = useTheme();
