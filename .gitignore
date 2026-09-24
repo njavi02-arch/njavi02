@@ -1,44 +1,20 @@
-.claude/
-
-# Dependencies
+# Node
 node_modules/
-.pnp
-.pnp.js
+package-lock.json
+npm-debug.log
 
-# Expo / React Native
-.expo/
-.expo-shared/
-dist/
-web-build/
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-*.orig.*
+# Archivos de prueba y desarrollo
+screenshot*.js
+orbita-*.html
+*.test.js
+*.spec.js
 
-# Next.js
-.next/
-out/
-
-# Env files
-.env
+# Temporal
+.DS_Store
 .env.local
 .env.*.local
 
-# Build outputs
+# Build
+.expo/
+dist/
 build/
-coverage/
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-*.log
-
-# OS
-.DS_Store
-
-# Editor
-.vscode/
-.idea/
