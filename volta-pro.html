@@ -2834,6 +2834,8 @@
         let userMatches = [];
         let userMessages = [];
         let notifications = [];
+        let userProfileViews = 0;
+        let activityCount = { passes: 0, likes: 0, superLikes: 0, messages: 0 };
 
         // Simulated like responses (users who also like back)
         const likeResponses = {
@@ -2869,7 +2871,8 @@
         function saveData() {
             localStorage.setItem('yuizzData', JSON.stringify({
                 coins, userLikes, userMatches, userMessages, notifications, isDarkMode,
-                dailyStreak, lastStreakDate, registrationDate, freeHotHourEndsAt
+                dailyStreak, lastStreakDate, registrationDate, freeHotHourEndsAt,
+                userProfileViews, activityCount
             }));
         }
 
@@ -2887,10 +2890,13 @@
                 lastStreakDate = data.lastStreakDate;
                 registrationDate = data.registrationDate || new Date().toISOString().split('T')[0];
                 freeHotHourEndsAt = data.freeHotHourEndsAt;
+                userProfileViews = data.userProfileViews || 0;
+                activityCount = data.activityCount || { passes: 0, likes: 0, superLikes: 0, messages: 0 };
                 if (isDarkMode) {
                     document.body.classList.add('dark-mode');
                 }
                 updateCoins();
+                updateProfileViews();
                 checkDailyReward();
             } else {
                 // First time user - set registration date and free Hot Hour for 2 days
@@ -2900,6 +2906,8 @@
                 freeHotHourEndsAt = tomorrow.toISOString().split('T')[0];
                 coins = 0;
                 dailyStreak = 1;
+                userProfileViews = 0;
+                activityCount = { passes: 0, likes: 0, superLikes: 0, messages: 0 };
                 claimDailyReward();
             }
         }
@@ -2952,6 +2960,19 @@
                 const reward = streakRewards[Math.min(dailyStreak - 1, 6)];
                 streakDisplay.textContent = `Día ${dailyStreak} de 7`;
                 rewardDisplay.textContent = `+${reward.coins} monedas - ${reward.description}`;
+            }
+        }
+
+        function calculateProfileViews() {
+            userProfileViews = (activityCount.passes * 1) + (activityCount.likes * 5) + (activityCount.superLikes * 10) + (activityCount.messages * 2);
+            return userProfileViews;
+        }
+
+        function updateProfileViews() {
+            calculateProfileViews();
+            const statsSection = document.querySelectorAll('.profile-stat-value');
+            if (statsSection && statsSection[1]) {
+                statsSection[1].textContent = userProfileViews;
             }
         }
 
@@ -3078,6 +3099,10 @@
                 text: text,
                 time: time
             });
+
+            activityCount.messages++;
+            updateProfileViews();
+            saveData();
 
             input.value = '';
             renderChatMessages();
@@ -3324,13 +3349,12 @@
         }
 
         function nextProfile() {
+            activityCount.passes++;
+            updateProfileViews();
             currentProfile = (currentProfile + 1) % profiles.length;
+            currentPhotoIndex = 0;
             updateProfileCard();
-            alert('➡️ Siguiente perfil: ' + profiles[currentProfile].name);
-        }
-
-        function likeProfile() {
-            alert('❤️ Like enviado a ' + profiles[currentProfile].name);
+            saveData();
         }
 
         function likeProfile() {
@@ -3339,6 +3363,7 @@
 
             if (!userLikes.includes(profileId)) {
                 userLikes.push(profileId);
+                activityCount.likes++;
 
                 // Check if there's a match
                 if (likeResponses[profileId]) {
@@ -3351,10 +3376,13 @@
                     showMatchAnimation(profile.name);
                 }
 
+                updateProfileViews();
                 saveData();
             }
 
-            nextProfile();
+            currentProfile = (currentProfile + 1) % profiles.length;
+            currentPhotoIndex = 0;
+            updateProfileCard();
         }
 
         function showMatchAnimation(profileName) {
@@ -3390,6 +3418,7 @@
 
             if (!userLikes.includes(profileId)) {
                 userLikes.push(profileId);
+                activityCount.superLikes++;
 
                 notifications.push({
                     type: 'superlike',
@@ -3399,10 +3428,13 @@
             }
 
             updateCoins();
+            updateProfileViews();
             saveData();
 
             alert('⭐ Super Like enviado a ' + profile.name + ' (-10 💰)\n\nQueda más impresionado');
-            nextProfile();
+            currentProfile = (currentProfile + 1) % profiles.length;
+            currentPhotoIndex = 0;
+            updateProfileCard();
         }
 
         function updateCoins() {
