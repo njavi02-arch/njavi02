@@ -2,6 +2,7 @@
   "name": "yuizz-app",
   "version": "1.0.0",
   "description": "YUIZZ - Conexiones Reales. Dating app con 200+ comunidades",
+  "type": "module",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
@@ -12,15 +13,21 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.2",
+    "axios": "^1.6.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.4",
     "expo": "^51.0.0",
     "expo-splash-screen": "^0.27.0",
     "expo-status-bar": "^1.12.0",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
     "react-native": "^0.74.0",
     "react-native-web": "^0.19.0",
-    "react-native-webview": "^13.8.0",
-    "axios": "^1.6.0"
+    "react-native-webview": "^13.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
