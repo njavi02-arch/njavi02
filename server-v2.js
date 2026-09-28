@@ -715,11 +715,434 @@ app.post('/api/coins/purchase', verifyToken, async (req, res) => {
 });
 
 // ============================================
+// PHASE 2: DISCOVERY & INTERACTIONS
+// ============================================
+
+// Rate limiting for interactions (in-memory)
+const rateLimitStore = new Map();
+const rateLimit = (maxAttempts, windowMs) => {
+  return (req, res, next) => {
+    const key = `${req.userId}-${req.path}`;
+    const now = Date.now();
+    const userLimits = rateLimitStore.get(key) || [];
+    const recentAttempts = userLimits.filter(t => now - t < windowMs);
+
+    if (recentAttempts.length >= maxAttempts) {
+      return res.status(429).json({ error: 'Rate limit exceeded. Try again later.' });
+    }
+
+    recentAttempts.push(now);
+    rateLimitStore.set(key, recentAttempts);
+    next();
+  };
+};
+
+// Calculate distance between coordinates (haversine formula)
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return Math.round(R * c);
+}
+
+// Check for mutual like/superlike
+async function checkMatch(userId1, userId2) {
+  const { data } = await supabase
+    .from('interactions')
+    .select('*')
+    .in('action', ['like', 'superlike']);
+
+  if (!data) return false;
+
+  const user1Liked = data.some(i => i.actor_id === userId1 && i.target_id === userId2 && ['like', 'superlike'].includes(i.action));
+  const user2Liked = data.some(i => i.actor_id === userId2 && i.target_id === userId1 && ['like', 'superlike'].includes(i.action));
+
+  return user1Liked && user2Liked;
+}
+
+// Create match if mutual like detected
+async function createMatchIfMutual(actor, target) {
+  const isMatch = await checkMatch(actor, target);
+
+  if (isMatch) {
+    const user1_id = actor < target ? actor : target;
+    const user2_id = actor < target ? target : actor;
+
+    const { data: existing } = await supabase
+      .from('matches')
+      .select('*')
+      .eq('user1_id', user1_id)
+      .eq('user2_id', user2_id);
+
+    if (!existing || existing.length === 0) {
+      const { data: match } = await supabase
+        .from('matches')
+        .insert({
+          user1_id,
+          user2_id,
+          match_type: 'mutual_like',
+          status: 'active'
+        })
+        .select()
+        .single();
+
+      return match;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * GET /api/discovery
+ * Get nearby profiles with geolocation + filters
+ *
+ * Query params:
+ *  - limit: number (default 10, max 50)
+ *  - offset: number (default 0)
+ *  - maxDistance: number in km (default 100)
+ *  - minAge: number (default 18)
+ *  - maxAge: number (default 65)
+ *  - gender: comma-separated (m,f,nb,other)
+ *  - seeking: comma-separated (dating,casual,sexting,relationship,meeting,friends,explore)
+ *  - verifiedOnly: boolean (default false)
+ */
+app.get('/api/discovery', verifyToken, async (req, res) => {
+  try {
+    // Get current user's location
+    const { data: myProfile } = await supabase
+      .from('profiles')
+      .select('latitude, longitude, age, gender, seeking, id')
+      .eq('id', req.userId)
+      .single();
+
+    if (!myProfile || !myProfile.latitude || !myProfile.longitude) {
+      return res.status(400).json({ error: 'Please set your location first' });
+    }
+
+    // Parse query parameters
+    const limit = Math.min(parseInt(req.query.limit) || 10, 50);
+    const offset = parseInt(req.query.offset) || 0;
+    const maxDistance = parseInt(req.query.maxDistance) || 100;
+    const minAge = parseInt(req.query.minAge) || 18;
+    const maxAge = parseInt(req.query.maxAge) || 65;
+    const genders = req.query.gender?.split(',').filter(Boolean);
+    const seekingFilters = req.query.seeking?.split(',').filter(Boolean);
+    const verifiedOnly = req.query.verifiedOnly === 'true';
+
+    // Get all active profiles
+    let query = supabase
+      .from('profiles')
+      .select('id, username, first_name, age, gender, city, latitude, longitude, seeking, age_verified, profile_complete')
+      .eq('is_active', true)
+      .eq('profile_complete', true)
+      .gte('age', minAge)
+      .lte('age', maxAge);
+
+    if (genders && genders.length > 0) {
+      query = query.in('gender', genders);
+    }
+
+    if (verifiedOnly) {
+      query = query.eq('age_verified', true);
+    }
+
+    const { data: candidates, error } = await query.limit(100);
+
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    // Filter by distance and seeking
+    const filtered = candidates
+      .filter(profile => {
+        if (profile.id === req.userId) return false;
+
+        const distance = calculateDistance(
+          myProfile.latitude,
+          myProfile.longitude,
+          profile.latitude,
+          profile.longitude
+        );
+
+        if (distance > maxDistance) return false;
+
+        if (seekingFilters && seekingFilters.length > 0 && profile.seeking) {
+          const hasCommonSeeking = profile.seeking.some(s => seekingFilters.includes(s));
+          if (!hasCommonSeeking) return false;
+        }
+
+        return true;
+      })
+      .slice(offset, offset + limit)
+      .map(profile => ({
+        ...profile,
+        distance: calculateDistance(
+          myProfile.latitude,
+          myProfile.longitude,
+          profile.latitude,
+          profile.longitude
+        )
+      }));
+
+    // Get my interactions to show in UI
+    const { data: interactions } = await supabase
+      .from('interactions')
+      .select('target_id, action')
+      .eq('actor_id', req.userId)
+      .in('target_id', filtered.map(p => p.id));
+
+    const interactionMap = new Map();
+    (interactions || []).forEach(i => {
+      interactionMap.set(i.target_id, i.action);
+    });
+
+    const result = filtered.map(p => ({
+      ...p,
+      myAction: interactionMap.get(p.id)
+    }));
+
+    res.json({
+      profiles: result,
+      total: result.length,
+      limit,
+      offset
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/interactions/:targetId/like
+ * Like a profile (rate limit: 5/min)
+ */
+app.post('/api/interactions/:targetId/like', verifyToken, rateLimit(5, 60000), async (req, res) => {
+  try {
+    const { targetId } = req.params;
+
+    const { data: target } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', targetId)
+      .single();
+
+    if (!target) {
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+
+    const { data: existing } = await supabase
+      .from('interactions')
+      .select('*')
+      .eq('actor_id', req.userId)
+      .eq('target_id', targetId);
+
+    if (existing && existing.length > 0) {
+      await supabase
+        .from('interactions')
+        .update({ action: 'like' })
+        .eq('id', existing[0].id);
+    } else {
+      await supabase
+        .from('interactions')
+        .insert({
+          actor_id: req.userId,
+          target_id: targetId,
+          action: 'like'
+        });
+    }
+
+    // Check for match
+    const match = await createMatchIfMutual(req.userId, targetId);
+
+    res.json({
+      success: true,
+      action: 'like',
+      matched: !!match,
+      match: match || null
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/interactions/:targetId/pass
+ * Pass on a profile (rate limit: 30/min)
+ */
+app.post('/api/interactions/:targetId/pass', verifyToken, rateLimit(30, 60000), async (req, res) => {
+  try {
+    const { targetId } = req.params;
+
+    const { data: target } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', targetId)
+      .single();
+
+    if (!target) {
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+
+    const { data: existing } = await supabase
+      .from('interactions')
+      .select('*')
+      .eq('actor_id', req.userId)
+      .eq('target_id', targetId);
+
+    if (existing && existing.length > 0) {
+      await supabase
+        .from('interactions')
+        .update({ action: 'pass' })
+        .eq('id', existing[0].id);
+    } else {
+      await supabase
+        .from('interactions')
+        .insert({
+          actor_id: req.userId,
+          target_id: targetId,
+          action: 'pass'
+        });
+    }
+
+    res.json({ success: true, action: 'pass' });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/interactions/:targetId/superlike
+ * SuperLike a profile - costs 50 coins (rate limit: 1/hour)
+ */
+app.post('/api/interactions/:targetId/superlike', verifyToken, rateLimit(1, 3600000), async (req, res) => {
+  try {
+    const { targetId } = req.params;
+    const SUPERLIKE_COST = 50;
+
+    const { data: target } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', targetId)
+      .single();
+
+    if (!target) {
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+
+    // Check coins
+    const { data: coins } = await supabase
+      .from('user_coins')
+      .select('coins, lifetime_coins_spent')
+      .eq('user_id', req.userId)
+      .single();
+
+    if (!coins || coins.coins < SUPERLIKE_COST) {
+      return res.status(400).json({ error: `Need ${SUPERLIKE_COST} coins for SuperLike` });
+    }
+
+    // Deduct coins
+    await supabase
+      .from('user_coins')
+      .update({
+        coins: coins.coins - SUPERLIKE_COST,
+        lifetime_coins_spent: (coins.lifetime_coins_spent || 0) + SUPERLIKE_COST
+      })
+      .eq('user_id', req.userId);
+
+    // Log transaction
+    await supabase
+      .from('coin_transactions')
+      .insert({
+        user_id: req.userId,
+        transaction_type: 'spent',
+        amount: SUPERLIKE_COST,
+        reason: 'SuperLike'
+      });
+
+    // Create/update interaction
+    const { data: existing } = await supabase
+      .from('interactions')
+      .select('*')
+      .eq('actor_id', req.userId)
+      .eq('target_id', targetId);
+
+    if (existing && existing.length > 0) {
+      await supabase
+        .from('interactions')
+        .update({ action: 'superlike' })
+        .eq('id', existing[0].id);
+    } else {
+      await supabase
+        .from('interactions')
+        .insert({
+          actor_id: req.userId,
+          target_id: targetId,
+          action: 'superlike'
+        });
+    }
+
+    // Check for match
+    const match = await createMatchIfMutual(req.userId, targetId);
+
+    res.json({
+      success: true,
+      action: 'superlike',
+      costCoins: SUPERLIKE_COST,
+      newCoinsBalance: coins.coins - SUPERLIKE_COST,
+      matched: !!match,
+      match: match || null
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/matches
+ * Get all active matches
+ */
+app.get('/api/matches', verifyToken, async (req, res) => {
+  try {
+    const { data: matches } = await supabase
+      .from('matches')
+      .select('*, profile1:user1_id(id, username, first_name, age), profile2:user2_id(id, username, first_name, age)')
+      .or(`user1_id.eq.${req.userId},user2_id.eq.${req.userId}`)
+      .eq('status', 'active')
+      .order('created_at', { ascending: false });
+
+    const formattedMatches = (matches || []).map(m => {
+      const otherProfile = m.user1_id === req.userId ? m.profile2 : m.profile1;
+      return {
+        matchId: m.id,
+        other: otherProfile,
+        matchedAt: m.created_at,
+        lastMessage: m.last_message_at,
+        unreadCount: m.user1_id === req.userId ? m.unread_count_user1 : m.unread_count_user2
+      };
+    });
+
+    res.json(formattedMatches);
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============================================
 // HEALTH CHECK
 // ============================================
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'YUIZZ API v2 running ✅' });
+  res.json({ status: 'YUIZZ API v2 Phase 2 running ✅' });
 });
 
 app.get('/', (req, res) => {
@@ -727,7 +1150,20 @@ app.get('/', (req, res) => {
     name: 'YUIZZ V2 API',
     version: '2.0.0',
     environment: 'development',
-    phase: 'Phase 1: Auth + Profiles'
+    phase: 'Phase 2: Discovery + Interactions',
+    endpoints: {
+      auth: ['POST /api/auth/register', 'POST /api/auth/login', 'GET /api/auth/me'],
+      profiles: ['PUT /api/profiles/me', 'GET /api/profiles/me', 'GET /api/profiles/:id'],
+      photos: ['POST /api/profiles/me/photos', 'DELETE /api/profiles/me/photos/:id'],
+      coins: ['GET /api/coins', 'POST /api/coins/purchase'],
+      discovery: ['GET /api/discovery?limit=10&maxDistance=100&minAge=18&maxAge=65&seeking=dating,casual'],
+      interactions: [
+        'POST /api/interactions/:targetId/like (5/min)',
+        'POST /api/interactions/:targetId/pass (30/min)',
+        'POST /api/interactions/:targetId/superlike (1/hour, costs 50 coins)'
+      ],
+      matches: ['GET /api/matches']
+    }
   });
 });
 
@@ -749,23 +1185,38 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`
 ╔════════════════════════════════════════╗
-║  🔥 YUIZZ V2 API - PHASE 1 RUNNING   ║
+║  🔥 YUIZZ V2 API - PHASE 2 RUNNING   ║
 ╚════════════════════════════════════════╝
 
 📍 Server: http://localhost:${PORT}
 🏥 Health: http://localhost:${PORT}/health
 
 Features Active:
-  ✓ Authentication (register, login)
+  ✓ Authentication (register, login, verify-age)
   ✓ Age verification (18+ enforcement)
   ✓ Profile management (CRUD)
-  ✓ Photo upload
-  ✓ Coins system (basic)
+  ✓ Photo upload (public/private/locked)
+  ✓ Coins system (purchase, spend, transactions)
+
+PHASE 2 - NEW:
+  ✓ Discovery (geolocation + filters)
+  ✓ Like interactions (5/min rate limit)
+  ✓ Pass interactions (30/min rate limit)
+  ✓ SuperLike (1/hour, costs 50 coins)
+  ✓ Match detection (mutual likes)
+  ✓ Matches listing
+
+Discovery Filters:
+  - Distance (km)
+  - Age range (minAge, maxAge)
+  - Gender (m,f,nb,other)
+  - Seeking (dating, casual, sexting, relationship, etc)
+  - Verification status
 
 Database: Supabase PostgreSQL
 Schema: v2 (15 tables with RLS)
 
-Next: Implement discovery + interactions
+Next: Implement chat + posts (Week 3)
   `);
 });
 
