@@ -291,10 +291,12 @@
             margin-bottom: 20px;
             border-bottom: 1px solid var(--border);
             padding-bottom: 10px;
+            overflow-x: auto;
         }
 
         .nav-btn {
             flex: 1;
+            min-width: 80px;
             padding: 10px;
             background: transparent;
             border: none;
@@ -303,11 +305,223 @@
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
+            white-space: nowrap;
         }
 
         .nav-btn.active {
             color: var(--primary);
             border-bottom-color: var(--primary);
+        }
+
+        /* PLANS SCREEN */
+        .plans-screen {
+            gap: 20px;
+        }
+
+        .current-plan {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .current-plan-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .current-plan-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .plan-cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .plan-card {
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .plan-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .plan-card.active {
+            border-color: var(--primary);
+            background: rgba(0, 122, 255, 0.05);
+        }
+
+        .plan-card.premium {
+            border-color: #FFD700;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.05));
+        }
+
+        .plan-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #FFD700;
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .plan-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .plan-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .plan-subtitle {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .plan-features li {
+            padding: 8px 0;
+            font-size: 14px;
+            color: #555;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            font-size: 16px;
+            min-width: 20px;
+        }
+
+        .plan-cta {
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .plan-cta.active {
+            background: #E5E5EA;
+            color: #666;
+            cursor: default;
+        }
+
+        .plan-cta.upgrade {
+            background: var(--primary);
+            color: white;
+        }
+
+        .plan-cta.upgrade:hover {
+            background: #0051D5;
+            transform: translateY(-1px);
+        }
+
+        .billing-toggle {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+            background: #f0f0f0;
+            padding: 5px;
+            border-radius: 8px;
+        }
+
+        .billing-toggle button {
+            flex: 1;
+            padding: 8px;
+            background: transparent;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            color: #999;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .billing-toggle button.active {
+            background: white;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .features-comparison {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .comparison-table th {
+            background: #f9f9f9;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .comparison-table td {
+            color: #666;
+        }
+
+        .feature-check {
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .feature-cross {
+            color: #999;
         }
 
         .header {
@@ -494,6 +708,7 @@
             <button class="nav-btn active" data-screen="discover">Descubrir</button>
             <button class="nav-btn" data-screen="messages">💬</button>
             <button class="nav-btn" data-screen="profile">Perfil</button>
+            <button class="nav-btn" data-screen="plans">⭐ Premium</button>
         </div>
 
         <!-- DISCOVER TAB -->
@@ -532,6 +747,81 @@
 
             <button id="buy-coins-btn" class="btn-secondary">💰 Comprar Monedas</button>
             <button id="premium-btn" class="btn-secondary">⭐ Upgrade a Premium</button>
+        </div>
+
+        <!-- PLANS TAB -->
+        <div id="plans-tab" class="plans-screen" style="display: none;">
+            <div class="current-plan">
+                <div class="current-plan-label">Tu plan actual</div>
+                <div class="current-plan-name" id="current-plan-display">Free</div>
+            </div>
+
+            <div class="billing-toggle">
+                <button class="active" data-billing="monthly">Mensual</button>
+                <button data-billing="annual">Anual (Ahorra 20%)</button>
+            </div>
+
+            <div class="plan-cards-container" id="plans-container"></div>
+
+            <div class="features-comparison">
+                <h3 style="margin-bottom: 15px; font-size: 18px; font-weight: 700;">Comparativa de Características</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Característica</th>
+                            <th>Free</th>
+                            <th>Premium</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Likes ilimitados</td>
+                            <td><span class="feature-check">✓</span></td>
+                            <td><span class="feature-check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>Super Likes (5/día)</td>
+                            <td><span class="feature-cross">✗</span></td>
+                            <td><span class="feature-check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>Hot Hour gratis (primeros 2 días)</td>
+                            <td><span class="feature-check">✓</span></td>
+                            <td><span class="feature-check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>Hot Hour pagado</td>
+                            <td><span class="feature-cross">✗</span></td>
+                            <td><span class="feature-check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>Ver quién te hizo like</td>
+                            <td><span class="feature-cross">✗</span></td>
+                            <td><span class="feature-check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>Filtros avanzados</td>
+                            <td><span class="feature-cross">✗</span></td>
+                            <td><span class="feature-check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>Sin anuncios</td>
+                            <td><span class="feature-cross">✗</span></td>
+                            <td><span class="feature-check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>Mensajes prioritarios</td>
+                            <td><span class="feature-cross">✗</span></td>
+                            <td><span class="feature-check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>Monedas bonus 20%</td>
+                            <td><span class="feature-cross">✗</span></td>
+                            <td><span class="feature-check">✓</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -639,6 +929,27 @@
 
         static claimReward() {
             return this.fetch('/api/streaks/claim', {
+                method: 'POST'
+            });
+        }
+
+        static getSubscriptionPlans() {
+            return this.fetch('/api/subscriptions/plans');
+        }
+
+        static upgradePlan(planId, billingPeriod = 'monthly') {
+            return this.fetch('/api/subscriptions/upgrade', {
+                method: 'POST',
+                body: JSON.stringify({ planId, billingPeriod })
+            });
+        }
+
+        static getSubscription() {
+            return this.fetch('/api/subscriptions/current');
+        }
+
+        static cancelSubscription() {
+            return this.fetch('/api/subscriptions/cancel', {
                 method: 'POST'
             });
         }
@@ -885,6 +1196,205 @@
     });
 
     // ========================================
+    // PLANS MANAGEMENT
+    // ========================================
+    const PLANS = {
+        free: {
+            id: 'free',
+            name: 'Free',
+            priceMonthly: 0,
+            priceAnnual: 0,
+            features: [
+                { name: 'Likes ilimitados', included: true },
+                { name: 'Perfiles recomendados', included: true },
+                { name: 'Chat básico', included: true },
+                { name: 'Racha diaria (7 días)', included: true },
+                { name: 'Hot Hour gratis (2 días)', included: true },
+            ],
+            cta: 'Plan Actual'
+        },
+        premium: {
+            id: 'premium',
+            name: 'Premium',
+            priceMonthly: 2.99,
+            priceAnnual: 29.90,
+            badge: 'MÁS POPULAR',
+            features: [
+                { name: 'Likes ilimitados', included: true },
+                { name: 'Super Likes (5/día)', included: true },
+                { name: 'Hot Hour diario pagado', included: true },
+                { name: 'Ver quién te hizo like', included: true },
+                { name: 'Filtros avanzados', included: true },
+                { name: 'Sin anuncios', included: true },
+                { name: 'Mensajes prioritarios', included: true },
+                { name: 'Monedas bonus 20%', included: true },
+                { name: 'Acceso prioritario a matches', included: true },
+            ],
+            cta: 'Upgrade a Premium'
+        }
+    };
+
+    let currentBillingPeriod = 'monthly';
+    let userSubscription = null;
+
+    async function loadPlans() {
+        userSubscription = await API.getSubscription();
+        renderPlans();
+        updateCurrentPlanDisplay();
+    }
+
+    function updateCurrentPlanDisplay() {
+        const planName = userSubscription?.plan_id === 'premium' ? 'Premium ⭐' : 'Free';
+        document.getElementById('current-plan-display').textContent = planName;
+    }
+
+    function renderPlans() {
+        const container = document.getElementById('plans-container');
+        const plans = Object.values(PLANS);
+
+        container.innerHTML = plans.map(plan => {
+            const price = currentBillingPeriod === 'annual' ? plan.priceAnnual : plan.priceMonthly;
+            const isActive = userSubscription?.plan_id === plan.id;
+            const savings = currentBillingPeriod === 'annual' ? ' Ahorras €7.18' : '';
+
+            return `
+                <div class="plan-card ${isActive ? 'active' : ''} ${plan.id === 'premium' ? 'premium' : ''}" data-plan="${plan.id}">
+                    ${plan.badge ? `<div class="plan-badge">${plan.badge}</div>` : ''}
+                    <div class="plan-header">
+                        <div>
+                            <div class="plan-title">${plan.name}</div>
+                            <div class="plan-price">
+                                €${price.toFixed(2)}
+                                <span style="font-size: 14px; color: #999;">${currentBillingPeriod === 'annual' ? '/año' : '/mes'}</span>
+                            </div>
+                            ${savings ? `<div class="plan-subtitle">${savings}</div>` : ''}
+                        </div>
+                    </div>
+
+                    <ul class="plan-features">
+                        ${plan.features.map(feature => `
+                            <li>
+                                <span class="feature-icon">${feature.included ? '✓' : '✗'}</span>
+                                ${feature.name}
+                            </li>
+                        `).join('')}
+                    </ul>
+
+                    <button
+                        class="plan-cta ${isActive ? 'active' : 'upgrade'}"
+                        ${isActive ? 'disabled' : `onclick="handlePlanUpgrade('${plan.id}')`"}
+                    >
+                        ${isActive ? '✓ Plan Actual' : plan.cta}
+                    </button>
+                </div>
+            `;
+        }).join('');
+    }
+
+    async function handlePlanUpgrade(planId) {
+        if (planId === userSubscription?.plan_id) {
+            return;
+        }
+
+        if (planId === 'free') {
+            if (confirm('¿Cancelar suscripción Premium?')) {
+                const result = await API.cancelSubscription();
+                if (result && result.success) {
+                    showToast('Suscripción cancelada');
+                    await loadPlans();
+                }
+            }
+            return;
+        }
+
+        // Mostrar modal de pago
+        showPaymentModal(planId, currentBillingPeriod);
+    }
+
+    function showPaymentModal(planId, billingPeriod) {
+        const plan = PLANS[planId];
+        const price = billingPeriod === 'annual' ? plan.priceAnnual : plan.priceMonthly;
+        const period = billingPeriod === 'annual' ? 'año' : 'mes';
+
+        const modal = document.createElement('div');
+        modal.className = 'modal active';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span>Confirmar Pago</span>
+                    <button class="close-btn" onclick="this.closest('.modal').remove()">×</button>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <p><strong>Plan:</strong> ${plan.name}</p>
+                    <p><strong>Precio:</strong> €${price.toFixed(2)}/${period}</p>
+                    ${billingPeriod === 'annual' ? '<p style="color: var(--success);"><strong>✓ Ahorras €7.18 al año</strong></p>' : ''}
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 10px; font-weight: 600;">
+                        Método de pago
+                    </label>
+                    <div style="border: 1px solid var(--border); border-radius: 8px; padding: 15px;">
+                        <input type="radio" id="card" name="payment" checked>
+                        <label for="card" style="display: inline; font-weight: 400; margin-left: 5px;">
+                            Tarjeta de crédito/débito
+                        </label>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px; font-size: 12px; color: #666; line-height: 1.5;">
+                    Al continuar, aceptas que se cobre €${price.toFixed(2)} cada ${period === 'mes' ? 'mes' : 'año'}.
+                    Puedes cancelar tu suscripción en cualquier momento desde tu perfil.
+                </div>
+
+                <button
+                    class="action-btn like-btn"
+                    style="width: 100%; padding: 14px; border-radius: 8px; margin-bottom: 10px;"
+                    onclick="processPayment('${planId}', '${billingPeriod}')"
+                >
+                    Continuar con el pago (€${price.toFixed(2)})
+                </button>
+
+                <button
+                    class="btn-secondary"
+                    style="width: 100%;"
+                    onclick="this.closest('.modal').remove()"
+                >
+                    Cancelar
+                </button>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+    }
+
+    async function processPayment(planId, billingPeriod) {
+        showToast('Procesando pago...', 'success');
+
+        // En producción, esto usaría Stripe.js
+        const result = await API.upgradePlan(planId, billingPeriod);
+
+        if (result && result.success) {
+            showToast('🎉 ¡Upgrade completado!');
+            document.querySelector('.modal.active')?.remove();
+            await loadPlans();
+        } else {
+            showToast(result?.error || 'Error en el pago', 'error');
+        }
+    }
+
+    // Billing toggle
+    document.querySelectorAll('.billing-toggle button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.billing-toggle button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentBillingPeriod = btn.getAttribute('data-billing');
+            renderPlans();
+        });
+    });
+
+    // ========================================
     // NAVIGATION
     // ========================================
     document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -894,7 +1404,15 @@
 
             btn.classList.add('active');
             const screenName = btn.getAttribute('data-screen');
-            document.getElementById(`${screenName}-tab`).style.display = 'flex';
+            const tabElement = document.getElementById(`${screenName}-tab`);
+            if (tabElement) {
+                tabElement.style.display = 'flex';
+
+                // Load plans if switching to plans tab
+                if (screenName === 'plans' && !userSubscription) {
+                    loadPlans();
+                }
+            }
         });
     });
 

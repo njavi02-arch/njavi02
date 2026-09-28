@@ -188,20 +188,23 @@ CREATE TABLE IF NOT EXISTS public.activity_log (
 -- ============================================
 CREATE TABLE IF NOT EXISTS public.subscriptions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL UNIQUE REFERENCES profiles(id) ON DELETE CASCADE,
-  
-  active BOOLEAN DEFAULT FALSE,
-  plan_type VARCHAR(50) DEFAULT 'premium',
-  price_eur DECIMAL(10, 2) DEFAULT 2.99,
-  
-  started_at TIMESTAMP,
-  renews_at TIMESTAMP,
-  cancelled_at TIMESTAMP,
-  
+  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+
+  plan_id VARCHAR(50) DEFAULT 'free',
+  billing_period VARCHAR(20) DEFAULT 'monthly',
+  status VARCHAR(50) DEFAULT 'active',
+
+  start_date TIMESTAMP DEFAULT NOW(),
+  end_date TIMESTAMP,
+
+  payment_method VARCHAR(50),
+  stripe_customer_id VARCHAR(255),
   stripe_subscription_id VARCHAR(255),
-  
+
   created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
+  updated_at TIMESTAMP DEFAULT NOW(),
+
+  CONSTRAINT status_valid CHECK (status IN ('active', 'cancelled', 'expired', 'pending'))
 );
 
 -- ============================================

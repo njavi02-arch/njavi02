@@ -568,6 +568,147 @@ app.post('/api/streaks/claim', verifyToken, async (req, res) => {
 });
 
 // ============================================
+// ROUTES: SUBSCRIPTIONS
+// ============================================
+
+// GET Plans
+app.get('/api/subscriptions/plans', verifyToken, async (req, res) => {
+  try {
+    const plans = {
+      free: {
+        id: 'free',
+        name: 'Free',
+        price_monthly: 0,
+        price_annual: 0,
+        features: [
+          'Likes ilimitados',
+          'Perfiles recomendados',
+          'Chat básico',
+          'Racha diaria (7 días)',
+          'Hot Hour gratis (2 días)'
+        ]
+      },
+      premium: {
+        id: 'premium',
+        name: 'Premium',
+        price_monthly: 2.99,
+        price_annual: 29.90,
+        features: [
+          'Likes ilimitados',
+          'Super Likes (5/día)',
+          'Hot Hour diario pagado',
+          'Ver quién te hizo like',
+          'Filtros avanzados',
+          'Sin anuncios',
+          'Mensajes prioritarios',
+          'Monedas bonus 20%',
+          'Acceso prioritario a matches'
+        ]
+      }
+    };
+
+    res.json(plans);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// GET Current subscription
+app.get('/api/subscriptions/current', verifyToken, async (req, res) => {
+  try {
+    const { data: subscription } = await supabase
+      .from('subscriptions')
+      .select('*')
+      .eq('user_id', req.userId)
+      .eq('status', 'active')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    res.json(subscription || { plan_id: 'free', status: 'active' });
+  } catch (error) {
+    // No active subscription = Free plan
+    res.json({ plan_id: 'free', status: 'active' });
+  }
+});
+
+// UPGRADE Plan
+app.post('/api/subscriptions/upgrade', verifyToken, async (req, res) => {
+  try {
+    const { planId, billingPeriod } = req.body;
+
+    if (!planId || !billingPeriod) {
+      return res.status(400).json({ error: 'Missing planId or billingPeriod' });
+    }
+
+    // If upgrading to same plan, return error
+    const { data: currentSub } = await supabase
+      .from('subscriptions')
+      .select('plan_id')
+      .eq('user_id', req.userId)
+      .eq('status', 'active')
+      .single()
+      .catch(() => ({ data: null }));
+
+    if (currentSub?.plan_id === planId) {
+      return res.status(400).json({ error: 'Already on this plan' });
+    }
+
+    // Calculate end date
+    const now = new Date();
+    const endDate = billingPeriod === 'annual'
+      ? new Date(now.getFullYear() + 1, now.getMonth(), now.getDate())
+      : new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
+
+    // Cancel old subscription if exists
+    if (currentSub) {
+      await supabase
+        .from('subscriptions')
+        .update({ status: 'cancelled' })
+        .eq('user_id', req.userId)
+        .eq('status', 'active');
+    }
+
+    // Create new subscription
+    const { error } = await supabase
+      .from('subscriptions')
+      .insert({
+        user_id: req.userId,
+        plan_id: planId,
+        billing_period: billingPeriod,
+        status: 'active',
+        start_date: now,
+        end_date: endDate,
+        stripe_customer_id: null, // TODO: Connect to Stripe
+        payment_method: 'card'
+      });
+
+    if (error) return res.status(400).json({ error: error.message });
+
+    res.json({ success: true, planId });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// CANCEL Subscription
+app.post('/api/subscriptions/cancel', verifyToken, async (req, res) => {
+  try {
+    const { error } = await supabase
+      .from('subscriptions')
+      .update({ status: 'cancelled' })
+      .eq('user_id', req.userId)
+      .eq('status', 'active');
+
+    if (error) return res.status(400).json({ error: error.message });
+
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============================================
 // HEALTH CHECK
 // ============================================
 
