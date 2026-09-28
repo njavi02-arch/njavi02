@@ -1198,7 +1198,7 @@ Features Active:
   ✓ Photo upload (public/private/locked)
   ✓ Coins system (purchase, spend, transactions)
 
-PHASE 2 - NEW:
+PHASE 2 - DISCOVERY + INTERACTIONS:
   ✓ Discovery (geolocation + filters)
   ✓ Like interactions (5/min rate limit)
   ✓ Pass interactions (30/min rate limit)
@@ -1206,18 +1206,444 @@ PHASE 2 - NEW:
   ✓ Match detection (mutual likes)
   ✓ Matches listing
 
-Discovery Filters:
-  - Distance (km)
-  - Age range (minAge, maxAge)
-  - Gender (m,f,nb,other)
-  - Seeking (dating, casual, sexting, relationship, etc)
-  - Verification status
+PHASE 3 - CHAT + COMMUNITY POSTS:
+  ✓ Send/receive messages (30/min rate limit)
+  ✓ Message history with pagination
+  ✓ Delete messages (sender only)
+  ✓ Read receipts & unread tracking
+  ✓ Community posts (7-day expiration)
+  ✓ Post discovery (geo-filtered, 20km)
+  ✓ Post likes & engagement
+  ✓ Delete posts (creator only)
+
+Message Endpoints:
+  - POST /api/matches/:matchId/messages
+  - GET /api/matches/:matchId/messages?limit=20&offset=0
+  - DELETE /api/messages/:messageId
+
+Post Endpoints:
+  - POST /api/posts (rate limit: 10/hour)
+  - GET /api/posts?maxDistance=20&limit=10&offset=0
+  - POST /api/posts/:postId/like (50/min)
+  - DELETE /api/posts/:postId
 
 Database: Supabase PostgreSQL
-Schema: v2 (15 tables with RLS)
+Schema: v3 (messages + posts tables with RLS)
 
-Next: Implement chat + posts (Week 3)
+Next: Implement WebSocket realtime (Week 4)
   `);
+});
+
+// ============================================
+// PHASE 3: CHAT + COMMUNITY POSTS
+// ============================================
+
+/**
+ * POST /api/matches/:matchId/messages
+ * Send a message in a match
+ */
+app.post('/api/matches/:matchId/messages', verifyToken, rateLimit(30, 60000), async (req, res) => {
+  try {
+    const { matchId } = req.params;
+    const { content } = req.body;
+
+    if (!content || content.trim().length === 0) {
+      return res.status(400).json({ error: 'Message content required' });
+    }
+
+    // Verify user is part of this match
+    const { data: match } = await supabase
+      .from('matches')
+      .select('*')
+      .eq('id', matchId)
+      .single();
+
+    if (!match || (match.user1_id !== req.userId && match.user2_id !== req.userId)) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+
+    const otherUserId = match.user1_id === req.userId ? match.user2_id : match.user1_id;
+
+    // Insert message
+    const { data: message, error } = await supabase
+      .from('messages')
+      .insert({
+        match_id: matchId,
+        sender_id: req.userId,
+        receiver_id: otherUserId,
+        content: content.trim(),
+        is_read: false
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    // Update match's last_message_at
+    await supabase
+      .from('matches')
+      .update({ last_message_at: new Date().toISOString() })
+      .eq('id', matchId);
+
+    res.json({
+      success: true,
+      message: {
+        id: message.id,
+        matchId: message.match_id,
+        senderId: message.sender_id,
+        content: message.content,
+        createdAt: message.created_at,
+        isRead: message.is_read
+      }
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/matches/:matchId/messages
+ * Get message history for a match (paginated)
+ */
+app.get('/api/matches/:matchId/messages', verifyToken, async (req, res) => {
+  try {
+    const { matchId } = req.params;
+    const { limit = 20, offset = 0 } = req.query;
+
+    // Verify user is part of this match
+    const { data: match } = await supabase
+      .from('matches')
+      .select('*')
+      .eq('id', matchId)
+      .single();
+
+    if (!match || (match.user1_id !== req.userId && match.user2_id !== req.userId)) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+
+    // Get messages
+    const { data: messages } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('match_id', matchId)
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1);
+
+    // Mark as read (receiver's messages)
+    if (messages && messages.length > 0) {
+      await supabase
+        .from('messages')
+        .update({ is_read: true })
+        .eq('match_id', matchId)
+        .eq('receiver_id', req.userId)
+        .eq('is_read', false);
+
+      // Update unread count in matches table
+      const otherUserId = match.user1_id === req.userId ? match.user2_id : match.user1_id;
+      const unreads = await supabase
+        .from('messages')
+        .select('*', { count: 'exact' })
+        .eq('match_id', matchId)
+        .eq('receiver_id', req.userId)
+        .eq('is_read', false);
+
+      const updateObj = match.user1_id === req.userId
+        ? { unread_count_user1: unreads.count || 0 }
+        : { unread_count_user2: unreads.count || 0 };
+
+      await supabase
+        .from('matches')
+        .update(updateObj)
+        .eq('id', matchId);
+    }
+
+    res.json({
+      messages: (messages || []).map(m => ({
+        id: m.id,
+        matchId: m.match_id,
+        senderId: m.sender_id,
+        content: m.content,
+        createdAt: m.created_at,
+        isRead: m.is_read
+      })),
+      limit: parseInt(limit),
+      offset: parseInt(offset)
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * DELETE /api/messages/:messageId
+ * Delete a message (only sender can delete)
+ */
+app.delete('/api/messages/:messageId', verifyToken, async (req, res) => {
+  try {
+    const { messageId } = req.params;
+
+    const { data: message } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('id', messageId)
+      .single();
+
+    if (!message) {
+      return res.status(404).json({ error: 'Message not found' });
+    }
+
+    if (message.sender_id !== req.userId) {
+      return res.status(403).json({ error: 'Can only delete your own messages' });
+    }
+
+    // Soft delete (set content to empty)
+    await supabase
+      .from('messages')
+      .update({ content: '[deleted]' })
+      .eq('id', messageId);
+
+    res.json({ success: true, messageId });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/posts
+ * Create a community post (7-day expiration)
+ */
+app.post('/api/posts', verifyToken, rateLimit(10, 3600000), async (req, res) => {
+  try {
+    const { content, imageUrl } = req.body;
+
+    if (!content || content.trim().length === 0) {
+      return res.status(400).json({ error: 'Post content required' });
+    }
+
+    if (content.length > 500) {
+      return res.status(400).json({ error: 'Post too long (max 500 chars)' });
+    }
+
+    // Get user location
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('latitude, longitude, city')
+      .eq('id', req.userId)
+      .single();
+
+    if (!profile || !profile.latitude || !profile.longitude) {
+      return res.status(400).json({ error: 'Set your location to post' });
+    }
+
+    // Create post (expires in 7 days)
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    const { data: post, error } = await supabase
+      .from('posts')
+      .insert({
+        creator_id: req.userId,
+        content: content.trim(),
+        image_url: imageUrl || null,
+        latitude: profile.latitude,
+        longitude: profile.longitude,
+        city: profile.city,
+        expires_at: expiresAt.toISOString(),
+        likes_count: 0,
+        comments_count: 0
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    res.json({
+      success: true,
+      post: {
+        id: post.id,
+        creatorId: post.creator_id,
+        content: post.content,
+        imageUrl: post.image_url,
+        latitude: post.latitude,
+        longitude: post.longitude,
+        city: post.city,
+        expiresAt: post.expires_at,
+        likesCount: post.likes_count,
+        commentsCount: post.comments_count,
+        createdAt: post.created_at,
+        myLike: false
+      }
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/posts
+ * Discover community posts (geo-filtered, 20km radius)
+ */
+app.get('/api/posts', verifyToken, async (req, res) => {
+  try {
+    const { limit = 10, offset = 0, maxDistance = 20 } = req.query;
+
+    // Get user location
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('latitude, longitude')
+      .eq('id', req.userId)
+      .single();
+
+    if (!profile || !profile.latitude || !profile.longitude) {
+      return res.status(400).json({ error: 'Set your location first' });
+    }
+
+    // Get posts within radius (Haversine formula filtering in app layer)
+    const { data: posts } = await supabase
+      .from('posts')
+      .select('*')
+      .gt('expires_at', new Date().toISOString())
+      .order('created_at', { ascending: false })
+      .range(offset, offset + parseInt(limit) - 1);
+
+    // Filter by distance
+    const filteredPosts = (posts || []).filter(post => {
+      const distance = calculateDistance(
+        profile.latitude,
+        profile.longitude,
+        post.latitude,
+        post.longitude
+      );
+      return distance <= parseInt(maxDistance);
+    });
+
+    // Get user's likes
+    const postIds = filteredPosts.map(p => p.id);
+    const { data: userLikes } = await supabase
+      .from('post_likes')
+      .select('post_id')
+      .eq('user_id', req.userId)
+      .in('post_id', postIds);
+
+    const likedPostIds = new Set((userLikes || []).map(l => l.post_id));
+
+    res.json({
+      posts: filteredPosts.map(post => ({
+        id: post.id,
+        creatorId: post.creator_id,
+        content: post.content,
+        imageUrl: post.image_url,
+        city: post.city,
+        distance: calculateDistance(profile.latitude, profile.longitude, post.latitude, post.longitude),
+        likesCount: post.likes_count,
+        commentsCount: post.comments_count,
+        expiresAt: post.expires_at,
+        createdAt: post.created_at,
+        myLike: likedPostIds.has(post.id)
+      })),
+      limit: parseInt(limit),
+      offset: parseInt(offset)
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/posts/:postId/like
+ * Like a post
+ */
+app.post('/api/posts/:postId/like', verifyToken, rateLimit(50, 60000), async (req, res) => {
+  try {
+    const { postId } = req.params;
+
+    const { data: post } = await supabase
+      .from('posts')
+      .select('*')
+      .eq('id', postId)
+      .single();
+
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+
+    // Check if already liked
+    const { data: existing } = await supabase
+      .from('post_likes')
+      .select('*')
+      .eq('post_id', postId)
+      .eq('user_id', req.userId);
+
+    if (existing && existing.length > 0) {
+      // Unlike
+      await supabase
+        .from('post_likes')
+        .delete()
+        .eq('post_id', postId)
+        .eq('user_id', req.userId);
+
+      await supabase
+        .from('posts')
+        .update({ likes_count: Math.max(0, post.likes_count - 1) })
+        .eq('id', postId);
+
+      return res.json({ success: true, liked: false, likesCount: Math.max(0, post.likes_count - 1) });
+    }
+
+    // Like
+    await supabase
+      .from('post_likes')
+      .insert({ post_id: postId, user_id: req.userId });
+
+    await supabase
+      .from('posts')
+      .update({ likes_count: post.likes_count + 1 })
+      .eq('id', postId);
+
+    res.json({ success: true, liked: true, likesCount: post.likes_count + 1 });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * DELETE /api/posts/:postId
+ * Delete a post (only creator can delete)
+ */
+app.delete('/api/posts/:postId', verifyToken, async (req, res) => {
+  try {
+    const { postId } = req.params;
+
+    const { data: post } = await supabase
+      .from('posts')
+      .select('*')
+      .eq('id', postId)
+      .single();
+
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+
+    if (post.creator_id !== req.userId) {
+      return res.status(403).json({ error: 'Can only delete your own posts' });
+    }
+
+    await supabase
+      .from('posts')
+      .delete()
+      .eq('id', postId);
+
+    res.json({ success: true, postId });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 export default app;
