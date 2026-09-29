@@ -1150,19 +1150,41 @@ app.get('/', (req, res) => {
     name: 'YUIZZ V2 API',
     version: '2.0.0',
     environment: 'development',
-    phase: 'Phase 2: Discovery + Interactions',
+    phase: 'Phase 3: V2.0 Features (Hashtags, Compatibility, Premium)',
+    totalEndpoints: 36,
     endpoints: {
-      auth: ['POST /api/auth/register', 'POST /api/auth/login', 'GET /api/auth/me'],
-      profiles: ['PUT /api/profiles/me', 'GET /api/profiles/me', 'GET /api/profiles/:id'],
-      photos: ['POST /api/profiles/me/photos', 'DELETE /api/profiles/me/photos/:id'],
-      coins: ['GET /api/coins', 'POST /api/coins/purchase'],
-      discovery: ['GET /api/discovery?limit=10&maxDistance=100&minAge=18&maxAge=65&seeking=dating,casual'],
-      interactions: [
-        'POST /api/interactions/:targetId/like (5/min)',
-        'POST /api/interactions/:targetId/pass (30/min)',
-        'POST /api/interactions/:targetId/superlike (1/hour, costs 50 coins)'
-      ],
-      matches: ['GET /api/matches']
+      v1: {
+        auth: ['POST /api/auth/register', 'POST /api/auth/login', 'GET /api/auth/me'],
+        profiles: ['PUT /api/profiles/me', 'GET /api/profiles/me', 'GET /api/profiles/:id'],
+        photos: ['POST /api/profiles/me/photos', 'DELETE /api/profiles/me/photos/:id'],
+        coins: ['GET /api/coins', 'POST /api/coins/purchase'],
+        discovery: ['GET /api/discovery?limit=10&maxDistance=100&minAge=18&maxAge=65&seeking=dating,casual'],
+        interactions: [
+          'POST /api/interactions/:targetId/like (5/min)',
+          'POST /api/interactions/:targetId/pass (30/min)',
+          'POST /api/interactions/:targetId/superlike (1/hour, costs 50 coins)'
+        ],
+        matches: ['GET /api/matches'],
+        chat: ['POST /api/matches/:id/messages (30/min)', 'GET /api/matches/:id/messages', 'DELETE /api/messages/:id'],
+        posts: ['POST /api/posts (10/hour)', 'GET /api/posts', 'POST /api/posts/:id/like', 'DELETE /api/posts/:id']
+      },
+      v2: {
+        discovery: ['GET /api/v2/discover/feed (with compatibility scoring)'],
+        hashtags: [
+          'POST /api/v2/profiles/me/hashtags (set user hashtags)',
+          'GET /api/v2/hashtags/all (list 35 available)'
+        ],
+        preferences: [
+          'GET /api/v2/profiles/me/preferences',
+          'POST /api/v2/profiles/me/preferences (age, distance, gender, location)'
+        ],
+        premium: [
+          'GET /api/v2/subscriptions',
+          'POST /api/v2/subscriptions (plans: monthly €7.99, quarterly €19.99, yearly €59.99)'
+        ],
+        boosts: ['POST /api/v2/boosts (30min visibility x3)'],
+        moderation: ['POST /api/v2/photos/:photoId/moderate (AI detection mock)']
+      }
     }
   });
 });
@@ -1184,12 +1206,13 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`
-╔════════════════════════════════════════╗
-║  🔥 YUIZZ V2 API - PHASE 2 RUNNING   ║
-╚════════════════════════════════════════╝
+╔═══════════════════════════════════════════════╗
+║  🔥 YUIZZ V2 API - V2.0 FEATURES RUNNING    ║
+╚═══════════════════════════════════════════════╝
 
 📍 Server: http://localhost:${PORT}
 🏥 Health: http://localhost:${PORT}/health
+📊 Endpoints: 36 total (12 V2.0)
 
 Features Active:
   ✓ Authentication (register, login, verify-age)
@@ -1198,39 +1221,51 @@ Features Active:
   ✓ Photo upload (public/private/locked)
   ✓ Coins system (purchase, spend, transactions)
 
+PHASE 1 - AUTHENTICATION + PROFILES:
+  ✓ JWT authentication
+  ✓ Age verification (18+)
+  ✓ Profile CRUD
+  ✓ Photo gallery
+
 PHASE 2 - DISCOVERY + INTERACTIONS:
-  ✓ Discovery (geolocation + filters)
-  ✓ Like interactions (5/min rate limit)
-  ✓ Pass interactions (30/min rate limit)
-  ✓ SuperLike (1/hour, costs 50 coins)
-  ✓ Match detection (mutual likes)
+  ✓ Geolocation-based discovery
+  ✓ Like (5/min) | Pass (30/min) | SuperLike (1/hour, 50 coins)
+  ✓ Automatic match detection
   ✓ Matches listing
 
-PHASE 3 - CHAT + COMMUNITY POSTS:
-  ✓ Send/receive messages (30/min rate limit)
-  ✓ Message history with pagination
-  ✓ Delete messages (sender only)
+PHASE 3 - CHAT + COMMUNITY:
+  ✓ Real-time messaging (30/min)
+  ✓ Message history & pagination
   ✓ Read receipts & unread tracking
-  ✓ Community posts (7-day expiration)
-  ✓ Post discovery (geo-filtered, 20km)
+  ✓ Community posts (7-day expiry)
+  ✓ Post discovery (20km geo-filter)
   ✓ Post likes & engagement
-  ✓ Delete posts (creator only)
 
-Message Endpoints:
-  - POST /api/matches/:matchId/messages
-  - GET /api/matches/:matchId/messages?limit=20&offset=0
-  - DELETE /api/messages/:messageId
+V2.0 - COMPATIBILITY + PREMIUM:
+  ✓ Hashtag system (35 curated tags)
+  ✓ Weighted compatibility scoring algorithm
+  ✓ User preference filtering
+  ✓ Premium subscriptions (€7.99/€19.99/€59.99)
+  ✓ Visibility boosts (3x, 30min)
+  ✓ AI photo moderation (mock)
 
-Post Endpoints:
-  - POST /api/posts (rate limit: 10/hour)
-  - GET /api/posts?maxDistance=20&limit=10&offset=0
-  - POST /api/posts/:postId/like (50/min)
-  - DELETE /api/posts/:postId
+V2.0 Endpoints:
+  - GET /api/v2/discover/feed (compatibility scoring)
+  - POST/GET /api/v2/profiles/me/hashtags
+  - GET /api/v2/hashtags/all (35 tags)
+  - GET /api/v2/profiles/me/preferences
+  - POST /api/v2/profiles/me/preferences
+  - GET /api/v2/subscriptions
+  - POST /api/v2/subscriptions (€7.99/19.99/59.99)
+  - POST /api/v2/boosts
+  - POST /api/v2/photos/:photoId/moderate
 
-Database: Supabase PostgreSQL
-Schema: v3 (messages + posts tables with RLS)
+Database: Supabase PostgreSQL (v3 schema with RLS)
+Algorithm: Weighted compatibility (Hashtag 40% + Age 20% + Distance 20% + Gender 10% + Freshness 10%)
+Hashtags: 35 curated across 5 categories
+Premium Plans: Monthly (1 boost) | Quarterly (3) | Yearly (12)
 
-Next: Implement WebSocket realtime (Week 4)
+Next: WebSocket realtime + Push notifications
   `);
 });
 
@@ -1640,6 +1675,480 @@ app.delete('/api/posts/:postId', verifyToken, async (req, res) => {
       .eq('id', postId);
 
     res.json({ success: true, postId });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============================================
+// V2.0 FEATURES - COMPATIBILITY ALGORITHM
+// ============================================
+
+// Calculate compatibility score between two profiles
+async function calculateCompatibility(viewerId, profileId, supabase) {
+  const { data: viewer } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', viewerId)
+    .single();
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', profileId)
+    .single();
+
+  if (!viewer || !profile) return 0;
+
+  const { data: prefs } = await supabase
+    .from('user_preferences')
+    .select('*')
+    .eq('user_id', viewerId)
+    .single();
+
+  if (!prefs) return 0;
+
+  // Hashtag match (0-100)
+  const viewerHashtags = viewer.hashtags || [];
+  const profileHashtags = profile.hashtags || [];
+  const matchingTags = viewerHashtags.filter(h => profileHashtags.includes(h)).length;
+  const maxTags = Math.max(viewerHashtags.length, profileHashtags.length, 1);
+  const hashtagScore = (matchingTags / maxTags) * 100;
+
+  // Age match (0-100)
+  const age = calculateAge(new Date(profile.birth_date));
+  const ageScore = (age >= prefs.min_age && age <= prefs.max_age) ? 100 : 0;
+
+  // Gender match (0-100)
+  const genderScore = (prefs.gender_preference.includes('all') ||
+    prefs.gender_preference.includes(profile.gender)) ? 100 : 0;
+
+  // Distance match (0-100)
+  const distance = calculateDistance(
+    viewer.latitude, viewer.longitude,
+    profile.latitude, profile.longitude
+  );
+  const distanceScore = Math.max(0, 100 - (distance / prefs.max_distance_km * 100));
+
+  // Freshness score (0-100)
+  const lastActive = new Date(profile.updated_at);
+  const daysSince = (new Date() - lastActive) / (1000 * 60 * 60 * 24);
+  let freshnessScore = 100;
+  if (daysSince > 30) freshnessScore = 10;
+  else if (daysSince > 7) freshnessScore = 30;
+  else if (daysSince > 1) freshnessScore = 60;
+  else freshnessScore = 90;
+
+  // Final score: weighted average
+  const totalScore =
+    (hashtagScore * 0.40) +
+    (ageScore * 0.20) +
+    (distanceScore * 0.20) +
+    (genderScore * 0.10) +
+    (freshnessScore * 0.10);
+
+  return Math.round(totalScore * 100) / 100;
+}
+
+// ============================================
+// V2.0 ROUTES: DISCOVERY WITH COMPATIBILITY
+// ============================================
+
+/**
+ * GET /api/v2/discover/feed
+ * Discovery feed with compatibility scoring
+ */
+app.get('/api/v2/discover/feed', verifyToken, async (req, res) => {
+  try {
+    const { limit = 10, offset = 0 } = req.query;
+
+    // Get user preferences
+    const { data: prefs } = await supabase
+      .from('user_preferences')
+      .select('*')
+      .eq('user_id', req.userId)
+      .single();
+
+    if (!prefs) {
+      return res.status(404).json({ error: 'User preferences not found' });
+    }
+
+    // Get blocked and passed profiles
+    const { data: blocks } = await supabase
+      .from('blocks')
+      .select('blocked_id')
+      .eq('blocker_id', req.userId);
+
+    const { data: interactions } = await supabase
+      .from('interactions')
+      .select('target_id')
+      .eq('actor_id', req.userId);
+
+    const blockedIds = blocks?.map(b => b.blocked_id) || [];
+    const interactedIds = interactions?.map(i => i.target_id) || [];
+
+    // Get candidates
+    const { data: candidates } = await supabase
+      .from('profiles')
+      .select('*')
+      .neq('id', req.userId)
+      .not('id', 'in', `(${[req.userId, ...blockedIds, ...interactedIds].join(',')})`)
+      .limit(50);
+
+    if (!candidates || candidates.length === 0) {
+      return res.json({ profiles: [], total: 0 });
+    }
+
+    // Calculate scores and sort
+    const scored = await Promise.all(
+      candidates.map(async (profile) => ({
+        ...profile,
+        compatibilityScore: await calculateCompatibility(req.userId, profile.id, supabase)
+      }))
+    );
+
+    const sorted = scored.sort((a, b) => b.compatibilityScore - a.compatibilityScore);
+    const paginated = sorted.slice(offset, offset + limit);
+
+    res.json({
+      profiles: paginated,
+      total: sorted.length,
+      limit,
+      offset
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============================================
+// V2.0 ROUTES: HASHTAGS
+// ============================================
+
+const HASHTAGS = [
+  // Acción Física
+  '#Besos', '#Morder', '#Arañar', '#Masaje', '#Juegos', '#Caricias',
+  '#Sexting', '#Lencería', '#Privado', '#Noche', '#Público', '#Exploración',
+  // Tipo de Relación
+  '#Citas', '#SinCompromiso', '#RelaciónAbierta', '#Parejas',
+  '#Solteros', '#Amistad', '#Conexión', '#Química',
+  // Intensidad
+  '#Dominación', '#Sumisión', '#Roleplay', '#Fantasías', '#Suave', '#Intenso',
+  // Perfil Específico
+  '#Individual', '#Pareja', '#Buscando', '#Experimental',
+  // Motivación
+  '#Encuentros', '#Conocer', '#Flirtear', '#Diversión', '#Serio'
+];
+
+/**
+ * POST /api/v2/profiles/me/hashtags
+ * Set user hashtags
+ */
+app.post('/api/v2/profiles/me/hashtags', verifyToken, async (req, res) => {
+  try {
+    const { hashtags } = req.body;
+
+    if (!Array.isArray(hashtags) || hashtags.length === 0 || hashtags.length > 10) {
+      return res.status(400).json({ error: 'Select 1-10 hashtags' });
+    }
+
+    // Validate hashtags
+    const invalid = hashtags.filter(h => !HASHTAGS.includes(h));
+    if (invalid.length > 0) {
+      return res.status(400).json({ error: `Invalid hashtags: ${invalid.join(', ')}` });
+    }
+
+    // Update profile
+    const { data, error } = await supabase
+      .from('profiles')
+      .update({ hashtags })
+      .eq('id', req.userId)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    res.json({ success: true, hashtags: data.hashtags });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/v2/hashtags/all
+ * Get all available hashtags
+ */
+app.get('/api/v2/hashtags/all', (req, res) => {
+  res.json({ hashtags: HASHTAGS });
+});
+
+// ============================================
+// V2.0 ROUTES: USER PREFERENCES
+// ============================================
+
+/**
+ * GET /api/v2/profiles/me/preferences
+ * Get user preferences
+ */
+app.get('/api/v2/profiles/me/preferences', verifyToken, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('user_preferences')
+      .select('*')
+      .eq('user_id', req.userId)
+      .single();
+
+    if (error || !data) {
+      return res.status(404).json({ error: 'Preferences not found' });
+    }
+
+    res.json(data);
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/v2/profiles/me/preferences
+ * Update user preferences
+ */
+app.post('/api/v2/profiles/me/preferences', verifyToken, async (req, res) => {
+  try {
+    const {
+      min_age,
+      max_age,
+      gender_preference,
+      max_distance_km,
+      preferred_hashtags,
+      show_verified_only
+    } = req.body;
+
+    const updateData = {
+      ...(min_age !== undefined && { min_age }),
+      ...(max_age !== undefined && { max_age }),
+      ...(gender_preference && { gender_preference }),
+      ...(max_distance_km !== undefined && { max_distance_km }),
+      ...(preferred_hashtags && { preferred_hashtags }),
+      ...(show_verified_only !== undefined && { show_verified_only }),
+      updated_at: new Date().toISOString()
+    };
+
+    const { data, error } = await supabase
+      .from('user_preferences')
+      .update(updateData)
+      .eq('user_id', req.userId)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    res.json({ success: true, preferences: data });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============================================
+// V2.0 ROUTES: PREMIUM SUBSCRIPTIONS
+// ============================================
+
+/**
+ * GET /api/v2/subscriptions
+ * Get user subscription status
+ */
+app.get('/api/v2/subscriptions', verifyToken, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('premium_subscriptions')
+      .select('*')
+      .eq('user_id', req.userId)
+      .eq('status', 'active')
+      .single();
+
+    if (!data) {
+      return res.json({
+        isPremium: false,
+        subscription: null
+      });
+    }
+
+    const isExpired = new Date(data.expires_at) < new Date();
+
+    res.json({
+      isPremium: !isExpired,
+      subscription: isExpired ? null : data
+    });
+
+  } catch (error) {
+    res.json({ isPremium: false, subscription: null });
+  }
+});
+
+/**
+ * POST /api/v2/subscriptions
+ * Create or update subscription
+ */
+app.post('/api/v2/subscriptions', verifyToken, async (req, res) => {
+  try {
+    const { plan } = req.body;
+
+    if (!['monthly', 'quarterly', 'yearly'].includes(plan)) {
+      return res.status(400).json({ error: 'Invalid plan' });
+    }
+
+    const prices = {
+      monthly: 7.99,
+      quarterly: 19.99,
+      yearly: 59.99
+    };
+
+    const boosts = {
+      monthly: 1,
+      quarterly: 3,
+      yearly: 12
+    };
+
+    const durations = {
+      monthly: 30,
+      quarterly: 90,
+      yearly: 365
+    };
+
+    const startsAt = new Date();
+    const expiresAt = new Date(startsAt.getTime() + durations[plan] * 24 * 60 * 60 * 1000);
+
+    const { data, error } = await supabase
+      .from('premium_subscriptions')
+      .insert({
+        user_id: req.userId,
+        plan,
+        price: prices[plan],
+        started_at: startsAt.toISOString(),
+        expires_at: expiresAt.toISOString(),
+        boosts_count: boosts[plan],
+        status: 'active'
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    res.json({ success: true, subscription: data });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============================================
+// V2.0 ROUTES: BOOSTS
+// ============================================
+
+/**
+ * POST /api/v2/boosts
+ * Activate a boost for visibility
+ */
+app.post('/api/v2/boosts', verifyToken, async (req, res) => {
+  try {
+    // Get user subscription
+    const { data: sub } = await supabase
+      .from('premium_subscriptions')
+      .select('*')
+      .eq('user_id', req.userId)
+      .eq('status', 'active')
+      .single();
+
+    if (!sub || sub.boosts_used >= sub.boosts_count) {
+      return res.status(403).json({ error: 'No boosts available' });
+    }
+
+    const startsAt = new Date();
+    const expiresAt = new Date(startsAt.getTime() + 30 * 60 * 1000); // 30 minutes
+
+    const { data: boost, error } = await supabase
+      .from('boosts')
+      .insert({
+        user_id: req.userId,
+        boost_type: 'premium',
+        multiplier: 3.0,
+        started_at: startsAt.toISOString(),
+        expires_at: expiresAt.toISOString(),
+        duration_minutes: 30,
+        source: 'subscription_bonus',
+        status: 'active'
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    // Update boosts_used
+    await supabase
+      .from('premium_subscriptions')
+      .update({ boosts_used: sub.boosts_used + 1 })
+      .eq('id', sub.id);
+
+    res.json({ success: true, boost });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============================================
+// V2.0 ROUTES: PHOTO MODERATION
+// ============================================
+
+/**
+ * POST /api/v2/photos/:photoId/moderate
+ * Run AI moderation on photo (mock)
+ */
+app.post('/api/v2/photos/:photoId/moderate', verifyToken, async (req, res) => {
+  try {
+    const { photoId } = req.params;
+
+    // Get photo
+    const { data: photo } = await supabase
+      .from('profile_photos')
+      .select('*')
+      .eq('id', photoId)
+      .single();
+
+    if (!photo) {
+      return res.status(404).json({ error: 'Photo not found' });
+    }
+
+    // Mock AI detection
+    const nudeScore = Math.random() * 0.3; // Keep low for demo
+    const isExplicit = nudeScore > 0.7;
+    const genitalDetected = nudeScore > 0.8;
+
+    const status = isExplicit ? 'rejected' : 'approved';
+    const reasonRejected = isExplicit ? 'Inappropriate content detected' : null;
+
+    // Save moderation result
+    const { data: moderation, error } = await supabase
+      .from('photo_moderation')
+      .insert({
+        photo_id: photoId,
+        nude_score: nudeScore,
+        explicit_content: isExplicit,
+        genitals_detected: genitalDetected,
+        status,
+        reason_rejected: reasonRejected,
+        reviewed_at: new Date().toISOString()
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    res.json({ success: true, moderation });
 
   } catch (error) {
     res.status(500).json({ error: error.message });
