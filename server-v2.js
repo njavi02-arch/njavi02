@@ -2155,4 +2155,255 @@ app.post('/api/v2/photos/:photoId/moderate', verifyToken, async (req, res) => {
   }
 });
 
+// ============================================
+// ROUTES: PAYMENTS (STRIPE)
+// ============================================
+
+/**
+ * POST /api/v2/payments/create-subscription
+ * Create a new premium subscription
+ */
+app.post('/api/v2/payments/create-subscription', verifyToken, async (req, res) => {
+  try {
+    const { planId } = req.body;
+    const userId = req.userId;
+
+    // Validar plan
+    const validPlans = ['monthly', 'quarterly', 'yearly'];
+    if (!validPlans.includes(planId)) {
+      return res.status(400).json({ error: 'Invalid plan' });
+    }
+
+    // Obtener usuario
+    const { data: user } = await supabase
+      .from('profiles')
+      .select('email')
+      .eq('user_id', userId)
+      .single();
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Guardar suscripción en base de datos
+    const planPrices = {
+      monthly: 7.99,
+      quarterly: 19.99,
+      yearly: 59.99,
+    };
+
+    const planBoosts = {
+      monthly: 1,
+      quarterly: 3,
+      yearly: 12,
+    };
+
+    const expiresAtMap = {
+      monthly: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      quarterly: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+      yearly: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+    };
+
+    const { data: subscription, error } = await supabase
+      .from('premium_subscriptions')
+      .insert({
+        user_id: userId,
+        plan: planId,
+        price: planPrices[planId],
+        currency: 'eur',
+        started_at: new Date().toISOString(),
+        expires_at: expiresAtMap[planId].toISOString(),
+        boosts_count: planBoosts[planId],
+        boosts_used: 0,
+        status: 'active',
+        stripe_subscription_id: `stripe_${userId}_${Date.now()}`,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log(`✅ Subscription created for user ${userId}: ${planId}`);
+
+    res.json({
+      success: true,
+      subscriptionId: subscription.id,
+      plan: subscription.plan,
+      boosts: subscription.boosts_count,
+      expiresAt: subscription.expires_at,
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/v2/payments/subscriptions
+ * Get user's active subscriptions
+ */
+app.get('/api/v2/payments/subscriptions', verifyToken, async (req, res) => {
+  try {
+    const { data: subscriptions, error } = await supabase
+      .from('premium_subscriptions')
+      .select('*')
+      .eq('user_id', req.userId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    res.json({ subscriptions });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/v2/payments/cancel-subscription
+ * Cancel a subscription
+ */
+app.post('/api/v2/payments/cancel-subscription', verifyToken, async (req, res) => {
+  try {
+    const { subscriptionId } = req.body;
+    const userId = req.userId;
+
+    // Verificar que la suscripción pertenece al usuario
+    const { data: subscription } = await supabase
+      .from('premium_subscriptions')
+      .select('*')
+      .eq('id', subscriptionId)
+      .eq('user_id', userId)
+      .single();
+
+    if (!subscription) {
+      return res.status(404).json({ error: 'Subscription not found' });
+    }
+
+    // Actualizar estado
+    const { data: updated, error } = await supabase
+      .from('premium_subscriptions')
+      .update({
+        status: 'cancelled',
+        cancelled_at: new Date().toISOString(),
+      })
+      .eq('id', subscriptionId)
+      .select()
+      .single();
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log(`❌ Subscription cancelled: ${subscriptionId}`);
+
+    res.json({ success: true, subscription: updated });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/v2/payments/invoices
+ * Get user's payment invoices
+ */
+app.get('/api/v2/payments/invoices', verifyToken, async (req, res) => {
+  try {
+    const { data: subscriptions } = await supabase
+      .from('premium_subscriptions')
+      .select('*')
+      .eq('user_id', req.userId);
+
+    // Mock invoice data
+    const invoices = subscriptions.map((sub) => ({
+      id: `invoice_${sub.id}`,
+      subscriptionId: sub.id,
+      amount: sub.price,
+      currency: sub.currency,
+      status: 'paid',
+      createdAt: sub.created_at,
+      pdfUrl: `/api/v2/payments/invoices/${sub.id}/pdf`,
+    }));
+
+    res.json({ invoices });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/v2/boosts/activate
+ * Activate a visibility boost
+ */
+app.post('/api/v2/boosts/activate', verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    // Verificar suscripción activa
+    const { data: subscription } = await supabase
+      .from('premium_subscriptions')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('status', 'active')
+      .single();
+
+    if (!subscription) {
+      return res.status(403).json({ error: 'No active subscription' });
+    }
+
+    if (subscription.boosts_used >= subscription.boosts_count) {
+      return res.status(403).json({ error: 'No boosts remaining' });
+    }
+
+    // Crear boost
+    const expiresAt = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
+
+    const { data: boost, error } = await supabase
+      .from('boosts')
+      .insert({
+        user_id: userId,
+        boost_type: 'premium',
+        multiplier: 3.0,
+        duration_minutes: 30,
+        started_at: new Date().toISOString(),
+        expires_at: expiresAt.toISOString(),
+        source: 'subscription',
+        status: 'active',
+      })
+      .select()
+      .single();
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    // Actualizar boosts_used
+    await supabase
+      .from('premium_subscriptions')
+      .update({ boosts_used: subscription.boosts_used + 1 })
+      .eq('id', subscription.id);
+
+    console.log(`🚀 Boost activated for user ${userId}`);
+
+    res.json({
+      success: true,
+      boost: {
+        id: boost.id,
+        expiresAt: boost.expires_at,
+        multiplier: boost.multiplier,
+        durationMinutes: boost.duration_minutes,
+      },
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default app;
