@@ -348,6 +348,57 @@ io.on('connection', (socket) => {
   });
 
   // ============================================
+  // PRIVACY & SECURITY EVENTS
+  // ============================================
+
+  socket.on('privacy:screenshot_attempt', (data) => {
+    const { conversationId, otherUserId, attemptNumber } = data;
+    const userId = socket.userId;
+
+    if (!otherUserId) return;
+
+    // Notify the other user that their conversation partner attempted screenshot
+    io.to(`user_${otherUserId}`).emit('privacy:screenshot_detected', {
+      userId,
+      conversationId,
+      attemptNumber,
+      timestamp: Date.now(),
+    });
+
+    console.log(`⚠️ Screenshot attempt detected: User ${userId} in conversation ${conversationId}`);
+  });
+
+  socket.on('privacy:conversation_deleted', (data) => {
+    const { conversationId, otherUserId } = data;
+    const userId = socket.userId;
+
+    if (!otherUserId) return;
+
+    // Notify the other user that their conversation was deleted
+    io.to(`user_${otherUserId}`).emit('privacy:conversation_deleted_notice', {
+      userId,
+      conversationId,
+      timestamp: Date.now(),
+    });
+
+    console.log(`🗑️ Conversation ${conversationId} deleted by user ${userId}`);
+  });
+
+  socket.on('privacy:anonymous_mode_changed', (data) => {
+    const { anonymousMode } = data;
+    const userId = socket.userId;
+
+    // Broadcast anonymous mode change to conversation participants
+    io.emit('privacy:mode_updated', {
+      userId,
+      anonymousMode,
+      timestamp: Date.now(),
+    });
+
+    console.log(`👤 User ${userId} anonymous mode: ${anonymousMode}`);
+  });
+
+  // ============================================
   // REAL-TIME NOTIFICATIONS
   // ============================================
 
