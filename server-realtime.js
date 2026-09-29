@@ -565,4 +565,4 @@ Next: Connect frontend + Stripe integration
 });
 
 // Export for use in main server
-export { io, sendNotification, activeUsers };
+export { io, activeUsers };
