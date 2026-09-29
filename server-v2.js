@@ -2510,4 +2510,310 @@ app.post('/api/v2/boosts/activate', verifyToken, async (req, res) => {
   }
 });
 
+// ============================================
+// ROUTES: PRIVACY & SECURITY (PHASE 4)
+// ============================================
+
+/**
+ * POST /api/v2/privacy/settings
+ * Save user privacy settings
+ */
+app.post('/api/v2/privacy/settings', verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const {
+      anonymousMode,
+      preventScreenshots,
+      autoDeleteMessages,
+      autoDeletePhotos,
+      deletePhotosAfterMinutes,
+      showLastSeen,
+      showTypingIndicator,
+      allowForwarding,
+    } = req.body;
+
+    // Check if settings exist
+    const { data: existing } = await supabase
+      .from('privacy_settings')
+      .select('id')
+      .eq('user_id', userId)
+      .single();
+
+    let error;
+    if (existing) {
+      // Update existing settings
+      ({ error } = await supabase
+        .from('privacy_settings')
+        .update({
+          anonymous_mode: anonymousMode,
+          prevent_screenshots: preventScreenshots,
+          auto_delete_messages: autoDeleteMessages,
+          auto_delete_photos: autoDeletePhotos,
+          delete_photos_after_minutes: deletePhotosAfterMinutes,
+          show_last_seen: showLastSeen,
+          show_typing_indicator: showTypingIndicator,
+          allow_forwarding: allowForwarding,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('user_id', userId));
+    } else {
+      // Create new settings
+      ({ error } = await supabase
+        .from('privacy_settings')
+        .insert({
+          user_id: userId,
+          anonymous_mode: anonymousMode,
+          prevent_screenshots: preventScreenshots,
+          auto_delete_messages: autoDeleteMessages,
+          auto_delete_photos: autoDeletePhotos,
+          delete_photos_after_minutes: deletePhotosAfterMinutes,
+          show_last_seen: showLastSeen,
+          show_typing_indicator: showTypingIndicator,
+          allow_forwarding: allowForwarding,
+        }));
+    }
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log(`✅ Privacy settings updated for user ${userId}`);
+
+    res.json({
+      success: true,
+      settings: {
+        anonymousMode,
+        preventScreenshots,
+        autoDeleteMessages,
+        autoDeletePhotos,
+        deletePhotosAfterMinutes,
+        showLastSeen,
+        showTypingIndicator,
+        allowForwarding,
+      },
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/v2/privacy/settings
+ * Get user privacy settings
+ */
+app.get('/api/v2/privacy/settings', verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const { data: settings, error } = await supabase
+      .from('privacy_settings')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+
+    if (error) {
+      // Return default settings if not found
+      return res.json({
+        success: true,
+        settings: {
+          anonymousMode: false,
+          preventScreenshots: true,
+          autoDeleteMessages: false,
+          autoDeletePhotos: false,
+          deletePhotosAfterMinutes: 24 * 60,
+          showLastSeen: false,
+          showTypingIndicator: false,
+          allowForwarding: false,
+        },
+      });
+    }
+
+    res.json({
+      success: true,
+      settings: {
+        anonymousMode: settings.anonymous_mode,
+        preventScreenshots: settings.prevent_screenshots,
+        autoDeleteMessages: settings.auto_delete_messages,
+        autoDeletePhotos: settings.auto_delete_photos,
+        deletePhotosAfterMinutes: settings.delete_photos_after_minutes,
+        showLastSeen: settings.show_last_seen,
+        showTypingIndicator: settings.show_typing_indicator,
+        allowForwarding: settings.allow_forwarding,
+      },
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/v2/privacy/screenshot-attempt
+ * Log screenshot attempt and notify other user
+ */
+app.post('/api/v2/privacy/screenshot-attempt', verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { attemptCount, conversationId } = req.body;
+
+    // Get user profile for notification
+    const { data: user } = await supabase
+      .from('profiles')
+      .select('username')
+      .eq('id', userId)
+      .single();
+
+    // Log screenshot attempt
+    const { data: attempt, error } = await supabase
+      .from('screenshot_attempts')
+      .insert({
+        user_id: userId,
+        attempt_number: attemptCount || 1,
+        conversation_id: conversationId,
+        detected_at: new Date().toISOString(),
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error logging screenshot attempt:', error);
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log(`⚠️ Screenshot attempt logged for user ${userId}`);
+
+    // TODO: Notify other user via websocket or FCM
+
+    res.json({
+      success: true,
+      attempt: {
+        id: attempt.id,
+        attemptNumber: attempt.attempt_number,
+        detectedAt: attempt.detected_at,
+      },
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/v2/privacy/delete-conversation
+ * Delete conversation and notify other user
+ */
+app.post('/api/v2/privacy/delete-conversation', verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { conversationId } = req.body;
+
+    if (!conversationId) {
+      return res.status(400).json({ error: 'Conversation ID required' });
+    }
+
+    // Verify user is part of conversation
+    const { data: conversation, error: getError } = await supabase
+      .from('conversations')
+      .select('*')
+      .eq('id', conversationId)
+      .single();
+
+    if (getError || !conversation) {
+      return res.status(404).json({ error: 'Conversation not found' });
+    }
+
+    // Verify ownership
+    if (conversation.user1_id !== userId && conversation.user2_id !== userId) {
+      return res.status(403).json({ error: 'Not authorized' });
+    }
+
+    // Soft delete by marking as deleted for this user
+    const { error: deleteError } = await supabase
+      .from('conversations')
+      .update({
+        deleted_by_users: conversation.deleted_by_users
+          ? [...conversation.deleted_by_users, userId]
+          : [userId],
+        deleted_at: new Date().toISOString(),
+      })
+      .eq('id', conversationId);
+
+    if (deleteError) {
+      return res.status(400).json({ error: deleteError.message });
+    }
+
+    // Get other user ID
+    const otherUserId = conversation.user1_id === userId
+      ? conversation.user2_id
+      : conversation.user1_id;
+
+    // Log privacy event
+    await supabase
+      .from('privacy_events')
+      .insert({
+        user_id: userId,
+        event_type: 'conversation_deleted',
+        conversation_id: conversationId,
+        other_user_id: otherUserId,
+        logged_at: new Date().toISOString(),
+      });
+
+    console.log(`🗑️ Conversation ${conversationId} deleted by user ${userId}`);
+
+    res.json({
+      success: true,
+      message: 'Conversation deleted',
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/v2/privacy/log-event
+ * Log privacy event for audit trail
+ */
+app.post('/api/v2/privacy/log-event', verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { eventType, conversationId, metadata } = req.body;
+
+    if (!eventType) {
+      return res.status(400).json({ error: 'Event type required' });
+    }
+
+    const { data: event, error } = await supabase
+      .from('privacy_events')
+      .insert({
+        user_id: userId,
+        event_type: eventType,
+        conversation_id: conversationId,
+        metadata: metadata || {},
+        logged_at: new Date().toISOString(),
+      })
+      .select()
+      .single();
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log(`📝 Privacy event logged: ${eventType} for user ${userId}`);
+
+    res.json({
+      success: true,
+      event: {
+        id: event.id,
+        eventType: event.event_type,
+        loggedAt: event.logged_at,
+      },
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default app;
