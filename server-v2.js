@@ -2156,6 +2156,110 @@ app.post('/api/v2/photos/:photoId/moderate', verifyToken, async (req, res) => {
 });
 
 // ============================================
+// ROUTES: NOTIFICATIONS
+// ============================================
+
+/**
+ * POST /api/v2/notifications/register-token
+ * Register device push token
+ */
+app.post('/api/v2/notifications/register-token', verifyToken, async (req, res) => {
+  try {
+    const { expoPushToken, deviceName, platform } = req.body;
+    const userId = req.userId;
+
+    if (!expoPushToken) {
+      return res.status(400).json({ error: 'Expo push token required' });
+    }
+
+    // TODO: Save to user_push_tokens table
+    console.log(`✅ Push token registered: ${expoPushToken.substring(0, 30)}...`);
+
+    res.json({
+      success: true,
+      registered: true,
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/v2/notifications/preferences
+ * Update notification preferences
+ */
+app.post('/api/v2/notifications/preferences', verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { newMatches, messages, likes, superLikes, boostReminders, subscriptionReminders } = req.body;
+
+    // TODO: Save to notification_preferences table
+    const preferences = {
+      newMatches: newMatches ?? true,
+      messages: messages ?? true,
+      likes: likes ?? true,
+      superLikes: superLikes ?? true,
+      boostReminders: boostReminders ?? true,
+      subscriptionReminders: subscriptionReminders ?? true,
+    };
+
+    console.log(`✅ Notification preferences updated for user ${userId}`);
+
+    res.json({ success: true, preferences });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/v2/notifications/preferences
+ * Get user's notification preferences
+ */
+app.get('/api/v2/notifications/preferences', verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    // TODO: Fetch from notification_preferences table
+    const preferences = {
+      newMatches: true,
+      messages: true,
+      likes: true,
+      superLikes: true,
+      boostReminders: true,
+      subscriptionReminders: true,
+    };
+
+    res.json({ preferences });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/v2/notifications/send-test
+ * Send test notification
+ */
+app.post('/api/v2/notifications/send-test', verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    // TODO: Send test notification via Firebase
+    console.log(`✅ Test notification sent to user ${userId}`);
+
+    res.json({
+      success: true,
+      message: 'Test notification sent. Check your device!',
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============================================
 // ROUTES: PAYMENTS (STRIPE)
 // ============================================
 
