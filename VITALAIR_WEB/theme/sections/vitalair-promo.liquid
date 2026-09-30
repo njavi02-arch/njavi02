@@ -10,12 +10,12 @@
 .vp::before{content:"";position:absolute;left:50%;top:-40%;width:170%;aspect-ratio:1;translate:-50% 0;background:repeating-conic-gradient(from 0deg,rgba(255,214,160,.14) 0 8deg,transparent 8deg 20deg);-webkit-mask:radial-gradient(circle,#000 0,transparent 62%);mask:radial-gradient(circle,#000 0,transparent 62%);animation:vp-spin 50s linear infinite;pointer-events:none}
 .vp::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 12% 18%,rgba(255,214,160,.5) 0 2px,transparent 3px),radial-gradient(circle at 88% 26%,rgba(255,255,255,.45) 0 2px,transparent 3px),radial-gradient(circle at 20% 70%,rgba(255,255,255,.3) 0 2px,transparent 3px),radial-gradient(circle at 82% 78%,rgba(255,214,160,.45) 0 2px,transparent 3px);pointer-events:none}
 @keyframes vp-spin{to{rotate:360deg}}
-.vp>*{position:relative;z-index:1}
+.vp *{box-sizing:border-box}.vp>*{position:relative;z-index:1}
 .vp-x{position:absolute;top:10px;right:10px;z-index:2;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font-size:22px;line-height:1;cursor:pointer}
 .vp-x:hover{background:rgba(255,255,255,.22)}
 .vp-tag{display:inline-block;padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
 .vp-big{margin:14px 0 0;font:500 clamp(92px,30vw,132px)/.9 'Fraunces',Georgia,serif;letter-spacing:-.03em;background:linear-gradient(180deg,#FFE3B8 0%,#F0A64A 70%,#D9822B 100%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 8px 30px rgba(217,130,43,.25)}
-.vp-big sup{font-size:.42em;vertical-align:top;position:relative;top:.12em;margin-left:2px}
+.vp-big sup{font-size:.4em;vertical-align:top;line-height:1.3;margin-left:4px;background:inherit;-webkit-background-clip:text;background-clip:text;color:transparent}
 .vp-sub{margin:6px 0 0;font-size:15px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
 .vp-all{margin:2px 0 0;font:500 22px 'Fraunces',Georgia,serif}
 .vp-how{margin:16px auto 0;max-width:300px;font-size:14px;line-height:1.5;color:#DCE7DD}

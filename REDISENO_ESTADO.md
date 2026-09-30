@@ -31,3 +31,10 @@ Tema publicado (Horizon, id 210811715975) sin tocar.
 - [Solo sabores]: aparece solo si existe el producto activo con handle vitalair-sabores y 13 variantes cuyo título sea el nombre del sabor. Falta el precio por sabor (no inventado).
 - Variante nueva 2 inhaladores (39,98 €, sin tachado), opciones renombradas "N inhaladores (Nx)".
 - Código en VITALAIR_WEB/builder (js, css, test Playwright: 54 comprobaciones OK).
+
+## v4 — Sabores como extras + 15 % (30/09/2026)
+- Tema borrador: "VitalAir v4 (extras + 15%)" (duplicado del v3, sin publicar).
+- Producto `vitalair-sabores` ("Sabor extra VitalAir", 13 variantes por sabor, DRAFT): 100 uds reales por variante, rastreadas, política DENY. Precio 0,00 a propósito: **falta el precio del sabor**. Mientras valga 0 o el producto esté en borrador, la web no muestra sabores (nunca se venden a 0 €).
+- Descuento automático real "VitalAir 15% en toda la tienda" (todo el pedido, combina solo con envío). Cambiar % en `snippets/vitalair-promo-pct.liquid` + en Shopify.
+- Builder: inhalador base + sabores como líneas propias del carrito (sin límite, tope = stock), resumen Subtotal / 15 % / Total. 51 pruebas OK (`VITALAIR_WEB/builder/test/run.js`).
+- Pop-up del 15 % (`sections/vitalair-promo.liquid`, en footer-group), barra superior y home/FAQ/packs actualizados. Retirados los mensajes "envío gratis incluido" por pack y "hasta 3 sabores".
