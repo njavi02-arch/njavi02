@@ -16,3 +16,11 @@ Tema publicado (Horizon, id 210811715975) sin tocar.
 - Pack: renombrar título, reescribir descripción, SEO, alt de fotos, adjuntar foto iryiz6, desactivar tracking de stock (0 uds = agotado)
 - Nombre de tienda "Mi tienda", menú, footer, políticas (envíos/devoluciones/términos/aviso legal)
 - Envío, devolución y garantía reales; coste por producto; ¿lleva nicotina?
+
+## Actualización (marca de un solo producto)
+- Producto publicado en "Tienda online" (antes daba 404 en la vista previa).
+- Home: hero "Un nuevo ritual para tu día", qué es, elige tu sabor (13 tarjetas con foto, descripción sensorial y enlace que preselecciona el sabor en la ficha), cómo funciona, hábito (pequeños pasos, sin claims médicos), bienestar/materiales, packs, confianza (envío, pago, 14 días, garantía legal, info@vitalair.online), FAQ, CTA final.
+- Ficha: lee ?flavor= y preselecciona el sabor (sections/vitalair-preselect.liquid).
+- Fotos localizadas por texto alternativo, no por posición. Raspberry/Lemon/Maple Pepper asignadas por orden de envío (sin verificar).
+- Copy sensorial por sabor basado solo en el nombre del sabor: confirmar con el proveedor.
+- Pendiente: instrucciones de uso reales, duración, qué contiene cada sobre, nombre de la tienda, políticas, reseñas reales, publicar el tema.
