@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - VitalAir</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">VITALAIR</div>
+            <nav>
+                <a href="../index.html">Inicio</a>
+                <a href="productos.html">Productos</a>
+                <a href="comparativa.html">Comparativa</a>
+                <a href="faq.html" class="active">FAQ</a>
+                <a href="contacto.html">Contacto</a>
+                <div class="cart-icon" title="Carrito">🛒<div class="cart-count" style="display: none;">0</div></div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            <h1 class="text-center mb-4">Preguntas Frecuentes</h1>
+            <p class="text-center text-muted" style="max-width: 600px; margin: 0 auto 48px;">Respuestas a las preguntas más comunes sobre VitalAir.</p>
+
+            <div style="max-width: 800px; margin: 0 auto;">
+                <script>
+                    const faqs = [
+                        {
+                            q: "¿Cuál es la diferencia entre los tres modelos?",
+                            a: "Básico (€19.99) es perfecto para empezar con sensor de flujo básico. Premium (€49.99) agrega control de temperatura y mejor autonomía. Pro (€89.99) tiene todo más avanzado: análisis de patrones, batería 24h, pantalla OLED y 7 niveles de intensidad."
+                        },
+                        {
+                            q: "¿Cuánto dura la batería?",
+                            a: "Básico dura 8 horas, Premium 16 horas, y Pro 24 horas completas sin recargar. Todo depende del uso y la intensidad seleccionada."
+                        },
+                        {
+                            q: "¿Cuánto tiempo tarda la carga?",
+                            a: "Básico: 90 minutos. Premium: 45 minutos. Pro: solo 20 minutos con carga ultra rápida."
+                        },
+                        {
+                            q: "¿Cuántos sabores hay disponibles?",
+                            a: "Tenemos 13 sabores premium: Mango, Mint, Strawberry, Blueberry, Raspberry, Coffee, Cinnamon, Maple Pepper, Orange, Lemon, Grapefruit, Cranberry y Vanilla."
+                        },
+                        {
+                            q: "¿Puedo cambiar el sabor después de comprar?",
+                            a: "Sí, puedes comprar cartuchos adicionales con otros sabores. Cada cartucho es compatible con cualquier modelo."
+                        },
+                        {
+                            q: "¿Cómo funciona el envío?",
+                            a: "Procesamos pedidos en 24 horas. Enviamos en 24-48 horas con rastreo. El envío es gratis en pedidos mayores a €50, o €9.99 para pedidos menores."
+                        },
+                        {
+                            q: "¿Qué incluye la caja?",
+                            a: "Todos los modelos incluyen: el inhalador, cable USB-C, guía ilustrada, cartucho inicial (sabor a elegir), funda de protección, paño de limpieza y acceso a la comunidad VitalAir."
+                        },
+                        {
+                            q: "¿Cuál es la política de devolución?",
+                            a: "30 días sin preguntas. Si no estás satisfecho, devuelves el producto y te reembolsamos el 100% del dinero."
+                        },
+                        {
+                            q: "¿Cuál es la garantía?",
+                            a: "2 años de garantía contra defectos de fabricación. Soporte técnico 24/7 en español para ayudarte con cualquier duda."
+                        },
+                        {
+                            q: "¿Cómo se limpia el dispositivo?",
+                            a: "Usa el paño de microfibra incluido. No lo sumerjas en agua. Pasa suavemente por las superficies externas."
+                        },
+                        {
+                            q: "¿Es seguro el pago?",
+                            a: "Totalmente. Usamos Stripe, el procesador de pagos más seguro del mundo. Tu información de tarjeta nunca toca nuestros servidores."
+                        },
+                        {
+                            q: "¿Hay descuentos por cantidad?",
+                            a: "Sí, con los packs de VitalAir. Premium pack de 3 unidades te ahorra un 25%. Pro pack de 5 unidades te ahorra un 30%."
+                        },
+                        {
+                            q: "¿Cómo contacto con soporte?",
+                            a: "Por chat en la web, email a soporte@vitalair.es o teléfono +34 900 123 456. Disponible de lunes a domingo, 9:00-21:00."
+                        },
+                        {
+                            q: "¿El producto es legal?",
+                            a: "Sí, VitalAir cumple con todas las normativas europeas y españolas. Certificado CE, RoHS compliant."
+                        },
+                        {
+                            q: "¿Hay ofertas o cupones de descuento?",
+                            a: "Suscríbete a nuestra newsletter para recibir un 10% de descuento en tu primer pedido. Además, tenemos promociones mensuales."
+                        }
+                    ];
+
+                    faqs.forEach((faq, index) => {
+                        document.write(`
+                            <div class="card" style="margin-bottom: 16px; cursor: pointer;" onclick="toggleFaq(this)">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <h4 style="margin: 0; flex: 1;">${faq.q}</h4>
+                                    <span style="font-size: 20px; color: #1a4d2e; transition: transform 0.3s;">▼</span>
+                                </div>
+                                <div class="faq-answer" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e0e0e0; font-size: 13px; color: #666; line-height: 1.6;">
+                                    ${faq.a}
+                                </div>
+                            </div>
+                        `);
+                    });
+                </script>
+            </div>
+
+            <div style="background: #f0f7f3; padding: 32px; border-radius: 12px; margin-top: 48px; text-align: center;">
+                <h4 style="margin-bottom: 12px;">¿No encuentras tu respuesta?</h4>
+                <p class="text-muted" style="margin-bottom: 24px;">Contacta con nuestro equipo. Respondemos en menos de 24 horas.</p>
+                <a href="contacto.html" class="btn btn-primary">Contactar soporte</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>VitalAir</h4>
+                <p style="font-size: 13px; color: rgba(255,255,255,0.7);">Inhaladores inteligentes.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Productos</h4>
+                <a href="productos.html?id=basico">Básico</a>
+                <a href="productos.html?id=premium">Premium</a>
+                <a href="productos.html?id=pro">Pro</a>
+            </div>
+            <div class="footer-section">
+                <h4>Información</h4>
+                <a href="comparativa.html">Comparativa</a>
+                <a href="faq.html">FAQ</a>
+                <a href="contacto.html">Contacto</a>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <a href="legal.html">Términos</a>
+                <a href="legal.html">Privacidad</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 VitalAir.</p>
+        </div>
+    </footer>
+
+    <script src="../assets/js/app.js"></script>
+    <script>
+        function toggleFaq(element) {
+            const answer = element.querySelector('.faq-answer');
+            const arrow = element.querySelector('span');
+            if (answer.style.display === 'none') {
+                answer.style.display = 'block';
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                answer.style.display = 'none';
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+    </script>
+</body>
+</html>

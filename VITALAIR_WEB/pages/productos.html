@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos VitalAir</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="header-content">
+            <div class="logo">VITALAIR</div>
+            <nav>
+                <a href="../index.html">Inicio</a>
+                <a href="productos.html" class="active">Productos</a>
+                <a href="comparativa.html">Comparativa</a>
+                <a href="faq.html">FAQ</a>
+                <a href="contacto.html">Contacto</a>
+                <div class="cart-icon" title="Carrito">
+                    🛒
+                    <div class="cart-count" style="display: none;">0</div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- CONTENIDO DINÁMICO -->
+    <section class="section">
+        <div class="container" id="product-container">
+            <div style="text-align: center; padding: 48px;">
+                <p>Cargando producto...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>VitalAir</h4>
+                <p style="font-size: 13px; color: rgba(255,255,255,0.7);">Inhaladores inteligentes con tecnología premium. Respira diferente.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Productos</h4>
+                <a href="productos.html?id=basico">VitalAir Básico</a>
+                <a href="productos.html?id=premium">VitalAir Premium</a>
+                <a href="productos.html?id=pro">VitalAir Pro</a>
+            </div>
+            <div class="footer-section">
+                <h4>Información</h4>
+                <a href="comparativa.html">Comparativa</a>
+                <a href="faq.html">FAQ</a>
+                <a href="contacto.html">Contacto</a>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <a href="legal.html">Términos y condiciones</a>
+                <a href="legal.html">Política de privacidad</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 VitalAir. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="../assets/js/app.js"></script>
+    <script>
+        function getProductIdFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id') || 'premium';
+        }
+
+        function renderProductPage() {
+            const productId = getProductIdFromURL();
+            const product = PRODUCTS[productId];
+
+            if (!product) {
+                document.getElementById('product-container').innerHTML = '<p>Producto no encontrado</p>';
+                return;
+            }
+
+            let selectedFlavor = null;
+
+            const html = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start;">
+                    <!-- IMÁGENES -->
+                    <div>
+                        <div style="background: #f0f7f3; border-radius: 12px; padding: 32px; margin-bottom: 24px; text-align: center;">
+                            <div style="font-size: 120px; margin-bottom: 16px;">📱</div>
+                            <p style="color: #999; font-size: 13px;">Imágenes del producto</p>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+                            <div style="background: #f0f7f3; border-radius: 8px; padding: 16px; text-align: center; cursor: pointer;">📸</div>
+                            <div style="background: #f0f7f3; border-radius: 8px; padding: 16px; text-align: center; cursor: pointer;">📸</div>
+                            <div style="background: #f0f7f3; border-radius: 8px; padding: 16px; text-align: center; cursor: pointer;">📸</div>
+                            <div style="background: #f0f7f3; border-radius: 8px; padding: 16px; text-align: center; cursor: pointer;">📸</div>
+                        </div>
+                    </div>
+
+                    <!-- DETALLES -->
+                    <div>
+                        <span style="display: inline-block; background: #27ae60; color: white; padding: 6px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; margin-bottom: 16px;">${product.badge}</span>
+                        
+                        <h1 style="margin-bottom: 12px;">${product.name}</h1>
+                        <p class="text-muted">${product.description}</p>
+                        
+                        <div style="display: flex; gap: 16px; margin-bottom: 32px; padding: 16px 0; border-top: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0;">
+                            <div>
+                                <div style="font-size: 12px; color: #999; margin-bottom: 4px;">RATING</div>
+                                <div>${renderStars(product.rating)} ${product.rating}/5</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 12px; color: #999; margin-bottom: 4px;">REVIEWS</div>
+                                <div>${product.reviews} reseñas verificadas</div>
+                            </div>
+                        </div>
+
+                        <p style="font-size: 13px; line-height: 1.8; margin-bottom: 32px;">${product.fullDescription}</p>
+
+                        <!-- SPECS -->
+                        <div style="margin-bottom: 32px;">
+                            <h4 style="margin-bottom: 16px;">Características principales</h4>
+                            <ul style="list-style: none;">
+                                ${product.specs.map(spec => `<li style="padding: 8px 0; padding-left: 24px; position: relative; color: #666; font-size: 13px;">
+                                    <span style="position: absolute; left: 0;">✓</span>
+                                    ${spec}
+                                </li>`).join('')}
+                            </ul>
+                        </div>
+
+                        <!-- SABORES -->
+                        <div style="margin-bottom: 32px;">
+                            <h4 style="margin-bottom: 16px;">Elige tu sabor</h4>
+                            <div id="flavor-selector" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 12px;"></div>
+                        </div>
+
+                        <!-- PRECIO Y CTA -->
+                        <div style="background: #f0f7f3; padding: 24px; border-radius: 12px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px;">
+                                <span style="font-size: 36px; font-weight: 700; color: #1a4d2e;">${formatPrice(product.price)}</span>
+                                <span style="font-size: 13px; color: #999; text-decoration: line-through;">${formatPrice(product.originalPrice)}</span>
+                                <span style="font-size: 12px; background: #e74c3c; color: white; padding: 4px 12px; border-radius: 6px; font-weight: 600;">-${Math.round((1 - product.price/product.originalPrice)*100)}%</span>
+                            </div>
+                            <p style="font-size: 12px; color: #27ae60; margin-bottom: 16px;">✓ Envío gratis en pedidos mayores a €50</p>
+                            <button class="btn btn-primary btn-large" id="add-to-cart-btn" disabled>
+                                Agregar al carrito
+                            </button>
+                            <p style="font-size: 11px; color: #999; margin-top: 12px; text-align: center;">30 días de garantía de devolución</p>
+                        </div>
+
+                        <!-- TRUST BADGES -->
+                        <div style="display: grid; gap: 8px;">
+                            <div style="display: flex; gap: 8px; align-items: center; font-size: 12px;">
+                                <span>✓</span> Pago 100% seguro con Stripe
+                            </div>
+                            <div style="display: flex; gap: 8px; align-items: center; font-size: 12px;">
+                                <span>✓</span> Envío en 24-48 horas
+                            </div>
+                            <div style="display: flex; gap: 8px; align-items: center; font-size: 12px;">
+                                <span>✓</span> Soporte 24/7 en español
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DESCRIPCIÓN EXTENDIDA -->
+                <div style="margin-top: 64px; padding-top: 32px; border-top: 2px solid #e0e0e0;">
+                    <h3>Todo lo que necesitas saber</h3>
+                    <div class="grid-2" style="margin-top: 32px;">
+                        <div>
+                            <h4>¿Qué incluye?</h4>
+                            <ul style="list-style: none; margin-top: 12px;">
+                                <li style="padding: 8px 0; color: #666; font-size: 13px;">✓ 1x VitalAir ${product.badge}</li>
+                                <li style="padding: 8px 0; color: #666; font-size: 13px;">✓ Cable USB-C</li>
+                                <li style="padding: 8px 0; color: #666; font-size: 13px;">✓ Guía ilustrada</li>
+                                <li style="padding: 8px 0; color: #666; font-size: 13px;">✓ Cartucho inicial</li>
+                                <li style="padding: 8px 0; color: #666; font-size: 13px;">✓ Funda de protección</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Garantía y soporte</h4>
+                            <ul style="list-style: none; margin-top: 12px;">
+                                <li style="padding: 8px 0; color: #666; font-size: 13px;">✓ 2 años de garantía</li>
+                                <li style="padding: 8px 0; color: #666; font-size: 13px;">✓ Soporte técnico 24/7</li>
+                                <li style="padding: 8px 0; color: #666; font-size: 13px;">✓ Devolución 30 días</li>
+                                <li style="padding: 8px 0; color: #666; font-size: 13px;">✓ Actualizaciones gratis</li>
+                                <li style="padding: 8px 0; color: #666; font-size: 13px;">✓ Acceso a comunidad</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('product-container').innerHTML = html;
+
+            // Renderizar selector de sabores
+            const flavorSelector = document.getElementById('flavor-selector');
+            FLAVORS.forEach(flavor => {
+                const dot = document.createElement('div');
+                dot.style.cssText = `
+                    width: 60px;
+                    height: 60px;
+                    border-radius: 50%;
+                    background: ${flavor.color};
+                    cursor: pointer;
+                    border: 3px solid transparent;
+                    transition: all 0.3s;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                    position: relative;
+                    title: ${flavor.name}
+                `;
+                dot.addEventListener('click', () => {
+                    selectedFlavor = flavor;
+                    document.querySelectorAll('#flavor-selector > div').forEach(d => {
+                        d.style.borderColor = 'transparent';
+                    });
+                    dot.style.borderColor = '#1a4d2e';
+                    document.getElementById('add-to-cart-btn').disabled = false;
+                });
+                flavorSelector.appendChild(dot);
+            });
+
+            // Botón de agregar al carrito
+            document.getElementById('add-to-cart-btn').addEventListener('click', () => {
+                if (!selectedFlavor) {
+                    alert('Por favor elige un sabor');
+                    return;
+                }
+                cart.addItem({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    flavor: selectedFlavor.name,
+                    flavorColor: selectedFlavor.color
+                });
+            });
+        }
+
+        renderProductPage();
+    </script>
+</body>
+</html>

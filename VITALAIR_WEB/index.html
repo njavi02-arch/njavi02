@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="VitalAir - Inhaladores inteligentes con tecnología premium. 13 sabores, 3 modelos. Respira diferente.">
+    <title>VitalAir - Respira Diferente</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="header-content">
+            <div class="logo">VITALAIR</div>
+            <nav>
+                <a href="index.html" class="active">Inicio</a>
+                <a href="pages/productos.html">Productos</a>
+                <a href="pages/comparativa.html">Comparativa</a>
+                <a href="pages/faq.html">FAQ</a>
+                <a href="pages/contacto.html">Contacto</a>
+                <div class="cart-icon" title="Carrito">
+                    🛒
+                    <div class="cart-count" style="display: none;">0</div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="container">
+            <h1>Respira Diferente</h1>
+            <p>Inhaladores inteligentes con tecnología premium. 13 sabores. 3 modelos. Una sola misión: transformar tu bienestar.</p>
+            <div class="hero-cta">
+                <button class="btn btn-primary" onclick="document.querySelector('#productos').scrollIntoView({behavior: 'smooth'})">
+                    Descubre los productos
+                </button>
+                <button class="btn btn-secondary" onclick="window.location.href='pages/comparativa.html'">
+                    Ver comparativa
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODELOS -->
+    <section class="section" id="productos">
+        <div class="container">
+            <h2 class="text-center mb-4">Nuestros Modelos</h2>
+            <p class="text-center text-muted" style="max-width: 600px; margin: 0 auto 48px;">Desde el acceso a la experiencia premium. Cada modelo está diseñado para un estilo de vida diferente.</p>
+            
+            <div class="grid-3">
+                <div id="basico-card"></div>
+                <div id="premium-card"></div>
+                <div id="pro-card"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SABORES -->
+    <section class="section section-dark">
+        <div class="container">
+            <h2 class="text-center mb-4">13 Sabores Premium</h2>
+            <p class="text-center text-muted" style="max-width: 600px; margin: 0 auto 48px;">Cada sabor es una experiencia. Elige el tuyo y personaliza tu respiración.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 16px; max-width: 900px; margin: 0 auto;">
+                <div style="text-align: center;"><div style="width: 70px; height: 70px; border-radius: 50%; background: #FFA500; margin: 0 auto 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></div><div style="font-size: 13px; font-weight: 500;">Mango</div></div>
+                <div style="text-align: center;"><div style="width: 70px; height: 70px; border-radius: 50%; background: #4DB6AC; margin: 0 auto 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></div><div style="font-size: 13px; font-weight: 500;">Mint</div></div>
+                <div style="text-align: center;"><div style="width: 70px; height: 70px; border-radius: 50%; background: #FF6B6B; margin: 0 auto 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></div><div style="font-size: 13px; font-weight: 500;">Strawberry</div></div>
+                <div style="text-align: center;"><div style="width: 70px; height: 70px; border-radius: 50%; background: #7B68A6; margin: 0 auto 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></div><div style="font-size: 13px; font-weight: 500;">Blueberry</div></div>
+                <div style="text-align: center;"><div style="width: 70px; height: 70px; border-radius: 50%; background: #E91E63; margin: 0 auto 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></div><div style="font-size: 13px; font-weight: 500;">Raspberry</div></div>
+                <div style="text-align: center;"><div style="width: 70px; height: 70px; border-radius: 50%; background: #6D5344; margin: 0 auto 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></div><div style="font-size: 13px; font-weight: 500;">Coffee</div></div>
+                <div style="text-align: center;"><div style="width: 70px; height: 70px; border-radius: 50%; background: #A86845; margin: 0 auto 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></div><div style="font-size: 13px; font-weight: 500;">Cinnamon</div></div>
+                <div style="text-align: center;"><div style="width: 70px; height: 70px; border-radius: 50%; background: #C55A4F; margin: 0 auto 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></div><div style="font-size: 13px; font-weight: 500;">Maple Pepper</div></div>
+                <div style="text-align: center;"><div style="width: 70px; height: 70px; border-radius: 50%; background: #F5A623; margin: 0 auto 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></div><div style="font-size: 13px; font-weight: 500;">Orange</div></div>
+                <div style="text-align: center;"><div style="width: 70px; height: 70px; border-radius: 50%; background: #FFD700; margin: 0 auto 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></div><div style="font-size: 13px; font-weight: 500;">Lemon</div></div>
+                <div style="text-align: center;"><div style="width: 70px; height: 70px; border-radius: 50%; background: #FF9AA2; margin: 0 auto 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></div><div style="font-size: 13px; font-weight: 500;">Grapefruit</div></div>
+                <div style="text-align: center;"><div style="width: 70px; height: 70px; border-radius: 50%; background: #C41E3A; margin: 0 auto 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></div><div style="font-size: 13px; font-weight: 500;">Cranberry</div></div>
+                <div style="text-align: center;"><div style="width: 70px; height: 70px; border-radius: 50%; background: #D4C5B0; margin: 0 auto 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></div><div style="font-size: 13px; font-weight: 500;">Vanilla</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRUST SECTION -->
+    <section class="section">
+        <div class="container">
+            <div class="grid-4">
+                <div class="text-center">
+                    <div style="font-size: 32px; margin-bottom: 12px;">✈️</div>
+                    <h4>Envío rápido</h4>
+                    <p class="text-muted" style="font-size: 13px;">24-48 horas en toda España</p>
+                </div>
+                <div class="text-center">
+                    <div style="font-size: 32px; margin-bottom: 12px;">🔒</div>
+                    <h4>100% Seguro</h4>
+                    <p class="text-muted" style="font-size: 13px;">Pagos encriptados con Stripe</p>
+                </div>
+                <div class="text-center">
+                    <div style="font-size: 32px; margin-bottom: 12px;">↩️</div>
+                    <h4>Devolución fácil</h4>
+                    <p class="text-muted" style="font-size: 13px;">30 días sin preguntas</p>
+                </div>
+                <div class="text-center">
+                    <div style="font-size: 32px; margin-bottom: 12px;">💬</div>
+                    <h4>Soporte 24/7</h4>
+                    <p class="text-muted" style="font-size: 13px;">Chat, email, teléfono</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section style="background: linear-gradient(135deg, #1a4d2e 0%, #27ae60 100%); color: white; padding: 64px 24px; text-align: center;">
+        <div class="container">
+            <h2 style="color: white; margin-bottom: 16px;">¿Listo para respirar diferente?</h2>
+            <p style="color: rgba(255,255,255,0.9); font-size: 16px; margin-bottom: 32px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                Únete a miles de usuarios que ya disfrutan de la experiencia VitalAir.
+            </p>
+            <button class="btn" style="background: white; color: #1a4d2e; font-weight: 600;" onclick="document.querySelector('#productos').scrollIntoView({behavior: 'smooth'})">
+                Ver todos los productos
+            </button>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>VitalAir</h4>
+                <p style="font-size: 13px; color: rgba(255,255,255,0.7);">Inhaladores inteligentes con tecnología premium. Respira diferente.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Productos</h4>
+                <a href="pages/productos.html?id=basico">VitalAir Básico</a>
+                <a href="pages/productos.html?id=premium">VitalAir Premium</a>
+                <a href="pages/productos.html?id=pro">VitalAir Pro</a>
+            </div>
+            <div class="footer-section">
+                <h4>Información</h4>
+                <a href="pages/comparativa.html">Comparativa</a>
+                <a href="pages/faq.html">FAQ</a>
+                <a href="pages/contacto.html">Contacto</a>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <a href="pages/legal.html">Términos y condiciones</a>
+                <a href="pages/legal.html">Política de privacidad</a>
+                <a href="pages/legal.html">Política de cookies</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 VitalAir. Todos los derechos reservados. | Hecho con ❤️ para tu bienestar</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/app.js"></script>
+    <script>
+        document.getElementById('basico-card').innerHTML = createProductCard('basico');
+        document.getElementById('premium-card').innerHTML = createProductCard('premium');
+        document.getElementById('pro-card').innerHTML = createProductCard('pro');
+    </script>
+</body>
+</html>
