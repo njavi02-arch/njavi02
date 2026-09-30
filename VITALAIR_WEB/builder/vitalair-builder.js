@@ -10,6 +10,7 @@
   try { cfg = JSON.parse(cfgEl.textContent); } catch (e) { return; }
 
   var PCT = +cfg.discountPct || 0;
+  var BULK = cfg.bulk && cfg.bulk.min > 0 && cfg.bulk.pct > 0 ? cfg.bulk : null; /* % extra en sabores al llevar N o más */
   var MAX_LINE = 99;
   var fmt = new Intl.NumberFormat(cfg.locale || 'es-ES', { style: 'currency', currency: cfg.currency || 'EUR' });
   function money(c) { return fmt.format(c / 100); }
@@ -41,10 +42,16 @@
     chosen().forEach(function (f) { var q = state.counts[f.name]; out.push({ kind: 'flavor', label: f.name, qty: q, unit: f.price, amount: f.price * q }); });
     return out;
   }
+  /* El descuento web se calcula sobre cada línea; el extra de sabores se aplica después, sobre el precio ya rebajado. */
   function totals() {
-    var sub = 0, d = 0;
-    lines().forEach(function (l) { sub += l.amount; d += disc(l.amount); });
-    return { sub: sub, disc: d, total: sub - d };
+    var sub = 0, d = 0, d2 = 0, bulkOn = !!BULK && total() >= BULK.min;
+    lines().forEach(function (l) {
+      sub += l.amount;
+      var a = disc(l.amount);
+      d += a;
+      if (bulkOn && l.kind === 'flavor') d2 += Math.round((l.amount - a) * BULK.pct / 100);
+    });
+    return { sub: sub, disc: d, bulk: d2, bulkOn: bulkOn, total: sub - d - d2 };
   }
 
   /* ---------- estructura ---------- */
@@ -176,8 +183,9 @@
     }
     h += '<div class="vb-l vb-l--line" data-k="subtotal"><dt>Subtotal</dt><dd>' + money(t.sub) + '</dd></div>';
     if (PCT) h += '<div class="vb-l vb-l--disc" data-k="discount"><dt>' + PCT + ' % de descuento</dt><dd>−' + money(t.disc) + '</dd></div>';
+    if (t.bulkOn) h += '<div class="vb-l vb-l--disc" data-k="bulk"><dt>' + BULK.pct + ' % extra en sabores (' + BULK.min + ' o más)</dt><dd>−' + money(t.bulk) + '</dd></div>';
     h += '<div class="vb-l vb-l--total" data-k="total"><dt>Total</dt><dd>' + money(t.total) + '</dd></div></dl>';
-    if (PCT) h += '<p class="vb-fine">El ' + PCT + ' % se aplica automáticamente a todo tu pedido, sabores incluidos. Envío aparte al finalizar la compra.</p>';
+    if (PCT) h += '<p class="vb-fine">Los descuentos se aplican automáticamente, sin códigos. Envío aparte al finalizar la compra.</p>';
     return h;
   }
 
@@ -223,6 +231,9 @@
     var msg = '', ok = !state.busy;
     if (!kit && t === 0) { msg = 'Elige al menos un sabor para continuar.'; ok = false; }
     else if (kit && t === 0 && hasExtras) msg = 'Puedes añadir sabores ahora o continuar solo con el inhalador.';
+    if (BULK && hasExtras && t > 0 && t < BULK.min) { var miss = BULK.min - t; msg = 'Añade ' + miss + (miss === 1 ? ' sabor más' : ' sabores más') + ' y tienes un ' + BULK.pct + ' % extra en los sabores.'; }
+    else if (BULK && hasExtras && t >= BULK.min) msg = '¡Conseguido! ' + BULK.pct + ' % extra en tus sabores.';
+    else if (BULK && hasExtras && t === 0 && kit) msg = 'Con ' + BULK.min + ' sabores o más, ' + BULK.pct + ' % extra en los sabores.';
     ui.hint.textContent = msg;
     ui.hint.classList.toggle('is-warn', !kit && t === 0);
     ui.cta.disabled = !ok;

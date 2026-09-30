@@ -27,6 +27,11 @@ const clean = s => s.replace(/\s/g, '').replace(/−/g, '-');
   const submit = async (pg) => { await pg.p.click('.vb-cta'); await pg.p.waitForURL('**/cart'); return pg.req.body; };
   const FL = ['Mango','Mint','Strawberry','Blueberry','Raspberry','Coffee','Cinnamon','Maple Pepper','Orange','Lemon','Grapefruit','Cranberry','Vanilla'];
   const E = 199; // extra de prueba
+  const eur = c => (c / 100).toFixed(2).replace('.', ',') + '€';
+  // esperado: web 15 % por línea; extra 15 % en sabores (si >= 3) sobre el precio ya rebajado
+  const expect = (pack, fl) => { const n = Object.values(fl).reduce((a, b) => a + b, 0); let sub = pack, d = Math.round(pack * .15), d2 = 0;
+    for (const [f, q] of Object.entries(fl)) { const L = q * (f === 'Coffee' ? 249 : 199); sub += L; const a = Math.round(L * .15); d += a; if (n >= 3) d2 += Math.round((L - a) * .15); }
+    return { sub, d, d2, total: sub - d - d2 }; };
 
   // 1) precio base y extras, 15 %: 1 inhalador + 1 sabor
   { const pg = await page(M);
@@ -44,11 +49,11 @@ const clean = s => s.replace(/\s/g, '').replace(/−/g, '-');
   { const pg = await page(M);
     for (let i = 0; i < 2; i++) await plus(pg.p, 'Mint'); await plus(pg.p, 'Strawberry'); for (let i = 0; i < 2; i++) await plus(pg.p, 'Mango');
     ok(await cnt(pg.p, 'Mint') === 2, 'repetir sabor: Mint × 2');
-    const sub = 1999 + 5 * E; // 29,94
-    ok(await sel(pg.p, 'subtotal') === '29,94€', `subtotal 19,99 + 5 × 1,99 = ${sub / 100} €`);
-    const d = Math.round(1999*.15) + Math.round(2*E*.15) + Math.round(E*.15) + Math.round(2*E*.15); // por línea, como Shopify
-    ok(await sel(pg.p, 'discount') === '-' + (d / 100).toFixed(2).replace('.', ',') + '€', 'descuento correcto ' + d);
-    ok(await sel(pg.p, 'total') === ((sub - d) / 100).toFixed(2).replace('.', ',') + '€', 'total correcto');
+    const X = expect(1999, { Mint: 2, Strawberry: 1, Mango: 2 });
+    ok(await sel(pg.p, 'subtotal') === eur(X.sub), 'subtotal 19,99 + 5 × 1,99 = ' + eur(X.sub));
+    ok(await sel(pg.p, 'discount') === '-' + eur(X.d), 'descuento web 15 % = ' + eur(X.d));
+    ok(await sel(pg.p, 'bulk') === '-' + eur(X.d2), 'extra 15 % en sabores (5 sabores) = ' + eur(X.d2));
+    ok(await sel(pg.p, 'total') === eur(X.total), 'total = ' + eur(X.total));
     ok((await pg.p.$eval('.vb-l[data-f="Mint"] dt', e => e.textContent)).includes('Mint × 2'), 'panel muestra "Mint × 2"');
     ok(clean(await pg.p.$eval('.vb-l[data-f="Mint"] dd', e => e.textContent)) === '+3,98€', 'línea Mint × 2 = +3,98 €');
     const b = await submit(pg);
@@ -66,10 +71,28 @@ const clean = s => s.replace(/\s/g, '').replace(/−/g, '-');
     const real = 3998 + FL.reduce((a, f) => a + cnts[f] * (f === 'Coffee' ? 249 : 199), 0);
     ok(Object.values(cnts).every(v => v >= 1) && cnts.Mango === 11, 'los 13 sabores seleccionados, sin tope (Mango × 11)');
     ok(await sel(pg.p, 'subtotal') === (real / 100).toFixed(2).replace('.', ',') + '€', 'subtotal con 13 sabores y precio distinto de Coffee = ' + real / 100);
-    const dd = Math.round(3998*.15) + FL.reduce((a, f) => a + Math.round(cnts[f] * (f === 'Coffee' ? 249 : 199) * .15), 0);
-    ok(await sel(pg.p, 'total') === ((real - dd) / 100).toFixed(2).replace('.', ',') + '€', 'total con 15 % = ' + (real - dd) / 100);
+    const X3 = expect(3998, cnts);
+    ok(await sel(pg.p, 'total') === eur(X3.total), '13 sabores: total con 15 % + 15 % extra = ' + eur(X3.total));
     const b = await submit(pg);
     ok(b.items.length === 14 && b.items[0].id === 102, 'carrito: 2 inhaladores (variante 102) + 13 líneas de sabor');
+    await pg.ctx.close(); }
+
+  // 3b) extra en sabores: 1-2 sabores no, 3 o más sí
+  { const pg = await page(M);
+    await plus(pg.p, 'Mango'); await plus(pg.p, 'Mint');
+    ok(await sel(pg.p, 'bulk') === null, '2 sabores: sin extra');
+    ok((await pg.p.$eval('.vb-hint', e => e.textContent)).includes('Añade 1 sabor más'), '2 sabores: aviso "añade 1 más"');
+    await plus(pg.p, 'Strawberry');
+    const X = expect(1999, { Mango: 1, Mint: 1, Strawberry: 1 });
+    ok(await sel(pg.p, 'bulk') === '-' + eur(X.d2), '3 sabores: aparece extra 15 % = ' + eur(X.d2));
+    ok(await sel(pg.p, 'total') === eur(X.total), '3 sabores: total = ' + eur(X.total));
+    await minus(pg.p, 'Strawberry'); ok(await sel(pg.p, 'bulk') === null, 'al bajar a 2, desaparece el extra');
+    await pg.ctx.close(); }
+  { const pg = await page(M); await pg.p.click('.vb-mode-btn:nth-child(2)');
+    for (let i = 0; i < 3; i++) await plus(pg.p, 'Mint');
+    const X = expect(0, { Mint: 3 }); X.sub -= 0;
+    const Lm = 3 * 199, a = Math.round(Lm * .15), b = Math.round((Lm - a) * .15);
+    ok(await sel(pg.p, 'total') === eur(Lm - a - b), 'solo sabores ×3 con ambos descuentos = ' + eur(Lm - a - b));
     await pg.ctx.close(); }
 
   // 4) quitar y cambiar cantidades

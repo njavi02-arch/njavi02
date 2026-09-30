@@ -9,6 +9,8 @@
 </style>
 {%- capture pct_raw -%}{%- render 'vitalair-promo-pct' -%}{%- endcapture -%}
 {%- assign pct = pct_raw | strip | plus: 0 -%}
+{%- capture deal_raw -%}{%- render 'vitalair-flavor-deal' -%}{%- endcapture -%}
+{%- assign deal = deal_raw | strip | split: '|' -%}
 {%- assign only_p = all_products['vitalair-sabores'] -%}
 <div class="va va-pdp" id="va-pdp-{{ section.id }}">
 <div class="va-wrap va-pdp-grid">
@@ -32,7 +34,8 @@
     {%- if pct > 0 -%}<p class="va-offer">{{ pct }} % de descuento en toda la web · automático</p>{%- endif -%}
     <p class="va-lead" style="font-size:17px;margin-bottom:8px">Madera natural y metal, sin nicotina. Elige tu inhalador y añade los sabores que quieras.</p>
     <ul class="va-bul">
-      <li>13 sabores: añade los que te apetezca, sin límite</li>
+      <li>13 sabores a {{ only_p.variants.first.price | money }} cada uno, sin límite</li>
+      <li>{{ deal[0] }} sabores o más: {{ deal[1] }} % extra en los sabores</li>
       <li>Madera natural y metal, con el logo grabado</li>
       <li>Envío gratis en España desde 55 €</li>
     </ul>
@@ -62,6 +65,7 @@
   "currency": {{ cart.currency.iso_code | json }},
   "locale": "es-ES",
   "discountPct": {{ pct }},
+  "bulk": { "min": {{ deal[0] }}, "pct": {{ deal[1] }} },
   "sprite": "",
   "cartUrl": {{ routes.cart_url | json }},
   "addUrl": "{{ routes.cart_add_url }}.js",
