@@ -1,0 +1,76 @@
+{%- capture pct_raw -%}{%- render 'vitalair-promo-pct' -%}{%- endcapture -%}
+{%- assign pct = pct_raw | strip -%}
+{%- assign prod = all_products['vitalair-smart-inhaler-pack-system'] -%}
+{%- if section.settings.enabled and template.name != 'cart' -%}
+<style>
+.vp-ov{position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(18,28,22,.62);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);opacity:0;transition:opacity .25s ease}
+.vp-ov.is-open{display:flex}.vp-ov.is-in{opacity:1}
+.vp{position:relative;width:100%;max-width:400px;max-height:calc(100dvh - 32px);overflow:auto;border-radius:26px;color:#fff;text-align:center;padding:30px 24px 22px;background:radial-gradient(120% 70% at 50% 0%,#3A6148 0%,#25402F 55%,#1B3023 100%);box-shadow:0 30px 80px rgba(0,0,0,.45);transform:translateY(14px) scale(.96);transition:transform .3s cubic-bezier(.2,.9,.3,1.2);font-family:'Inter',system-ui,sans-serif}
+.vp-ov.is-in .vp{transform:none}
+.vp::before{content:"";position:absolute;left:50%;top:-40%;width:170%;aspect-ratio:1;translate:-50% 0;background:repeating-conic-gradient(from 0deg,rgba(255,214,160,.14) 0 8deg,transparent 8deg 20deg);-webkit-mask:radial-gradient(circle,#000 0,transparent 62%);mask:radial-gradient(circle,#000 0,transparent 62%);animation:vp-spin 50s linear infinite;pointer-events:none}
+.vp::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 12% 18%,rgba(255,214,160,.5) 0 2px,transparent 3px),radial-gradient(circle at 88% 26%,rgba(255,255,255,.45) 0 2px,transparent 3px),radial-gradient(circle at 20% 70%,rgba(255,255,255,.3) 0 2px,transparent 3px),radial-gradient(circle at 82% 78%,rgba(255,214,160,.45) 0 2px,transparent 3px);pointer-events:none}
+@keyframes vp-spin{to{rotate:360deg}}
+.vp>*{position:relative;z-index:1}
+.vp-x{position:absolute;top:10px;right:10px;z-index:2;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font-size:22px;line-height:1;cursor:pointer}
+.vp-x:hover{background:rgba(255,255,255,.22)}
+.vp-tag{display:inline-block;padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+.vp-big{margin:14px 0 0;font:500 clamp(92px,30vw,132px)/.9 'Fraunces',Georgia,serif;letter-spacing:-.03em;background:linear-gradient(180deg,#FFE3B8 0%,#F0A64A 70%,#D9822B 100%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 8px 30px rgba(217,130,43,.25)}
+.vp-big sup{font-size:.42em;vertical-align:top;position:relative;top:.12em;margin-left:2px}
+.vp-sub{margin:6px 0 0;font-size:15px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
+.vp-all{margin:2px 0 0;font:500 22px 'Fraunces',Georgia,serif}
+.vp-how{margin:16px auto 0;max-width:300px;font-size:14px;line-height:1.5;color:#DCE7DD}
+.vp-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:14px 0 0;padding:0;list-style:none}
+.vp-chips li{padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.1);font-size:12px;color:#EAF1EA}
+.vp-cta{display:block;width:100%;margin:20px 0 0;padding:16px 20px;border:0;border-radius:14px;background:#D9822B;color:#fff;font:700 15px 'Inter',sans-serif;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;cursor:pointer;box-shadow:0 10px 24px rgba(217,130,43,.35);transition:transform .15s,background .15s}
+.vp-cta:hover{background:#C2701F;transform:translateY(-1px)}
+.vp-later{display:block;margin:10px auto 0;padding:10px;border:0;background:none;color:#C5D3C6;font:500 13px 'Inter',sans-serif;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.vp-fine{margin:8px 0 0;font-size:11px;color:#9FB3A2}
+@media(prefers-reduced-motion:reduce){.vp::before{animation:none}.vp,.vp-ov{transition:none}}
+</style>
+<div class="vp-ov" id="vp-ov" role="dialog" aria-modal="true" aria-labelledby="vp-t" aria-describedby="vp-d" hidden>
+  <div class="vp" id="vp-card">
+    <button type="button" class="vp-x" id="vp-close" aria-label="Cerrar">&times;</button>
+    <span class="vp-tag">Descuento activo</span>
+    <p class="vp-big" id="vp-t"><span class="visually-hidden" style="position:absolute;left:-9999px">{{ pct }} por ciento de descuento</span><span aria-hidden="true">{{ pct }}<sup>%</sup></span></p>
+    <p class="vp-sub" aria-hidden="true">de descuento</p>
+    <p class="vp-all">en toda la web</p>
+    <p class="vp-how" id="vp-d">Se aplica solo en tu carrito, sin códigos. Vale para el inhalador y para los sabores.</p>
+    <ul class="vp-chips"><li>Automático</li><li>Sin código</li><li>Incluye sabores</li></ul>
+    <a class="vp-cta" id="vp-go" href="{{ prod.url | default: routes.all_products_collection_url }}">Elegir mi inhalador</a>
+    <button type="button" class="vp-later" id="vp-later">Seguir mirando</button>
+    <p class="vp-fine">Descuento automático sobre el precio de tu pedido.</p>
+  </div>
+</div>
+<script>
+(function(){
+  var K='va_promo_seen',ov=document.getElementById('vp-ov');if(!ov)return;
+  var card=document.getElementById('vp-card'),last=null;
+  function seen(){try{var t=+localStorage.getItem(K);return t&&Date.now()-t<864e5}catch(e){try{return sessionStorage.getItem(K)}catch(_){return false}}}
+  function mark(){try{localStorage.setItem(K,Date.now())}catch(e){try{sessionStorage.setItem(K,1)}catch(_){}}}
+  function open(){last=document.activeElement;ov.hidden=false;ov.classList.add('is-open');document.documentElement.style.overflow='hidden';requestAnimationFrame(function(){ov.classList.add('is-in');document.getElementById('vp-go').focus()});mark()}
+  function close(){ov.classList.remove('is-in');document.documentElement.style.overflow='';setTimeout(function(){ov.classList.remove('is-open');ov.hidden=true;if(last&&last.focus)try{last.focus()}catch(e){}},220)}
+  document.getElementById('vp-close').addEventListener('click',close);
+  document.getElementById('vp-later').addEventListener('click',close);
+  document.getElementById('vp-go').addEventListener('click',close);
+  ov.addEventListener('click',function(e){if(e.target===ov)close()});
+  document.addEventListener('keydown',function(e){
+    if(ov.hidden)return;
+    if(e.key==='Escape')close();
+    if(e.key==='Tab'){var f=card.querySelectorAll('button,a[href]'),a=f[0],z=f[f.length-1];
+      if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}
+  });
+  window.vitalairPromo={open:open};
+  if(!seen())setTimeout(open,{{ section.settings.delay | default: 800 }});
+})();
+</script>
+{%- endif -%}
+{% schema %}
+{
+  "name": "VitalAir · Promo descuento",
+  "settings": [
+    {"type": "checkbox", "id": "enabled", "label": "Mostrar el pop-up de descuento", "default": true},
+    {"type": "range", "id": "delay", "label": "Retraso (ms)", "min": 0, "max": 5000, "step": 200, "default": 800}
+  ],
+  "presets": [{"name": "VitalAir · Promo descuento"}]
+}
+{% endschema %}

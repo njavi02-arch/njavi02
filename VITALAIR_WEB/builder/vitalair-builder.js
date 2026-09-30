@@ -1,5 +1,6 @@
-/* VitalAir builder: elige inhaladores + sabores (o solo sabores) y añade al carrito.
-   Lee la configuración de <script type="application/json" id="va-config"> y se monta en #va-builder. */
+/* VitalAir builder v4: inhalador(es) como producto base + sabores como extras con precio.
+   Lee la configuración de <script type="application/json" id="va-config"> y se monta en #va-builder.
+   Cada sabor es una variante real de Shopify (inventario propio) y entra al carrito como línea propia. */
 (function () {
   'use strict';
   var root = document.getElementById('va-builder');
@@ -8,34 +9,53 @@
   var cfg;
   try { cfg = JSON.parse(cfgEl.textContent); } catch (e) { return; }
 
-  var PER = cfg.perInhaler || 3;
-  var MAX_ONLY = cfg.maxOnly || 30;
+  var PCT = +cfg.discountPct || 0;
+  var MAX_LINE = 99;
   var fmt = new Intl.NumberFormat(cfg.locale || 'es-ES', { style: 'currency', currency: cfg.currency || 'EUR' });
   function money(c) { return fmt.format(c / 100); }
+  function disc(c) { return PCT ? Math.round(c * PCT / 100) : 0; }
 
   var packs = cfg.packs.slice().sort(function (a, b) { return a.n - b.n; });
-  var flavors = cfg.flavors;
-  var base = packs.length ? packs[0].price / packs[0].n : 0;
+  /* un sabor solo se vende si tiene variante, precio real (> 0) y stock */
+  var flavors = (cfg.flavors || []).filter(function (f) { return f.id && f.price > 0; });
+  flavors.forEach(function (f) { f.cap = Math.max(0, Math.min(f.stock == null ? MAX_LINE : f.stock, MAX_LINE)); if (f.available === false) f.cap = 0; });
+  var hasExtras = flavors.length > 0;
 
-  var state = { mode: 'kit', n: packs.length ? packs[0].n : 1, counts: {}, order: [], busy: false };
+  var state = { mode: 'kit', n: packs.length ? packs[0].n : 1, counts: {}, busy: false };
   flavors.forEach(function (f) { state.counts[f.name] = 0; });
 
   function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
   function total() { var t = 0; for (var k in state.counts) t += state.counts[k]; return t; }
-  function maxNow() { return state.mode === 'kit' ? state.n * PER : MAX_ONLY; }
   function pack() { return packs.filter(function (p) { return p.n === state.n; })[0]; }
+  function chosen() { return flavors.filter(function (f) { return state.counts[f.name] > 0; }); }
+
+  /* lines: [{label, qty, unit, amount}] */
+  function lines() {
+    var out = [];
+    if (state.mode === 'kit') {
+      var p = pack();
+      if (p) out.push({ kind: 'pack', label: state.n + (state.n > 1 ? ' inhaladores' : ' inhalador'), amount: p.price, compare: p.compare });
+    }
+    chosen().forEach(function (f) { var q = state.counts[f.name]; out.push({ kind: 'flavor', label: f.name, qty: q, unit: f.price, amount: f.price * q }); });
+    return out;
+  }
+  function totals() {
+    var sub = 0, d = 0;
+    lines().forEach(function (l) { sub += l.amount; d += disc(l.amount); });
+    return { sub: sub, disc: d, total: sub - d };
+  }
 
   /* ---------- estructura ---------- */
   root.innerHTML = '';
   var ui = {};
   root.classList.add('vb');
 
-  if (cfg.only) {
+  if (hasExtras) {
     ui.mode = el('div', 'vb-mode');
     ui.mode.setAttribute('role', 'tablist');
-    ui.modeKit = el('button', 'vb-mode-btn', '<strong>Inhalador + sabores</strong><span>Combina los sabores como quieras</span>');
+    ui.modeKit = el('button', 'vb-mode-btn', '<strong>Inhalador + sabores</strong><span>Tu inhalador y los sabores que quieras</span>');
     ui.modeOnly = el('button', 'vb-mode-btn', '<strong>Solo sabores</strong><span>Sin inhalador</span>');
     [ui.modeKit, ui.modeOnly].forEach(function (b) { b.type = 'button'; b.setAttribute('role', 'tab'); ui.mode.appendChild(b); });
     root.appendChild(ui.mode);
@@ -44,7 +64,7 @@
   }
 
   ui.kitBox = el('div', 'vb-kit');
-  ui.kitBox.appendChild(el('h3', 'vb-h', '<span>1</span>¿Cuántos inhaladores?'));
+  ui.kitBox.appendChild(el('h3', 'vb-h', '<span>1</span>Elige tu inhalador'));
   ui.packs = el('div', 'vb-packs');
   ui.packs.setAttribute('role', 'group');
   ui.packs.setAttribute('aria-label', 'Número de inhaladores');
@@ -56,7 +76,7 @@
     b.innerHTML = '<b>' + p.n + '</b><span>' + money(p.price) + '</span>' + save;
     b.setAttribute('aria-label', p.n + (p.n > 1 ? ' inhaladores' : ' inhalador') + ', ' + money(p.price));
     if (!p.available) { b.disabled = true; b.classList.add('is-off'); }
-    b.addEventListener('click', function () { setPacks(p.n); });
+    b.addEventListener('click', function () { state.n = p.n; render(); });
     ui.packs.appendChild(b);
   });
   ui.kitBox.appendChild(ui.packs);
@@ -65,40 +85,43 @@
   ui.kitBox.appendChild(ui.cap);
   root.appendChild(ui.kitBox);
 
-  ui.flHead = el('h3', 'vb-h');
-  root.appendChild(ui.flHead);
-
-  ui.list = el('div', 'vb-list');
-  if (cfg.sprite) ui.list.style.setProperty('--sp', "url('" + cfg.sprite + "')");
   var rows = {};
-  flavors.forEach(function (f) {
-    var r = el('div', 'vb-row');
-    r.dataset.f = f.name;
-    r.innerHTML =
-      '<i class="va-sp" data-f="' + esc(f.name) + '" aria-hidden="true"></i>' +
-      '<div class="vb-name"><strong>' + esc(f.name) + '</strong><span>' + esc(f.desc || '') + '</span></div>' +
-      '<div class="vb-step"><button type="button" class="vb-minus" aria-label="Quitar ' + esc(f.name) + '">−</button>' +
-      '<output class="vb-n" aria-live="polite">0</output>' +
-      '<button type="button" class="vb-plus" aria-label="Añadir ' + esc(f.name) + '">+</button></div>';
-    r.querySelector('.vb-minus').addEventListener('click', function () { change(f.name, -1); });
-    r.querySelector('.vb-plus').addEventListener('click', function () { change(f.name, +1); });
-    rows[f.name] = { row: r, n: r.querySelector('.vb-n'), minus: r.querySelector('.vb-minus'), plus: r.querySelector('.vb-plus') };
-    ui.list.appendChild(r);
-  });
-  root.appendChild(ui.list);
+  if (hasExtras) {
+    ui.flHead = el('h3', 'vb-h');
+    root.appendChild(ui.flHead);
+    ui.list = el('div', 'vb-list');
+    if (cfg.sprite) ui.list.style.setProperty('--sp', "url('" + cfg.sprite + "')");
+    flavors.forEach(function (f) {
+      var r = el('div', 'vb-row');
+      r.dataset.f = f.name;
+      r.innerHTML =
+        '<i class="va-sp" data-f="' + esc(f.name) + '" aria-hidden="true"></i>' +
+        '<div class="vb-name"><strong>' + esc(f.name) + '</strong><span>' + esc(f.desc || '') + '</span></div>' +
+        '<div class="vb-side"><span class="vb-extra">+' + money(f.price) + '</span>' +
+        '<div class="vb-step"><button type="button" class="vb-minus" aria-label="Quitar ' + esc(f.name) + '">−</button>' +
+        '<output class="vb-n" aria-live="polite">0</output>' +
+        '<button type="button" class="vb-plus" aria-label="Añadir ' + esc(f.name) + ' (+' + money(f.price) + ')">+</button></div></div>';
+      r.querySelector('.vb-minus').addEventListener('click', function () { change(f, -1); });
+      r.querySelector('.vb-plus').addEventListener('click', function () { change(f, +1); });
+      rows[f.name] = { row: r, n: r.querySelector('.vb-n'), minus: r.querySelector('.vb-minus'), plus: r.querySelector('.vb-plus'), extra: r.querySelector('.vb-extra') };
+      ui.list.appendChild(r);
+    });
+    root.appendChild(ui.list);
+  }
 
   ui.note = el('p', 'vb-toast');
   ui.note.setAttribute('role', 'status');
   root.appendChild(ui.note);
 
+  ui.order = el('div', 'vb-order');
+  root.appendChild(ui.order);
+
   ui.bar = el('div', 'vb-bar');
   ui.barInfo = el('div', 'vb-info');
   ui.barCount = el('div', 'vb-count');
-  ui.barTrack = el('div', 'vb-track', '<i></i>');
   ui.barSum = el('div', 'vb-sum');
   ui.barPrice = el('div', 'vb-price');
   ui.barInfo.appendChild(ui.barCount);
-  ui.barInfo.appendChild(ui.barTrack);
   ui.barInfo.appendChild(ui.barSum);
   ui.cta = el('button', 'vb-cta');
   ui.cta.type = 'button';
@@ -118,55 +141,50 @@
   function setMode(m) {
     if (m === state.mode) return;
     state.mode = m;
-    state.counts = {}; state.order = [];
+    state.counts = {};
     flavors.forEach(function (f) { state.counts[f.name] = 0; });
     ui.note.textContent = '';
     render();
   }
 
-  function setPacks(n) {
-    state.n = n;
-    var max = maxNow(), t = total();
-    if (t > max) {
-      var removed = t - max;
-      while (total() > max && state.order.length) {
-        var last = state.order.pop();
-        if (state.counts[last] > 0) state.counts[last]--;
-      }
-      ui.note.textContent = 'Hemos ajustado tu selección a ' + max + ' sabores (' + (removed === 1 ? 'se ha quitado 1' : 'se han quitado ' + removed) + ').';
-    } else {
-      ui.note.textContent = '';
-    }
-    render();
-  }
-
-  function change(name, d) {
-    var c = state.counts[name];
+  function change(f, d) {
+    var c = state.counts[f.name];
     if (d > 0) {
-      if (total() >= maxNow()) return; /* la interfaz impide pasarse del límite */
-      state.counts[name] = c + 1;
-      state.order.push(name);
+      if (c >= f.cap) { ui.note.textContent = 'No hay más unidades de ' + f.name + ' disponibles.'; return; }
+      state.counts[f.name] = c + 1;
     } else {
       if (c <= 0) return;
-      state.counts[name] = c - 1;
-      var i = state.order.lastIndexOf(name);
-      if (i > -1) state.order.splice(i, 1);
+      state.counts[f.name] = c - 1;
     }
     ui.note.textContent = '';
     render();
   }
 
-  function summary() {
-    return flavors.filter(function (f) { return state.counts[f.name] > 0; })
-      .map(function (f) { return f.name + ' ×' + state.counts[f.name]; }).join(', ');
+  function orderHtml(t) {
+    var ls = lines();
+    if (!ls.length) return '';
+    var h = '<h4>Tu pedido</h4><dl>';
+    var fl = ls.filter(function (l) { return l.kind === 'flavor'; });
+    ls.filter(function (l) { return l.kind === 'pack'; }).forEach(function (l) {
+      h += '<div class="vb-l" data-k="pack"><dt>' + l.label + '</dt><dd>' + (l.compare && l.compare > l.amount ? '<s>' + money(l.compare) + '</s> ' : '') + money(l.amount) + '</dd></div>';
+    });
+    if (fl.length) {
+      h += '<div class="vb-l vb-l--head"><dt>Sabores</dt><dd></dd></div>';
+      fl.forEach(function (l) {
+        h += '<div class="vb-l vb-l--sub" data-k="flavor" data-f="' + esc(l.label) + '"><dt>' + esc(l.label) + ' × ' + l.qty + '</dt><dd>+' + money(l.amount) + '</dd></div>';
+      });
+    }
+    h += '<div class="vb-l vb-l--line" data-k="subtotal"><dt>Subtotal</dt><dd>' + money(t.sub) + '</dd></div>';
+    if (PCT) h += '<div class="vb-l vb-l--disc" data-k="discount"><dt>' + PCT + ' % de descuento</dt><dd>−' + money(t.disc) + '</dd></div>';
+    h += '<div class="vb-l vb-l--total" data-k="total"><dt>Total</dt><dd>' + money(t.total) + '</dd></div></dl>';
+    if (PCT) h += '<p class="vb-fine">El ' + PCT + ' % se aplica automáticamente a todo tu pedido, sabores incluidos. Envío aparte al finalizar la compra.</p>';
+    return h;
   }
 
-  function onlyTotal() { return total() * (cfg.only ? cfg.only.price : 0); }
-
   function render() {
-    var t = total(), max = maxNow(), kit = state.mode === 'kit';
+    var t = total(), kit = state.mode === 'kit';
     root.dataset.mode = state.mode;
-    if (cfg.only) {
+    if (hasExtras) {
       ui.modeKit.setAttribute('aria-selected', kit);
       ui.modeOnly.setAttribute('aria-selected', !kit);
       ui.modeKit.classList.toggle('is-on', kit);
@@ -180,63 +198,48 @@
     });
     var p = pack();
     if (kit) {
-      ui.cap.innerHTML = '<b>' + state.n + (state.n > 1 ? ' inhaladores' : ' inhalador') + '</b> · hasta <b>' + max + ' sabores</b>';
-      ui.flHead.innerHTML = '<span>2</span>Elige tus sabores';
-    } else {
-      ui.flHead.innerHTML = '<span>1</span>Elige tus sabores';
+      ui.cap.innerHTML = '<b>' + state.n + (state.n > 1 ? ' inhaladores' : ' inhalador') + '</b>' +
+        (p && p.compare && p.compare > p.price ? ' · <span class="vb-legend">el ahorro del pack es frente a comprar las unidades sueltas</span>' : '');
     }
-    flavors.forEach(function (f) {
-      var r = rows[f.name], c = state.counts[f.name];
-      r.n.textContent = c;
-      r.row.classList.toggle('is-on', c > 0);
-      r.minus.disabled = c === 0;
-      r.plus.disabled = t >= max;
-    });
-    ui.list.classList.toggle('is-full', t >= max);
-
-    var pct = max ? Math.min(100, Math.round(t * 100 / max)) : 0;
-    if (kit) {
-      ui.barCount.innerHTML = 'Sabores <b>' + t + ' / ' + max + '</b>';
-      ui.barTrack.hidden = false;
-      ui.barTrack.firstChild.style.width = pct + '%';
-      ui.barSum.textContent = state.n + (state.n > 1 ? ' inhaladores' : ' inhalador');
-      var price = p ? p.price : 0;
-      ui.barPrice.innerHTML = (p && p.compare && p.compare > p.price ? '<s>' + money(p.compare) + '</s>' : '') + '<b>' + money(price) + '</b>';
-    } else {
-      ui.barCount.innerHTML = 'Sabores <b>' + t + '</b>';
-      ui.barTrack.hidden = true;
-      ui.barSum.textContent = t ? t + (t > 1 ? ' sobres' : ' sobre') + ' · ' + money(cfg.only.price) + ' cada uno' : 'Sin inhalador';
-      ui.barPrice.innerHTML = '<b>' + money(onlyTotal()) + '</b>';
+    if (hasExtras) {
+      ui.flHead.innerHTML = '<span>' + (kit ? 2 : 1) + '</span>Añade tus sabores <small>(opcional · sin límite)</small>';
+      flavors.forEach(function (f) {
+        var r = rows[f.name], c = state.counts[f.name];
+        r.n.textContent = c;
+        r.row.classList.toggle('is-on', c > 0);
+        r.minus.disabled = c === 0;
+        r.plus.disabled = c >= f.cap;
+        r.extra.textContent = f.cap === 0 ? 'Agotado' : (c > 0 ? c + ' × ' : '') + '+' + money(f.price);
+        r.row.classList.toggle('is-out', f.cap === 0);
+      });
     }
 
-    var msg = '', ok = t > 0 && !state.busy;
-    if (t === 0) msg = 'Elige al menos un sabor para continuar.';
-    else if (kit && t < max) msg = 'Puedes elegir ' + (max - t) + (max - t === 1 ? ' sabor más' : ' sabores más') + '. Es opcional.';
-    else if (kit) msg = 'Selección completa.';
+    var tt = totals();
+    ui.order.innerHTML = orderHtml(tt);
+    ui.barCount.innerHTML = hasExtras ? 'Sabores <b>' + t + '</b>' : '';
+    ui.barSum.textContent = kit ? (state.n + (state.n > 1 ? ' inhaladores' : ' inhalador')) + (t ? ' + ' + t + (t > 1 ? ' sabores' : ' sabor') : '') : (t ? t + (t > 1 ? ' sabores' : ' sabor') + ' sin inhalador' : '');
+    ui.barPrice.innerHTML = (PCT && tt.sub > 0 ? '<s>' + money(tt.sub) + '</s>' : '') + '<b>' + money(tt.total) + '</b>';
+
+    var msg = '', ok = !state.busy;
+    if (!kit && t === 0) { msg = 'Elige al menos un sabor para continuar.'; ok = false; }
+    else if (kit && t === 0 && hasExtras) msg = 'Puedes añadir sabores ahora o continuar solo con el inhalador.';
     ui.hint.textContent = msg;
-    ui.hint.classList.toggle('is-warn', t === 0);
-    if (kit) {
-      var free = p && p.price >= (cfg.freeShipFrom || 5500);
-      ui.hint.dataset.ship = free ? '1' : '';
-    }
+    ui.hint.classList.toggle('is-warn', !kit && t === 0);
     ui.cta.disabled = !ok;
-    ui.cta.textContent = state.busy ? 'Añadiendo…' : (t === 0 ? 'Elige un sabor' : 'Añadir al carrito');
+    ui.cta.textContent = state.busy ? 'Añadiendo…' : (!kit && t === 0 ? 'Elige un sabor' : 'Añadir al carrito');
     if (kit && p && !p.available) { ui.cta.disabled = true; ui.cta.textContent = 'Agotado'; }
   }
 
-  function uid() { return 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
-
   function buildItems() {
-    if (state.mode === 'kit') {
-      var p = pack();
-      return [{ id: p.id, quantity: 1, properties: { 'Sabores': summary(), 'Nº de sabores': String(total()), '_bundle': uid() } }];
-    }
-    return flavors.filter(function (f) { return state.counts[f.name] > 0; })
-      .map(function (f) { return { id: cfg.only.variants[f.name], quantity: state.counts[f.name] }; });
+    var items = [];
+    if (state.mode === 'kit') items.push({ id: pack().id, quantity: 1 });
+    chosen().forEach(function (f) { items.push({ id: f.id, quantity: state.counts[f.name] }); });
+    return items;
   }
 
   function addToCart() {
-    if (total() === 0 || state.busy) return;
+    if (state.busy) return;
+    if (state.mode === 'only' && total() === 0) return;
     var items = buildItems();
     state.busy = true; render();
     fetch(cfg.addUrl || '/cart/add.js', {
@@ -244,13 +247,13 @@
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({ items: items })
     }).then(function (r) {
-      if (!r.ok) throw new Error('add failed');
+      if (!r.ok) return r.json().then(function (j) { throw new Error((j && (j.description || j.message)) || 'add failed'); }, function () { throw new Error('add failed'); });
       return r.json();
     }).then(function () {
       window.location.assign(cfg.cartUrl || '/cart');
-    }).catch(function () {
+    }).catch(function (e) {
       state.busy = false; render();
-      ui.note.textContent = 'No hemos podido añadirlo al carrito. Inténtalo de nuevo.';
+      ui.note.textContent = (e && e.message && e.message !== 'add failed') ? e.message : 'No hemos podido añadirlo al carrito. Inténtalo de nuevo.';
     });
   }
 
@@ -259,11 +262,12 @@
     var q = new URLSearchParams(location.search);
     var v = q.get('variant'), fl = q.get('flavor');
     if (v) { var pp = packs.filter(function (x) { return String(x.id) === v; })[0]; if (pp) state.n = pp.n; }
-    if (fl && state.counts.hasOwnProperty(fl)) { state.counts[fl] = 1; state.order.push(fl); }
+    if (fl && state.counts.hasOwnProperty(fl)) state.counts[fl] = 1;
   } catch (e) {}
 
   render();
 
   /* API mínima para pruebas */
   root.vbState = state;
+  root.vbTotals = totals;
 })();

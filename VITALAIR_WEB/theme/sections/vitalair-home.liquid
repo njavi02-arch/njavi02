@@ -1,0 +1,259 @@
+{% render 'vitalair-base' %}
+<style>
+.va-cmp2{color:var(--va-muted);text-decoration:line-through;font-size:18px;margin-right:6px}
+.va-pct{display:inline-block;background:#D9822B;color:#fff;font:700 11px var(--va-font);letter-spacing:.04em;padding:4px 9px;border-radius:999px;vertical-align:middle}
+.va-after{font-size:14px;font-weight:700;color:#2E7A4B;margin:2px 0 10px}
+.va-pack--rec .va-btn{background:#D9822B;border-color:#D9822B}.va-pack--rec .va-btn:hover{background:#C2701F;border-color:#C2701F}
+.va-packs5{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.va-foot{text-align:center;margin-top:24px;font-size:13px;color:var(--va-muted)}
+.va-crop img{aspect-ratio:1.22/1;object-fit:cover;object-position:50% 12%;box-shadow:0 24px 48px rgba(30,36,32,.12)}
+.va-ph img{aspect-ratio:1/1;object-fit:cover}
+.va-fcard{display:block;text-decoration:none;color:inherit}
+.va-fcard p{margin:4px 0 10px;font-size:13px;color:var(--va-muted);line-height:1.4;min-height:54px}
+.va-fcard .va-go{display:inline-block;font-size:13px;font-weight:600;color:var(--va-forest);border:1.5px solid var(--va-forest);border-radius:999px;padding:6px 14px}
+.va-fcard:hover .va-go{background:var(--va-forest);color:#fff}
+.va-moments{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:28px 0 8px}
+.va-moments span{border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:10px 18px;font-size:15px}
+.va-trustrow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.va-trustrow div{background:#fff;border:1px solid var(--va-line);border-radius:var(--va-radius);padding:20px}
+.va-trustrow strong{display:block;margin-bottom:4px}
+.va-trustrow span{font-size:14px;color:var(--va-muted)}
+.va-story{max-width:720px;margin:0 auto;text-align:center}
+.va-story h2{margin-bottom:20px}
+.va-story p{font-size:clamp(17px,2.4vw,20px);color:var(--va-muted);line-height:1.7}
+.va-story .va-quote{font-family:var(--va-serif);font-size:clamp(22px,3.4vw,30px);color:var(--va-forest);line-height:1.3;margin:28px 0 0}
+.va-num{font-family:var(--va-serif);color:var(--va-wood);font-size:15px;letter-spacing:.14em;margin-bottom:14px;display:block}
+.va-why{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+.va-why div{background:#fff;border:1px solid var(--va-line);border-radius:14px;padding:16px}
+.va-why strong{display:block;font-size:15px;margin-bottom:4px}
+.va-why span{font-size:13.5px;color:var(--va-muted);line-height:1.5}
+.va-steps4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:32px}
+@media(max-width:900px){.va-trustrow{grid-template-columns:1fr 1fr}.va-steps4{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.va-trustrow,.va-steps4,.va-why{grid-template-columns:1fr}.va-fcard p{min-height:0}}
+</style>
+{%- capture pct_raw -%}{%- render 'vitalair-promo-pct' -%}{%- endcapture -%}
+{%- assign pct = pct_raw | strip | plus: 0 -%}
+{%- assign keep = 100 | minus: pct -%}
+{%- assign pack = all_products[section.settings.product] -%}
+{%- if pack == blank -%}{%- assign pack = all_products['vitalair-smart-inhaler-pack-system'] -%}{%- endif -%}
+{%- assign base = pack.variants.first.price -%}
+{%- for md in pack.media -%}
+  {%- if md.alt contains 'Mano sosteniendo' -%}{%- assign m_life = md -%}
+  {%- elsif md.alt contains 'Piezas del' -%}{%- assign m_comp = md -%}
+  {%- elsif md.alt contains 'Los 13 sabores' -%}{%- assign m_flav = md -%}
+  {%- elsif md.alt contains 'boquilla de metal negra' -%}{%- assign m_one = md -%}
+  {%- endif -%}
+{%- endfor -%}
+<div class="va">
+
+<section class="va-hero">
+  <div class="va-wrap va-split">
+    <div>
+      <p class="va-eyebrow">VitalAir · Inhalador de madera sin nicotina</p>
+      <h1>Quizá este sea tu primer paso.</h1>
+      <p class="va-lead">Cambiar un hábito empieza con una decisión. VitalAir es un inhalador de madera natural y metal, sin nicotina y con 13 sabores, pensado para acompañarte mientras creas tu nuevo ritual.</p>
+      <div class="va-btns">
+        <a class="va-btn" href="{{ pack.url }}">Elegir mi inhalador</a>
+        <a class="va-btn va-btn--ghost" href="#sabores">Ver los sabores</a>
+      </div>
+      <div class="va-hero-meta"><span>{{ pct }} % de descuento</span><span>Sin nicotina</span><span>Madera natural</span><span>13 sabores</span></div>
+    </div>
+    <div class="va-img va-crop">{%- if m_life -%}{{ m_life.preview_image | image_url: width: 1200 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '500, 800, 1200', alt: m_life.alt, sizes: '(min-width:900px) 560px, 100vw' }}{%- endif -%}</div>
+  </div>
+</section>
+
+<section class="va-sec" id="historia">
+  <div class="va-wrap va-story">
+    <span class="va-num">01 · EL HÁBITO</span>
+    <h2>Quizá llevas tiempo pensando en cambiar.</h2>
+    <p>Un cigarro con el café, en una pausa, con amigos. Para mucha gente, fumar forma parte del día a día. Reconocerlo no es un reproche: es el punto de partida.</p>
+    <p class="va-quote">Imagina llenar esos momentos con un ritual nuevo, elegido por ti.</p>
+  </div>
+</section>
+
+<section class="va-sec va-sec--cream">
+  <div class="va-wrap va-story">
+    <span class="va-num">02 · LAS PERSONAS QUE IMPORTAN</span>
+    <h2>Cuidarte también es una decisión.</h2>
+    <p>Tu pareja, tu familia, tus hijos, tus amigos. Las personas que quieres forman parte de esta historia. Porque cuidar de ti también significa cuidar de los momentos que compartes con ellas: el aire que compartís, el ejemplo que das y el futuro que quieres construir.</p>
+    <p class="va-quote">No se trata solo de dejar un hábito. Se trata de elegir qué quieres cuidar.</p>
+  </div>
+</section>
+
+<section class="va-sec va-sec--dark">
+  <div class="va-wrap va-center">
+    <span class="va-num" style="color:#D9BE97">03 · LA DECISIÓN</span>
+    <h2>No estás comprando un producto. Estás dando un primer paso.</h2>
+    <p class="va-lead">No hace falta esperar al momento perfecto. Puede ser pequeño, puede ser hoy y lo decides tú. VitalAir es una alternativa para acompañarte en los momentos del día en los que más lo echas de menos.</p>
+    <div class="va-moments"><span>Después de comer</span><span>En tu descanso</span><span>En una pausa</span><span>Con amigos</span><span>En tu rutina diaria</span></div>
+    <p class="va-note" style="color:#B7C4B7;margin-top:20px;max-width:640px;margin-left:auto;margin-right:auto">VitalAir no es un producto médico ni un tratamiento para dejar de fumar, y los resultados dependen de cada persona. Si quieres dejar el tabaco, un profesional sanitario puede orientarte.</p>
+  </div>
+</section>
+
+<section class="va-sec">
+  <div class="va-wrap va-split">
+    <div class="va-img va-ph">{%- if m_one -%}{{ m_one.preview_image | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '400, 700, 1000', alt: m_one.alt, sizes: '(min-width:900px) 520px, 100vw' }}{%- endif -%}</div>
+    <div>
+      <span class="va-num">04 · VITALAIR</span>
+      <h2>Un primer paso con sabor.</h2>
+      <p class="va-lead">Un inhalador de madera natural y metal, sin nicotina, para que tus pausas tengan un ritual nuevo que te apetezca repetir.</p>
+      <div class="va-why">
+        <div><strong>13 sabores, el tuyo seguro</strong><span>Elige tu inhalador y añade los sabores que quieras, sin límite.</span></div>
+        <div><strong>Madera natural y metal</strong><span>Un objeto que apetece tener en la mano, con el logo grabado.</span></div>
+        <div><strong>Sin nicotina</strong><span>Para empezar un ritual nuevo a tu manera.</span></div>
+        <div><strong>Compacto</strong><span>Diseñado para acompañarte en tu día a día.</span></div>
+      </div>
+      <div class="va-btns"><a class="va-btn" href="{{ pack.url }}">Conocer el producto</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="va-sec va-sec--cream" id="sabores">
+  <div class="va-wrap va-center">
+    <span class="va-num">05 · LA EXPERIENCIA</span>
+    <h2>Elige el sabor que te apetezca.</h2>
+    <p class="va-lead">Trece maneras de empezar. Tú decides cuáles te acompañan y puedes combinar los que quieras. Inhalador desde {{ base | money }}, con {{ pct }} % de descuento.</p>
+    {%- assign fl = 'Mango|Tropical y dulce, con aire de verano.;Mint|Fresco y limpio, para un momento de frescor.;Strawberry|Dulce, frutal y alegre.;Blueberry|Frutal y profundo, con un punto suave.;Raspberry|Frutal e intenso, con carácter.;Coffee|Tostado y aromático, para tus pausas de café.;Cinnamon|Cálido y especiado, como un día de otoño.;Maple Pepper|Dulce con un toque especiado, para algo distinto.;Orange|Cítrico y luminoso, para empezar el día.;Lemon|Cítrico y fresco, con chispa.;Grapefruit|Cítrico con un punto amargo, para paladares atrevidos.;Cranberry|Frutal y ligeramente ácido, con personalidad.;Vanilla|Suave y cremoso, reconfortante.' | split: ';' -%}
+    <div class="va-fgrid"{% if m_flav %} style="--sp:url('{{ m_flav.preview_image | image_url: width: 1600 }}')"{% endif %}>
+      {%- for item in fl -%}{%- assign p = item | split: '|' -%}
+      <a class="va-fcard" href="{{ pack.url }}?flavor={{ p[0] | url_encode }}"><i class="va-sp" data-f="{{ p[0] }}" role="img" aria-label="Sobre de sabor {{ p[0] }}"></i><strong>{{ p[0] }}</strong><p>{{ p[1] }}</p><span class="va-go">Elegir mi sabor</span></a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<section class="va-sec">
+  <div class="va-wrap">
+    <div class="va-center"><p class="va-eyebrow">Del primer paso al nuevo ritual</p><h2>Decide. Elige. Repite. Hazlo tuyo.</h2><p class="va-lead" style="margin-left:auto;margin-right:auto">Cada persona lleva su propio ritmo. Lo importante es empezar y hacerlo a tu manera.</p></div>
+    <div class="va-steps4">
+      <div class="va-card va-step"><b>01</b><h3>Decide</h3><p class="va-note">Hoy puede ser el día del primer paso.</p></div>
+      <div class="va-card va-step"><b>02</b><h3>Elige tus sabores</h3><p class="va-note">Tu inhalador y los sabores que te apetecen.</p></div>
+      <div class="va-card va-step"><b>03</b><h3>Incorpóralo a tu rutina</h3><p class="va-note">En tus pausas y momentos clave, de forma consciente y constante.</p></div>
+      <div class="va-card va-step"><b>04</b><h3>Hazlo tuyo</h3><p class="va-note">Conviértelo en tu ritual, a tu ritmo.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="va-sec va-sec--cream">
+  <div class="va-wrap va-split">
+    <div>
+      <p class="va-eyebrow">Lo que recibes</p>
+      <h2>Hecho con materiales naturales y mucho cuidado.</h2>
+      <p class="va-lead">Cuerpo y filtro de madera natural, metal de acabado mate y un diseño pensado para que disfrutes de cada detalle.</p>
+      <div class="va-grid va-g2" style="margin-top:24px">
+        <div class="va-card"><h3>Cuerpo de madera</h3><p class="va-note">Madera natural con el logo grabado.</p></div>
+        <div class="va-card"><h3>Boquilla de metal</h3><p class="va-note">Capuchón de acabado mate.</p></div>
+        <div class="va-card"><h3>Cartucho de malla</h3><p class="va-note">Pieza interior de malla metálica.</p></div>
+        <div class="va-card"><h3>Filtro de madera</h3><p class="va-note">Filtro absorbente de madera natural.</p></div>
+      </div>
+    </div>
+    <div class="va-img va-ph">{%- if m_comp -%}{{ m_comp.preview_image | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '400, 700, 1000', alt: m_comp.alt, sizes: '(min-width:900px) 520px, 100vw' }}{%- endif -%}</div>
+  </div>
+</section>
+
+<section class="va-sec" id="packs">
+  <div class="va-wrap">
+    <div class="va-center"><span class="va-num">06 · EL PRIMER PASO</span><h2>Empieza por donde quieras.</h2><p class="va-lead">Desde probarlo hasta tenerlo siempre a mano. Elige tu inhalador y añade los sabores que quieras, cada uno con su precio. {{ pct }} % de descuento en toda la web.</p></div>
+    <div class="va-packs5" style="margin-top:40px">
+      {%- for target in (1..5) -%}{%- for v in pack.variants -%}
+        {%- assign n = v.title | split: '(' | last | split: 'x' | first | plus: 0 -%}
+        {%- if n == target -%}
+          {%- assign unit = v.price | times: 1.0 | divided_by: n | round -%}
+          {%- assign full = base | times: n -%}
+          {%- assign saved = full | minus: v.price -%}
+          {%- assign packpct = saved | times: 100 | divided_by: full -%}
+          {%- assign after = v.price | times: keep | plus: 50 | divided_by: 100 -%}
+          <div class="va-pack{% if n == 4 %} va-pack--rec{% endif %}">
+            <h3>{{ n }} inhalador{% if n > 1 %}es{% endif %}</h3>
+            <p class="va-note">Sabores aparte, a tu gusto</p>
+            <div class="va-price">{% if saved > 0 %}<s class="va-cmp2">{{ full | money }}</s>{% endif %}{{ v.price | money }}</div>
+            <div class="va-unit">{{ unit | money }} por inhalador</div>
+            <div class="va-after">Con tu {{ pct }} %: {{ after | money }}</div>
+            <div class="va-save">{% if saved > 0 %}<span class="va-pct">PACK −{{ packpct }} %</span> Ahorras {{ saved | money }}{% endif %}</div>
+            <a class="va-btn{% unless n == 4 %} va-btn--ghost{% endunless %}" href="{{ pack.url }}?variant={{ v.id }}">{% if n == 1 %}Probar VitalAir{% else %}Dar el primer paso{% endif %}</a>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}{%- endfor -%}
+    </div>
+    <p class="va-foot">Precio tachado: el de comprar las mismas unidades sueltas al precio de 1 unidad. El {{ pct }} % se aplica además, automáticamente, en el carrito. Los sabores se añaden aparte, con su precio.</p>
+  </div>
+</section>
+
+<section class="va-sec va-sec--cream">
+  <div class="va-wrap">
+    <div class="va-center"><p class="va-eyebrow">Compra con tranquilidad</p><h2>Información clara, sin letra pequeña.</h2></div>
+    <div class="va-trustrow" style="margin-top:32px">
+      <div><strong>Envío</strong><span>España 6,99 €, gratis desde 55 €. UE 8,99 €. Resto 12,99 €.</span></div>
+      <div><strong>Pago seguro</strong><span>Pagas en el checkout seguro de Shopify.</span></div>
+      <div><strong>Devoluciones</strong><span>14 días para desistir de la compra y garantía legal de conformidad.</span></div>
+      <div><strong>Atención al cliente</strong><span>Escríbenos a info@vitalair.online y te ayudamos.</span></div>
+    </div>
+  </div>
+</section>
+
+{%- if section.settings.show_reviews -%}
+<section class="va-sec">
+  <div class="va-wrap">
+    <div class="va-center"><p class="va-eyebrow">Opiniones</p><h2>Lo que dicen nuestros clientes.</h2></div>
+    <div class="va-grid va-g3" style="margin-top:32px">
+      {%- for block in section.blocks -%}
+        <figure class="va-card" style="margin:0" {{ block.shopify_attributes }}>
+          {%- if block.settings.photo -%}<div class="va-img" style="margin-bottom:16px">{{ block.settings.photo | image_url: width: 600 | image_tag: loading: 'lazy', alt: block.settings.author }}</div>{%- endif -%}
+          <blockquote style="margin:0 0 12px">{{ block.settings.text }}</blockquote>
+          <figcaption class="va-note">{{ block.settings.author }}</figcaption>
+        </figure>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+<section class="va-sec">
+  <div class="va-wrap" style="max-width:780px">
+    <div class="va-center"><p class="va-eyebrow">Preguntas frecuentes</p><h2>Lo que quizá te estás preguntando.</h2></div>
+    <div class="va-faq" style="margin-top:24px">
+      <details><summary>¿Qué es VitalAir?</summary><p>Un inhalador de madera natural y metal, sin nicotina, disponible en 13 sabores y en packs de 1 a 5 inhaladores.</p></details>
+      <details><summary>¿VitalAir sirve para dejar de fumar?</summary><p>VitalAir no es un producto médico ni un tratamiento para dejar de fumar, y no prometemos ese resultado. Es un producto pensado para acompañar tus rutinas si estás pensando en cambiar de hábito, y los resultados dependen de cada persona. Si quieres dejar el tabaco, un profesional sanitario puede orientarte.</p></details>
+      <details><summary>¿Lleva nicotina?</summary><p>No. VitalAir no contiene nicotina.</p></details>
+      <details><summary>¿Es natural?</summary><p>El cuerpo y el filtro son de madera natural. Si quieres saber más sobre la composición de los sabores, escríbenos a info@vitalair.online.</p></details>
+      <details><summary>¿Qué sabores hay?</summary><p>Mango, Mint, Strawberry, Blueberry, Raspberry, Coffee, Cinnamon, Maple Pepper, Orange, Lemon, Grapefruit, Cranberry y Vanilla.</p></details>
+      <details><summary>¿Cuántos sabores puedo elegir y cuánto cuestan?</summary><p>Los que quieras: no hay límite. El inhalador tiene su precio y cada sabor se añade como extra, con su precio a la vista. Puedes repetir el mismo sabor y combinar todos los que te apetezcan; el total se actualiza al momento.</p></details>
+      <details><summary>¿Cómo funciona el {{ pct }} % de descuento?</summary><p>Es un descuento automático en toda la web: se aplica a tu pedido en el carrito, sin códigos, e incluye el inhalador y los sabores.</p></details>
+      <details><summary>¿Qué piezas tiene?</summary><p>Cuerpo de madera natural, boquilla o capuchón de metal, cartucho de malla y filtro de madera absorbente.</p></details>
+      <details><summary>¿Cómo se utiliza y cuánto dura?</summary><p>Escríbenos a info@vitalair.online y te explicamos su uso paso a paso y cuánto puedes esperar que dure cada sabor.</p></details>
+      <details><summary>¿Qué packs hay y cuánto cuestan?</summary><p>Puedes elegir de 1 a 5 inhaladores. Los packs de 3, 4 y 5 cuestan menos por inhalador que comprarlos sueltos. Los sabores se añaden aparte.</p></details>
+      <details><summary>¿Cómo se realiza el envío?</summary><p>En España, 6,99 €, y gratis en pedidos desde 55 €. A la UE, 8,99 €. Otros países, 12,99 €. Recibirás un email cuando tu pedido sea enviado.</p></details>
+      <details><summary>¿Puedo devolverlo?</summary><p>Tienes 14 días para desistir de la compra, y el producto cuenta con la garantía legal de conformidad. Consulta los detalles en <a href="/pages/devoluciones">Devoluciones y garantía</a>.</p></details>
+      <details><summary>¿Cómo empiezo?</summary><p>Elige tu inhalador, añade los sabores que quieras, revisa tu pedido y finaliza el pago en el checkout seguro. Puedes empezar por <a href="{{ pack.url }}">la ficha del producto</a>.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="va-sec va-sec--dark">
+  <div class="va-wrap va-center">
+    <p class="va-eyebrow">VitalAir</p>
+    <h2>Elige tu sabor y empieza.</h2>
+    <p class="va-lead">Cuidarte también es una decisión. Esta puede ser la tuya.</p>
+    <div class="va-btns" style="justify-content:center"><a class="va-btn va-btn--light" href="{{ pack.url }}">Elegir mi sabor</a></div>
+    <p class="va-note" style="margin-top:28px;color:#B7C4B7">Producto para adultos. No es un producto médico.</p>
+  </div>
+</section>
+
+</div>
+{% schema %}
+{
+  "name": "VitalAir Home",
+  "settings": [
+    {"type": "product", "id": "product", "label": "Producto principal"},
+    {"type": "checkbox", "id": "show_reviews", "label": "Mostrar opiniones (solo activar con reseñas reales)", "default": false}
+  ],
+  "blocks": [
+    {"type": "review", "name": "Opinión", "settings": [
+      {"type": "textarea", "id": "text", "label": "Texto"},
+      {"type": "text", "id": "author", "label": "Nombre"},
+      {"type": "image_picker", "id": "photo", "label": "Foto del cliente"}
+    ]}
+  ],
+  "presets": [{"name": "VitalAir Home"}]
+}
+{% endschema %}

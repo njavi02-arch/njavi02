@@ -1,0 +1,82 @@
+{% render 'vitalair-base' %}
+{{ 'vitalair-builder.css' | asset_url | stylesheet_tag }}
+<style>
+.va-bul{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:8px;font-size:15px}
+.va-bul li::before{content:'\2713';color:var(--va-forest);font-weight:700;margin-right:10px}
+.va-trust{display:grid;gap:6px;margin:18px 0 0;padding:14px 16px;background:var(--va-cream);border-radius:12px;font-size:13.5px;color:var(--va-ink)}
+.va-trust span::before{content:'\2713';color:var(--va-forest);font-weight:700;margin-right:8px}
+.va-offer{display:inline-flex;align-items:center;gap:8px;margin:0 0 14px;padding:7px 14px;border-radius:999px;background:#FFF1DE;color:#8A4B10;font-size:13px;font-weight:700}
+</style>
+{%- capture pct_raw -%}{%- render 'vitalair-promo-pct' -%}{%- endcapture -%}
+{%- assign pct = pct_raw | strip | plus: 0 -%}
+{%- assign only_p = all_products['vitalair-sabores'] -%}
+<div class="va va-pdp" id="va-pdp-{{ section.id }}">
+<div class="va-wrap va-pdp-grid">
+
+  <div class="va-gal">
+    <div class="va-gal-main">
+      {%- for media in product.media limit: 1 -%}{{ media.preview_image | image_url: width: 1400 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '600, 900, 1200, 1400', sizes: '(min-width:900px) 620px, 100vw', alt: media.alt | default: 'Inhalador VitalAir', id: 'va-main-img' }}{%- endfor -%}
+    </div>
+    {%- if product.media.size > 1 -%}
+    <div class="va-thumbs">
+      {%- for media in product.media limit: 4 -%}
+        <button type="button" aria-label="Ver imagen {{ forloop.index }}" data-full="{{ media.preview_image | image_url: width: 1400 }}" data-alt="{{ media.alt | escape }}" data-crop="{% if media.alt contains 'Mano sosteniendo' %}1{% endif %}" {% if forloop.first %}aria-current="true"{% endif %}>{{ media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}</button>
+      {%- endfor -%}
+    </div>
+    {%- endif -%}
+  </div>
+
+  <div class="va-pdp-info">
+    <p class="va-eyebrow">VitalAir · sin nicotina · 13 sabores</p>
+    <h1>Inhalador VitalAir de madera</h1>
+    {%- if pct > 0 -%}<p class="va-offer">{{ pct }} % de descuento en toda la web · automático</p>{%- endif -%}
+    <p class="va-lead" style="font-size:17px;margin-bottom:8px">Madera natural y metal, sin nicotina. Elige tu inhalador y añade los sabores que quieras.</p>
+    <ul class="va-bul">
+      <li>13 sabores: añade los que te apetezca, sin límite</li>
+      <li>Madera natural y metal, con el logo grabado</li>
+      <li>Envío gratis en España desde 55 €</li>
+    </ul>
+
+    <div id="va-builder"></div>
+    <noscript><p class="va-note">Activa JavaScript para elegir tus sabores y añadirlos al carrito.</p></noscript>
+
+    <div class="va-trust">
+      <span>Pago seguro en el checkout de Shopify</span>
+      <span>14 días para desistir de la compra</span>
+      <span>Garantía legal de conformidad</span>
+    </div>
+
+    <div class="va-info">
+      <details open><summary>Qué es</summary><p>Un inhalador de madera natural y metal, sin nicotina, con el logo VitalAir grabado y disponible en 13 sabores.</p></details>
+      <details><summary>Piezas</summary><ul><li>Cuerpo de madera natural</li><li>Boquilla / capuchón de metal</li><li>Cartucho de malla</li><li>Filtro de madera absorbente</li></ul></details>
+      <details><summary>Envío y devoluciones</summary><p>Envío gratis en España en pedidos desde 55 €. <a href="/pages/envios">Envíos</a> · <a href="/pages/devoluciones">Devoluciones y garantía</a></p></details>
+      <details><summary>Aviso</summary><p>Producto para adultos. VitalAir no es un producto médico ni un tratamiento para dejar de fumar. Si tienes dudas sobre tu salud, consulta con un profesional.</p></details>
+    </div>
+  </div>
+</div>
+</div>
+
+{%- assign fl = 'Mango|Tropical y dulce, con aire de verano.;Mint|Fresco y limpio, para un momento de frescor.;Strawberry|Dulce, frutal y alegre.;Blueberry|Frutal y profundo, con un punto suave.;Raspberry|Frutal e intenso, con carácter.;Coffee|Tostado y aromático, para tus pausas de café.;Cinnamon|Cálido y especiado, como un día de otoño.;Maple Pepper|Dulce con un toque especiado, para algo distinto.;Orange|Cítrico y luminoso, para empezar el día.;Lemon|Cítrico y fresco, con chispa.;Grapefruit|Cítrico con un punto amargo, para paladares atrevidos.;Cranberry|Frutal y ligeramente ácido, con personalidad.;Vanilla|Suave y cremoso, reconfortante.' | split: ';' -%}
+<script type="application/json" id="va-config">
+{
+  "currency": {{ cart.currency.iso_code | json }},
+  "locale": "es-ES",
+  "discountPct": {{ pct }},
+  "sprite": "",
+  "cartUrl": {{ routes.cart_url | json }},
+  "addUrl": "{{ routes.cart_add_url }}.js",
+  "packs": [{% for v in product.variants %}{% assign n = v.title | split: '(' | last | split: 'x' | first | plus: 0 %}{ "n": {{ n }}, "id": {{ v.id }}, "price": {{ v.price }}, "compare": {% if v.compare_at_price > v.price %}{{ v.compare_at_price }}{% else %}null{% endif %}, "available": {{ v.available }} }{% unless forloop.last %},{% endunless %}{% endfor %}],
+  "flavors": [{% for item in fl %}{% assign p = item | split: '|' %}{% assign fv = nil %}{% if only_p != blank %}{% for v in only_p.variants %}{% if v.title == p[0] %}{% assign fv = v %}{% endif %}{% endfor %}{% endif %}{ "name": {{ p[0] | json }}, "desc": {{ p[1] | json }}, "id": {% if fv %}{{ fv.id }}{% else %}null{% endif %}, "price": {% if fv %}{{ fv.price }}{% else %}0{% endif %}, "stock": {% if fv and fv.inventory_management == 'shopify' and fv.inventory_policy == 'deny' %}{{ fv.inventory_quantity }}{% else %}null{% endif %}, "available": {% if fv %}{{ fv.available }}{% else %}false{% endif %} }{% unless forloop.last %},{% endunless %}{% endfor %}]
+}
+</script>
+<script src="{{ 'vitalair-builder.js' | asset_url }}" defer></script>
+<script>
+(function(){
+  var root=document.getElementById('va-pdp-{{ section.id }}');if(!root)return;
+  var th=root.querySelectorAll('.va-thumbs button'),mi=root.querySelector('#va-main-img');
+  th.forEach(function(b){b.addEventListener('click',function(){if(mi){mi.src=b.dataset.full;mi.removeAttribute('srcset');mi.alt=b.dataset.alt||'';mi.style.aspectRatio=b.dataset.crop?'1.22/1':'';mi.style.objectPosition=b.dataset.crop?'50% 12%':''}th.forEach(function(x){x.removeAttribute('aria-current')});b.setAttribute('aria-current','true')})});
+})();
+</script>
+{% schema %}
+{"name": "VitalAir Producto", "settings": []}
+{% endschema %}

@@ -51,3 +51,26 @@
 .vb-right{min-width:0}.vb-info{min-width:0}
 @media(max-width:480px){.vb-right{width:100%}.vb-cta{min-width:0;padding:0 14px;font-size:14px}}
 @media(max-width:480px){.vb-right{flex-direction:column;align-items:stretch;gap:8px}.vb-price{display:flex;align-items:baseline;justify-content:space-between}.vb-price s{margin:0 auto 0 0}.vb-cta{width:100%;white-space:normal}}
+/* v4: extras con precio + resumen del pedido */
+.vb-h small{font-weight:400;color:var(--vb-muted);font-size:12.5px}
+.vb-side{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.vb-extra{font-size:13px;font-weight:600;color:var(--vb-wood);white-space:nowrap}
+.vb-row.is-on .vb-extra{color:var(--vb-forest)}
+.vb-row.is-out{opacity:.5}
+.vb-legend{font-size:12.5px;color:var(--vb-muted)}
+.vb-order{margin:18px 0 0;padding:16px;border:1.5px solid var(--vb-line);border-radius:16px;background:#FBF9F4}
+.vb-order:empty{display:none}
+.vb-order h4{margin:0 0 10px;font:600 12px 'Inter',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--vb-muted)}
+.vb-order dl{margin:0}
+.vb-l{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:15px}
+.vb-l dt,.vb-l dd{margin:0}
+.vb-l dd{font-variant-numeric:tabular-nums;white-space:nowrap}
+.vb-l s{color:var(--vb-muted);font-size:13px;margin-right:4px}
+.vb-l--head{padding-top:10px;font-weight:600}
+.vb-l--sub{padding:2px 0 2px 14px;font-size:14.5px;color:#3B4540}
+.vb-l--line{margin-top:8px;padding-top:10px;border-top:1px solid var(--vb-line)}
+.vb-l--disc{color:#2E7A4B;font-weight:600}
+.vb-l--total{margin-top:4px;padding-top:10px;border-top:1.5px solid #1E2420;font-weight:700;font-size:18px}
+.vb-l--total dd{font:500 22px 'Fraunces',Georgia,serif}
+.vb-fine{margin:10px 0 0;font-size:12px;line-height:1.4;color:var(--vb-muted)}
+.vb-price b{white-space:nowrap}

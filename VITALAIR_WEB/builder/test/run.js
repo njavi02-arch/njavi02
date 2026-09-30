@@ -1,4 +1,5 @@
-const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+const pw = require('/opt/node22/lib/node_modules/playwright');
+const { chromium } = pw;
 const http = require('http'), fs = require('fs'), path = require('path');
 const root = path.join(__dirname, '..');
 const srv = http.createServer((q, s) => {
@@ -8,97 +9,125 @@ const srv = http.createServer((q, s) => {
   if (fs.existsSync(f) && fs.statSync(f).isFile()) { s.setHeader('Content-Type', f.endsWith('.js') ? 'text/javascript' : f.endsWith('.css') ? 'text/css' : 'text/html'); s.end(fs.readFileSync(f)); } else { s.statusCode = 404; s.end(); }
 });
 let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };
+const clean = s => s.replace(/\s/g, '').replace(/−/g, '-');
 (async () => {
   await new Promise(r => srv.listen(0, r)); const base = 'http://localhost:' + srv.address().port;
   const br = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' }).catch(() => chromium.launch());
-  async function page(vw, url) {
-    const ctx = await br.newContext({ viewport: vw }); const p = await ctx.newPage(); const req = { body: null };
+  async function page(opts, url) {
+    const ctx = await br.newContext(opts); const p = await ctx.newPage(); const req = { body: null };
     await p.route('**/cart/add.js', async r => { req.body = JSON.parse(r.request().postData()); await r.fulfill({ status: 200, contentType: 'application/json', body: '{}' }); });
     await p.goto(base + (url || '/')); return { p, req, ctx };
   }
+  const M = { viewport: { width: 390, height: 844 } };
   const plus = (p, f) => p.click(`.vb-row[data-f="${f}"] .vb-plus`);
   const minus = (p, f) => p.click(`.vb-row[data-f="${f}"] .vb-minus`);
   const cnt = (p, f) => p.$eval(`.vb-row[data-f="${f}"] .vb-n`, e => +e.textContent);
-  const total = p => p.$eval('.vb-count b', e => e.textContent);
+  const sel = (p, k) => p.$eval(`.vb-l[data-k="${k}"] dd`, e => e.textContent).then(clean).catch(() => null);
+  const bar = p => p.$eval('.vb-price b', e => e.textContent).then(clean);
   const submit = async (pg) => { await pg.p.click('.vb-cta'); await pg.p.waitForURL('**/cart'); return pg.req.body; };
   const FL = ['Mango','Mint','Strawberry','Blueberry','Raspberry','Coffee','Cinnamon','Maple Pepper','Orange','Lemon','Grapefruit','Cranberry','Vanilla'];
+  const E = 199; // extra de prueba
 
-  // 1) inhalador 1..3 sabores
-  for (const k of [1, 2, 3]) {
-    const pg = await page({ width: 390, height: 844 });
-    for (let i = 0; i < k; i++) await plus(pg.p, FL[i]);
-    ok(await total(pg.p) === `${k} / 3`, `1 inhalador + ${k} sabor(es): contador ${k} / 3`);
+  // 1) precio base y extras, 15 %: 1 inhalador + 1 sabor
+  { const pg = await page(M);
+    ok(await sel(pg.p, 'pack') === '19,99€', 'precio base 1 inhalador = 19,99 €');
+    ok(await bar(pg.p) === '16,99€', 'sin sabores: total 19,99 − 15 % = 16,99 €');
+    await plus(pg.p, 'Mango');
+    ok(await sel(pg.p, 'subtotal') === '21,98€', 'subtotal 19,99 + 1,99 = 21,98 €');
+    ok(await sel(pg.p, 'discount') === '-3,30€', 'descuento 15 % = −3,30 €');
+    ok(await sel(pg.p, 'total') === '18,68€', 'total = 18,68 €');
     const b = await submit(pg);
-    ok(b.items.length === 1 && b.items[0].id === 101 && b.items[0].quantity === 1 && b.items[0].properties['Nº de sabores'] === String(k), `1 inhalador + ${k}: carrito correcto (${b.items[0].properties.Sabores})`);
-    await pg.ctx.close();
-  }
-  // 2) n inhaladores, distribución libre y tope
-  const dist = { 2: [3, 2, 1], 3: [5, 2, 1, 1], 4: [4, 4, 2, 2], 5: [5, 4, 3, 2, 1] };
-  for (const n of [2, 3, 4, 5]) {
-    const pg = await page({ width: 390, height: 844 });
-    await pg.p.click(`.vb-pack[data-n="${n}"]`);
-    ok((await pg.p.$eval('.vb-cap', e => e.textContent)).includes(`hasta ${n * 3} sabores`), `${n} inhaladores: hasta ${n * 3} sabores`);
-    const d = dist[n]; let exp = {};
-    for (let i = 0; i < d.length; i++) for (let j = 0; j < d[i]; j++) { await plus(pg.p, FL[i]); }
-    const t = d.reduce((a, b) => a + b, 0);
-    ok(await total(pg.p) === `${t} / ${n * 3}`, `${n} inhaladores: ${t} / ${n * 3}`);
-    // llenar hasta el tope y comprobar bloqueo
-    while ((await total(pg.p)).split(' / ')[0] !== String(n * 3)) await plus(pg.p, 'Vanilla');
-    const disabled = await pg.p.$eval('.vb-row[data-f="Orange"] .vb-plus', e => e.disabled);
-    ok(disabled, `${n} inhaladores: + bloqueado al llegar a ${n * 3}`);
-    await pg.p.click('.vb-row[data-f="Orange"] .vb-plus', { force: true }).catch(() => {});
-    ok((await total(pg.p)) === `${n * 3} / ${n * 3}`, `${n} inhaladores: no pasa del máximo`);
-    const minusOk = await pg.p.$eval('.vb-row[data-f="Mango"] .vb-minus', e => !e.disabled);
-    ok(minusOk, `${n} inhaladores: se puede quitar con el tope alcanzado`);
+    ok(b.items.length === 2 && b.items[0].id === 101 && b.items[0].quantity === 1 && b.items[1].id === 201 && b.items[1].quantity === 1 && !b.items[0].properties, 'carrito: inhalador + Mango ×1 (líneas reales)');
+    await pg.ctx.close(); }
+
+  // 2) varios sabores y repetir
+  { const pg = await page(M);
+    for (let i = 0; i < 2; i++) await plus(pg.p, 'Mint'); await plus(pg.p, 'Strawberry'); for (let i = 0; i < 2; i++) await plus(pg.p, 'Mango');
+    ok(await cnt(pg.p, 'Mint') === 2, 'repetir sabor: Mint × 2');
+    const sub = 1999 + 5 * E; // 29,94
+    ok(await sel(pg.p, 'subtotal') === '29,94€', `subtotal 19,99 + 5 × 1,99 = ${sub / 100} €`);
+    const d = Math.round(1999*.15) + Math.round(2*E*.15) + Math.round(E*.15) + Math.round(2*E*.15); // por línea, como Shopify
+    ok(await sel(pg.p, 'discount') === '-' + (d / 100).toFixed(2).replace('.', ',') + '€', 'descuento correcto ' + d);
+    ok(await sel(pg.p, 'total') === ((sub - d) / 100).toFixed(2).replace('.', ',') + '€', 'total correcto');
+    ok((await pg.p.$eval('.vb-l[data-f="Mint"] dt', e => e.textContent)).includes('Mint × 2'), 'panel muestra "Mint × 2"');
+    ok(clean(await pg.p.$eval('.vb-l[data-f="Mint"] dd', e => e.textContent)) === '+3,98€', 'línea Mint × 2 = +3,98 €');
     const b = await submit(pg);
-    ok(b.items.length === 1 && b.items[0].id === 100 + n && b.items[0].properties['Nº de sabores'] === String(n * 3), `${n} inhaladores: carrito variante ${100 + n}, ${n * 3} sabores`);
-    await pg.ctx.close();
-  }
-  // 3) cambiar, eliminar, reasignar
-  { const pg = await page({ width: 390, height: 844 }); await pg.p.click('.vb-pack[data-n="2"]');
-    for (let i = 0; i < 3; i++) await plus(pg.p, 'Mango'); for (let i = 0; i < 3; i++) await plus(pg.p, 'Mint');
-    await minus(pg.p, 'Mango'); await minus(pg.p, 'Mango'); await plus(pg.p, 'Coffee');
-    ok(await cnt(pg.p, 'Mango') === 1 && await cnt(pg.p, 'Mint') === 3 && await cnt(pg.p, 'Coffee') === 1 && await total(pg.p) === '5 / 6', 'cambiar/eliminar/reasignar cantidades');
-    const b = await submit(pg); ok(b.items[0].properties.Sabores === 'Mango ×1, Mint ×3, Coffee ×1', 'resumen de sabores ordenado: ' + b.items[0].properties.Sabores);
+    ok(b.items.length === 4 && b.items.find(i => i.id === 202).quantity === 2 && b.items.find(i => i.id === 201).quantity === 2 && b.items.find(i => i.id === 203).quantity === 1, 'carrito: cantidades por sabor correctas');
     await pg.ctx.close(); }
-  // 4) bajar nº de inhaladores con exceso
-  { const pg = await page({ width: 390, height: 844 }); await pg.p.click('.vb-pack[data-n="3"]');
-    for (let i = 0; i < 9; i++) await plus(pg.p, FL[i % 4]);
-    await pg.p.click('.vb-pack[data-n="1"]');
-    ok(await total(pg.p) === '3 / 3', 'bajar de 3 a 1 inhalador: ajusta a 3 / 3');
-    ok((await pg.p.$eval('.vb-toast', e => e.textContent)).includes('ajustado'), 'aviso de ajuste visible');
+
+  // 3) sin límite: los 13 sabores, y precio distinto (Coffee 2,49)
+  { const pg = await page(M); await pg.p.click('.vb-pack[data-n="2"]');
+    for (const f of FL) await plus(pg.p, f);
+    for (let i = 0; i < 10; i++) await plus(pg.p, 'Mango'); // 11 Mango
+    const tot = 12 * 199 + 249 + 10 * 199; // 12 sabores a 1,99 + café 2,49 + 10 mango extra
+    const sub = 3998 + 11 * 199 + 12 * 199 + 249 - 11 * 199 + 11 * 199 - 11 * 199; // se recalcula abajo
+    const expSub = 3998 + 13 * 0 + (11 * 199) + (11 * 199 - 11 * 199) + 0;
+    const cnts = {}; for (const f of FL) cnts[f] = await cnt(pg.p, f);
+    const real = 3998 + FL.reduce((a, f) => a + cnts[f] * (f === 'Coffee' ? 249 : 199), 0);
+    ok(Object.values(cnts).every(v => v >= 1) && cnts.Mango === 11, 'los 13 sabores seleccionados, sin tope (Mango × 11)');
+    ok(await sel(pg.p, 'subtotal') === (real / 100).toFixed(2).replace('.', ',') + '€', 'subtotal con 13 sabores y precio distinto de Coffee = ' + real / 100);
+    const dd = Math.round(3998*.15) + FL.reduce((a, f) => a + Math.round(cnts[f] * (f === 'Coffee' ? 249 : 199) * .15), 0);
+    ok(await sel(pg.p, 'total') === ((real - dd) / 100).toFixed(2).replace('.', ',') + '€', 'total con 15 % = ' + (real - dd) / 100);
+    const b = await submit(pg);
+    ok(b.items.length === 14 && b.items[0].id === 102, 'carrito: 2 inhaladores (variante 102) + 13 líneas de sabor');
     await pg.ctx.close(); }
-  // 5) sin sabores
-  { const pg = await page({ width: 390, height: 844 });
-    ok(await pg.p.$eval('.vb-cta', e => e.disabled), 'sin sabores: botón desactivado');
-    ok((await pg.p.$eval('.vb-hint', e => e.textContent)) === 'Elige al menos un sabor para continuar.', 'sin sabores: mensaje correcto');
-    await plus(pg.p, 'Mango'); ok(!(await pg.p.$eval('.vb-cta', e => e.disabled)), 'con 1 sabor (menos del máximo) se puede continuar');
+
+  // 4) quitar y cambiar cantidades
+  { const pg = await page(M);
+    for (let i = 0; i < 3; i++) await plus(pg.p, 'Mango'); await plus(pg.p, 'Mint');
+    await minus(pg.p, 'Mango'); await minus(pg.p, 'Mint');
+    ok(await cnt(pg.p, 'Mango') === 2 && await cnt(pg.p, 'Mint') === 0, 'quitar y cambiar cantidades');
+    ok(await pg.p.$('.vb-l[data-f="Mint"]') === null, 'sabor a 0 desaparece del resumen');
+    ok(await pg.p.$eval('.vb-row[data-f="Mint"] .vb-minus', e => e.disabled), '− deshabilitado en 0');
+    const b = await submit(pg); ok(b.items.length === 2 && b.items[1].quantity === 2, 'carrito tras cambios correcto');
     await pg.ctx.close(); }
+
+  // 5) packs: precio base por cantidad de inhaladores
+  { const pg = await page(M);
+    for (const [n, txt] of [[1,'19,99'],[2,'39,98'],[3,'44,97'],[4,'57,97'],[5,'64,95']]) { await pg.p.click(`.vb-pack[data-n="${n}"]`); ok(await sel(pg.p, 'pack') .then(s => s.includes(txt)), `precio base ${n} inhaladores = ${txt}`);
+      const exp = ((+txt.replace(',', '.') * 100) - Math.round(+txt.replace(',', '.') * 100 * .15)) / 100; ok(await bar(pg.p) === exp.toFixed(2).replace('.', ',') + '€', `total ${n} inhaladores sin sabores con 15 % = ${exp}`); }
+    await pg.ctx.close(); }
+
   // 6) solo sabores
-  { const pg = await page({ width: 390, height: 844 }); await pg.p.click('.vb-mode-btn:nth-child(2)');
-    ok(await pg.p.$eval('.vb-kit', e => e.hidden), 'solo sabores: no aparece la lógica de inhaladores');
+  { const pg = await page(M); await pg.p.click('.vb-mode-btn:nth-child(2)');
+    ok(await pg.p.$eval('.vb-kit', e => e.hidden), 'solo sabores: sin inhaladores');
+    ok(await pg.p.$eval('.vb-cta', e => e.disabled), 'solo sabores sin elegir: botón desactivado');
     for (let i = 0; i < 4; i++) await plus(pg.p, 'Mint'); for (let i = 0; i < 2; i++) await plus(pg.p, 'Lemon');
-    ok(await total(pg.p) === '6', 'solo sabores: contador sin máximo = 6');
-    ok((await pg.p.$eval('.vb-price', e => e.textContent)).replace(/\s/g, '').includes('59,70'), 'solo sabores: total 6 × 9,95 = 59,70');
+    ok(await sel(pg.p, 'subtotal') === '11,94€', 'solo sabores: 6 × 1,99 = 11,94 €');
+    ok(await sel(pg.p, 'pack') === null, 'solo sabores: sin línea de inhalador');
     const b = await submit(pg);
-    ok(b.items.length === 2 && b.items.find(i => i.id === 202).quantity === 4 && b.items.find(i => i.id === 210).quantity === 2, 'solo sabores: líneas por sabor con cantidades correctas');
+    ok(b.items.length === 2 && b.items.find(i => i.id === 202).quantity === 4 && b.items.find(i => i.id === 210).quantity === 2, 'solo sabores: líneas y cantidades correctas');
     await pg.ctx.close(); }
-  // 7) precio por pack
-  { const pg = await page({ width: 390, height: 844 });
-    for (const [n, txt] of [[1,'19,99'],[2,'39,98'],[3,'44,97'],[4,'57,97'],[5,'64,95']]) { await pg.p.click(`.vb-pack[data-n="${n}"]`); ok((await pg.p.$eval('.vb-price', e => e.textContent)).replace(/\s/g,'').includes(txt), `precio ${n} inhaladores = ${txt}`); }
+
+  // 7) stock real: Cranberry tiene 3 en la prueba
+  { const pg = await page(M);
+    for (let i = 0; i < 5; i++) await pg.p.click('.vb-row[data-f="Cranberry"] .vb-plus', { force: true }).catch(() => {});
+    ok(await cnt(pg.p, 'Cranberry') === 3, 'no se puede superar el stock (3 → tope 3)');
+    ok(await pg.p.$eval('.vb-row[data-f="Cranberry"] .vb-plus', e => e.disabled), '+ bloqueado al agotar stock');
+    ok(await pg.p.$eval('.vb-row[data-f="Cranberry"] .vb-minus', e => !e.disabled), '− sigue activo');
     await pg.ctx.close(); }
+
   // 8) URL preselección
-  { const pg = await page({ width: 390, height: 844 }, '/?variant=104&flavor=Mint');
-    ok(await total(pg.p) === '1 / 12' && await cnt(pg.p, 'Mint') === 1, 'URL ?variant=104&flavor=Mint: 4 inhaladores y Mint ×1');
+  { const pg = await page(M, '/?variant=104&flavor=Mint');
+    ok(await cnt(pg.p, 'Mint') === 1 && (await sel(pg.p, 'pack')).includes('57,97'), 'URL ?variant=104&flavor=Mint');
     await pg.ctx.close(); }
-  // 9) sin scroll horizontal, móvil y escritorio
-  for (const w of [320, 360, 390, 768, 1280]) {
-    const pg = await page({ width: w, height: 800 });
-    await pg.p.click('.vb-pack[data-n="5"]'); for (let i = 0; i < 6; i++) await plus(pg.p, FL[i]);
+
+  // 9) sin precio de sabores: no se muestra la sección (nunca sabores a 0 €)
+  { const pg = await page(M, '/test/noprice.html');
+    ok(await pg.p.$('.vb-list') === null && await pg.p.$('.vb-mode') === null, 'sabores sin precio: sección oculta');
+    const b = await submit(pg); ok(b.items.length === 1 && b.items[0].id === 101, 'sin precio de sabores: solo inhalador');
+    await pg.ctx.close(); }
+
+  // 10) dispositivos y sin scroll horizontal
+  const devs = [['iPhone 13', pw.devices['iPhone 13']], ['Pixel 7', pw.devices['Pixel 7']], ['Desktop', { viewport: { width: 1280, height: 800 } }]];
+  for (const [name, d] of devs) {
+    const pg = await page(d); await pg.p.click('.vb-pack[data-n="5"]'); for (let i = 0; i < 8; i++) await plus(pg.p, FL[i]);
     const sw = await pg.p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-    ok(sw <= 0, `ancho ${w}px: sin scroll horizontal (${sw})`);
-    if (w === 390 || w === 1280) await pg.p.screenshot({ path: path.join(__dirname, `shot-${w}.png`), fullPage: true });
+    ok(sw <= 0, `${name}: sin scroll horizontal`);
+    ok(await sel(pg.p, 'total') !== null, `${name}: resumen visible`);
+    await pg.p.screenshot({ path: path.join(__dirname, `shot-${name.replace(' ', '')}.png`), fullPage: true });
     await pg.ctx.close();
   }
+  for (const w of [320, 360, 768]) { const pg = await page({ viewport: { width: w, height: 800 } }); await pg.p.click('.vb-pack[data-n="5"]'); for (let i = 0; i < 6; i++) await plus(pg.p, FL[i]); ok((await pg.p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)) <= 0, `ancho ${w}px sin scroll horizontal`); await pg.ctx.close(); }
   await br.close(); srv.close(); console.log(fails ? `\n${fails} FALLOS` : '\nTODO OK'); process.exit(fails ? 1 : 0);
 })();
