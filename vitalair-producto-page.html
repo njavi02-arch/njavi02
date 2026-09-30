@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitalAir Premium - €49,99 | Inhalador Inteligente</title>
+    <meta name="description" content="VitalAir Premium: 400 inhalaciones, pantalla OLED, app móvil, batería 24 horas. Garantía 2 años. Envío gratis.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }
+
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        nav .logo { font-size: 1.8rem; font-weight: bold; letter-spacing: 2px; }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 2rem;
+            transition: opacity 0.3s;
+        }
+
+        nav a:hover { opacity: 0.8; }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            color: #999;
+            margin: 2rem 0;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        /* Product Section */
+        .product-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin: 3rem 0;
+            align-items: start;
+        }
+
+        .product-image {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 5rem;
+        }
+
+        .product-info h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .product-badge {
+            background: #ff6b6b;
+            color: white;
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .rating {
+            color: #ffc107;
+            font-size: 1.2rem;
+            margin: 1rem 0;
+        }
+
+        .price {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin: 1rem 0;
+        }
+
+        .price-info {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: bold;
+            margin-right: 1rem;
+            margin-bottom: 1rem;
+            width: 100%;
+            text-align: center;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .secondary-button {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #ddd;
+            margin-bottom: 2rem;
+        }
+
+        .secondary-button:hover {
+            background: #e8e8e8;
+        }
+
+        /* Features List */
+        .features-list {
+            list-style: none;
+            margin: 2rem 0;
+        }
+
+        .features-list li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+
+        .features-list li:before {
+            content: "✓";
+            color: #ff6b6b;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 1rem;
+        }
+
+        /* Specifications Table */
+        .specs-section {
+            margin: 4rem 0;
+        }
+
+        .specs-section h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .specs-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #f8f9fa;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .specs-table td {
+            padding: 1.2rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .specs-table td:first-child {
+            font-weight: bold;
+            background: #f0f0f0;
+            width: 40%;
+            color: #333;
+        }
+
+        .specs-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Reviews Section */
+        .reviews-section {
+            margin: 4rem 0;
+        }
+
+        .reviews-section h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .review-card {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .review-rating {
+            color: #ffc107;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .review-text {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        .review-author {
+            font-weight: bold;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            margin: 4rem 0;
+        }
+
+        .faq-section h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .faq-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            border-left: 4px solid #667eea;
+        }
+
+        .faq-question {
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .faq-toggle {
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.open .faq-toggle {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            display: none;
+            margin-top: 1rem;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 1rem;
+            line-height: 1.8;
+        }
+
+        .faq-item.open .faq-answer {
+            display: block;
+        }
+
+        /* Guarantee Section */
+        .guarantee-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 10px;
+            margin: 4rem 0;
+            text-align: center;
+        }
+
+        .guarantee-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .guarantee-section p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .guarantee-badge {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: #333;
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        footer a {
+            color: #ff6b6b;
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .product-section {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .product-info h1 {
+                font-size: 1.8rem;
+            }
+
+            .price {
+                font-size: 2.2rem;
+            }
+
+            .cta-button {
+                width: 100%;
+            }
+
+            .specs-table td {
+                padding: 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">VitalAir</div>
+        <div>
+            <a href="vitalair-landing.html">← Volver</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="vitalair-landing.html">Inicio</a> / <a href="vitalair-landing.html#productos">Productos</a> / Premium
+        </div>
+
+        <!-- Product Section -->
+        <div class="product-section">
+            <div class="product-image">🎯</div>
+            <div class="product-info">
+                <span class="product-badge">MÁS POPULAR</span>
+                <h1>VitalAir Premium</h1>
+                <div class="rating">★★★★★ (247 reseñas)</div>
+
+                <div class="price">€49,99</div>
+                <div class="price-info">Envío gratis a toda Europa • Garantía 2 años</div>
+
+                <button class="cta-button">COMPRAR AHORA - €49,99</button>
+                <button class="cta-button secondary-button">AÑADIR A FAVORITOS</button>
+
+                <h3 style="margin-top: 2rem; margin-bottom: 1rem; color: #333;">Características Principales:</h3>
+                <ul class="features-list">
+                    <li>400 inhalaciones por carga</li>
+                    <li>5 velocidades ajustables</li>
+                    <li>Pantalla OLED 2.4"</li>
+                    <li>Batería de 24 horas</li>
+                    <li>App móvil inteligente (iOS + Android)</li>
+                    <li>Estuche de aluminio premium</li>
+                    <li>Carga USB-C rápida (30 min)</li>
+                    <li>Sensor de temperatura inteligente</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Specifications -->
+        <div class="specs-section">
+            <h2>Especificaciones Técnicas</h2>
+            <table class="specs-table">
+                <tr>
+                    <td>Capacidad de Batería</td>
+                    <td>5000 mAh (Li-Po)</td>
+                </tr>
+                <tr>
+                    <td>Inhalaciones por Carga</td>
+                    <td>400 (aproximadamente)</td>
+                </tr>
+                <tr>
+                    <td>Tiempo de Carga</td>
+                    <td>30 minutos (USB-C)</td>
+                </tr>
+                <tr>
+                    <td>Autonomía</td>
+                    <td>24 horas de uso continuo</td>
+                </tr>
+                <tr>
+                    <td>Rango de Temperatura</td>
+                    <td>10°C a 40°C</td>
+                </tr>
+                <tr>
+                    <td>Velocidades</td>
+                    <td>5 niveles ajustables</td>
+                </tr>
+                <tr>
+                    <td>Peso</td>
+                    <td>180 gramos</td>
+                </tr>
+                <tr>
+                    <td>Dimensiones</td>
+                    <td>12cm x 5cm x 4cm</td>
+                </tr>
+                <tr>
+                    <td>Material</td>
+                    <td>Aluminio anodizado + polímero técnico</td>
+                </tr>
+                <tr>
+                    <td>Garantía</td>
+                    <td>2 años completa</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Reviews -->
+        <div class="reviews-section">
+            <h2>Opiniones de Clientes</h2>
+
+            <div class="review-card">
+                <div class="review-rating">★★★★★</div>
+                <p class="review-text">"Fantástico producto. La batería dura mucho más de lo esperado y la app es muy intuitiva. Llegó en 3 días. Totalmente recomendado."</p>
+                <p class="review-author">María López - Barcelona, España</p>
+            </div>
+
+            <div class="review-card">
+                <div class="review-rating">★★★★★</div>
+                <p class="review-text">"Comparé con otros inhaladores y este tiene la mejor relación calidad-precio. El estuche de aluminio es de primera calidad. Muy satisfecho."</p>
+                <p class="review-author">Juan García - Lisboa, Portugal</p>
+            </div>
+
+            <div class="review-card">
+                <div class="review-rating">★★★★★</div>
+                <p class="review-text">"La pantalla OLED es increíble, se ve muy bien. El control por app funciona perfectamente. Definitivamente el mejor inhalador que he tenido."</p>
+                <p class="review-author">Sandra Müller - Berlín, Alemania</p>
+            </div>
+
+            <div class="review-card">
+                <div class="review-rating">★★★★★</div>
+                <p class="review-text">"Excelente servicio al cliente. Tuve una pequeña duda y respondieron en menos de 2 horas. El producto es exactamente como se describe."</p>
+                <p class="review-author">Andrés Ramírez - Madrid, España</p>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="faq-section">
+            <h2>Preguntas Frecuentes</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    ¿Cuáles son las diferencias con el modelo Básico?
+                    <span class="faq-toggle">↓</span>
+                </div>
+                <div class="faq-answer">
+                    El modelo Premium ofrece el doble de inhalaciones (400 vs 200), pantalla OLED, batería de 24 horas vs 8 horas, control por app móvil, y estuche de aluminio premium. Es la mejor opción para uso intensivo.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    ¿Cuánto dura la batería realmente?
+                    <span class="faq-toggle">↓</span>
+                </div>
+                <div class="faq-answer">
+                    Con uso continuo a velocidad media, la batería dura aproximadamente 24 horas. En uso normal (varias sesiones al día), dura 2-3 días. El tiempo exacto depende de la velocidad utilizada.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    ¿Es legal en mi país?
+                    <span class="faq-toggle">↓</span>
+                </div>
+                <div class="faq-answer">
+                    VitalAir es un producto legal en toda Europa. Se recomienda consultar con las regulaciones locales de tu país antes de realizar la compra. En España, Portugal, Alemania, Francia y Italia es completamente legal.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    ¿Qué accesorios incluye?
+                    <span class="faq-toggle">↓</span>
+                </div>
+                <div class="faq-answer">
+                    Incluye: cable USB-C, estuche de aluminio, manual en español, acceso a la app móvil, y 1 año de actualizaciones software gratis. Accesorios adicionales disponibles por separado.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    ¿Qué cobertura tiene la garantía de 2 años?
+                    <span class="faq-toggle">↓</span>
+                </div>
+                <div class="faq-answer">
+                    La garantía cubre defectos de fabricación, fallos de batería, pantalla rota (excepto daño accidental), y mal funcionamiento de componentes. Excluye daño por agua o golpes fuertes. Soporte técnico incluido 24/7.
+                </div>
+            </div>
+        </div>
+
+        <!-- Guarantee -->
+        <div class="guarantee-section">
+            <div class="guarantee-badge">🛡️</div>
+            <h2>Garantía de Satisfacción 100%</h2>
+            <p>Si no estás completamente satisfecho en los primeros 30 días, te devolvemos el dinero sin hacer preguntas.</p>
+            <p style="font-size: 0.95rem; opacity: 0.9;">Política de devolución: 30 días, dinero de vuelta. Envío de retorno gratis en Europa.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 VitalAir. Todos los derechos reservados.</p>
+        <div>
+            <a href="vitalair-privacy.html">Privacidad</a>
+            <a href="vitalair-terms.html">Términos</a>
+            <a href="vitalair-contact.html">Contacto</a>
+        </div>
+        <p style="margin-top: 1rem; font-size: 0.8rem;">Email: info@vitalair.online</p>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.classList.toggle('open');
+            });
+        });
+    </script>
+</body>
+</html>

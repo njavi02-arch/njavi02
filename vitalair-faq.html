@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitalAir - Preguntas Frecuentes</title>
+    <meta name="description" content="Respuestas a las preguntas más comunes sobre productos VitalAir, envíos, garantía y más.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }
+
+        nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav .logo { font-size: 1.8rem; font-weight: bold; }
+        nav a { color: white; text-decoration: none; margin-left: 2rem; }
+        nav a:hover { opacity: 0.8; }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+
+        .faq-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 3rem;
+        }
+
+        .faq-hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .faq-hero p { font-size: 1.1rem; opacity: 0.95; }
+
+        .faq-category {
+            margin-bottom: 3rem;
+        }
+
+        .category-title {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid #ff6b6b;
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .faq-item {
+            background: white;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 4px solid #667eea;
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            background: #f8f9fa;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            transition: background 0.3s;
+        }
+
+        .faq-question:hover {
+            background: #f0f0f0;
+        }
+
+        .faq-question-text {
+            font-weight: bold;
+            color: #333;
+            flex: 1;
+        }
+
+        .faq-toggle {
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+            color: #667eea;
+        }
+
+        .faq-item.open .faq-toggle {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            display: none;
+            padding: 1.5rem;
+            background: white;
+            color: #666;
+            line-height: 1.8;
+            border-top: 1px solid #eee;
+        }
+
+        .faq-item.open .faq-answer {
+            display: block;
+        }
+
+        .search-box {
+            margin-bottom: 2rem;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        footer a {
+            color: #ff6b6b;
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+
+        .contact-cta {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .contact-cta h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-cta a {
+            color: #667eea;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">VitalAir</div>
+        <a href="vitalair-landing.html">← Volver</a>
+    </nav>
+
+    <div class="container">
+        <div class="faq-hero">
+            <h1>Preguntas Frecuentes</h1>
+            <p>Encuentra respuestas rápidas a tus dudas</p>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Busca tu pregunta...">
+        </div>
+
+        <!-- Productos -->
+        <div class="faq-category">
+            <div class="category-title">📦 Productos</div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-question-text">¿Cuáles son las diferencias entre los modelos?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <strong>Básico (€19,99):</strong> 200 inhalaciones, 3 velocidades, 8 horas autonomía. Perfecto para principiantes.<br><br>
+                    <strong>Premium (€49,99):</strong> 400 inhalaciones, 5 velocidades, pantalla OLED, 24 horas autonomía, app móvil, estuche aluminio. El más popular.<br><br>
+                    <strong>Pro (€89,99):</strong> 800 inhalaciones, 10 velocidades, pantalla OLED premium, 48 horas autonomía, control por voz, accesorios premium.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-question-text">¿Qué incluye cada caja?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Todos los modelos incluyen: El inhalador, cable USB-C, manual en español, tarjeta de garantía, y acceso a la app móvil (versiones Premium y Pro).<br><br>
+                    El modelo Premium añade: Estuche de aluminio, accesorios adicionales, y 1 año de actualizaciones software gratis.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-question-text">¿Puedo recargar la batería con cualquier cargador USB-C?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Sí, cualquier cargador USB-C estándar funciona perfectamente. Recomendamos usar el cargador incluido para garantizar la carga rápida de 30 minutos. No uses cargadores de más de 5A para evitar sobrecalentamiento.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-question-text">¿Cuánto tiempo tarda la batería en llegar al 100%?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Con el cargador incluido: 30 minutos hasta carga completa. Con otros cargadores USB-C: entre 45-60 minutos dependiendo de la potencia del cargador.
+                </div>
+            </div>
+        </div>
+
+        <!-- Envíos y Entrega -->
+        <div class="faq-category">
+            <div class="category-title">🚚 Envíos y Entrega</div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-question-text">¿Cuál es el tiempo de entrega?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <strong>España:</strong> 2-3 días laborables<br>
+                    <strong>Resto de Europa:</strong> 3-5 días laborables<br><br>
+                    El tiempo se cuenta desde que confirmamos el pago, no desde que realizas el pedido.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-question-text">¿Cuál es el costo del envío?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    ¡Envío GRATIS a toda Europa! No hay costos ocultos. El precio que ves es el precio final.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-question-text">¿Puedo rastrear mi pedido?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Sí. Recibirás un número de seguimiento por email una vez que el paquete se envíe. Puedes rastrear tu pedido en tiempo real a través del enlace proporcionado.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-question-text">¿Qué hago si mi paquete no llega?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Contacta con nosotros en info@vitalair.online dentro de 48 horas. Nuestro equipo investigará el envío y te ofrecerá una solución (reenvío o devolución del dinero).
+                </div>
+            </div>
+        </div>
+
+        <!-- Garantía y Devoluciones -->
+        <div class="faq-category">
+            <div class="category-title">🛡️ Garantía y Devoluciones</div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-question-text">¿Qué cubre la garantía de 2 años?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Cubre: Defectos de fabricación, fallos de batería, pantalla dañada (excepto accidental), mal funcionamiento de componentes, problemas de botones o conectores.<br><br>
+                    NO cubre: Daño por agua, golpes fuertes, uso indebido, desgaste normal del material, pantalla rota por caída (daño accidental).
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-question-text">¿Cómo hago una reclamación de garantía?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    1. Contacta con soporte@vitalair.online con fotos del problema<br>
+                    2. Te proporcionaremos una etiqueta de envío prepagada<br>
+                    3. Envía el producto a nuestro centro de reparación<br>
+                    4. Recibirás el reemplazo o reparación en 7-10 días<br><br>
+                    El envío de retorno es GRATIS para todas las reclamaciones de garantía válidas.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-question-text">¿Tengo derecho a devolución?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Sí. Tienes 30 días desde la recepción para devolver el producto en perfecto estado. Si no estás satisfecho, te devolvemos el dinero íntegramente. El envío de retorno corre a nuestro cargo.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-question-text">¿Cómo hago una devolución?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    1. Escribe a info@vitalair.online indicando que deseas devolver tu pedido<br>
+                    2. Te enviaremos una etiqueta de devolución gratuita<br>
+                    3. Empaqueta el producto (en condiciones de venta nuevas) y envíalo<br>
+                    4. Una vez recibido y verificado, procesamos el reembolso en 5-7 días
+                </div>
+            </div>
+        </div>
+
+        <!-- Pago y Seguridad -->
+        <div class="faq-category">
+            <div class="category-title">💳 Pago y Seguridad</div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-question-text">¿Qué métodos de pago aceptan?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Aceptamos: Tarjetas de crédito/débito (Visa, MasterCard, Amex), PayPal, Apple Pay, Google Pay, y transferencia bancaria.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-question-text">¿Es seguro pagar en VitalAir?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    100% seguro. Usamos cifrado SSL de 256 bits (el mismo que bancos y Amazon). Todos los pagos se procesan a través de Stripe, que es el procesador de pagos más seguro del mundo. Nunca guardamos tus datos de tarjeta.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-question-text">¿Me cobrarán impuestos adicionales?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    No. El precio que ves en la tienda es el precio final, IVA incluido. Para envíos fuera de la UE, pueden aplicarse aranceles de aduana que serían responsabilidad del cliente.
+                </div>
+            </div>
+        </div>
+
+        <!-- Uso y Funcionamiento -->
+        <div class="faq-category">
+            <div class="category-title">⚙️ Uso y Funcionamiento</div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-question-text">¿Es legal usar VitalAir?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    VitalAir es 100% legal en toda la UE. Se recomienda siempre verificar las leyes locales de tu región antes de comprar. En España, Portugal, Alemania, Francia, Italia y prácticamente toda Europa es totalmente legal.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-question-text">¿Cuántas inhalaciones puedo sacar de una carga?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Aproximadamente:<br>
+                    <strong>Básico:</strong> 200 inhalaciones<br>
+                    <strong>Premium:</strong> 400 inhalaciones<br>
+                    <strong>Pro:</strong> 800 inhalaciones<br><br>
+                    El número real depende de la velocidad usada y la técnica de inhalación.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-question-text">¿Es fácil de usar?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Muy fácil. Solo necesitas presionar un botón para activar. La interfaz es intuitiva y el manual incluido explica cada función. También disponible video tutorial en YouTube.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-question-text">¿Requiere mantenimiento?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Mínimo. Solo limpia la boca del dispositivo con un paño suave cada semana. No requiere otras reparaciones a menos que sea necesario según la garantía.
+                </div>
+            </div>
+        </div>
+
+        <!-- Soporte y Contacto -->
+        <div class="contact-cta">
+            <h3>¿No encontraste tu respuesta?</h3>
+            <p>Contacta directamente con nuestro equipo de soporte</p>
+            <a href="vitalair-contact.html">Enviar Mensaje de Contacto</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 VitalAir. Todos los derechos reservados.</p>
+        <div>
+            <a href="vitalair-privacy.html">Privacidad</a>
+            <a href="vitalair-terms.html">Términos</a>
+            <a href="vitalair-contact.html">Contacto</a>
+        </div>
+    </footer>
+
+    <script>
+        const faqItems = document.querySelectorAll('.faq-item');
+        const searchInput = document.getElementById('searchInput');
+
+        faqItems.forEach(item => {
+            item.addEventListener('click', function() {
+                this.classList.toggle('open');
+            });
+        });
+
+        searchInput.addEventListener('keyup', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question-text').textContent.toLowerCase();
+                const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

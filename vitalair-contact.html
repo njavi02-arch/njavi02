@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitalAir - Contacto</title>
+    <meta name="description" content="Contacta con VitalAir. Estamos disponibles para resolver tus dudas.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }
+
+        nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav .logo { font-size: 1.8rem; font-weight: bold; }
+        nav a { color: white; text-decoration: none; margin-left: 2rem; }
+        nav a:hover { opacity: 0.8; }
+
+        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+
+        .contact-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 3rem;
+        }
+
+        .contact-hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .contact-hero p { font-size: 1.1rem; opacity: 0.95; }
+
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .contact-form {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+        }
+
+        .contact-form h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .info-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 4px solid #667eea;
+        }
+
+        .info-card h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-card p {
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-card a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .info-card a:hover {
+            text-decoration: underline;
+        }
+
+        .response-times {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .faq-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-top: 3rem;
+        }
+
+        .faq-section h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .faq-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .faq-answer {
+            color: #666;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        footer a {
+            color: #ff6b6b;
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .contact-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">VitalAir</div>
+        <a href="vitalair-landing.html">← Volver</a>
+    </nav>
+
+    <div class="container">
+        <div class="contact-hero">
+            <h1>Contacta con Nosotros</h1>
+            <p>Estamos aquí para ayudarte. Responderemos rápidamente.</p>
+        </div>
+
+        <div class="contact-content">
+            <!-- Contact Form -->
+            <div class="contact-form">
+                <h2>Envíanos un Mensaje</h2>
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Nombre *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Asunto *</label>
+                        <select id="subject" name="subject" required>
+                            <option value="">Selecciona un asunto</option>
+                            <option value="soporte">Soporte Técnico</option>
+                            <option value="pedido">Cuestión sobre Pedido</option>
+                            <option value="garantia">Garantía/Devolución</option>
+                            <option value="producto">Pregunta sobre Producto</option>
+                            <option value="general">Consulta General</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Mensaje *</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-button">ENVIAR MENSAJE</button>
+                </form>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="contact-info">
+                <div class="info-card">
+                    <h3>📧 Email</h3>
+                    <p>Para consultas generales y soporte:</p>
+                    <a href="mailto:info@vitalair.online">info@vitalair.online</a>
+                    <p style="margin-top: 1rem;">Para soporte técnico:</p>
+                    <a href="mailto:soporte@vitalair.online">soporte@vitalair.online</a>
+                </div>
+
+                <div class="info-card">
+                    <h3>🕐 Horario</h3>
+                    <p><strong>Lunes - Viernes:</strong> 9:00 - 18:00 CET</p>
+                    <p><strong>Sábados:</strong> 10:00 - 14:00 CET</p>
+                    <p><strong>Domingos:</strong> Cerrado</p>
+                    <div class="response-times">
+                        ⏱️ Respondemos en máximo 24 horas durante días laborales
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3>📍 Ubicación</h3>
+                    <p>VitalAir S.L.</p>
+                    <p>Madrid, España</p>
+                    <p style="margin-top: 1rem; font-size: 0.9rem; color: #999;">Tenemos oficinas en España, Portugal, Alemania y Francia</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h2>Preguntas que Puedes Hacer</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">¿Cómo puedo rastrear mi pedido?</div>
+                <div class="faq-answer">Recibirás un email con el número de seguimiento una vez que tu pedido se envíe. Puedes rastrear tu paquete en tiempo real desde el enlace proporcionado.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">¿Cuál es la política de devoluciones?</div>
+                <div class="faq-answer">Tienes 30 días desde la recepción para devolver el producto. Si no estás satisfecho, te devolveremos el dinero íntegramente. El envío de retorno corre a nuestro cargo.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">¿Cómo hago una reclamación de garantía?</div>
+                <div class="faq-answer">Contacta con soporte@vitalair.online con fotos del problema. Te proporcionaremos una etiqueta de envío prepagada. El envío es gratuito para todas las reclamaciones válidas.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">¿Qué métodos de pago aceptan?</div>
+                <div class="faq-answer">Aceptamos tarjetas de crédito/débito (Visa, MasterCard, Amex), PayPal, Apple Pay, Google Pay y transferencia bancaria.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">¿El pago es seguro?</div>
+                <div class="faq-answer">100% seguro. Usamos cifrado SSL de 256 bits. Todos los pagos se procesan a través de Stripe, el procesador más seguro del mundo. Nunca guardamos tus datos de tarjeta.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">¿Tengo alguna pregunta que no veo respondida aquí?</div>
+                <div class="faq-answer">Usa el formulario anterior para enviarnos tu pregunta. Nuestro equipo responderá en las próximas 24 horas.</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 VitalAir. Todos los derechos reservados.</p>
+        <div>
+            <a href="vitalair-privacy.html">Privacidad</a>
+            <a href="vitalair-terms.html">Términos</a>
+            <a href="vitalair-faq.html">FAQ</a>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+
+            const mailtoLink = `mailto:info@vitalair.online?subject=Consulta: ${encodeURIComponent(subject)}&body=Nombre: ${encodeURIComponent(name)}%0A%0AEmail: ${encodeURIComponent(email)}%0A%0AMensaje:%0A${encodeURIComponent(message)}`;
+
+            window.location.href = mailtoLink;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitalAir - Sobre Nosotros</title>
+    <meta name="description" content="Conoce la historia de VitalAir, nuestra misión de innovación y nuestro compromiso con la excelencia.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }
+
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav .logo { font-size: 1.8rem; font-weight: bold; }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 2rem;
+        }
+
+        nav a:hover { opacity: 0.8; }
+
+        /* Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero */
+        .about-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 4rem;
+        }
+
+        .about-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .about-hero p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 4rem;
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid #ff6b6b;
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .section p {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+        }
+
+        /* Mission/Vision Grid */
+        .mission-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .mission-card {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .mission-card:nth-child(2) {
+            border-left-color: #ff6b6b;
+        }
+
+        .mission-card h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .mission-card p {
+            color: #666;
+        }
+
+        /* Values */
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .value-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+            border-top: 4px solid #667eea;
+        }
+
+        .value-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .value-card h3 {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .value-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* Timeline */
+        .timeline {
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .timeline-item {
+            padding-left: 3rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .timeline-item:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px #667eea;
+        }
+
+        .timeline-item:after {
+            content: "";
+            position: absolute;
+            left: 4px;
+            top: 12px;
+            width: 2px;
+            height: calc(100% + 12px);
+            background: #ddd;
+        }
+
+        .timeline-item:last-child:after {
+            display: none;
+        }
+
+        .timeline-year {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+
+        .timeline-text {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        /* Team */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .team-member {
+            text-align: center;
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+        }
+
+        .team-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .team-member h3 {
+            color: #333;
+            margin-bottom: 0.3rem;
+        }
+
+        .team-role {
+            color: #ff6b6b;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-bio {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* CTA */
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 10px;
+            text-align: center;
+            margin: 4rem 0;
+        }
+
+        .cta-section h2 {
+            color: white;
+            border-bottom: none;
+            margin-bottom: 1rem;
+        }
+
+        .cta-button {
+            background: #ff6b6b;
+            color: white;
+            padding: 15px 40px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+
+        .cta-button:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            background: #333;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        footer a {
+            color: #ff6b6b;
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mission-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-hero h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">VitalAir</div>
+        <div>
+            <a href="vitalair-landing.html">← Volver</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Hero -->
+        <div class="about-hero">
+            <h1>Sobre VitalAir</h1>
+            <p>Innovación, calidad y sostenibilidad en cada inhalador</p>
+        </div>
+
+        <!-- Our Story -->
+        <section class="section">
+            <h2>Nuestra Historia</h2>
+            <p>
+                VitalAir nació en 2020 con una visión clara: revolucionar la industria de inhaladores portátiles mediante
+                la innovación tecnológica y el diseño centrado en el usuario. Nuestro equipo de ingenieros y diseñadores
+                trabajó durante más de 2 años para perfeccionar cada aspecto del producto.
+            </p>
+            <p>
+                Lo que comenzó como un proyecto en un pequeño laboratorio se ha convertido en una empresa global que
+                vende a más de 50 países. Pero nunca hemos perdido nuestro compromiso original: crear los mejores
+                inhaladores del mercado a precios accesibles.
+            </p>
+            <p>
+                Hoy, con más de 100.000 usuarios satisfechos, continuamos innovando y mejorando nuestros productos
+                basándonos en el feedback de nuestra comunidad.
+            </p>
+        </section>
+
+        <!-- Mission & Vision -->
+        <section class="section">
+            <h2>Misión y Visión</h2>
+            <div class="mission-grid">
+                <div class="mission-card">
+                    <h3>🎯 Nuestra Misión</h3>
+                    <p>
+                        Proporcionar inhaladores de tecnología avanzada y precio accesible a millones de personas en todo
+                        el mundo, mejorando su calidad de vida con productos innovadores, seguros y sostenibles.
+                    </p>
+                </div>
+                <div class="mission-card">
+                    <h3>🔮 Nuestra Visión</h3>
+                    <p>
+                        Ser la marca número 1 de inhaladores portátiles en Europa, reconocida por la excelencia en diseño,
+                        tecnología y servicio al cliente. Un referente en innovación sostenible.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Values -->
+        <section class="section">
+            <h2>Valores Fundamentales</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">🔬</div>
+                    <h3>Innovación</h3>
+                    <p>Invertimos en I+D constantemente para traer las mejores soluciones tecnológicas.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">✓</div>
+                    <h3>Calidad</h3>
+                    <p>Cada producto pasa por 50+ controles de calidad antes de llegar a tu mano.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">♻️</div>
+                    <h3>Sostenibilidad</h3>
+                    <p>Comprometidos con el medio ambiente en cada aspecto de nuestra operación.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">👥</div>
+                    <h3>Transparencia</h3>
+                    <p>Comunicación honesta y directa con nuestros clientes y comunidad.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🌍</div>
+                    <h3>Accesibilidad</h3>
+                    <p>Precios justos para que todos puedan acceder a tecnología premium.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">💪</div>
+                    <h3>Excelencia</h3>
+                    <p>Apuntamos a ser los mejores en cada detalle, sin excepciones.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timeline -->
+        <section class="section">
+            <h2>Nuestro Camino</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">2020</div>
+                    <div class="timeline-text">Fundación de VitalAir. Comienza el desarrollo del primer prototipo.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2021</div>
+                    <div class="timeline-text">Lanzamiento del modelo básico. Primeras 1.000 unidades vendidas en España.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2022</div>
+                    <div class="timeline-text">Expansión a 20 países europeos. Lanzamiento del modelo Premium con app móvil.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2023</div>
+                    <div class="timeline-text">Alcanzamos 100.000 clientes. Lanzamiento del modelo Pro con IA integrada.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2024</div>
+                    <div class="timeline-text">Presencia en 50+ países. Inversión en nuevas tecnologías de batería.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team -->
+        <section class="section">
+            <h2>Nuestro Equipo</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="team-avatar">👨‍💼</div>
+                    <h3>Carlos Rodríguez</h3>
+                    <div class="team-role">CEO & Fundador</div>
+                    <div class="team-bio">Ingeniero con 15 años de experiencia en electrónica de consumo.</div>
+                </div>
+                <div class="team-member">
+                    <div class="team-avatar">👩‍💻</div>
+                    <h3>Elena García</h3>
+                    <div class="team-role">CTO & Directora de I+D</div>
+                    <div class="team-bio">Especialista en desarrollo de firmware y IoT. Anteriormente en Intel.</div>
+                </div>
+                <div class="team-member">
+                    <div class="team-avatar">👨‍🔬</div>
+                    <h3>Marco Benedetti</h3>
+                    <div class="team-role">Director de Calidad</div>
+                    <div class="team-bio">Asegurador de calidad con certificaciones ISO y experiencia en manufactura.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Certifications & Compliance -->
+        <section class="section">
+            <h2>Certificaciones y Cumplimiento</h2>
+            <p>
+                Todos nuestros productos cumplen con las regulaciones internacionales más estrictas:
+            </p>
+            <ul style="color: #666; margin: 1.5rem 0;">
+                <li>✓ Certificación CE (Unión Europea)</li>
+                <li>✓ RoHS Compliance (Sustancias Peligrosas)</li>
+                <li>✓ ISO 9001:2015 (Sistema de Gestión de Calidad)</li>
+                <li>✓ Pruebas de seguridad de batería UL2056</li>
+                <li>✓ Análisis de Ciclo de Vida Completo (LCA)</li>
+            </ul>
+        </section>
+
+        <!-- Call to Action -->
+        <div class="cta-section">
+            <h2>Únete a la Comunidad VitalAir</h2>
+            <p>Más de 100.000 usuarios satisfechos en todo el mundo confían en VitalAir.</p>
+            <button class="cta-button">EXPLORAR PRODUCTOS</button>
+        </div>
+
+        <!-- FAQ Section -->
+        <section class="section">
+            <h2>Preguntas Frecuentes</h2>
+            <div style="background: #f8f9fa; padding: 2rem; border-radius: 10px;">
+                <h3 style="color: #333; margin-bottom: 1rem;">¿Dónde están basados?</h3>
+                <p>Tenemos sede principal en Madrid, España, con oficinas de distribución en Portugal, Alemania y Francia.</p>
+
+                <h3 style="color: #333; margin: 1.5rem 0 1rem 0;">¿Hacen envíos internacionales?</h3>
+                <p>Sí, enviamos a más de 50 países. Los costos de envío se calculan automáticamente en el checkout.</p>
+
+                <h3 style="color: #333; margin: 1.5rem 0 1rem 0;">¿Puedo contactar directamente para consultas?</h3>
+                <p>Por supuesto. Nuestro equipo está disponible en <a href="mailto:info@vitalair.online" style="color: #667eea;">info@vitalair.online</a></p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 VitalAir. Todos los derechos reservados.</p>
+        <div>
+            <a href="vitalair-privacy.html">Privacidad</a>
+            <a href="vitalair-terms.html">Términos</a>
+            <a href="vitalair-contact.html">Contacto</a>
+        </div>
+    </footer>
+</body>
+</html>
