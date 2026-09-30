@@ -24,3 +24,10 @@ Tema publicado (Horizon, id 210811715975) sin tocar.
 - Fotos localizadas por texto alternativo, no por posición. Raspberry/Lemon/Maple Pepper asignadas por orden de envío (sin verificar).
 - Copy sensorial por sabor basado solo en el nombre del sabor: confirmar con el proveedor.
 - Pendiente: instrucciones de uso reales, duración, qué contiene cada sobre, nombre de la tienda, políticas, reseñas reales, publicar el tema.
+
+## Constructor de compra (VitalAir v3)
+- Tema borrador "VitalAir v3 (corrección sabores)" id 210832589191: corrige sabores cortados por comas en la home y el cambio de fotos Raspberry/Lemon, y estrena el constructor.
+- Ficha: [Inhalador + sabores] N inhaladores (1-5) x 3 = máximo de sabores, repartidos libremente, contador N/M, barra fija, tope que bloquea el "+". Se añade UNA línea al carrito (variante del pack) con propiedades "Sabores", "Nº de sabores" y _bundle (oculta, evita fusiones).
+- [Solo sabores]: aparece solo si existe el producto activo con handle vitalair-sabores y 13 variantes cuyo título sea el nombre del sabor. Falta el precio por sabor (no inventado).
+- Variante nueva 2 inhaladores (39,98 €, sin tachado), opciones renombradas "N inhaladores (Nx)".
+- Código en VITALAIR_WEB/builder (js, css, test Playwright: 54 comprobaciones OK).
