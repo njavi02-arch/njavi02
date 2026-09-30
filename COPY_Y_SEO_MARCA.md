@@ -33,3 +33,18 @@ Bienestar/estilo: "nuevos hábitos", "rutina de bienestar", "ritual de pausa".
 Evitar como claim: "dejar de fumar", "limpiar pulmones", "salud pulmonar", "sustituto del tabaco".
 Aplicado: H1 "Elige qué quieres cuidar." (+ eyebrow "Inhalador de madera sin nicotina"), H2/H3 con producto y sabores, meta title "VitalAir · Inhalador de madera sin nicotina, 13 sabores" (55 c.), meta description (150 c.), ALT descriptivos, nombres de archivo descriptivos, FAQ con preguntas reales, enlaces internos (packs, ficha, devoluciones).
 Pendiente en Shopify (no editable por API): título y descripción de la página de inicio (Tienda online > Preferencias), nombre de la tienda.
+
+## Jerarquía de argumentos (aplicada en "VitalAir v2")
+- PRINCIPAL: "Un primer paso con sabor" — una alternativa para acompañar tus pausas mientras creas un ritual nuevo. No estás comprando un producto, estás dando un primer paso.
+- SECUNDARIOS: 13 sabores a tu elección · madera natural y metal (objeto que apetece tener) · sin nicotina · compacto.
+- CONFIANZA: información clara, 14 días de desistimiento, garantía legal, atención en info@vitalair.online, aviso "no es producto médico", sin promesas.
+- COMPRA: desde 19,99 €, packs con precio por unidad y ahorro real, envío gratis desde 55 € en España.
+Orden emocional: Atención → Identificación ("Quizá llevas tiempo pensando en cambiar") → Deseo ("llena esos momentos con un ritual nuevo") → Solución (VitalAir) → Prueba (piezas, sabores) → Confianza → Acción ("Elige tu sabor y empieza").
+Cadena de hábito: Decide → Elige tu sabor → Incorpóralo a tu rutina (constante) → Hazlo tuyo.
+
+## "Natural"
+Demostrable: cuerpo y filtro de madera natural (etiquetas de la foto del despiece). NO demostrable: composición/origen de los sabores (falta ficha del proveedor). Por eso se comunica "madera natural", no "producto natural" ni "ingredientes naturales". Si el proveedor aporta composición (p. ej. extractos vegetales), se podrá añadir "sabores de origen natural" con la ficha como respaldo.
+
+## "Ayuda a dejar de fumar"
+No existe evidencia en Shopify ni acceso a ficha técnica (la página del proveedor está bloqueada desde esta sesión). Una búsqueda pública solo muestra productos similares de otras marcas, no evidencia de VitalAir. Posicionamiento usado: "pensado para acompañarte mientras creas tu nuevo ritual", con aviso de que no es un tratamiento.
+Keywords "dejar de fumar / dejar el tabaco": solo en FAQ informativa y aviso; no en titulares ni meta (riesgo de claim sanitario y de rechazo publicitario).
