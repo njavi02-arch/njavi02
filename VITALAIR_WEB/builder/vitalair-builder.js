@@ -185,7 +185,7 @@
     if (PCT) h += '<div class="vb-l vb-l--disc" data-k="discount"><dt>' + PCT + ' % de descuento</dt><dd>−' + money(t.disc) + '</dd></div>';
     if (t.bulkOn) h += '<div class="vb-l vb-l--disc" data-k="bulk"><dt>' + BULK.pct + ' % extra en sabores (' + BULK.min + ' o más)</dt><dd>−' + money(t.bulk) + '</dd></div>';
     h += '<div class="vb-l vb-l--total" data-k="total"><dt>Total</dt><dd>' + money(t.total) + '</dd></div></dl>';
-    if (PCT) h += '<p class="vb-fine">Los descuentos se aplican automáticamente, sin códigos. Envío aparte al finalizar la compra.</p>';
+    if (PCT) h += '<p class="vb-fine">Los descuentos se aplican automáticamente, sin códigos.</p>';
     return h;
   }
 
