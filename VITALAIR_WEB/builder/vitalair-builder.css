@@ -74,3 +74,9 @@
 .vb-l--total dd{font:500 22px 'Fraunces',Georgia,serif}
 .vb-fine{margin:10px 0 0;font-size:12px;line-height:1.4;color:var(--vb-muted)}
 .vb-price b{white-space:nowrap}
+
+/* v5: pack recomendado */
+.vb-pack.is-rec{border-color:var(--vb-amber)}
+.vb-pack.is-rec::after{content:'\2605';position:absolute;top:3px;right:6px;font-size:11px;color:var(--vb-amber)}
+.vb-pack.is-rec.is-on::after{color:#FFD9A8}
+.vb-recmark{color:var(--vb-amber)}

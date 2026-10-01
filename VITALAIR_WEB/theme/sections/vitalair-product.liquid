@@ -31,7 +31,7 @@
   <div class="va-pdp-info">
     <p class="va-eyebrow">VitalAir · sin nicotina · 13 sabores</p>
     <h1>Inhalador VitalAir de madera</h1>
-    {%- if pct > 0 -%}<p class="va-offer">{{ pct }} % de descuento en toda la web · automático</p>{%- endif -%}
+    {%- if pct > 0 -%}<p class="va-offer">{{ pct }} % de descuento en packs de 1 a {{ deal[3] }} inhaladores y en sabores · automático</p>{%- endif -%}
     <p class="va-lead" style="font-size:17px;margin-bottom:8px">Madera natural y metal, sin nicotina. Elige tu inhalador y añade los sabores que quieras.</p>
     <ul class="va-bul">
       <li>13 sabores a {{ only_p.variants.first.price | money }} cada uno, sin límite</li>
@@ -66,6 +66,8 @@
   "discountPct": {{ pct }},
   "bulk": { "min": {{ deal[0] }}, "pct": {{ deal[1] }} },
   "onlyMin": {{ deal[2] | default: 0 }},
+  "discountMaxPack": {{ deal[3] | default: 99 }},
+  "recommend": 3,
   "sprite": "",
   "cartUrl": {{ routes.cart_url | json }},
   "addUrl": "{{ routes.cart_add_url }}.js",

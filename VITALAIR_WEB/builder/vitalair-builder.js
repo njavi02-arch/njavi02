@@ -12,6 +12,8 @@
   var PCT = +cfg.discountPct || 0;
   var BULK = cfg.bulk && cfg.bulk.min > 0 && cfg.bulk.pct > 0 ? cfg.bulk : null; /* % extra en sabores al llevar N o más */
   var ONLY_MIN = +cfg.onlyMin || 0; /* mínimo de sabores al comprar sin inhalador */
+  var MAXPACK = +cfg.discountMaxPack || 999; /* el descuento de lanzamiento solo aplica a packs de hasta N inhaladores */
+  var RECOMMEND = +cfg.recommend || 0;
   var MAX_LINE = 99;
   var fmt = new Intl.NumberFormat(cfg.locale || 'es-ES', { style: 'currency', currency: cfg.currency || 'EUR' });
   function money(c) { return fmt.format(c / 100); }
@@ -38,7 +40,7 @@
     var out = [];
     if (state.mode === 'kit') {
       var p = pack();
-      if (p) out.push({ kind: 'pack', label: state.n + (state.n > 1 ? ' inhaladores' : ' inhalador'), amount: p.price, compare: p.compare });
+      if (p) out.push({ kind: 'pack', label: state.n + (state.n > 1 ? ' inhaladores' : ' inhalador'), amount: p.price, compare: p.compare, eligible: state.n <= MAXPACK });
     }
     chosen().forEach(function (f) { var q = state.counts[f.name]; out.push({ kind: 'flavor', label: f.name, qty: q, unit: f.price, amount: f.price * q }); });
     return out;
@@ -48,7 +50,7 @@
     var sub = 0, d = 0, d2 = 0, bulkOn = !!BULK && total() >= BULK.min;
     lines().forEach(function (l) {
       sub += l.amount;
-      var a = disc(l.amount);
+      var a = (l.kind === 'pack' && !l.eligible) ? 0 : disc(l.amount);
       d += a;
       if (bulkOn && l.kind === 'flavor') d2 += Math.round((l.amount - a) * BULK.pct / 100);
     });
@@ -80,6 +82,7 @@
     var b = el('button', 'vb-pack');
     b.type = 'button';
     b.dataset.n = p.n;
+    if (RECOMMEND && p.n === RECOMMEND) b.classList.add('is-rec');
     var save = p.compare && p.compare > p.price ? '<em>−' + Math.floor((p.compare - p.price) * 100 / p.compare) + ' %</em>' : '';
     b.innerHTML = '<b>' + p.n + '</b><span>' + money(p.price) + '</span>' + save;
     b.setAttribute('aria-label', p.n + (p.n > 1 ? ' inhaladores' : ' inhalador') + ', ' + money(p.price));
@@ -183,10 +186,11 @@
       });
     }
     h += '<div class="vb-l vb-l--line" data-k="subtotal"><dt>Subtotal</dt><dd>' + money(t.sub) + '</dd></div>';
-    if (PCT) h += '<div class="vb-l vb-l--disc" data-k="discount"><dt>' + PCT + ' % de descuento</dt><dd>−' + money(t.disc) + '</dd></div>';
+    if (PCT && t.disc > 0) h += '<div class="vb-l vb-l--disc" data-k="discount"><dt>' + PCT + ' % de descuento</dt><dd>−' + money(t.disc) + '</dd></div>';
     if (t.bulkOn) h += '<div class="vb-l vb-l--disc" data-k="bulk"><dt>' + BULK.pct + ' % extra en sabores (' + BULK.min + ' o más)</dt><dd>−' + money(t.bulk) + '</dd></div>';
     h += '<div class="vb-l vb-l--total" data-k="total"><dt>Total</dt><dd>' + money(t.total) + '</dd></div></dl>';
-    if (PCT) h += '<p class="vb-fine">Los descuentos se aplican automáticamente, sin códigos.</p>';
+    var pk = ls.filter(function (l) { return l.kind === 'pack'; })[0];
+    if (PCT) h += '<p class="vb-fine">Los descuentos se aplican automáticamente, sin códigos.' + (pk && !pk.eligible ? ' El pack de ' + state.n + ' ya incluye su mejor precio, por eso el ' + PCT + ' % de lanzamiento no se suma.' : '') + '</p>';
     return h;
   }
 
@@ -207,8 +211,12 @@
     });
     var p = pack();
     if (kit) {
+      var nx = packs.filter(function (q) { return q.n === state.n + 1; })[0];
       ui.cap.innerHTML = '<b>' + state.n + (state.n > 1 ? ' inhaladores' : ' inhalador') + '</b>' +
-        (p && p.compare && p.compare > p.price ? ' · <span class="vb-legend">el ahorro del pack es frente a comprar las unidades sueltas</span>' : '');
+        (p ? ' · ' + money(Math.round(p.price / state.n)) + ' por inhalador' : '') +
+        (RECOMMEND && state.n === RECOMMEND ? ' · <b class="vb-recmark">Pack recomendado</b>' : '') +
+        (nx && p && nx.price / nx.n < p.price / p.n ? '<br><span class="vb-legend">Con ' + nx.n + ' inhaladores pagas ' + money(Math.round(nx.price / nx.n)) + ' por inhalador.</span>' : '') +
+        (p && p.compare && p.compare > p.price ? '<br><span class="vb-legend">El ahorro del pack es frente a comprar las unidades sueltas.</span>' : '');
     }
     if (hasExtras) {
       ui.flHead.innerHTML = '<span>' + (kit ? 2 : 1) + '</span>Añade tus sabores <small>(opcional · sin límite)</small>';

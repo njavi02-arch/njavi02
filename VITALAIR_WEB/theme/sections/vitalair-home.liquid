@@ -31,6 +31,9 @@
 @media(max-width:900px){.va-trustrow{grid-template-columns:1fr 1fr}.va-steps4{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.va-trustrow,.va-steps4,.va-why{grid-template-columns:1fr}.va-fcard p{min-height:0}}
 </style>
+{%- capture deal_raw -%}{%- render 'vitalair-flavor-deal' -%}{%- endcapture -%}
+{%- assign deal = deal_raw | strip | split: '|' -%}
+{%- assign maxpack = deal[3] | plus: 0 -%}
 {%- capture pct_raw -%}{%- render 'vitalair-promo-pct' -%}{%- endcapture -%}
 {%- assign pct = pct_raw | strip | plus: 0 -%}
 {%- assign keep = 100 | minus: pct -%}
@@ -153,7 +156,7 @@
 
 <section class="va-sec" id="packs">
   <div class="va-wrap">
-    <div class="va-center"><span class="va-num">06 · EL PRIMER PASO</span><h2>Empieza por donde quieras.</h2><p class="va-lead">Desde probarlo hasta tenerlo siempre a mano. Elige tu inhalador y añade los sabores que quieras, cada uno con su precio. {{ pct }} % de descuento en toda la web y, con 3 sabores o más, un 15 % extra en los sabores.</p></div>
+    <div class="va-center"><span class="va-num">06 · EL PRIMER PASO</span><h2>Empieza por donde quieras.</h2><p class="va-lead">Desde probarlo hasta tenerlo siempre a mano. Elige tu inhalador y añade los sabores que quieras, cada uno con su precio. {{ pct }} % de descuento en packs de 1 a {{ maxpack }} inhaladores y en sabores y, con 3 sabores o más, un 15 % extra en los sabores.</p></div>
     <div class="va-packs5" style="margin-top:40px">
       {%- for target in (1..5) -%}{%- for v in pack.variants -%}
         {%- assign n = v.title | split: '(' | last | split: 'x' | first | plus: 0 -%}
@@ -163,19 +166,20 @@
           {%- assign saved = full | minus: v.price -%}
           {%- assign packpct = saved | times: 100 | divided_by: full -%}
           {%- assign after = v.price | times: keep | plus: 50 | divided_by: 100 -%}
-          <div class="va-pack{% if n == 4 %} va-pack--rec{% endif %}">
+          <div class="va-pack{% if n == 3 %} va-pack--rec{% endif %}">
+            {%- if n == 3 -%}<span class="va-tag">Pack recomendado</span>{%- endif -%}
             <h3>{{ n }} inhalador{% if n > 1 %}es{% endif %}</h3>
             <p class="va-note">Sabores aparte, a tu gusto</p>
             <div class="va-price">{% if saved > 0 %}<s class="va-cmp2">{{ full | money }}</s>{% endif %}{{ v.price | money }}</div>
             <div class="va-unit">{{ unit | money }} por inhalador</div>
-            <div class="va-after">Con tu {{ pct }} %: {{ after | money }}</div>
+            {%- if n <= maxpack -%}<div class="va-after">Con tu {{ pct }} %: {{ after | money }}</div>{%- else -%}<div class="va-after" style="color:var(--va-muted)">Mejor precio por inhalador</div>{%- endif -%}
             <div class="va-save">{% if saved > 0 %}<span class="va-pct">PACK −{{ packpct }} %</span> Ahorras {{ saved | money }}{% endif %}</div>
-            <a class="va-btn{% unless n == 4 %} va-btn--ghost{% endunless %}" href="{{ pack.url }}?variant={{ v.id }}">{% if n == 1 %}Probar VitalAir{% else %}Dar el primer paso{% endif %}</a>
+            <a class="va-btn{% unless n == 3 %} va-btn--ghost{% endunless %}" href="{{ pack.url }}?variant={{ v.id }}">{% if n == 1 %}Probar VitalAir{% else %}Dar el primer paso{% endif %}</a>
           </div>
         {%- endif -%}
       {%- endfor -%}{%- endfor -%}
     </div>
-    <p class="va-foot">Precio tachado: el de comprar las mismas unidades sueltas al precio de 1 unidad. El {{ pct }} % se aplica además, automáticamente, en el carrito. Los sabores se añaden aparte, con su precio.</p>
+    <p class="va-foot">Precio tachado: el de comprar las mismas unidades sueltas al precio de 1 unidad. El {{ pct }} % se aplica además, automáticamente, en el carrito a los packs de 1 a {{ maxpack }} inhaladores y a los sabores; los packs de 4 y 5 ya incluyen su mejor precio. Los sabores se añaden aparte, con su precio.</p>
   </div>
 </section>
 
@@ -217,7 +221,7 @@
       <details><summary>¿Es natural?</summary><p>El cuerpo y el filtro son de madera natural. Si quieres saber más sobre la composición de los sabores, escríbenos a info@vitalair.online.</p></details>
       <details><summary>¿Qué sabores hay?</summary><p>Mango, Mint, Strawberry, Blueberry, Raspberry, Coffee, Cinnamon, Maple Pepper, Orange, Lemon, Grapefruit, Cranberry y Vanilla.</p></details>
       <details><summary>¿Cuántos sabores puedo elegir y cuánto cuestan?</summary><p>Los que quieras: no hay límite. El inhalador tiene su precio y cada sabor se añade como extra, con su precio a la vista. Puedes repetir el mismo sabor y combinar todos los que te apetezcan; el total se actualiza al momento.</p></details>
-      <details><summary>¿Cómo funciona el {{ pct }} % de descuento?</summary><p>Es un descuento automático en toda la web: se aplica a tu pedido en el carrito, sin códigos, e incluye el inhalador y los sabores. Además, si llevas 3 sabores o más, tienes un 15 % extra en los sabores.</p></details>
+      <details><summary>¿Cómo funciona el {{ pct }} % de descuento?</summary><p>Es un descuento automático: se aplica en el carrito, sin códigos, a los packs de 1 a {{ maxpack }} inhaladores y a todos los sabores. Los packs de 4 y 5 inhaladores ya tienen su mejor precio y no se suma. Además, si llevas 3 sabores o más, tienes un 15 % extra en los sabores.</p></details>
       <details><summary>¿Qué piezas tiene?</summary><p>Cuerpo de madera natural, boquilla o capuchón de metal, cartucho de malla y filtro de madera absorbente.</p></details>
       <details><summary>¿Cómo se utiliza y cuánto dura?</summary><p>Escríbenos a info@vitalair.online y te explicamos su uso paso a paso y cuánto puedes esperar que dure cada sabor.</p></details>
       <details><summary>¿Qué packs hay y cuánto cuestan?</summary><p>Puedes elegir de 1 a 5 inhaladores. Los packs de 3, 4 y 5 cuestan menos por inhalador que comprarlos sueltos. Los sabores se añaden aparte.</p></details>

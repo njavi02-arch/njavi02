@@ -29,7 +29,7 @@ const clean = s => s.replace(/\s/g, '').replace(/−/g, '-');
   const E = 199; // extra de prueba
   const eur = c => (c / 100).toFixed(2).replace('.', ',') + '€';
   // esperado: web 15 % por línea; extra 15 % en sabores (si >= 3) sobre el precio ya rebajado
-  const expect = (pack, fl) => { const n = Object.values(fl).reduce((a, b) => a + b, 0); let sub = pack, d = Math.round(pack * .15), d2 = 0;
+  const expect = (pack, fl, elig = true) => { const n = Object.values(fl).reduce((a, b) => a + b, 0); let sub = pack, d = elig ? Math.round(pack * .15) : 0, d2 = 0;
     for (const [f, q] of Object.entries(fl)) { const L = q * (f === 'Coffee' ? 249 : 199); sub += L; const a = Math.round(L * .15); d += a; if (n >= 3) d2 += Math.round((L - a) * .15); }
     return { sub, d, d2, total: sub - d - d2 }; };
 
@@ -68,10 +68,10 @@ const clean = s => s.replace(/\s/g, '').replace(/−/g, '-');
     const sub = 3998 + 11 * 199 + 12 * 199 + 249 - 11 * 199 + 11 * 199 - 11 * 199; // se recalcula abajo
     const expSub = 3998 + 13 * 0 + (11 * 199) + (11 * 199 - 11 * 199) + 0;
     const cnts = {}; for (const f of FL) cnts[f] = await cnt(pg.p, f);
-    const real = 3998 + FL.reduce((a, f) => a + cnts[f] * (f === 'Coffee' ? 249 : 199), 0);
+    const real = 3699 + FL.reduce((a, f) => a + cnts[f] * (f === 'Coffee' ? 249 : 199), 0);
     ok(Object.values(cnts).every(v => v >= 1) && cnts.Mango === 11, 'los 13 sabores seleccionados, sin tope (Mango × 11)');
     ok(await sel(pg.p, 'subtotal') === (real / 100).toFixed(2).replace('.', ',') + '€', 'subtotal con 13 sabores y precio distinto de Coffee = ' + real / 100);
-    const X3 = expect(3998, cnts);
+    const X3 = expect(3699, cnts);
     ok(await sel(pg.p, 'total') === eur(X3.total), '13 sabores: total con 15 % + 15 % extra = ' + eur(X3.total));
     const b = await submit(pg);
     ok(b.items.length === 14 && b.items[0].id === 102, 'carrito: 2 inhaladores (variante 102) + 13 líneas de sabor');
@@ -108,10 +108,29 @@ const clean = s => s.replace(/\s/g, '').replace(/−/g, '-');
     const b = await submit(pg); ok(b.items.length === 2 && b.items[1].quantity === 2, 'carrito tras cambios correcto');
     await pg.ctx.close(); }
 
-  // 5) packs: precio base por cantidad de inhaladores
+  // 5) packs: precio base y descuento de lanzamiento (solo packs 1-3)
   { const pg = await page(M);
-    for (const [n, txt] of [[1,'19,99'],[2,'39,98'],[3,'44,97'],[4,'57,97'],[5,'64,95']]) { await pg.p.click(`.vb-pack[data-n="${n}"]`); ok(await sel(pg.p, 'pack') .then(s => s.includes(txt)), `precio base ${n} inhaladores = ${txt}`);
-      const exp = ((+txt.replace(',', '.') * 100) - Math.round(+txt.replace(',', '.') * 100 * .15)) / 100; ok(await bar(pg.p) === exp.toFixed(2).replace('.', ',') + '€', `total ${n} inhaladores sin sabores con 15 % = ${exp}`); }
+    for (const [n, price] of [[1,1999],[2,3699],[3,5299],[4,6699],[5,7999]]) { await pg.p.click(`.vb-pack[data-n="${n}"]`);
+      const txt = (price / 100).toFixed(2).replace('.', ',');
+      ok(await sel(pg.p, 'pack').then(s => s.includes(txt)), `precio base ${n} inhaladores = ${txt}`);
+      const elig = n <= 3; const X = expect(price, {}, elig);
+      ok(await bar(pg.p) === eur(X.total), `total ${n} inhaladores sin sabores = ${eur(X.total)} (${elig ? 'con' : 'sin'} 15 % de lanzamiento)`);
+      ok((await sel(pg.p, 'discount') !== null) === elig, `${n} inhaladores: ${elig ? 'muestra' : 'no muestra'} línea de descuento`);
+      if (!elig) ok((await pg.p.$eval('.vb-fine', e => e.textContent)).includes('ya incluye su mejor precio'), `${n} inhaladores: explica por qué no se suma el 15 %`); }
+    await pg.p.click('.vb-pack[data-n="3"]');
+    ok((await pg.p.$eval('.vb-cap', e => e.textContent)).includes('Pack recomendado'), 'pack de 3 marcado como recomendado');
+    ok((await pg.p.$eval('.vb-cap', e => e.textContent)).includes('por inhalador'), 'se muestra el precio por inhalador');
+    await pg.p.click('.vb-pack[data-n="2"]');
+    ok((await pg.p.$eval('.vb-cap', e => e.textContent)).includes('Con 3 inhaladores pagas'), 'pack de 2 anima a subir a 3');
+    await pg.ctx.close(); }
+  // 5b) pack 4 con sabores: el 15 % solo en sabores
+  { const pg = await page(M); await pg.p.click('.vb-pack[data-n="4"]');
+    for (let i = 0; i < 3; i++) await plus(pg.p, FL[i]);
+    const X = expect(6699, { Mango: 1, Mint: 1, Strawberry: 1 }, false);
+    // el descuento web no aplica al pack pero sí a los sabores
+    const dFl = 3 * Math.round(199 * .15); const d2 = 3 * Math.round((199 - Math.round(199 * .15)) * .15);
+    ok(await sel(pg.p, 'discount') === '-' + eur(dFl), 'pack de 4 + 3 sabores: 15 % solo sobre sabores = ' + eur(dFl));
+    ok(await sel(pg.p, 'total') === eur(6699 + 3 * 199 - dFl - d2), 'pack de 4 + 3 sabores: total correcto');
     await pg.ctx.close(); }
 
   // 6) solo sabores
@@ -136,7 +155,7 @@ const clean = s => s.replace(/\s/g, '').replace(/−/g, '-');
 
   // 8) URL preselección
   { const pg = await page(M, '/?variant=104&flavor=Mint');
-    ok(await cnt(pg.p, 'Mint') === 1 && (await sel(pg.p, 'pack')).includes('57,97'), 'URL ?variant=104&flavor=Mint');
+    ok(await cnt(pg.p, 'Mint') === 1 && (await sel(pg.p, 'pack')).includes('66,99'), 'URL ?variant=104&flavor=Mint');
     await pg.ctx.close(); }
 
   // 9) sin precio de sabores: no se muestra la sección (nunca sabores a 0 €)
