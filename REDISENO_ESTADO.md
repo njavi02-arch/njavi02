@@ -38,3 +38,11 @@ Tema publicado (Horizon, id 210811715975) sin tocar.
 - Descuento automático real "VitalAir 15% en toda la tienda" (todo el pedido, combina solo con envío). Cambiar % en `snippets/vitalair-promo-pct.liquid` + en Shopify.
 - Builder: inhalador base + sabores como líneas propias del carrito (sin límite, tope = stock), resumen Subtotal / 15 % / Total. 51 pruebas OK (`VITALAIR_WEB/builder/test/run.js`).
 - Pop-up del 15 % (`sections/vitalair-promo.liquid`, en footer-group), barra superior y home/FAQ/packs actualizados. Retirados los mensajes "envío gratis incluido" por pack y "hasta 3 sabores".
+
+## Estado final a 01/10/2026 — qué publicar
+- **Tema a publicar: "VitalAir v5 (plazos)"** (Tienda online → Temas). Es v4 + sin menciones de envío/plazos en ficha, home y selector + mínimo de 6 sabores en "Solo sabores" + precauciones de uso en la ficha.
+- Tienda en vivo hoy: v4. Descuentos activos: "VitalAir 15% en toda la tienda" y "15% extra en sabores (3 o más)".
+- Producto "Sabor extra VitalAir" (13 sabores a 1,99 €, 100 uds reales cada uno): **BORRADOR**. Reactivar solo tras publicar v5 y recibir muestras.
+- Parámetros editables: `snippets/vitalair-promo-pct.liquid` (15), `snippets/vitalair-flavor-deal.liquid` (3|15|6 = mínimo sabores | % extra | mínimo solo sabores).
+- Proveedor: muestra 2 sets 54,60 USD (Trade Assurance). Pendiente: precio por pedido, envío por pedido, SDS del recambio final. Revisión de seguridad: decisión del dueño de no hacerla; sin claims de natural/seguro/salud.
+- Pendiente de decisión: página /pages/vitalair (antigua, con datos inventados) sigue oculta.
