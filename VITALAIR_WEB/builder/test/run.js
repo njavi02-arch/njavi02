@@ -116,12 +116,18 @@ const clean = s => s.replace(/\s/g, '').replace(/−/g, '-');
       ok(await bar(pg.p) === eur(X.total), `total ${n} inhaladores sin sabores = ${eur(X.total)} (${elig ? 'con' : 'sin'} descuento de lanzamiento)`);
       ok((await sel(pg.p, 'discount') !== null) === elig, `${n} inhaladores: ${elig ? 'muestra' : 'no muestra'} línea de descuento`);
       if (!elig) ok((await pg.p.$eval('.vb-fine', e => e.textContent)).includes('ya incluye su mejor precio'), `${n} inhaladores: explica por qué no se suma el descuento`); }
-    await pg.p.click('.vb-pack[data-n="3"]');
-    ok((await pg.p.$eval('.vb-cap', e => e.textContent)).includes('Pack recomendado'), 'pack de 3 marcado como recomendado');
-    ok((await pg.p.$eval('.vb-cap', e => e.textContent)).includes('por inhalador'), 'se muestra el precio por inhalador');
+    const rowTxt = n => pg.p.$eval(`.vb-pack[data-n="${n}"]`, e => e.textContent.replace(/\u00a0/g, ' '));
+    ok((await rowTxt(3)).includes('Recomendado'), 'pack de 3 marcado como recomendado');
+    ok((await rowTxt(3)).includes('por inhalador'), 'cada fila muestra el precio por inhalador');
+    ok((await rowTxt(3)).includes('Ahorras'), 'la fila del pack 3 muestra "Ahorras X €"');
+    ok((await rowTxt(2)).includes('Ahorras 4,90'), 'dúo: Ahorras 4,90 €');
+    ok((await rowTxt(3)).includes('Ahorras 14,80') && (await rowTxt(3)).includes('−20 %'), 'pack 3: Ahorras 14,80 € · −20 %');
+    ok((await rowTxt(5)).includes('Ahorras 29,60'), 'pack 5: Ahorras 29,60 €');
+    ok(!(await rowTxt(1)).includes('Ahorras') && (await rowTxt(1)).includes('Precio base'), 'pack 1: sin ahorro inventado');
     await pg.p.click('.vb-pack[data-n="2"]');
     ok((await pg.p.$eval('.vb-cap', e => e.textContent)).includes('Con 3 inhaladores pagas'), 'pack de 2 anima a subir a 3');
-    ok((await pg.p.$eval('.vb-cap', e => e.textContent)).includes('Ahorras ' + (4980 - PACKS[2]).toFixed(0).replace(/(\d\d)$/, ',$1').replace(/^/, '')) || (await pg.p.$eval('.vb-cap .vb-save', e => e.textContent)).includes('Ahorras'), 'pack de 2 muestra "Ahorras X €"');
+    ok((await pg.p.$eval('.vb-bar-save', e => e.textContent)).includes('Ahorras'), 'la barra inferior muestra el ahorro total');
+    ok((await pg.p.$eval('.vb-savebanner', e => e.textContent)).includes('Estás ahorrando'), 'el resumen muestra "Estás ahorrando X €"');
     await pg.ctx.close(); }
   // 5b) pack 4 con sabores: el 15 % solo en sabores
   { const pg = await page(M); await pg.p.click('.vb-pack[data-n="4"]');

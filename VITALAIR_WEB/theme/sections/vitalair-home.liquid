@@ -2,6 +2,7 @@
 <style>
 .va-cmp2{color:var(--va-muted);text-decoration:line-through;font-size:18px;margin-right:6px}
 .va-pct{display:inline-block;background:#D9822B;color:#fff;font:700 11px var(--va-font);letter-spacing:.04em;padding:4px 9px;border-radius:999px;vertical-align:middle}
+.va-ahorras{display:inline-block;background:#2E7A4B;color:#fff;font:700 13px var(--va-font);letter-spacing:.03em;padding:6px 12px;border-radius:999px}
 .va-after{font-size:14px;font-weight:700;color:#2E7A4B;margin:2px 0 10px}
 .va-pack--rec .va-btn{background:#D9822B;border-color:#D9822B}.va-pack--rec .va-btn:hover{background:#C2701F;border-color:#C2701F}
 .va-packs5{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
@@ -173,7 +174,7 @@
             <div class="va-price">{% if saved > 0 %}<s class="va-cmp2">{{ full | money }}</s>{% endif %}{{ v.price | money }}</div>
             <div class="va-unit">{{ unit | money }} por inhalador</div>
             {%- if n <= maxpack -%}<div class="va-after">Con tu {{ pct }} %: {{ after | money }}</div>{%- else -%}<div class="va-after" style="color:var(--va-muted)">Mejor precio por inhalador</div>{%- endif -%}
-            <div class="va-save">{% if saved > 0 %}<span class="va-pct">PACK −{{ packpct }} %</span> Ahorras {{ saved | money }}{% endif %}</div>
+            <div class="va-save">{% if saved > 0 %}<span class="va-ahorras">AHORRAS {{ saved | money }}</span> <span class="va-pct">−{{ packpct }} %</span>{% endif %}</div>
             <a class="va-btn{% unless n == 3 %} va-btn--ghost{% endunless %}" href="{{ pack.url }}?variant={{ v.id }}">{% if n == 1 %}Probar VitalAir{% else %}Dar el primer paso{% endif %}</a>
           </div>
         {%- endif -%}

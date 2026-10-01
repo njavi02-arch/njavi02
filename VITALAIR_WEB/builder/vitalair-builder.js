@@ -82,10 +82,18 @@
     var b = el('button', 'vb-pack');
     b.type = 'button';
     b.dataset.n = p.n;
-    if (RECOMMEND && p.n === RECOMMEND) b.classList.add('is-rec');
-    var save = p.compare && p.compare > p.price ? '<em>−' + Math.round((p.compare - p.price) * 100 / p.compare) + ' %</em>' : '';
-    b.innerHTML = '<b>' + p.n + '</b><span>' + money(p.price) + '</span>' + save;
-    b.setAttribute('aria-label', p.n + (p.n > 1 ? ' inhaladores' : ' inhalador') + ', ' + money(p.price));
+    var rec = RECOMMEND && p.n === RECOMMEND;
+    if (rec) b.classList.add('is-rec');
+    var save = p.compare && p.compare > p.price ? p.compare - p.price : 0;
+    var pct = save ? Math.round(save * 100 / p.compare) : 0;
+    b.innerHTML =
+      '<span class="vb-rd" aria-hidden="true"></span>' +
+      '<span class="vb-pk-main"><strong>' + p.n + (p.n > 1 ? ' inhaladores' : ' inhalador') + '</strong>' +
+      (rec ? '<em class="vb-tagrec">Recomendado</em>' : '') +
+      '<small>' + (p.n > 1 ? money(Math.round(p.price / p.n)) + ' por inhalador' : 'Precio base') + '</small></span>' +
+      '<span class="vb-pk-price">' + (save ? '<s>' + money(p.compare) + '</s>' : '') + '<b>' + money(p.price) + '</b></span>' +
+      (save ? '<i class="vb-pk-save">Ahorras ' + money(save) + ' · −' + pct + ' %</i>' : '');
+    b.setAttribute('aria-label', p.n + (p.n > 1 ? ' inhaladores' : ' inhalador') + ', ' + money(p.price) + (save ? ', ahorras ' + money(save) : ''));
     if (!p.available) { b.disabled = true; b.classList.add('is-off'); }
     b.addEventListener('click', function () { state.n = p.n; render(); });
     ui.packs.appendChild(b);
@@ -189,6 +197,9 @@
     if (PCT && t.disc > 0) h += '<div class="vb-l vb-l--disc" data-k="discount"><dt>' + PCT + ' % de descuento</dt><dd>−' + money(t.disc) + '</dd></div>';
     if (t.bulkOn) h += '<div class="vb-l vb-l--disc" data-k="bulk"><dt>' + BULK.pct + ' % extra en sabores (' + BULK.min + ' o más)</dt><dd>−' + money(t.bulk) + '</dd></div>';
     h += '<div class="vb-l vb-l--total" data-k="total"><dt>Total</dt><dd>' + money(t.total) + '</dd></div></dl>';
+    var pk0 = ls.filter(function (l) { return l.kind === 'pack'; })[0];
+    var savedAll = (pk0 && pk0.compare > pk0.amount ? pk0.compare - pk0.amount : 0) + t.disc + t.bulk;
+    if (savedAll > 0) h += '<div class="vb-savebanner" data-k="saved">Estás ahorrando <b>' + money(savedAll) + '</b> en este pedido</div>';
     var pk = ls.filter(function (l) { return l.kind === 'pack'; })[0];
     if (PCT) h += '<p class="vb-fine">Los descuentos se aplican automáticamente, sin códigos.' + (pk && !pk.eligible ? ' El pack de ' + state.n + ' ya incluye su mejor precio, por eso el ' + PCT + ' % de lanzamiento no se suma.' : '') + '</p>';
     return h;
@@ -212,11 +223,8 @@
     var p = pack();
     if (kit) {
       var nx = packs.filter(function (q) { return q.n === state.n + 1; })[0];
-      ui.cap.innerHTML = '<b>' + state.n + (state.n > 1 ? ' inhaladores' : ' inhalador') + '</b>' +
-        (p ? ' · ' + money(Math.round(p.price / state.n)) + ' por inhalador' : '') +
-        (RECOMMEND && state.n === RECOMMEND ? ' · <b class="vb-recmark">Pack recomendado</b>' : '') +
-        (nx && p && nx.price / nx.n < p.price / p.n ? '<br><span class="vb-legend">Con ' + nx.n + ' inhaladores pagas ' + money(Math.round(nx.price / nx.n)) + ' por inhalador.</span>' : '') +
-        (p && p.compare && p.compare > p.price ? '<br><b class="vb-save">Ahorras ' + money(p.compare - p.price) + '</b> <span class="vb-legend">frente a comprar ' + state.n + ' unidades sueltas.</span>' : '');
+      ui.cap.innerHTML = (nx && p && nx.price / nx.n < p.price / p.n ? 'Con ' + nx.n + ' inhaladores pagas ' + money(Math.round(nx.price / nx.n)) + ' por inhalador.' : '');
+      ui.cap.hidden = !ui.cap.innerHTML;
     }
     if (hasExtras) {
       ui.flHead.innerHTML = '<span>' + (kit ? 2 : 1) + '</span>Añade tus sabores <small>(opcional · sin límite)</small>';
@@ -235,7 +243,10 @@
     ui.order.innerHTML = orderHtml(tt);
     ui.barCount.innerHTML = hasExtras ? 'Sabores <b>' + t + '</b>' : '';
     ui.barSum.textContent = kit ? (state.n + (state.n > 1 ? ' inhaladores' : ' inhalador')) + (t ? ' + ' + t + (t > 1 ? ' sabores' : ' sabor') : '') : (t ? t + (t > 1 ? ' sabores' : ' sabor') + ' sin inhalador' : '');
-    ui.barPrice.innerHTML = (PCT && tt.sub > 0 ? '<s>' + money(tt.sub) + '</s>' : '') + '<b>' + money(tt.total) + '</b>';
+    var pl = lines().filter(function (l) { return l.kind === 'pack'; })[0];
+    var origTotal = tt.sub + (pl && pl.compare > pl.amount ? pl.compare - pl.amount : 0);
+    var saved = origTotal - tt.total;
+    ui.barPrice.innerHTML = (saved > 0 ? '<s>' + money(origTotal) + '</s>' : '') + '<b>' + money(tt.total) + '</b>' + (saved > 0 ? '<span class="vb-bar-save">Ahorras ' + money(saved) + '</span>' : '');
 
     var msg = '', ok = !state.busy;
     if (!kit && t < Math.max(1, ONLY_MIN)) {
