@@ -80,3 +80,4 @@
 .vb-pack.is-rec::after{content:'\2605';position:absolute;top:3px;right:6px;font-size:11px;color:var(--vb-amber)}
 .vb-pack.is-rec.is-on::after{color:#FFD9A8}
 .vb-recmark{color:var(--vb-amber)}
+.vb-save{color:#2E7A4B}

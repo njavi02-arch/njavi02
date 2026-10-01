@@ -164,7 +164,7 @@
           {%- assign unit = v.price | times: 1.0 | divided_by: n | round -%}
           {%- assign full = base | times: n -%}
           {%- assign saved = full | minus: v.price -%}
-          {%- assign packpct = saved | times: 100 | divided_by: full -%}
+          {%- assign packpct = saved | times: 100.0 | divided_by: full | round -%}
           {%- assign after = v.price | times: keep | plus: 50 | divided_by: 100 -%}
           <div class="va-pack{% if n == 3 %} va-pack--rec{% endif %}">
             {%- if n == 3 -%}<span class="va-tag">Pack recomendado</span>{%- endif -%}

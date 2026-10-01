@@ -83,7 +83,7 @@
     b.type = 'button';
     b.dataset.n = p.n;
     if (RECOMMEND && p.n === RECOMMEND) b.classList.add('is-rec');
-    var save = p.compare && p.compare > p.price ? '<em>−' + Math.floor((p.compare - p.price) * 100 / p.compare) + ' %</em>' : '';
+    var save = p.compare && p.compare > p.price ? '<em>−' + Math.round((p.compare - p.price) * 100 / p.compare) + ' %</em>' : '';
     b.innerHTML = '<b>' + p.n + '</b><span>' + money(p.price) + '</span>' + save;
     b.setAttribute('aria-label', p.n + (p.n > 1 ? ' inhaladores' : ' inhalador') + ', ' + money(p.price));
     if (!p.available) { b.disabled = true; b.classList.add('is-off'); }
@@ -216,7 +216,7 @@
         (p ? ' · ' + money(Math.round(p.price / state.n)) + ' por inhalador' : '') +
         (RECOMMEND && state.n === RECOMMEND ? ' · <b class="vb-recmark">Pack recomendado</b>' : '') +
         (nx && p && nx.price / nx.n < p.price / p.n ? '<br><span class="vb-legend">Con ' + nx.n + ' inhaladores pagas ' + money(Math.round(nx.price / nx.n)) + ' por inhalador.</span>' : '') +
-        (p && p.compare && p.compare > p.price ? '<br><span class="vb-legend">El ahorro del pack es frente a comprar las unidades sueltas.</span>' : '');
+        (p && p.compare && p.compare > p.price ? '<br><b class="vb-save">Ahorras ' + money(p.compare - p.price) + '</b> <span class="vb-legend">frente a comprar ' + state.n + ' unidades sueltas.</span>' : '');
     }
     if (hasExtras) {
       ui.flHead.innerHTML = '<span>' + (kit ? 2 : 1) + '</span>Añade tus sabores <small>(opcional · sin límite)</small>';

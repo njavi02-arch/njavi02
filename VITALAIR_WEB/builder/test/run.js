@@ -26,7 +26,7 @@ const clean = s => s.replace(/\s/g, '').replace(/−/g, '-');
   const bar = p => p.$eval('.vb-price b', e => e.textContent).then(clean);
   const submit = async (pg) => { await pg.p.click('.vb-cta'); await pg.p.waitForURL('**/cart'); return pg.req.body; };
   const FL = ['Mango','Mint','Strawberry','Blueberry','Raspberry','Coffee','Cinnamon','Maple Pepper','Orange','Lemon','Grapefruit','Cranberry','Vanilla'];
-  const PACKS = { 1: 2490, 2: 4690, 3: 6490, 4: 8290, 5: 9990 }; const FP = 250, FPC = 300, W = .10, BK = .15; // precios y % de prueba
+  const PACKS = { 1: 2490, 2: 4490, 3: 5990, 4: 7790, 5: 9490 }; const FP = 250, FPC = 300, W = .10, BK = .15; // precios y % de prueba
   const fpr = f => f === 'Coffee' ? FPC : FP;
   const eur = c => (c / 100).toFixed(2).replace('.', ',') + '€';
   // esperado: web 15 % por línea; extra 15 % en sabores (si >= 3) sobre el precio ya rebajado
@@ -121,6 +121,7 @@ const clean = s => s.replace(/\s/g, '').replace(/−/g, '-');
     ok((await pg.p.$eval('.vb-cap', e => e.textContent)).includes('por inhalador'), 'se muestra el precio por inhalador');
     await pg.p.click('.vb-pack[data-n="2"]');
     ok((await pg.p.$eval('.vb-cap', e => e.textContent)).includes('Con 3 inhaladores pagas'), 'pack de 2 anima a subir a 3');
+    ok((await pg.p.$eval('.vb-cap', e => e.textContent)).includes('Ahorras ' + (4980 - PACKS[2]).toFixed(0).replace(/(\d\d)$/, ',$1').replace(/^/, '')) || (await pg.p.$eval('.vb-cap .vb-save', e => e.textContent)).includes('Ahorras'), 'pack de 2 muestra "Ahorras X €"');
     await pg.ctx.close(); }
   // 5b) pack 4 con sabores: el 15 % solo en sabores
   { const pg = await page(M); await pg.p.click('.vb-pack[data-n="4"]');
@@ -153,7 +154,7 @@ const clean = s => s.replace(/\s/g, '').replace(/−/g, '-');
 
   // 8) URL preselección
   { const pg = await page(M, '/?variant=104&flavor=Mint');
-    ok(await cnt(pg.p, 'Mint') === 1 && (await sel(pg.p, 'pack')).includes('82,90'), 'URL ?variant=104&flavor=Mint');
+    ok(await cnt(pg.p, 'Mint') === 1 && (await sel(pg.p, 'pack')).includes('77,90'), 'URL ?variant=104&flavor=Mint');
     await pg.ctx.close(); }
 
   // 9) sin precio de sabores: no se muestra la sección (nunca sabores a 0 €)
