@@ -46,3 +46,9 @@ Tema publicado (Horizon, id 210811715975) sin tocar.
 - Parámetros editables: `snippets/vitalair-promo-pct.liquid` (15), `snippets/vitalair-flavor-deal.liquid` (3|15|6 = mínimo sabores | % extra | mínimo solo sabores).
 - Proveedor: muestra 2 sets 54,60 USD (Trade Assurance). Pendiente: precio por pedido, envío por pedido, SDS del recambio final. Revisión de seguridad: decisión del dueño de no hacerla; sin claims de natural/seguro/salud.
 - Pendiente de decisión: página /pages/vitalair (antigua, con datos inventados) sigue oculta.
+
+## Pricing definitivo (01/10/2026) — ver ESTUDIO_PRICING.md
+- Precios: 1x 24,90 · 2x 46,90 · 3x 64,90 · 4x 82,90 · 5x 99,90 (tachado = n × 24,90). Sabor 2,50 € (producto en borrador).
+- Descuentos: 10 % de lanzamiento (packs 1–3 y sabores, sin fecha de fin aún) + 15 % extra en sabores desde 3.
+- Envío España: 6,99 € si < 70 €, gratis desde 70 € (delivery profile actualizado). Barra de carrito en v5.
+- Tema a publicar: **VitalAir v5 (plazos)**. La v4 publicada aún muestra "15 %" y aplica el descuento a todos los packs en el selector.
