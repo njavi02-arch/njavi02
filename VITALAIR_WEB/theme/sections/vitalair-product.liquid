@@ -65,6 +65,7 @@
   "locale": "es-ES",
   "discountPct": {{ pct }},
   "bulk": { "min": {{ deal[0] }}, "pct": {{ deal[1] }} },
+  "onlyMin": {{ deal[2] | default: 0 }},
   "sprite": "",
   "cartUrl": {{ routes.cart_url | json }},
   "addUrl": "{{ routes.cart_add_url }}.js",

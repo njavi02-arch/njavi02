@@ -11,6 +11,7 @@
 
   var PCT = +cfg.discountPct || 0;
   var BULK = cfg.bulk && cfg.bulk.min > 0 && cfg.bulk.pct > 0 ? cfg.bulk : null; /* % extra en sabores al llevar N o más */
+  var ONLY_MIN = +cfg.onlyMin || 0; /* mínimo de sabores al comprar sin inhalador */
   var MAX_LINE = 99;
   var fmt = new Intl.NumberFormat(cfg.locale || 'es-ES', { style: 'currency', currency: cfg.currency || 'EUR' });
   function money(c) { return fmt.format(c / 100); }
@@ -229,15 +230,21 @@
     ui.barPrice.innerHTML = (PCT && tt.sub > 0 ? '<s>' + money(tt.sub) + '</s>' : '') + '<b>' + money(tt.total) + '</b>';
 
     var msg = '', ok = !state.busy;
-    if (!kit && t === 0) { msg = 'Elige al menos un sabor para continuar.'; ok = false; }
+    if (!kit && t < Math.max(1, ONLY_MIN)) {
+      var need = Math.max(1, ONLY_MIN) - t;
+      msg = ONLY_MIN > 1 ? 'Sin inhalador, el mínimo es de ' + ONLY_MIN + ' sabores' + (t ? ' (te ' + (need === 1 ? 'falta 1' : 'faltan ' + need) + ').' : '.') : 'Elige al menos un sabor para continuar.';
+      ok = false;
+    }
     else if (kit && t === 0 && hasExtras) msg = 'Puedes añadir sabores ahora o continuar solo con el inhalador.';
-    if (BULK && hasExtras && t > 0 && t < BULK.min) { var miss = BULK.min - t; msg = 'Añade ' + miss + (miss === 1 ? ' sabor más' : ' sabores más') + ' y tienes un ' + BULK.pct + ' % extra en los sabores.'; }
+    var blocked = !kit && t < Math.max(1, ONLY_MIN);
+    if (blocked) { /* se queda el aviso del mínimo */ }
+    else if (BULK && hasExtras && t > 0 && t < BULK.min) { var miss = BULK.min - t; msg = 'Añade ' + miss + (miss === 1 ? ' sabor más' : ' sabores más') + ' y tienes un ' + BULK.pct + ' % extra en los sabores.'; }
     else if (BULK && hasExtras && t >= BULK.min) msg = '¡Conseguido! ' + BULK.pct + ' % extra en tus sabores.';
     else if (BULK && hasExtras && t === 0 && kit) msg = 'Con ' + BULK.min + ' sabores o más, ' + BULK.pct + ' % extra en los sabores.';
     ui.hint.textContent = msg;
-    ui.hint.classList.toggle('is-warn', !kit && t === 0);
+    ui.hint.classList.toggle('is-warn', !kit && t < Math.max(1, ONLY_MIN));
     ui.cta.disabled = !ok;
-    ui.cta.textContent = state.busy ? 'Añadiendo…' : (!kit && t === 0 ? 'Elige un sabor' : 'Añadir al carrito');
+    ui.cta.textContent = state.busy ? 'Añadiendo…' : (!kit && t < Math.max(1, ONLY_MIN) ? (ONLY_MIN > 1 ? 'Mínimo ' + ONLY_MIN + ' sabores' : 'Elige un sabor') : 'Añadir al carrito');
     if (kit && p && !p.available) { ui.cta.disabled = true; ui.cta.textContent = 'Agotado'; }
   }
 
@@ -250,7 +257,7 @@
 
   function addToCart() {
     if (state.busy) return;
-    if (state.mode === 'only' && total() === 0) return;
+    if (state.mode === 'only' && total() < Math.max(1, ONLY_MIN)) return;
     var items = buildItems();
     state.busy = true; render();
     fetch(cfg.addUrl || '/cart/add.js', {

@@ -89,10 +89,13 @@ const clean = s => s.replace(/\s/g, '').replace(/−/g, '-');
     await minus(pg.p, 'Strawberry'); ok(await sel(pg.p, 'bulk') === null, 'al bajar a 2, desaparece el extra');
     await pg.ctx.close(); }
   { const pg = await page(M); await pg.p.click('.vb-mode-btn:nth-child(2)');
-    for (let i = 0; i < 3; i++) await plus(pg.p, 'Mint');
-    const X = expect(0, { Mint: 3 }); X.sub -= 0;
-    const Lm = 3 * 199, a = Math.round(Lm * .15), b = Math.round((Lm - a) * .15);
-    ok(await sel(pg.p, 'total') === eur(Lm - a - b), 'solo sabores ×3 con ambos descuentos = ' + eur(Lm - a - b));
+    for (let i = 0; i < 5; i++) await plus(pg.p, 'Mint');
+    ok(await pg.p.$eval('.vb-cta', e => e.disabled), 'solo sabores con 5 (mínimo 6): botón desactivado');
+    ok((await pg.p.$eval('.vb-hint', e => e.textContent)).includes('mínimo es de 6') && (await pg.p.$eval('.vb-hint', e => e.textContent)).includes('falta 1'), 'solo sabores: aviso "te falta 1"');
+    await plus(pg.p, 'Mint');
+    ok(!(await pg.p.$eval('.vb-cta', e => e.disabled)), 'solo sabores con 6: botón activo');
+    const Lm = 6 * 199, a = Math.round(Lm * .15), b = Math.round((Lm - a) * .15);
+    ok(await sel(pg.p, 'total') === eur(Lm - a - b), 'solo sabores ×6 con ambos descuentos = ' + eur(Lm - a - b));
     await pg.ctx.close(); }
 
   // 4) quitar y cambiar cantidades
@@ -115,6 +118,7 @@ const clean = s => s.replace(/\s/g, '').replace(/−/g, '-');
   { const pg = await page(M); await pg.p.click('.vb-mode-btn:nth-child(2)');
     ok(await pg.p.$eval('.vb-kit', e => e.hidden), 'solo sabores: sin inhaladores');
     ok(await pg.p.$eval('.vb-cta', e => e.disabled), 'solo sabores sin elegir: botón desactivado');
+    ok(await pg.p.$eval('.vb-cta', e => e.textContent) === 'Mínimo 6 sabores', 'solo sabores: botón dice Mínimo 6 sabores');
     for (let i = 0; i < 4; i++) await plus(pg.p, 'Mint'); for (let i = 0; i < 2; i++) await plus(pg.p, 'Lemon');
     ok(await sel(pg.p, 'subtotal') === '11,94€', 'solo sabores: 6 × 1,99 = 11,94 €');
     ok(await sel(pg.p, 'pack') === null, 'solo sabores: sin línea de inhalador');
