@@ -1,0 +1,40 @@
+{%- assign prod = all_products['vitalair-smart-inhaler-pack-system'] -%}
+<style>
+.vcb{max-width:1200px;margin:0 auto;padding:12px 16px 0;font-family:'Inter',system-ui,sans-serif}
+.vcb-in{border:1.5px solid #E3DACB;border-radius:14px;background:#FBF9F4;padding:14px 16px}
+.vcb-t{margin:0 0 8px;font-size:15px;color:#1E2420}.vcb-t b{font-weight:700}
+.vcb-track{height:8px;border-radius:8px;background:#E3DACB;overflow:hidden}
+.vcb-track i{display:block;height:100%;width:0;background:#25402F;border-radius:8px;transition:width .3s ease}
+.vcb-s{margin:8px 0 0;font-size:13px;color:#666B63}.vcb-s a{color:#25402F;font-weight:600}
+.vcb.is-done .vcb-track i{background:#2E7A4B}
+@media(prefers-reduced-motion:reduce){.vcb-track i{transition:none}}
+</style>
+<div class="vcb" id="vcb" hidden aria-live="polite"><div class="vcb-in">
+  <p class="vcb-t" id="vcb-t"></p>
+  <div class="vcb-track" role="progressbar" aria-valuemin="0" aria-valuemax="100"><i id="vcb-i"></i></div>
+  <p class="vcb-s" id="vcb-s"></p>
+</div></div>
+<script>
+(function(){
+  var THR={{ section.settings.threshold | times: 100 }}, URL={{ prod.url | default: routes.all_products_collection_url | json }}, CUR={{ cart.currency.iso_code | json }};
+  var box=document.getElementById('vcb');if(!box)return;
+  var fmt=new Intl.NumberFormat('es-ES',{style:'currency',currency:CUR});
+  function render(c){
+    var sub=c.items_subtotal_price; /* después de los descuentos de línea */
+    if(!c.item_count||!THR){box.hidden=true;return}
+    var left=THR-sub,pct=Math.max(0,Math.min(100,Math.round(sub*100/THR)));
+    box.hidden=false;box.classList.toggle('is-done',left<=0);
+    document.getElementById('vcb-i').style.width=pct+'%';
+    box.querySelector('[role=progressbar]').setAttribute('aria-valuenow',pct);
+    document.getElementById('vcb-t').innerHTML=left<=0?'<b>Tu pedido ya tiene envío gratis.</b>':'Te faltan <b>'+fmt.format(left/100)+'</b> para el envío gratis.';
+    document.getElementById('vcb-s').innerHTML=left<=0?'':'Añade sabores o un inhalador más en <a href="'+URL+'">la ficha del producto</a>.';
+  }
+  function load(){fetch('/cart.js',{headers:{Accept:'application/json'}}).then(function(r){return r.json()}).then(render).catch(function(){})}
+  load();
+  document.addEventListener('cart:updated',load);document.addEventListener('visibilitychange',function(){if(!document.hidden)load()});
+  var t;new MutationObserver(function(){clearTimeout(t);t=setTimeout(load,600)}).observe(document.querySelector('main')||document.body,{childList:true,subtree:true});
+})();
+</script>
+{% schema %}
+{"name": "VitalAir Barra envío", "settings": [{"type": "range", "id": "threshold", "label": "Envío gratis desde (€)", "min": 0, "max": 200, "step": 1, "default": 70}], "presets": [{"name": "VitalAir Barra envío"}]}
+{% endschema %}

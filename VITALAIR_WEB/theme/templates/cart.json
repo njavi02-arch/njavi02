@@ -8,6 +8,7 @@
  * ------------------------------------------------------------
  */{
   "sections": {
+    "vitalair_cart_bar": {"type": "vitalair-cart-bar", "settings": {"threshold": 70}},
     "cart-section": {
       "type": "main-cart",
       "blocks": {
@@ -64,6 +65,7 @@
     }
   },
   "order": [
+    "vitalair_cart_bar",
     "cart-section"
   ]
 }
