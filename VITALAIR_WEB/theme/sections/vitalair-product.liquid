@@ -9,6 +9,7 @@
 </style>
 {%- capture pct_raw -%}{%- render 'vitalair-promo-pct' -%}{%- endcapture -%}
 {%- assign pct = pct_raw | strip | plus: 0 -%}
+{%- capture dl -%}{%- render 'vitalair-delivery' -%}{%- endcapture -%}
 {%- capture deal_raw -%}{%- render 'vitalair-flavor-deal' -%}{%- endcapture -%}
 {%- assign deal = deal_raw | strip | split: '|' -%}
 {%- assign only_p = all_products['vitalair-sabores'] -%}
@@ -38,6 +39,7 @@
       <li>{{ deal[0] }} sabores o más: {{ deal[1] }} % extra en los sabores</li>
       <li>Madera natural y metal, con el logo grabado</li>
       <li>Envío gratis en España desde 55 €</li>
+      <li>Entrega {{ dl }}, con seguimiento por email</li>
     </ul>
 
     <div id="va-builder"></div>
@@ -45,6 +47,7 @@
 
     <div class="va-trust">
       <span>Pago seguro en el checkout de Shopify</span>
+      <span>Entrega {{ dl }}</span>
       <span>14 días para desistir de la compra</span>
       <span>Garantía legal de conformidad</span>
     </div>
@@ -52,7 +55,7 @@
     <div class="va-info">
       <details open><summary>Qué es</summary><p>Un inhalador de madera natural y metal, sin nicotina, con el logo VitalAir grabado y disponible en 13 sabores.</p></details>
       <details><summary>Piezas</summary><ul><li>Cuerpo de madera natural</li><li>Boquilla / capuchón de metal</li><li>Cartucho de malla</li><li>Filtro de madera absorbente</li></ul></details>
-      <details><summary>Envío y devoluciones</summary><p>Envío gratis en España en pedidos desde 55 €. <a href="/pages/envios">Envíos</a> · <a href="/pages/devoluciones">Devoluciones y garantía</a></p></details>
+      <details><summary>Envío y devoluciones</summary><p>Envío gratis en España en pedidos desde 55 €. Entrega {{ dl }}; te enviamos el seguimiento por email. <a href="/pages/envios">Envíos</a> · <a href="/pages/devoluciones">Devoluciones y garantía</a></p></details>
       <details><summary>Aviso</summary><p>Producto para adultos. VitalAir no es un producto médico ni un tratamiento para dejar de fumar. Si tienes dudas sobre tu salud, consulta con un profesional.</p></details>
     </div>
   </div>
