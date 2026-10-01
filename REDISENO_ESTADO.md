@@ -57,3 +57,7 @@ Tema publicado (Horizon, id 210811715975) sin tocar.
 - Precios en Shopify: 1x 24,90 · 2x 44,90 · 3x 59,90 · 4x 77,90 · 5x 94,90 (tachado n × 24,90).
 - Tema a publicar: **VitalAir v6 (escalera de ahorro)** (v5 ya es el publicado). Añade "Ahorras X €" junto al pack elegido y redondeo coherente del %.
 - Vaho: web bloqueada desde la sesión; comparación incompleta, faltan capturas del dueño.
+
+## Descuentos visibles (01/10/2026)
+- Tema a publicar: **VitalAir v7 (descuentos visibles)** (v6 ya publicado). Selector de packs en filas "escalera de ahorro" (tachado, "Ahorras X € · −N %", €/inhalador, "Recomendado"), "Ahorras X €" en la barra inferior, banner "Estás ahorrando X €" en el resumen, badge verde "AHORRAS X €" en la home.
+- Sin cambios de precios en Shopify en este paso. 81 pruebas del selector OK.
