@@ -52,3 +52,8 @@ Tema publicado (Horizon, id 210811715975) sin tocar.
 - Descuentos: 10 % de lanzamiento (packs 1–3 y sabores, sin fecha de fin aún) + 15 % extra en sabores desde 3.
 - Envío España: 6,99 € si < 70 €, gratis desde 70 € (delivery profile actualizado). Barra de carrito en v5.
 - Tema a publicar: **VitalAir v5 (plazos)**. La v4 publicada aún muestra "15 %" y aplica el descuento a todos los packs en el selector.
+
+## Escalera de ahorro (01/10/2026) — ver ANALISIS_COMPETENCIA_VAHO.md
+- Precios en Shopify: 1x 24,90 · 2x 44,90 · 3x 59,90 · 4x 77,90 · 5x 94,90 (tachado n × 24,90).
+- Tema a publicar: **VitalAir v6 (escalera de ahorro)** (v5 ya es el publicado). Añade "Ahorras X €" junto al pack elegido y redondeo coherente del %.
+- Vaho: web bloqueada desde la sesión; comparación incompleta, faltan capturas del dueño.
