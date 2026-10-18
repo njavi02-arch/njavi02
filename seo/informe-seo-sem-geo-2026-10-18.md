@@ -116,7 +116,7 @@ Qué hacer, sin prometer citas:
 ## 5. SEM — recomendación para los primeros 100 €
 
 **Recomendación: no gastar todavía.** Falta lo necesario para que el gasto no se pierda:
-1. **Margen y CAC máximo** (no los conozco). Con RED SMILE a 79,90 € y envío de 6,99 € (el envío gratis empieza en 80 €, justo por encima del precio), el margen real de un pedido puede ser pequeño.
+1. **Margen y CAC máximo** (no los conozco). Con RED SMILE a 79,90 € y envío gratis en España peninsular desde 55 € (configuración real de Shopify), el coste del envío lo asumes tú y se come parte del margen.
 2. **Medición**: no sé si GA4 y la etiqueta de conversión de Ads están instaladas.
 3. **Merchant Center**: RED SMILE ya está publicado en el canal *Google & YouTube*, pero faltan peso real, GTIN (o declarar que no lo tiene) e imágenes de mayor resolución.
 4. **Sin CPC real.** No tengo datos de Keyword Planner.
@@ -193,3 +193,26 @@ Corto plazo: títulos/meta, Merchant, medición. Largo plazo: guías, enlaces y 
 5. ¿Tienes **Search Console, GA4 y Merchant Center**? Necesito saber si están conectados y darme acceso o exportar datos.
 6. ¿Mantienes el idioma **inglés** publicado?
 7. ¿Aprobáis el `noindex` en colecciones vacías (afecta a tráfico de esas URL)?
+
+---
+
+## 11. Actualización: datos aportados por ti (18/10/2026)
+
+**Aplicado en Shopify:**
+- Peso de la variante: **1 kg** (antes 0). Tus tarifas de envío no dependen del peso, así que no cambia ningún precio.
+- Ficha de RED SMILE: **origen China (Jingshan/Wuyi), molido a la piedra** (mismo matcha que Matcha Premium 1 kg), añadido a descripción, lista y FAQ; metadescripción actualizada.
+- No he incluido la certificación ISO 22000/HACCP en la ficha: tu artículo del blog la menciona para el Matcha Premium, pero no sé a quién certifica exactamente (proveedor, planta, lote).
+
+**Economía de RED SMILE** (50 kg a 2.008,60 € → **40,17 € por bolsa**; ingresos si se vende todo a 79,90 € IVA incluido: 3.995 €):
+
+| IVA aplicable (confírmalo con tu gestor) | Precio sin IVA | Margen bruto por bolsa | Margen % | 50 bolsas |
+|---|---|---|---|---|
+| 4 % | 76,83 € | 36,66 € | 48 % | 1.833 € |
+| 10 % | 72,64 € | 32,47 € | 45 % | 1.624 € |
+| 21 % | 66,03 € | 25,86 € | 39 % | 1.293 € |
+
+Es margen **bruto**: aún hay que restar envío (gratis desde 55 € en España peninsular), embalaje, comisión de pago y publicidad. No sé si los 2.008,60 € incluyen IVA, transporte o aranceles.
+
+**Consecuencia para la publicidad:** el margen disponible por venta (≈25–36 € antes de envío y comisiones) es el techo para el coste por adquisición. Con 100 € de prueba y un clic a 0,50 € (cifra supuesta, no medida), harían falta ~2 % de conversión para quedar en el punto de equilibrio; con menos, perderías dinero. Por eso recomiendo seguir empezando por canales gratuitos.
+
+**Incoherencia detectada:** la barra de anuncios y el carrito dicen "Envío gratis desde 80 €", pero Shopify aplica envío gratis en España peninsular y Baleares desde **55 €**. Hay que alinear una de las dos.
