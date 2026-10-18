@@ -216,3 +216,9 @@ Es margen **bruto**: aún hay que restar envío (gratis desde 55 € en España 
 **Consecuencia para la publicidad:** el margen disponible por venta (≈25–36 € antes de envío y comisiones) es el techo para el coste por adquisición. Con 100 € de prueba y un clic a 0,50 € (cifra supuesta, no medida), harían falta ~2 % de conversión para quedar en el punto de equilibrio; con menos, perderías dinero. Por eso recomiendo seguir empezando por canales gratuitos.
 
 **Incoherencia detectada:** la barra de anuncios y el carrito dicen "Envío gratis desde 80 €", pero Shopify aplica envío gratis en España peninsular y Baleares desde **55 €**. Hay que alinear una de las dos.
+
+### Aclaración posterior (18/10/2026)
+- Los 2.008,60 € son el **coste total** de las 50 bolsas (40,17 € por bolsa). Los márgenes de la tabla anterior se mantienen.
+- Si ese total incluye IVA soportado que puedas deducir, tu coste neto real es menor y el margen, mayor. A modo de ejemplo: con 21 % incluido, serían ~33,20 € por bolsa.
+- El **tipo de IVA aplicable a la venta (4 %, 10 % o 21 %) no está confirmado**: mi búsqueda no encontró una fuente que lo fije para el té matcha. Hay que confirmarlo con tu gestor o con la Agencia Tributaria (Ley 37/1992, art. 91).
+- No se ha podido publicar el tema ni revisar el menú renderizado desde este entorno (publicar temas está bloqueado para las herramientas y el dominio no es accesible desde aquí).
