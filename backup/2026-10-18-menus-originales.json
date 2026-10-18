@@ -1,0 +1,18 @@
+{
+  "nota": "Menús antes del cambio de estrategia RED SMILE (18/10/2026). Para restaurar: menuUpdate con estos ítems.",
+  "main-menu": [
+    ["RED SMILE","PRODUCT","gid://shopify/Product/11330769158471"],
+    ["Matcha","COLLECTION","gid://shopify/Collection/680441250119"],
+    ["Matcha Latte","COLLECTION","gid://shopify/Collection/681084715335"],
+    ["Accesorios","COLLECTION","gid://shopify/Collection/680441315655"],
+    ["Catálogo","CATALOG",null],
+    ["Sobre Nosotros","PAGE","gid://shopify/Page/166824018247"],
+    ["Blog","BLOG","gid://shopify/Blog/127443894599"],
+    ["Contacto","PAGE","gid://shopify/Page/164807803207"]
+  ],
+  "footer": [
+    ["Matcha","COLLECTION","gid://shopify/Collection/680441250119"],
+    ["Matcha Latte","COLLECTION","gid://shopify/Collection/681084715335"],
+    ["Accesorios","COLLECTION","gid://shopify/Collection/680441315655"]
+  ]
+}

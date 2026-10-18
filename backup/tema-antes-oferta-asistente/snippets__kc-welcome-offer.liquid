@@ -1,0 +1,154 @@
+{%- comment -%}
+  Popup de bienvenida — 10 € en el primer pedido (código BIENVENIDA10, solo clientes sin pedidos, pedido mínimo 50 €, un uso por cliente, no acumulable).
+  Sin cuenta atrás ni urgencia: aparece una sola vez, pasados 20 s y cuando el aviso de cookies ya no está en pantalla.
+  Si el visitante lo cierra, no vuelve a salir durante 30 días. Registra el email como cliente suscrito en Shopify, con consentimiento explícito.
+{%- endcomment -%}
+<div id="kc-welcome-offer" class="kc-wo-backdrop">
+  <div id="kc-wo-card" class="kc-wo-card" role="dialog" aria-modal="true" aria-labelledby="kc-wo-title">
+    <button id="kc-wo-close" class="kc-wo-close" aria-label="Cerrar">&times;</button>
+
+    <div id="kc-wo-form-view">
+      <p class="kc-wo-eyebrow">Bienvenido a KOHI &amp; CHA</p>
+      <h2 id="kc-wo-title" class="kc-wo-title">Consigue <em>10&nbsp;€</em> de descuento en tu primer pedido</h2>
+      <p class="kc-wo-sub">Descubre KOHI &amp; CHA y disfruta de 10 € de bienvenida en tu primera compra.</p>
+
+      {%- form 'customer', id: 'kc-wo-form', class: 'kc-wo-form' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter,bienvenida-10">
+        <input type="email" name="contact[email]" id="kc-wo-email" class="kc-wo-input" required autocomplete="email" placeholder="Tu email" aria-label="Tu email">
+        <label class="kc-wo-consent">
+          <input type="checkbox" id="kc-wo-consent" required>
+          <span>Acepto recibir comunicaciones comerciales de KOHI &amp; CHA por email. Puedo darme de baja cuando quiera.</span>
+        </label>
+        <button type="submit" id="kc-wo-submit" class="kc-wo-cta">Quiero mis 10 €</button>
+        <p id="kc-wo-error" class="kc-wo-error" hidden>No hemos podido registrar tu email. Si ya estás suscrito, puedes usar igualmente el código BIENVENIDA10 en tu primer pedido.</p>
+      {%- endform -%}
+
+      <p class="kc-wo-legal">Descuento de 10 € en tu primer pedido de 50 € o más. Solo para clientes nuevos, un uso por cliente y no acumulable con otras promociones. Tratamos tu email conforme a nuestra <a href="/policies/privacy-policy">política de privacidad</a>.</p>
+      <button id="kc-wo-dismiss" class="kc-wo-dismiss" type="button">No, gracias</button>
+    </div>
+
+    <div id="kc-wo-done-view" hidden>
+      <p class="kc-wo-eyebrow">¡Gracias!</p>
+      <h2 class="kc-wo-title">Tu código de bienvenida</h2>
+      <div class="kc-wo-code">BIENVENIDA10</div>
+      <p class="kc-wo-sub">Introdúcelo en el pago. Válido en tu primer pedido de 50 € o más.</p>
+      <a href="/discount/BIENVENIDA10?redirect=/collections/all" class="kc-wo-cta">Aplicar y seguir comprando</a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .kc-wo-backdrop { position: fixed; inset: 0; z-index: 90; background: rgba(33,24,17,.7); display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .3s ease; }
+  .kc-wo-backdrop.kc-wo-open { opacity: 1; pointer-events: auto; }
+  .kc-wo-card { position: relative; width: min(94vw, 440px); max-height: 92vh; overflow-y: auto; background: #211811; color: var(--cream); border: 1px solid rgba(164,123,76,.35); padding: 3rem 2rem 2rem; text-align: center; transform: translateY(12px); opacity: 0; transition: transform .4s ease, opacity .3s ease; }
+  .kc-wo-backdrop.kc-wo-open .kc-wo-card { transform: translateY(0); opacity: 1; }
+  .kc-wo-close { position: absolute; top: .75rem; right: .75rem; width: 2.75rem; height: 2.75rem; background: none; border: none; color: rgba(243,236,224,.7); font-size: 1.6rem; line-height: 1; cursor: pointer; }
+  .kc-wo-close:hover { color: var(--cream); }
+  .kc-wo-eyebrow { font-size: .68rem; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); margin: 0 0 1.25rem; }
+  .kc-wo-title { font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: clamp(1.7rem, 6vw, 2.1rem); line-height: 1.2; margin: 0 0 1rem; color: var(--cream); }
+  .kc-wo-title em { font-style: italic; color: var(--gold); font-size: 1.25em; }
+  .kc-wo-sub { font-size: .88rem; font-weight: 300; line-height: 1.6; color: rgba(243,236,224,.75); margin: 0 0 1.75rem; }
+  .kc-wo-form { display: grid; gap: 1rem; text-align: left; }
+  .kc-wo-input { width: 100%; min-height: 3rem; padding: 0 1rem; background: transparent; border: 1px solid rgba(243,236,224,.35); color: var(--cream); font-size: 16px; }
+  .kc-wo-input::placeholder { color: rgba(243,236,224,.45); }
+  .kc-wo-input:focus { outline: none; border-color: var(--gold); }
+  .kc-wo-consent { display: flex; gap: .65rem; align-items: flex-start; font-size: .72rem; line-height: 1.5; color: rgba(243,236,224,.7); font-weight: 300; }
+  .kc-wo-consent input { margin-top: .2rem; flex-shrink: 0; }
+  .kc-wo-cta { display: flex; align-items: center; justify-content: center; min-height: 3rem; padding: 0 1.5rem; background: var(--matcha-700); color: var(--cream); border: 0; cursor: pointer; text-decoration: none; font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; transition: background .3s ease; }
+  .kc-wo-cta:hover { background: var(--matcha-500); }
+  .kc-wo-cta:disabled { opacity: .6; cursor: default; }
+  .kc-wo-error { font-size: .75rem; color: #E4574D; margin: 0; line-height: 1.5; }
+  .kc-wo-legal { font-size: .66rem; line-height: 1.6; color: rgba(243,236,224,.5); margin: 1.5rem 0 0; font-weight: 300; }
+  .kc-wo-legal a { color: rgba(243,236,224,.75); text-decoration: underline; }
+  .kc-wo-dismiss { margin-top: 1rem; background: none; border: none; color: rgba(243,236,224,.6); font-size: .75rem; text-decoration: underline; cursor: pointer; min-height: 2.75rem; }
+  .kc-wo-code { font-family: ui-monospace, Menlo, monospace; font-size: 1.5rem; letter-spacing: .2em; color: var(--gold); border: 1px dashed rgba(164,123,76,.6); padding: 1rem; margin: 0 0 1.25rem; }
+  @media (max-width: 480px) { .kc-wo-card { padding: 2.75rem 1.25rem 1.5rem; } }
+  @media (prefers-reduced-motion: reduce) { .kc-wo-backdrop, .kc-wo-card { transition: none !important; } }
+</style>
+
+<script>
+(function () {
+  var KEY = 'kc_wo_state';
+  var backdrop = document.getElementById('kc-welcome-offer');
+  if (!backdrop) return;
+  var form = document.getElementById('kc-wo-form');
+  var formView = document.getElementById('kc-wo-form-view');
+  var doneView = document.getElementById('kc-wo-done-view');
+  var errorEl = document.getElementById('kc-wo-error');
+  var submitBtn = document.getElementById('kc-wo-submit');
+  var closed = false;
+
+  function notifyDone() { document.dispatchEvent(new CustomEvent('kc-welcome-popup-done')); }
+  setTimeout(notifyDone, 50);
+
+  function readState() { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; } }
+  function writeState(s) { try { localStorage.setItem(KEY, JSON.stringify({ s: s, t: Date.now() })); } catch (e) {} }
+
+  function onKeydown(e) { if (e.key === 'Escape') closePopup(); }
+  function openPopup() {
+    closed = false;
+    backdrop.classList.add('kc-wo-open');
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', onKeydown);
+    var email = document.getElementById('kc-wo-email');
+    if (email) setTimeout(function () { email.focus(); }, 350);
+  }
+  function closePopup() {
+    if (closed) return;
+    closed = true;
+    backdrop.classList.remove('kc-wo-open');
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', onKeydown);
+    var st = readState();
+    if (!st || st.s !== 'subscribed') writeState('dismissed');
+  }
+
+  document.getElementById('kc-wo-close').addEventListener('click', closePopup);
+  document.getElementById('kc-wo-dismiss').addEventListener('click', closePopup);
+  backdrop.addEventListener('click', function (e) { if (e.target === backdrop) closePopup(); });
+  document.addEventListener('kc-open-welcome', openPopup);
+
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      errorEl.hidden = true;
+      submitBtn.disabled = true;
+      fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'text/html' } })
+        .then(function (res) {
+          if (res.ok && /customer_posted=true/.test(res.url)) {
+            writeState('subscribed');
+            formView.hidden = true;
+            doneView.hidden = false;
+          } else {
+            errorEl.hidden = false;
+            submitBtn.disabled = false;
+          }
+        })
+        .catch(function () { errorEl.hidden = false; submitBtn.disabled = false; });
+    });
+  }
+
+  var st = readState();
+  var THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+  if (st && (st.s === 'subscribed' || (Date.now() - st.t) < THIRTY_DAYS)) return;
+  if (location.pathname.indexOf('/cart') === 0) return;
+
+  function cookieBannerVisible() {
+    var el = document.querySelector('[id^="shopify-pc__banner"]');
+    return !!el && el.offsetHeight > 0;
+  }
+  var waited = 0;
+  function tryOpen() {
+    if (closed) return;
+    if (cookieBannerVisible()) {
+      if (waited >= 60000) return;
+      waited += 3000;
+      setTimeout(tryOpen, 3000);
+      return;
+    }
+    openPopup();
+  }
+  setTimeout(tryOpen, 20000);
+})();
+</script>
+
