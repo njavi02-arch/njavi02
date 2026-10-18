@@ -1,0 +1,162 @@
+{%- assign kc_p = section.settings.product -%}
+{%- assign kc_state = section.settings.state -%}
+{%- assign kc_img = section.settings.image -%}
+{%- assign kc_date = section.settings.launch_at | strip -%}
+<section class="kc-nd" id="nextdrops">
+  <div class="kc-nd-inner">
+    <div class="kc-nd-copy">
+      <span class="kc-nd-eyebrow">
+        {%- if kc_state == 'upcoming' -%}Próximo lanzamiento
+        {%- elsif kc_state == 'ended' -%}Lanzamiento finalizado
+        {%- else -%}Lanzamiento activo{%- endif -%}
+      </span>
+      <h1 class="kc-nd-title">{{ section.settings.heading }}</h1>
+      <p class="kc-nd-sub">{{ section.settings.description }}</p>
+
+      {%- if kc_state == 'upcoming' and kc_date != blank -%}
+        <div class="kc-nd-count" data-kc-countdown="{{ kc_date }}" role="timer" aria-label="Cuenta atrás hasta el lanzamiento">
+          <div><b data-u="d">--</b><small>días</small></div>
+          <div><b data-u="h">--</b><small>horas</small></div>
+          <div><b data-u="m">--</b><small>min</small></div>
+          <div><b data-u="s">--</b><small>seg</small></div>
+        </div>
+      {%- endif -%}
+
+      {%- if kc_p != blank -%}
+        {%- if kc_state == 'live' and kc_p.available -%}
+          <div class="kc-nd-actions">
+            <a href="{{ kc_p.url }}" class="kc-nd-cta">{{ section.settings.cta_live }}</a>
+            <span class="kc-nd-price">{{ kc_p.price | money }} <small>IVA incluido</small></span>
+          </div>
+        {%- elsif kc_state == 'live' -%}
+          <div class="kc-nd-actions"><span class="kc-nd-soldout">Edición agotada</span></div>
+        {%- elsif kc_state == 'ended' -%}
+          <div class="kc-nd-actions">
+            <span class="kc-nd-soldout">{% if kc_p.available %}Este lanzamiento ya ha finalizado{% else %}Edición agotada{% endif %}</span>
+            <a href="#club" class="kc-nd-link">Avísame del siguiente</a>
+          </div>
+        {%- else -%}
+          <div class="kc-nd-actions">
+            <a href="#club" class="kc-nd-cta">{{ section.settings.cta_upcoming }}</a>
+            {%- if section.settings.show_price and kc_p.price > 0 -%}<span class="kc-nd-price">{{ kc_p.price | money }} <small>IVA incluido</small></span>{%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- else -%}
+        <div class="kc-nd-actions"><a href="#club" class="kc-nd-cta">{{ section.settings.cta_upcoming }}</a></div>
+      {%- endif -%}
+    </div>
+    <div class="kc-nd-media">
+      {%- if kc_img -%}
+        <img src="{{ kc_img | image_url: width: 1100 }}" srcset="{{ kc_img | image_url: width: 550 }} 550w, {{ kc_img | image_url: width: 1100 }} 1100w, {{ kc_img | image_url: width: 1600 }} 1600w" sizes="(max-width: 768px) 92vw, 560px" alt="{{ kc_img.alt | default: section.settings.heading | escape }}" width="{{ kc_img.width }}" height="{{ kc_img.height }}" fetchpriority="high">
+      {%- elsif kc_p != blank and kc_p.featured_image -%}
+        <img class="kc-nd-plain" src="{{ kc_p.featured_image | image_url: width: 900 }}" alt="{{ kc_p.featured_image.alt | default: kc_p.title | escape }}" width="{{ kc_p.featured_image.width }}" height="{{ kc_p.featured_image.height }}" fetchpriority="high">
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{%- if section.blocks.size > 0 -%}
+<section class="kc-nd-details" id="nd-detalles">
+  <div class="kc-nd-details-inner">
+    <span class="kc-nd-eyebrow kc-nd-eyebrow--dark">{{ section.settings.details_eyebrow }}</span>
+    <h2 class="kc-nd-h2">{{ section.settings.details_heading }}</h2>
+    <dl class="kc-nd-grid">
+      {%- for block in section.blocks -%}
+        <div class="kc-nd-item" {{ block.shopify_attributes }}>
+          <dt>{{ block.settings.title }}</dt>
+          <dd>{{ block.settings.text }}</dd>
+        </div>
+      {%- endfor -%}
+    </dl>
+  </div>
+</section>
+{%- endif -%}
+
+<style>
+  .kc-nd { background: #211811; color: var(--cream); padding: 8rem 1.5rem 4rem; overflow-x: clip; }
+  .kc-nd-inner { max-width: 72rem; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: center; }
+  .kc-nd-eyebrow { display: block; font-size: .7rem; letter-spacing: .3em; text-transform: uppercase; color: #E4574D; }
+  .kc-nd-eyebrow--dark { color: #B3261E; }
+  .kc-nd-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500; font-size: clamp(3rem, 10vw, 6rem); line-height: 1; margin: .8rem 0 0; color: var(--cream); }
+  .kc-nd-sub { max-width: 30rem; margin: 1.5rem 0 2rem; color: rgba(243,236,224,.78); font-weight: 300; line-height: 1.7; }
+  .kc-nd-count { display: flex; gap: 1.25rem; margin: 0 0 2rem; }
+  .kc-nd-count div { text-align: center; min-width: 3.6rem; }
+  .kc-nd-count b { display: block; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 2.6rem; line-height: 1; color: var(--cream); font-variant-numeric: tabular-nums; }
+  .kc-nd-count small { display: block; margin-top: .35rem; font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: rgba(243,236,224,.55); }
+  .kc-nd-actions { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+  .kc-nd-cta { display: inline-flex; align-items: center; justify-content: center; min-height: 3rem; padding: 0 2.25rem; background: #B3261E; color: #fff; text-decoration: none; font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; transition: background .3s ease; }
+  .kc-nd-cta:hover { background: #C93329; }
+  .kc-nd-price { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; color: var(--cream); }
+  .kc-nd-price small { font-family: 'Inter', sans-serif; font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: rgba(243,236,224,.55); margin-left: .4rem; }
+  .kc-nd-soldout { font-size: .8rem; letter-spacing: .2em; text-transform: uppercase; color: rgba(243,236,224,.7); border: 1px solid rgba(243,236,224,.3); padding: .9rem 1.5rem; }
+  .kc-nd-link { color: rgba(243,236,224,.75); font-size: .85rem; text-decoration: underline; text-underline-offset: 4px; }
+  .kc-nd-media { display: block; }
+  .kc-nd-media img { display: block; width: 128%; max-width: none; margin: -7% -14%; height: auto; -webkit-mask-image: linear-gradient(to right, transparent, #000 16%, #000 84%, transparent), linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent); -webkit-mask-composite: source-in; mask-image: linear-gradient(to right, transparent, #000 16%, #000 84%, transparent), linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent); mask-composite: intersect; }
+  .kc-nd-media img.kc-nd-plain { width: 100%; max-width: 420px; margin: 0 auto; -webkit-mask-image: none; mask-image: none; }
+  .kc-nd-details { background: var(--cream); padding: 6rem 1.5rem; }
+  .kc-nd-details-inner { max-width: 72rem; margin: 0 auto; }
+  .kc-nd-h2 { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500; font-size: clamp(2.2rem, 6vw, 3.5rem); line-height: 1.05; color: var(--brown-900); margin: .6rem 0 2.5rem; }
+  .kc-nd-grid { display: grid; grid-template-columns: 1fr; gap: 0; margin: 0; border-top: 1px solid rgba(124,106,84,.3); }
+  .kc-nd-item { padding: 1.4rem 0; border-bottom: 1px solid rgba(124,106,84,.3); display: grid; grid-template-columns: 1fr; gap: .4rem; }
+  .kc-nd-item dt { font-size: .72rem; letter-spacing: .22em; text-transform: uppercase; color: #B3261E; }
+  .kc-nd-item dd { margin: 0; color: var(--brown-700); font-weight: 300; line-height: 1.7; max-width: 38rem; }
+  @media (min-width: 768px) { .kc-nd { padding: 9rem 2.5rem 5rem; } .kc-nd-inner { grid-template-columns: 6fr 5fr; gap: 5rem; } .kc-nd-details { padding: 8rem 2.5rem; } .kc-nd-item { grid-template-columns: 14rem 1fr; gap: 2rem; } }
+  @media (max-width: 767px) { .kc-nd-count { gap: .8rem; } .kc-nd-count b { font-size: 2.2rem; } .kc-nd-actions { flex-direction: column; align-items: stretch; } .kc-nd-cta { width: 100%; } .kc-nd-price { text-align: center; } }
+</style>
+{%- if kc_state == 'upcoming' and kc_date != blank -%}
+<script>
+  (function () {
+    var box = document.querySelector('[data-kc-countdown]');
+    if (!box) return;
+    var target = Date.parse(box.getAttribute('data-kc-countdown'));
+    if (isNaN(target)) { box.hidden = true; return; }
+    var u = {}; ['d', 'h', 'm', 's'].forEach(function (k) { u[k] = box.querySelector('[data-u="' + k + '"]'); });
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+    function tick() {
+      var diff = target - Date.now();
+      if (diff <= 0) { box.innerHTML = '<p style="margin:0;letter-spacing:.2em;text-transform:uppercase;font-size:.8rem">Ya es la hora: actualiza la página para ver el lanzamiento</p>'; return; }
+      var s = Math.floor(diff / 1000);
+      u.d.textContent = Math.floor(s / 86400);
+      u.h.textContent = pad(Math.floor(s % 86400 / 3600));
+      u.m.textContent = pad(Math.floor(s % 3600 / 60));
+      u.s.textContent = pad(s % 60);
+      setTimeout(tick, 1000 - (Date.now() % 1000));
+    }
+    tick();
+  })();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Next Drop — lanzamiento",
+  "settings": [
+    { "type": "select", "id": "state", "label": "Estado del lanzamiento", "default": "live", "options": [
+      { "value": "upcoming", "label": "Próximamente" },
+      { "value": "live", "label": "Lanzamiento activo" },
+      { "value": "ended", "label": "Lanzamiento finalizado" }
+    ] },
+    { "type": "text", "id": "launch_at", "label": "Fecha y hora del lanzamiento", "info": "Solo con estado «Próximamente». Formato 2026-12-01T18:00:00+01:00 (hora de España en invierno; +02:00 en verano). Vacío = sin cuenta atrás." },
+    { "type": "product", "id": "product", "label": "Producto del lanzamiento" },
+    { "type": "checkbox", "id": "show_price", "label": "Mostrar precio en «Próximamente»", "default": false },
+    { "type": "image_picker", "id": "image", "label": "Imagen principal (fondo oscuro)" },
+    { "type": "text", "id": "heading", "label": "Nombre de la edición", "default": "RED SMILE" },
+    { "type": "textarea", "id": "description", "label": "Descripción breve", "default": "Nuestro primer lanzamiento: matcha en polvo en formato de 1 kg, en una bolsa roja con cierre zip y una sonrisa como seña de identidad. Edición de 50 unidades." },
+    { "type": "text", "id": "cta_live", "label": "Botón (activo)", "default": "Comprar ahora" },
+    { "type": "text", "id": "cta_upcoming", "label": "Botón (próximamente)", "default": "Avísame del lanzamiento" },
+    { "type": "text", "id": "details_eyebrow", "label": "Detalles: etiqueta", "default": "La edición" },
+    { "type": "text", "id": "details_heading", "label": "Detalles: título", "default": "Detalles del lanzamiento" }
+  ],
+  "blocks": [
+    {
+      "type": "detail",
+      "name": "Detalle",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Concepto" },
+        { "type": "textarea", "id": "text", "label": "Texto" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Next Drop — lanzamiento" }]
+}
+{% endschema %}
