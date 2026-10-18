@@ -1,0 +1,408 @@
+{%- comment -%}
+  Asistente KOHI & CHA — widget de preguntas rápidas basado en datos reales.
+  No es IA generativa: es un árbol de respuestas que Liquid rellena en vivo
+  con precios/stock del catálogo y las políticas reales, para que nunca
+  quede desactualizado cuando cambies algo en Shopify.
+{%- endcomment -%}
+{%- assign p_premium = all_products['matcha-premium-1kg'] -%}
+{%- assign p_organico = all_products['matcha-latte-organico'] -%}
+{%- assign p_coco = all_products['matcha-latte-coco'] -%}
+{%- assign p_mango = all_products['matcha-latte-mango'] -%}
+{%- assign p_vainilla = all_products['matcha-latte-vainilla'] -%}
+{%- assign p_fresa = all_products['matcha-latte-fresa'] -%}
+{%- assign p_thermo = all_products['vaso-termico-acero-inoxidable'] -%}
+
+<div id="kc-assistant">
+  <div id="kc-a-bubble" class="kc-a-bubble hidden">💬 ¿Necesitas ayuda?</div>
+
+  <button id="kc-assistant-toggle" aria-label="Abrir asistente KOHI & CHA">
+    <span id="kc-a-icon-chat">💬</span>
+    <span id="kc-a-icon-close">&times;</span>
+  </button>
+
+  <div id="kc-assistant-panel" role="dialog" aria-label="Asistente KOHI & CHA">
+    <div id="kc-a-header">
+      <span class="kc-a-dot"></span>
+      <span class="kc-a-title-wrap">
+        <span class="kc-a-title">Asistente KOHI &amp; CHA</span>
+        <span class="kc-a-status">En línea</span>
+      </span>
+      <button id="kc-a-close" aria-label="Cerrar">&times;</button>
+    </div>
+
+    <div id="kc-a-body">
+
+      <section class="kc-a-screen" data-screen="home">
+        <p class="kc-a-msg">Hola 👋<br>Soy el asistente de KOHI &amp; CHA. Puedo ayudarte a elegir tu matcha, resolver tus dudas y ayudarte con tu pedido.<br>¿En qué puedo ayudarte?</p>
+        <div class="kc-a-quick">
+          <button class="kc-a-btn" data-go="matcha">🍵 Quiero elegir un matcha</button>
+          <button class="kc-a-btn" data-go="latte-start">🥛 Quiero un Matcha Latte</button>
+          <button class="kc-a-btn" data-go="descuento">🎁 ¿Tenéis descuentos?</button>
+          <button class="kc-a-btn" data-go="pedido">📦 Ayuda con mi pedido</button>
+          <button class="kc-a-btn" data-go="envios">🚚 Información de envíos</button>
+          <button class="kc-a-btn" data-go="humano">💬 Tengo otra pregunta</button>
+        </div>
+      </section>
+
+      <section class="kc-a-screen hidden" data-screen="matcha">
+        <button class="kc-a-back" data-go="home">← Volver</button>
+        <p class="kc-a-msg">Si nunca has probado matcha, te recomiendo empezar por <strong>{{ p_premium.title | default: 'Matcha Premium' }}</strong>: es nuestro producto insignia, origen China (Jingshan/Wuyi), molido a la piedra, sabor equilibrado — sirve igual para prepararlo tradicional que en latte.</p>
+        {%- if p_premium -%}
+        <a href="{{ p_premium.url }}" class="kc-a-card">
+          {%- if p_premium.featured_image -%}<img src="{{ p_premium.featured_image | image_url: width: 120 }}" alt="{{ p_premium.title }}">{%- endif -%}
+          <span class="kc-a-card-body">
+            <strong>{{ p_premium.title }}</strong>
+            <span>{{ p_premium.price | money }}{% unless p_premium.available %} · Agotado{% endunless %}</span>
+          </span>
+        </a>
+        {%- endif -%}
+        <p class="kc-a-msg">¿Prefieres tomarlo con leche desde el primer día? <button class="kc-a-inline-link" data-go="latte-start">Te ayudo a elegir un sabor de Matcha Latte →</button></p>
+      </section>
+
+      <section class="kc-a-screen hidden" data-screen="latte-start">
+        <button class="kc-a-back" data-go="home">← Volver</button>
+        <p class="kc-a-msg">Tenemos 5 sabores de Matcha Latte — para recomendarte el tuyo, ¿qué te apetece más?</p>
+        <div class="kc-a-quick">
+          <button class="kc-a-btn" data-go="latte-dulce">🍦 Dulce y suave</button>
+          <button class="kc-a-btn" data-go="latte-afrutado">🍓 Afrutado y fresco</button>
+          <button class="kc-a-btn" data-go="latte-cremoso">🥥 Cremoso y tropical</button>
+          <button class="kc-a-btn" data-go="latte-puro">🌿 Solo matcha, sin sabor añadido</button>
+        </div>
+      </section>
+
+      <section class="kc-a-screen hidden" data-screen="latte-dulce">
+        <button class="kc-a-back" data-go="latte-start">← Volver</button>
+        <p class="kc-a-msg">Para algo dulce y suave, <strong>{{ p_vainilla.title | default: 'Matcha Latte Vainilla' }}</strong> es tu sabor: dulce y envolvente, el más reconfortante de la gama.</p>
+        {%- if p_vainilla -%}
+        <a href="{{ p_vainilla.url }}" class="kc-a-card">
+          {%- if p_vainilla.featured_image -%}<img src="{{ p_vainilla.featured_image | image_url: width: 120 }}" alt="{{ p_vainilla.title }}">{%- endif -%}
+          <span class="kc-a-card-body">
+            <strong>Vainilla</strong>
+            <span>{{ p_vainilla.price | money }}{% unless p_vainilla.available %} · Agotado{% endunless %}</span>
+          </span>
+        </a>
+        {%- endif -%}
+        <p class="kc-a-msg">¿Quieres ver los otros 4 sabores? <a href="/collections/matcha-latte">Ver toda la gama Matcha Latte</a></p>
+      </section>
+
+      <section class="kc-a-screen hidden" data-screen="latte-afrutado">
+        <button class="kc-a-back" data-go="latte-start">← Volver</button>
+        <p class="kc-a-msg">Afrutado y fresco tiene dos opciones muy buenas:</p>
+        <div class="kc-a-cards">
+          {%- if p_fresa -%}
+          <a href="{{ p_fresa.url }}" class="kc-a-card">
+            {%- if p_fresa.featured_image -%}<img src="{{ p_fresa.featured_image | image_url: width: 100 }}" alt="{{ p_fresa.title }}">{%- endif -%}
+            <span class="kc-a-card-body">
+              <strong>Fresa</strong>
+              <span>{{ p_fresa.price | money }}{% unless p_fresa.available %} · Agotado{% endunless %}</span>
+            </span>
+          </a>
+          {%- endif -%}
+          {%- if p_mango -%}
+          <a href="{{ p_mango.url }}" class="kc-a-card">
+            {%- if p_mango.featured_image -%}<img src="{{ p_mango.featured_image | image_url: width: 100 }}" alt="{{ p_mango.title }}">{%- endif -%}
+            <span class="kc-a-card-body">
+              <strong>Mango</strong>
+              <span>{{ p_mango.price | money }}{% unless p_mango.available %} · Agotado{% endunless %}</span>
+            </span>
+          </a>
+          {%- endif -%}
+        </div>
+        <p class="kc-a-msg"><strong>Fresa</strong> es más ácido y colorido; <strong>Mango</strong> es más luminoso y con más chispa. Ambos sin sabor a matcha intenso.</p>
+      </section>
+
+      <section class="kc-a-screen hidden" data-screen="latte-cremoso">
+        <button class="kc-a-back" data-go="latte-start">← Volver</button>
+        <p class="kc-a-msg">Cremoso y tropical es <strong>{{ p_coco.title | default: 'Matcha Latte Coco' }}</strong>: cremoso, tropical, pensado para quien busca algo distinto.</p>
+        {%- if p_coco -%}
+        <a href="{{ p_coco.url }}" class="kc-a-card">
+          {%- if p_coco.featured_image -%}<img src="{{ p_coco.featured_image | image_url: width: 120 }}" alt="{{ p_coco.title }}">{%- endif -%}
+          <span class="kc-a-card-body">
+            <strong>Coco</strong>
+            <span>{{ p_coco.price | money }}{% unless p_coco.available %} · Agotado{% endunless %}</span>
+          </span>
+        </a>
+        {%- endif -%}
+        <p class="kc-a-msg">¿Quieres ver los otros 4 sabores? <a href="/collections/matcha-latte">Ver toda la gama Matcha Latte</a></p>
+      </section>
+
+      <section class="kc-a-screen hidden" data-screen="latte-puro">
+        <button class="kc-a-back" data-go="latte-start">← Volver</button>
+        <p class="kc-a-msg">Si prefieres sin sabor de fruta añadido, <strong>{{ p_organico.title | default: 'Matcha Latte Orgánico' }}</strong> es el más puro de la gama: solo matcha y cremosidad.</p>
+        {%- if p_organico -%}
+        <a href="{{ p_organico.url }}" class="kc-a-card">
+          {%- if p_organico.featured_image -%}<img src="{{ p_organico.featured_image | image_url: width: 120 }}" alt="{{ p_organico.title }}">{%- endif -%}
+          <span class="kc-a-card-body">
+            <strong>Orgánico</strong>
+            <span>{{ p_organico.price | money }}{% unless p_organico.available %} · Agotado{% endunless %}</span>
+          </span>
+        </a>
+        {%- endif -%}
+        <p class="kc-a-msg">¿Quieres ver los otros 4 sabores? <a href="/collections/matcha-latte">Ver toda la gama Matcha Latte</a></p>
+      </section>
+
+      <section class="kc-a-screen hidden" data-screen="descuento">
+        <button class="kc-a-back" data-go="home">← Volver</button>
+        <p class="kc-a-msg" id="kc-a-descuento-msg">Sí 😊 Si es tu primer pedido, tienes <strong>10 € de descuento</strong> con el código <strong>BIENVENIDA10</strong>. Es para clientes nuevos, en pedidos de 50 € o más, un uso por cliente y no acumulable con otras promociones.</p>
+        <p class="kc-a-msg" id="kc-a-descuento-sub">Introduce el código en el pago. Si dejas tu email, te lo enviamos junto con novedades de KOHI &amp; CHA.</p>
+        <a href="/collections/all" class="kc-a-cta">Ver productos →</a>
+      </section>
+
+      <section class="kc-a-screen hidden" data-screen="pedido">
+        <button class="kc-a-back" data-go="home">← Volver</button>
+        <p class="kc-a-msg">No tengo acceso directo a pedidos individuales desde aquí — para no arriesgarme a darte un dato incorrecto, te recomiendo:</p>
+        <ul class="kc-a-list">
+          <li>Revisa el email de confirmación que recibiste al comprar — incluye el número de seguimiento en cuanto se envía.</li>
+          <li>Consulta el estado en <a href="{{ routes.account_url }}">Mi cuenta → Pedidos</a>.</li>
+          <li>Si no lo encuentras, escríbenos directamente y te lo confirmamos: <a href="mailto:kohicha@hotmail.com">kohicha@hotmail.com</a></li>
+        </ul>
+      </section>
+
+      <section class="kc-a-screen hidden" data-screen="envios">
+        <button class="kc-a-back" data-go="home">← Volver</button>
+        <p class="kc-a-msg"><strong>Envíos</strong><br>
+        España peninsular y Baleares: 6,99€ (24-72h laborables) · Gratis desde 80€<br>
+        Canarias, Ceuta y Melilla: 14,99€ (incluye gestión aduanera)<br>
+        Unión Europea: 8,99€ (3-7 días laborables)</p>
+        <p class="kc-a-msg"><strong>Devoluciones</strong><br>
+        14 días naturales desde la recepción, sin necesidad de justificar el motivo. Por higiene y seguridad alimentaria, el matcha no puede devolverse una vez abierto — salvo que llegue dañado o haya un error nuestro. Más detalle en nuestra <a href="/policies/refund-policy">política de devoluciones</a>.</p>
+      </section>
+
+      <section class="kc-a-screen hidden" data-screen="humano">
+        <button class="kc-a-back" data-go="home">← Volver</button>
+        <p class="kc-a-msg">No quiero darte información incorrecta si tu pregunta necesita más detalle. Puedes contactar directamente con nuestro equipo y te ayudamos personalmente:</p>
+        <a href="mailto:kohicha@hotmail.com" class="kc-a-cta">✉️ kohicha@hotmail.com</a>
+        <p class="kc-a-msg" style="margin-top:10px">También puedes llamarnos: <strong>619 669 170</strong></p>
+      </section>
+
+      <section class="kc-a-screen hidden" data-screen="newsletter-offer">
+        <p class="kc-a-msg">Por cierto — ¿quieres 10 € de descuento en tu primer pedido y nuestras novedades por email?</p>
+        <p class="kc-a-msg" style="font-size:.76rem;color:var(--brown-500)">Para clientes nuevos, en pedidos de 50 € o más. Un uso por cliente, no acumulable con otras promociones.</p>
+        <div class="kc-a-quick">
+          <button class="kc-a-btn" id="kc-a-newsletter-yes">📩 Sí, quiero los 10 €</button>
+          <button class="kc-a-btn kc-a-btn-ghost" data-go="home">No, gracias</button>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  #kc-assistant-toggle {
+    position: fixed; bottom: 24px; right: 24px; z-index: 61;
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--matcha-700); color: var(--cream);
+    border: none; box-shadow: 0 6px 20px rgba(35,46,28,0.35);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; cursor: pointer; transition: transform .2s ease, background .2s ease;
+    animation: kc-a-pulse 2.6s ease-in-out infinite;
+  }
+  #kc-assistant-toggle:hover { background: var(--matcha-900); transform: scale(1.06); }
+  #kc-assistant.kc-a-interacted #kc-assistant-toggle { animation: none; }
+  @keyframes kc-a-pulse {
+    0%, 100% { box-shadow: 0 6px 20px rgba(35,46,28,0.35), 0 0 0 0 rgba(79,122,66,0.4); }
+    50% { box-shadow: 0 6px 20px rgba(35,46,28,0.35), 0 0 0 9px rgba(79,122,66,0); }
+  }
+  #kc-a-icon-close { display: none; }
+  #kc-assistant.is-open #kc-a-icon-chat { display: none; }
+  #kc-assistant.is-open #kc-a-icon-close { display: block; font-size: 1.6rem; line-height: 1; }
+
+  .kc-a-bubble {
+    position: fixed; bottom: 34px; right: 92px; z-index: 61;
+    background: var(--brown-900); color: var(--cream);
+    padding: 10px 16px; border-radius: 999px; font-size: .8rem;
+    white-space: nowrap; box-shadow: 0 8px 24px rgba(33,24,17,0.3);
+    opacity: 0; transform: translateY(6px); pointer-events: none;
+    transition: opacity .25s ease, transform .25s ease; cursor: pointer;
+  }
+  .kc-a-bubble.kc-a-bubble-show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .kc-a-bubble.hidden { display: none; }
+
+  #kc-assistant-panel {
+    position: fixed; bottom: 92px; right: 24px; z-index: 60;
+    width: 360px; max-width: calc(100vw - 32px);
+    height: 520px; max-height: calc(100vh - 140px);
+    background: var(--cream); color: var(--brown-900);
+    border-radius: 14px; box-shadow: 0 20px 50px -12px rgba(33,24,17,0.35);
+    display: flex; flex-direction: column; overflow: hidden;
+    font-family: 'Inter', ui-sans-serif, sans-serif;
+    border: 1px solid rgba(164,123,76,0.25);
+    opacity: 0; transform: translateY(14px) scale(.98); pointer-events: none;
+    transition: opacity .22s ease, transform .22s ease;
+  }
+  #kc-assistant-panel.kc-open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+  #kc-a-header {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--brown-900); color: var(--cream);
+    padding: 14px 16px; flex-shrink: 0;
+  }
+  .kc-a-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--matcha-500); flex-shrink: 0; }
+  .kc-a-title-wrap { display: flex; flex-direction: column; flex: 1; line-height: 1.2; }
+  .kc-a-title { font-family: var(--font-display, serif); font-style: italic; font-size: 1rem; }
+  .kc-a-status { font-size: .64rem; color: var(--matcha-500); letter-spacing: .04em; }
+  #kc-a-close { background: none; border: none; color: var(--cream); font-size: 1.3rem; cursor: pointer; line-height: 1; opacity: .8; }
+  #kc-a-close:hover { opacity: 1; }
+
+  #kc-a-body { flex: 1; overflow-y: auto; padding: 18px 16px; }
+  .kc-a-screen.hidden { display: none; }
+  .kc-a-msg { font-size: 0.86rem; line-height: 1.55; color: var(--brown-700); margin: 0 0 14px; }
+  .kc-a-msg strong { color: var(--brown-900); }
+  .kc-a-msg a { color: var(--matcha-700); text-decoration: underline; }
+
+  .kc-a-quick { display: flex; flex-direction: column; gap: 8px; }
+  .kc-a-btn {
+    text-align: left; padding: 10px 12px; border-radius: 8px;
+    border: 1px solid rgba(164,123,76,0.3); background: #fff;
+    font-size: 0.82rem; color: var(--brown-900); cursor: pointer;
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .kc-a-btn:hover { background: var(--cream-deep); border-color: var(--matcha-500); }
+  .kc-a-btn-ghost { background: transparent; border-color: transparent; color: var(--brown-500); }
+
+  .kc-a-back {
+    background: none; border: none; color: var(--matcha-700); font-size: 0.78rem;
+    cursor: pointer; padding: 0; margin-bottom: 12px; text-transform: uppercase; letter-spacing: .04em;
+  }
+  .kc-a-inline-link {
+    background: none; border: none; padding: 0; color: var(--matcha-700);
+    text-decoration: underline; cursor: pointer; font-size: inherit; font-family: inherit;
+  }
+
+  .kc-a-card {
+    display: flex; align-items: center; gap: 10px; padding: 8px;
+    border: 1px solid rgba(164,123,76,0.25); border-radius: 8px;
+    text-decoration: none; color: inherit; margin-bottom: 10px; background: #fff;
+  }
+  .kc-a-card img { width: 44px; height: 44px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .kc-a-card-body { display: flex; flex-direction: column; font-size: 0.82rem; }
+  .kc-a-card-body strong { color: var(--brown-900); font-size: 0.84rem; }
+  .kc-a-card-body span { color: var(--matcha-700); font-size: 0.78rem; margin-top: 2px; }
+  .kc-a-cards { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+
+  .kc-a-list { margin: 0 0 12px; padding-left: 18px; font-size: 0.82rem; color: var(--brown-700); line-height: 1.6; }
+  .kc-a-list a { color: var(--matcha-700); }
+
+  .kc-a-cta {
+    display: inline-block; background: var(--matcha-700); color: var(--cream);
+    padding: 10px 16px; border-radius: 8px; text-decoration: none; font-size: 0.84rem; font-weight: 500;
+  }
+
+  @media (max-width: 480px) {
+    #kc-assistant-panel { right: 16px; left: 16px; width: auto; bottom: 84px; height: 60vh; }
+    #kc-assistant-toggle { right: 16px; bottom: 16px; }
+    .kc-a-bubble { right: 74px; bottom: 26px; font-size: .74rem; padding: 8px 12px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #kc-assistant-toggle { animation: none !important; }
+    #kc-assistant-panel, .kc-a-bubble { transition: none !important; }
+  }
+</style>
+
+<script>
+(function () {
+  var root = document.getElementById('kc-assistant');
+  var toggle = document.getElementById('kc-assistant-toggle');
+  var panel = document.getElementById('kc-assistant-panel');
+  var closeBtn = document.getElementById('kc-a-close');
+  var bubble = document.getElementById('kc-a-bubble');
+  if (!root || !toggle || !panel) return;
+
+  function openPanel() {
+    panel.classList.add('kc-open');
+    root.classList.add('is-open');
+  }
+  function closePanel() {
+    panel.classList.remove('kc-open');
+    root.classList.remove('is-open');
+  }
+  function markInteracted() {
+    root.classList.add('kc-a-interacted');
+    hideBubble();
+  }
+
+  toggle.addEventListener('click', function () {
+    markInteracted();
+    if (panel.classList.contains('kc-open')) { closePanel(); } else { openPanel(); }
+  });
+  closeBtn.addEventListener('click', closePanel);
+
+  function showScreen(name) {
+    var screens = panel.querySelectorAll('.kc-a-screen');
+    for (var i = 0; i < screens.length; i++) {
+      if (screens[i].getAttribute('data-screen') === name) {
+        screens[i].classList.remove('hidden');
+      } else {
+        screens[i].classList.add('hidden');
+      }
+    }
+    panel.querySelector('#kc-a-body').scrollTop = 0;
+  }
+
+  panel.addEventListener('click', function (e) {
+    var goBtn = e.target.closest('[data-go]');
+    if (goBtn) { showScreen(goBtn.getAttribute('data-go')); }
+  });
+
+  var newsletterYes = document.getElementById('kc-a-newsletter-yes');
+  if (newsletterYes) {
+    newsletterYes.addEventListener('click', function () {
+      closePanel();
+      document.dispatchEvent(new CustomEvent('kc-open-welcome'));
+    });
+  }
+
+  // Tras la segunda respuesta de producto en una sesión, ofrece el descuento una vez.
+  var offerShown = false;
+  try { offerShown = sessionStorage.getItem('kc_assistant_newsletter_offered') === '1'; } catch (e) {}
+  var productScreens = { matcha: 1, 'latte-dulce': 1, 'latte-afrutado': 1, 'latte-cremoso': 1, 'latte-puro': 1 };
+  var productScreenViews = 0;
+  panel.addEventListener('click', function (e) {
+    var goBtn = e.target.closest('[data-go]');
+    if (!goBtn) return;
+    var dest = goBtn.getAttribute('data-go');
+    if (productScreens[dest] && !offerShown) {
+      productScreenViews++;
+      if (productScreenViews >= 2) {
+        offerShown = true;
+        try { sessionStorage.setItem('kc_assistant_newsletter_offered', '1'); } catch (e) {}
+        setTimeout(function () { showScreen('newsletter-offer'); }, 1200);
+      }
+    }
+  });
+
+  // Burbuja "¿Necesitas ayuda?" — una vez por sesión.
+  function hideBubble() {
+    if (!bubble) return;
+    bubble.classList.remove('kc-a-bubble-show');
+  }
+  var bubbleShown = false;
+  function showBubble() {
+    if (!bubble || bubbleShown || root.classList.contains('kc-a-interacted')) return;
+    var already = false;
+    try { already = sessionStorage.getItem('kc_a_bubble_shown') === '1'; } catch (e) {}
+    if (already) return;
+    bubbleShown = true;
+    bubble.classList.remove('hidden');
+    requestAnimationFrame(function () { bubble.classList.add('kc-a-bubble-show'); });
+    try { sessionStorage.setItem('kc_a_bubble_shown', '1'); } catch (e) {}
+    setTimeout(hideBubble, 7000);
+  }
+  if (bubble) {
+    bubble.addEventListener('click', function () {
+      hideBubble();
+      markInteracted();
+      openPanel();
+    });
+  }
+  var bubbleTimerStarted = false;
+  function scheduleBubble() {
+    if (bubbleTimerStarted) return;
+    bubbleTimerStarted = true;
+    setTimeout(showBubble, 2500);
+  }
+  document.addEventListener('kc-welcome-popup-done', scheduleBubble);
+  setTimeout(scheduleBubble, 5000);
+})();
+</script>
