@@ -1,0 +1,6 @@
+const {chromium}=require('playwright-core');
+(async()=>{const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium',args:['--no-sandbox']});const p=await b.newPage({viewport:{width:1440,height:900}});
+await p.goto('http://localhost:8765/');await p.evaluate(()=>window.VDT.cartApi.addToCart(55417870549319,1));await p.click('#cart-toggle');await p.waitForTimeout(500);
+const r=await p.evaluate(()=>{const out=new Set();const isGreen=c=>{const m=c.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?/);if(!m)return false;if(m[4]!==undefined&&+m[4]===0)return false;let [r,g,b]=[+m[1]/255,+m[2]/255,+m[3]/255];const mx=Math.max(r,g,b),mn=Math.min(r,g,b);if(mx-mn<0.12)return false;let h;const d=mx-mn;if(mx===r)h=((g-b)/d)%6;else if(mx===g)h=(b-r)/d+2;else h=(r-g)/d+4;h=(h*60+360)%360;return h>=70&&h<=170};
+ document.querySelectorAll('*').forEach(e=>{const s=getComputedStyle(e);['color','backgroundColor','borderTopColor','outlineColor','boxShadow','fill','stroke'].forEach(k=>{if(isGreen(s[k]||''))out.add(e.tagName+'.'+(e.className&&e.className.baseVal!==undefined?e.className.baseVal:e.className)+' '+k+'='+s[k])})});return [...out]});
+console.log('Elementos con color verde en el banco de pruebas (incluye carrito abierto):',r.length?r:'ninguno');await b.close()})();
