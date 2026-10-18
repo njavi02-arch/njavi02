@@ -222,3 +222,9 @@ Es margen **bruto**: aún hay que restar envío (gratis desde 55 € en España 
 - Si ese total incluye IVA soportado que puedas deducir, tu coste neto real es menor y el margen, mayor. A modo de ejemplo: con 21 % incluido, serían ~33,20 € por bolsa.
 - El **tipo de IVA aplicable a la venta (4 %, 10 % o 21 %) no está confirmado**: mi búsqueda no encontró una fuente que lo fije para el té matcha. Hay que confirmarlo con tu gestor o con la Agencia Tributaria (Ley 37/1992, art. 91).
 - No se ha podido publicar el tema ni revisar el menú renderizado desde este entorno (publicar temas está bloqueado para las herramientas y el dominio no es accesible desde aquí).
+
+### Actualización final (18/10/2026)
+- Los 2.008,60 € son el **coste total con envío, IVA y todo**. Se toma 40,17 € por bolsa como coste completo; si parte es IVA soportado deducible, el margen real es mayor.
+- El tipo de IVA **de venta** sigue pendiente de confirmar con el gestor.
+- Código BIENVENIDA10 **desactivado** en Shopify (nunca se usó; nadie se había apuntado con su etiqueta). Popup, mensajes y ajustes de la web retirados.
+- Idioma inglés **despublicado** (reversible desde Ajustes → Idiomas; las traducciones existentes se conservan).

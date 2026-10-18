@@ -58,3 +58,7 @@ También hay textos del carrito escritos a mano en español dentro de `cart.js` 
 6. Si los **2.008,60 €** de coste incluyen IVA soportado deducible.
 
 **Cómo se configuraría en Shopify, cuando lo confirmes:** Ajustes → Impuestos y aranceles → España: tipo base (21 % para no alimentación) y **anulación de impuestos por colección/producto** para los alimentos; precios ya incluyen impuestos (`taxesIncluded: true`, comprobado).
+
+---
+## Actualización (18/10/2026)
+Con la autorización del propietario ("haz todo eso"), el inglés se ha **despublicado** (`shopLocaleUpdate`, `published: false`). Para republicarlo: Ajustes → Idiomas → English → Publicar. Las traducciones existentes no se han borrado.
