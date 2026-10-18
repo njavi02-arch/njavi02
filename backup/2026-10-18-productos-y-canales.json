@@ -1,0 +1,40 @@
+{
+  "fecha": "2026-10-18",
+  "nota": "Estado ANTES de ocultar productos. Para reactivar: status ACTIVE + publicar en las publicaciones indicadas.",
+  "publicaciones": {
+    "Online Store": "gid://shopify/Publication/309334966599",
+    "Shop": "gid://shopify/Publication/309334999367",
+    "Point of Sale": "gid://shopify/Publication/309335032135",
+    "Inbox": "gid://shopify/Publication/312367743303",
+    "Pinterest": "gid://shopify/Publication/316947235143",
+    "Google & YouTube": "gid://shopify/Publication/321619755335"
+  },
+  "productos_a_ocultar": [
+    {"id": "gid://shopify/Product/10940913221959", "handle": "vaso-termico-acero-inoxidable", "status": "ACTIVE", "inventario": 70, "canales": ["Online Store","Point of Sale","Shop","Inbox","Pinterest","Google & YouTube"]},
+    {"id": "gid://shopify/Product/10971608416583", "handle": "matcha-premium-1kg", "status": "ACTIVE", "inventario": 50, "canales": ["Online Store","Pinterest","Point of Sale","Inbox","Shop","Google & YouTube"]},
+    {"id": "gid://shopify/Product/10971608809799", "handle": "matcha-latte-organico", "status": "ACTIVE", "inventario": 60, "canales": ["Online Store","Pinterest","Point of Sale","Inbox","Shop","Google & YouTube"]},
+    {"id": "gid://shopify/Product/10971608842567", "handle": "matcha-latte-coco", "status": "ACTIVE", "inventario": 60, "canales": ["Online Store","Pinterest","Point of Sale","Inbox","Shop","Google & YouTube"]},
+    {"id": "gid://shopify/Product/10971608908103", "handle": "matcha-latte-mango", "status": "ACTIVE", "inventario": 60, "canales": ["Online Store","Pinterest","Point of Sale","Inbox","Shop","Google & YouTube"]},
+    {"id": "gid://shopify/Product/10971609006407", "handle": "matcha-latte-vainilla", "status": "ACTIVE", "inventario": 60, "canales": ["Online Store","Pinterest","Point of Sale","Inbox","Shop","Google & YouTube"]},
+    {"id": "gid://shopify/Product/10971609039175", "handle": "matcha-latte-fresa", "status": "ACTIVE", "inventario": 60, "canales": ["Online Store","Pinterest","Point of Sale","Inbox","Shop","Google & YouTube"]}
+  ],
+  "red_smile": {"id": "gid://shopify/Product/11330769158471", "handle": "red-smile-matcha-premium-1kg", "precio": "79.90", "inventario": 50, "canales": ["Online Store","Google & YouTube"]},
+  "tema_live_antes": {"id": "gid://shopify/OnlineStoreTheme/201735668039", "name": "KOHI & CHA - RED SMILE v2 (borrador)"},
+  "menu_main_antes": [
+    ["RED SMILE","/en/products/red-smile-matcha-premium-1kg"],
+    ["Matcha","/en/collections/matcha"],
+    ["Matcha Latte","/en/collections/matcha-latte"],
+    ["Accesorios","/en/collections/accesorios"],
+    ["Catálogo","/en/collections/all"],
+    ["Sobre Nosotros","/en/pages/sobre-nosotros"],
+    ["Blog","/en/blogs/news"],
+    ["Contacto","/en/pages/contact"]
+  ],
+  "redirecciones_existentes": [
+    ["/products/vaso-termico-coffee","/products/vaso-termico-acero-inoxidable"],
+    ["/products/set-iniciacion","/products/set-iniciacion-cafe-matcha"],
+    ["/products/matcha-ceremonial","/products/matcha-ceremonial-supreme"],
+    ["/pages/contacto","/pages/contact"],
+    ["/products/red-smile-matcha-premium-1kg","/#lanzamiento"]
+  ]
+}
