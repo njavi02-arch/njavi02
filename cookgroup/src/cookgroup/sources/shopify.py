@@ -46,6 +46,7 @@ def parse_products(payload: dict, *, store: str, base_url: str, currency: str) -
                 price_cents=_to_cents(v.get("price")),
                 available=bool(v.get("available", False)),
                 sku=v.get("sku") or None,
+                compare_at_cents=_to_cents(v.get("compare_at_price")) or None,
             )
             for v in p.get("variants", [])
         )

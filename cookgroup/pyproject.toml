@@ -1,6 +1,6 @@
 [project]
 name = "cookgroup"
-version = "0.1.0"
+version = "0.2.0"
 description = "Monitores de stock/precio/oportunidades de reventa con alertas Discord"
 requires-python = ">=3.11"
 dependencies = ["requests>=2.31"]

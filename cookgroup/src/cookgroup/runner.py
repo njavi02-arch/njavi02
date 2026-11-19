@@ -8,10 +8,19 @@ from .config import Config
 from .discord import WebhookSender
 from .market import FileMarketProvider
 from .pipeline import run_cycle
+from .sources.rss import RssSource
 from .sources.shopify import ShopifySource
 from .store import Store
 
 log = logging.getLogger("cookgroup")
+
+
+def make_source(mcfg):
+    if mcfg.type == "shopify":
+        return ShopifySource(mcfg.store, mcfg.base_url, mcfg.currency)
+    if mcfg.type == "rss":
+        return RssSource(mcfg.store, mcfg.base_url, mcfg.currency)
+    raise ValueError(f"tipo de fuente desconocido: {mcfg.type}")
 
 
 def _loop(mcfg, cfg: Config, store: Store, market, stop: threading.Event):
@@ -20,10 +29,12 @@ def _loop(mcfg, cfg: Config, store: Store, market, stop: threading.Event):
         log.error("monitor=%s sin webhook DISCORD_WEBHOOK_%s; no arranca", mcfg.name, mcfg.channel.upper())
         return
     sender = WebhookSender(url)
-    source = ShopifySource(mcfg.store, mcfg.base_url, mcfg.currency)
+    source = make_source(mcfg)
+    ping_senders = {r.channel: WebhookSender(u).send for r in cfg.ping_rules if (u := cfg.webhook_for(r.channel))}
     failures = 0
     while not stop.is_set():
-        res = run_cycle(mcfg, cfg.defaults, source, store, market, sender.send)
+        res = run_cycle(mcfg, cfg.defaults, source, store, market, sender.send,
+                        ping_rules=cfg.ping_rules, ping_senders=ping_senders)
         if res["ok"]:
             failures = 0
             wait = mcfg.interval_seconds

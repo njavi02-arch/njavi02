@@ -44,6 +44,11 @@ class Store:
         r = self.db.execute("SELECT MIN(min_price_cents) FROM price_history WHERE product_key=?", (product_key,)).fetchone()
         return r[0]
 
+    def price_samples(self, product_key: str, limit: int = 50) -> list[int]:
+        rows = self.db.execute("SELECT min_price_cents FROM price_history WHERE product_key=? "
+                               "ORDER BY ts DESC LIMIT ?", (product_key, limit)).fetchall()
+        return [r[0] for r in rows if r[0]]
+
     def seen_recently(self, dedupe_key: str, cooldown_s: int) -> bool:
         r = self.db.execute("SELECT sent_at FROM alerts WHERE dedupe_key=?", (dedupe_key,)).fetchone()
         if not r:

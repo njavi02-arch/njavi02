@@ -8,6 +8,8 @@ cooldown_seconds = 3600       # no repetir la misma alerta dentro de esta ventan
 min_score_alert = 40          # oportunidades por debajo no se envían como 'rentables'
 platform = "stockx"           # plataforma de reventa usada para calcular comisiones
 market_file = "config/market_data.json"
+price_error_pct = 50          # caída ≥ 50 % frente a la MEDIANA del histórico propio
+price_error_min_obs = 5       # sin 5 observaciones previas no se etiqueta "price error"
 
 [[monitor]]
 name = "example-shopify-store"
@@ -22,3 +24,27 @@ channel = "restocks"          # clave de [channels] en .env: DISCORD_WEBHOOK_<CH
 include_vendors = ["Nike", "Jordan", "adidas", "New Balance", "ASICS", "Salomon"]
 include_keywords = []
 exclude_keywords = ["gift card", "tarjeta regalo"]
+skip_kids_sizes = true        # tallas Y/C/GS: ruido observado en la referencia
+
+# Feed RSS/Atom de chollos. SOLO feeds que la web ofrece públicamente; revisar condiciones antes de activar.
+[[monitor]]
+name = "example-deals-feed"
+enabled = false
+type = "rss"
+store = "ExampleDeals"
+base_url = "https://example-deals.invalid/rss"   # URL del feed
+interval_seconds = 600        # mínimo 300 para RSS
+channel = "deals"
+allow_unknown_price = true    # muchos feeds no traen precio estructurado
+exclude_keywords = ["cupón expirado"]
+
+# Pings por palabra clave: TODAS las keywords deben aparecer; precio ≤ max_price (EUR).
+# role_id = ID numérico del rol (Modo desarrollador > copiar ID). Solo se menciona ese rol.
+[[ping_rule]]
+name = "dunk-low-barato"
+keywords = ["dunk", "low"]
+exclude_keywords = ["gs", "td", "ps"]
+max_price = 120
+channel = "pings"
+role_id = "000000000000000000"
+event_types = ["restock", "new_product", "price_drop", "price_error"]

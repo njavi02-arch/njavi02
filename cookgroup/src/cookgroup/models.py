@@ -11,6 +11,7 @@ class EventType(str, Enum):
     SOLD_OUT = "sold_out"
     NEW_SIZE = "new_size"
     PRICE_DROP = "price_drop"
+    PRICE_ERROR = "price_error"  # bajada anómala frente al histórico PROPIO (no al "precio anterior" de la ficha)
 
 
 @dataclass(frozen=True)
@@ -20,6 +21,7 @@ class Variant:
     price_cents: int
     available: bool
     sku: str | None = None
+    compare_at_cents: int | None = None  # precio tachado que publica la tienda (no se usa como referencia fiable)
 
 
 @dataclass(frozen=True)
@@ -61,7 +63,7 @@ class Event:
     @property
     def dedupe_key(self) -> str:
         vids = ",".join(sorted(v.variant_id for v in self.variants))
-        price = self.new_price_cents if self.type == EventType.PRICE_DROP else ""
+        price = self.new_price_cents if self.type in (EventType.PRICE_DROP, EventType.PRICE_ERROR) else ""
         return f"{self.type.value}|{self.product.key}|{vids}|{price}"
 
 

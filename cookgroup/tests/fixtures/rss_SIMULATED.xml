@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Feed SIMULADO para tests. No procede de ninguna web real. -->
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>Feed simulado</title>
+    <item>
+      <title>Mando DualSense blanco por 49,99€</title>
+      <link>https://deals.invalid/oferta/1</link>
+      <guid>deal-1</guid>
+      <description><![CDATA[<p>Oferta en tienda de ejemplo</p>]]></description>
+      <enclosure url="https://deals.invalid/img/1.jpg" type="image/jpeg"/>
+    </item>
+    <item>
+      <title></title>
+      <link>https://deals.invalid/oferta/vacia</link>
+      <guid>deal-empty</guid>
+    </item>
+    <item>
+      <title>Auriculares inalámbricos</title>
+      <link>https://deals.invalid/oferta/2</link>
+      <guid>deal-2</guid>
+      <media:content url="https://deals.invalid/img/2.jpg"/>
+    </item>
+  </channel>
+</rss>

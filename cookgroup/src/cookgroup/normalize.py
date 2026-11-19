@@ -1,0 +1,81 @@
+"""Normalización de tallas y validación de productos antes de alertar.
+
+Motivación (docs/REFERENCE_AUDIT.md §2.5, §2.6, §2.9): la referencia publica tallas mal parseadas
+("375", "36666"), títulos que son solo un código y mensajes vacíos "(Sin título)". Aquí nada se
+"adivina": lo que no se puede interpretar con seguridad se marca como inválido y no se publica.
+"""
+from __future__ import annotations
+
+import re
+from dataclasses import replace
+
+from .models import Product, Variant
+
+_FRACTIONS = {"⅓": " 1/3", "⅔": " 2/3", "½": ".5"}
+_PREFIX = re.compile(r"^(EU|EUR)\s*", re.I)
+_REGIONAL = re.compile(r"^(UK|US|USM|USW|JP|CM)\s*(\d{1,2}(?:\.5)?)$", re.I)
+_EU = re.compile(r"^(\d{2})(?:\.5| 1/3| 2/3)?$")
+_KIDS = re.compile(r"^\d{1,2}(?:\.5)?\s*(Y|C|K)$|\b(GS|PS|TD)\b", re.I)
+_ALPHA = {"XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL", "2XL", "3XL", "OS", "O/S", "ONE SIZE", "TALLA ÚNICA", "DEFAULT TITLE"}
+
+
+def normalize_size(raw: str) -> str | None:
+    """Devuelve la talla canónica o None si no es interpretable sin adivinar.
+
+    Shopify suele publicar "42 / Black": se toma el primer segmento.
+    """
+    if raw is None:
+        return None
+    s = str(raw).split(" / ")[0].strip()
+    for k, v in _FRACTIONS.items():
+        s = s.replace(k, v)
+    s = re.sub(r"\s+", " ", s).replace(",", ".")
+    s = _PREFIX.sub("", s).strip()
+    if not s:
+        return None
+    if s.upper() in _ALPHA:
+        return "Única" if s.upper() in {"OS", "O/S", "ONE SIZE", "TALLA ÚNICA", "DEFAULT TITLE"} else s.upper()
+    if m := _REGIONAL.match(s):
+        return f"{m.group(1).upper()} {m.group(2)}"
+    if _KIDS.search(s):
+        return s.upper().replace(" ", "")
+    if m := _EU.match(s):
+        n = int(m.group(1))
+        return s if 15 <= n <= 52 else None
+    return None  # p. ej. "375", "36666": no se corrige por intuición
+
+
+def is_kids_size(size: str) -> bool:
+    return bool(_KIDS.search(size or ""))
+
+
+def clean_variants(p: Product, *, skip_kids: bool = False, require_size: bool = True) -> Product:
+    """Sustituye títulos de variante por la talla normalizada y elimina las no interpretables."""
+    out: list[Variant] = []
+    for v in p.variants:
+        n = normalize_size(v.title)
+        if n is None:
+            if require_size:
+                continue
+            n = v.title
+        if skip_kids and is_kids_size(n):
+            continue
+        out.append(replace(v, title=n))
+    return replace(p, variants=tuple(out))
+
+
+def validate_product(p: Product, *, allow_unknown_price: bool = False) -> list[str]:
+    """Lista de problemas; vacía = publicable."""
+    issues: list[str] = []
+    title = (p.title or "").strip()
+    if not title or title.lower() in {"(sin título)", "sin título", "untitled", "null", "none"}:
+        issues.append("sin título")
+    elif re.fullmatch(r"[\W\d_]+", title):
+        issues.append("título solo numérico/código")
+    if not p.url or not p.url.startswith(("http://", "https://")):
+        issues.append("sin URL válida")
+    if not p.variants:
+        issues.append("sin variantes publicables")
+    elif not allow_unknown_price and (p.min_price_cents or 0) <= 0:
+        issues.append("precio desconocido o 0")
+    return issues
