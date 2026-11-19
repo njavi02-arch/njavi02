@@ -1,6 +1,6 @@
 [project]
 name = "cookgroup"
-version = "0.3.0"
+version = "0.4.0"
 description = "Monitores de stock/precio/oportunidades de reventa con alertas Discord"
 requires-python = ">=3.11"
 dependencies = ["requests>=2.31"]
@@ -17,6 +17,9 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+cookgroup = ["samples/*", "migrations/*.sql"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

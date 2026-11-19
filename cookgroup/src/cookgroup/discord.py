@@ -15,28 +15,60 @@ TITLES = {EventType.RESTOCK: "RESTOCK DETECTADO", EventType.NEW_PRODUCT: "NUEVO 
           EventType.SOLD_OUT: "AGOTADO", EventType.PRICE_ERROR: "POSIBLE PRICE ERROR"}
 
 
-def eur(cents: int | None) -> str:
-    return "N/D" if cents is None else f"{cents/100:,.2f} €".replace(",", "X").replace(".", ",").replace("X", ".")
+_SYM = {"EUR": "€", "GBP": "£", "USD": "$", "SEK": "kr", "DKK": "kr", "CHF": "CHF"}
+
+
+def eur(cents: int | None, currency: str = "EUR") -> str:
+    if cents is None:
+        return "N/D"
+    n = f"{cents/100:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    sym = _SYM.get(currency.upper(), currency.upper())
+    return f"£{n}" if sym == "£" else f"{sym}{n}" if sym == "$" else f"{n} {sym}"
+
+
+def base_sku(skus: list[str]) -> str | None:
+    """SKU de modelo: muchas tiendas añaden la talla ("HQ4307-001-42,5"). Prefijo común sin separador final."""
+    if not skus:
+        return None
+    if len(skus) == 1:
+        return skus[0]
+    pre = skus[0]
+    for s in skus[1:]:
+        while not s.startswith(pre):
+            pre = pre[:-1]
+    seps = "-_ /."
+    # si el prefijo corta a mitad de un segmento (p. ej. "…-4" de "…-40"/"…-41"), retrocede al último separador
+    if any(len(s) > len(pre) and s[len(pre)] not in seps for s in skus) and pre and pre[-1] not in seps:
+        cut = max(pre.rfind(c) for c in seps)
+        pre = pre[:cut] if cut > 0 else pre
+    pre = pre.rstrip(seps)
+    return pre if len(pre) >= 5 else None
 
 
 def build_embed(ev: Event, opp: Opportunity | None = None, market_note: str | None = None, *, buttons: bool = False) -> dict:
     p = ev.product
+    is_deal = bool(p.variants) and all(v.title == "Oferta" for v in p.variants) and ev.type == EventType.NEW_PRODUCT
     sizes = ", ".join(v.title for v in ev.variants if v.title != "Oferta")
     price = ev.new_price_cents or p.min_price_cents
     fields = [
         {"name": "Tienda", "value": p.store, "inline": True},
-        {"name": "Precio", "value": eur(price) if price else "No indicado", "inline": True},
+        {"name": "Precio", "value": eur(price, p.currency) if price else "No indicado", "inline": True},
     ]
     if ev.type in (EventType.PRICE_DROP, EventType.PRICE_ERROR):
         label = "Referencia (mediana propia)" if ev.type == EventType.PRICE_ERROR else "Antes"
-        fields.append({"name": label, "value": eur(ev.old_price_cents), "inline": True})
+        fields.append({"name": label, "value": eur(ev.old_price_cents, p.currency), "inline": True})
     else:
         cmp_at = max((v.compare_at_cents or 0 for v in ev.variants), default=0)
         if cmp_at and price and cmp_at > price:
-            fields.append({"name": "Descuento tienda", "value": f"~~{eur(cmp_at)}~~ (-{round((cmp_at-price)*100/cmp_at)} %)", "inline": True})
+            fields.append({"name": "Descuento tienda", "value": f"~~{eur(cmp_at, p.currency)}~~ (-{round((cmp_at-price)*100/cmp_at)} %)", "inline": True})
     skus = sorted({v.sku for v in ev.variants if v.sku})
-    if skus:
-        fields.append({"name": "SKU", "value": f"`{skus[0]}`" + (f" (+{len(skus)-1})" if len(skus) > 1 else ""), "inline": True})
+    if (base := base_sku(skus)):
+        fields.append({"name": "SKU", "value": f"`{base}`", "inline": True})
+    if p.product_type and sizes == "":
+        fields.append({"name": "Categoría", "value": p.product_type, "inline": True})
+    temp = next((t[5:] for t in p.tags if t.startswith("temp:")), None)
+    if temp:
+        fields.append({"name": "Temperatura", "value": f"{temp}°", "inline": True})
     if sizes:
         fields.append({"name": "Tallas disponibles", "value": sizes[:1000], "inline": False})
     if opp is not None:
@@ -45,11 +77,13 @@ def build_embed(ev: Event, opp: Opportunity | None = None, market_note: str | No
         fields.append({"name": "Score", "value": f"{opp.score}/100", "inline": True})
         if opp.notes:
             fields.append({"name": "⚠ Incertidumbre", "value": "\n".join(f"• {n}" for n in opp.notes)[:1000], "inline": False})
-    q = quote_plus(skus[0] if skus else p.title)
-    fields.append({"name": "Enlaces", "value": f"[Producto]({p.url}) | [StockX](https://stockx.com/search?s={q}) | "
-                   f"[eBay](https://www.ebay.es/sch/i.html?_nkw={q})", "inline": False})
+    q = quote_plus(base or p.title)
+    links = f"[Ver chollo]({p.url})" if is_deal else (
+        f"[Producto]({p.url}) | [StockX](https://stockx.com/search?s={q}) | [eBay](https://www.ebay.es/sch/i.html?_nkw={q})")
+    fields.append({"name": "Enlaces", "value": links, "inline": False})
     embed = {
-        "title": f"{TITLES[ev.type]} — {p.vendor or p.store}",
+        "title": (f"NUEVO CHOLLO — {p.vendor} vía {p.store}" if is_deal and p.vendor else
+                  f"NUEVO CHOLLO — {p.store}" if is_deal else f"{TITLES[ev.type]} — {p.vendor or p.store}"),
         "description": f"**[{p.title}]({p.url})**",
         "url": p.url, "color": COLORS[ev.type], "fields": fields,
         "timestamp": ev.detected_at,

@@ -19,7 +19,9 @@ from ..models import Product, Variant
 from .shopify import USER_AGENT, RateLimited, SourceError
 
 MAX_BYTES = 2_000_000
-_NS = {"atom": "http://www.w3.org/2005/Atom", "media": "http://search.yahoo.com/mrss/"}
+_NS = {"atom": "http://www.w3.org/2005/Atom", "media": "http://search.yahoo.com/mrss/",
+       "pepper": "http://www.pepper.com/rss"}  # Chollometro, Dealabs, mydealz, Pepper, hotukdeals (verificado 19-nov-2026)
+_TEMP = re.compile(r"^\s*(-?\d{1,5})°\s*-\s*")
 _PRICE = re.compile(r"(\d{1,6}(?:[.,]\d{3})*(?:[.,]\d{1,2})?)\s?(?:€|EUR)|€\s?(\d{1,6}(?:[.,]\d{1,2})?)", re.I)
 _TAG = re.compile(r"<[^>]+>")
 
@@ -61,6 +63,13 @@ def parse_feed(xml_text: str, *, store: str, currency: str = "EUR") -> list[Prod
         desc = _TAG.sub(" ", _txt(it, "description") or _txt(it, "atom:summary"))
         if not title or not link:
             continue
+        tags: list[str] = []
+        if (tm := _TEMP.match(title)):
+            tags.append(f"temp:{tm.group(1)}")   # "temperatura" del chollo en webs Pepper (votos de la comunidad)
+            title = title[tm.end():].strip()
+        merchant = it.find("pepper:merchant", _NS)
+        vendor = merchant.get("name") if merchant is not None else None
+        category = _txt(it, "category") or None
         img = None
         for path, attr in (("enclosure", "url"), ("media:content", "url"), ("media:thumbnail", "url")):
             e = it.find(path, _NS)
@@ -68,9 +77,11 @@ def parse_feed(xml_text: str, *, store: str, currency: str = "EUR") -> list[Prod
                 img = e.get(attr)
                 break
         pid = hashlib.sha1(guid.encode()).hexdigest()[:16]
-        price = parse_price_cents(title) or parse_price_cents(desc)
+        price = (parse_price_cents(merchant.get("price", "")) if merchant is not None else 0) \
+            or parse_price_cents(title) or parse_price_cents(desc)
         out.append(Product(store=store, product_id=pid, title=title, url=link, currency=currency,
-                           variants=(Variant(pid, "Oferta", price, True),), image_url=img))
+                           variants=(Variant(pid, "Oferta", price, True),), image_url=img,
+                           vendor=vendor, product_type=category, tags=tuple(tags)))
     return out
 
 

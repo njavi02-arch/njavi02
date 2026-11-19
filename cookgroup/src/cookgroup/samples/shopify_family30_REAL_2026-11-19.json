@@ -1,0 +1,10 @@
+{"_source": "https://www.family3-0.com/products.json (capturado 2026-11-19 vía navegador; recortado a los campos usados y a las variantes visibles)",
+ "products": [{"id": 15956442808668, "title": "Mind 001", "handle": "nike-mind-001-hq4307-001-fw26", "vendor": "Nike",
+  "product_type": "Chaussures", "tags": ["Chaussures", "Expo", "Exposition", "FW26", "Homme"],
+  "images": [{"src": "https://cdn.shopify.com/s/files/1/0847/8231/7916/files/mind01.jpg"}],
+  "variants": [
+   {"id": 59770490716508, "title": "40", "option1": "40", "price": "90.00", "compare_at_price": null, "available": true, "sku": "HQ4307-001-40"},
+   {"id": 59770490749276, "title": "41", "option1": "41", "price": "90.00", "compare_at_price": null, "available": true, "sku": "HQ4307-001-41"},
+   {"id": 59770490782044, "title": "42", "option1": "42", "price": "90.00", "compare_at_price": null, "available": false, "sku": "HQ4307-001-42"},
+   {"id": 59964849946972, "title": "42,5", "option1": "42,5", "price": "90.00", "compare_at_price": null, "available": true, "sku": "HQ4307-001-42,5"},
+   {"id": 59770490814812, "title": "43", "option1": "43", "price": "90.00", "compare_at_price": null, "available": false, "sku": "HQ4307-001-43"}]}]}

@@ -17,7 +17,7 @@ log = logging.getLogger("cookgroup")
 
 def make_source(mcfg):
     if mcfg.type == "shopify":
-        return ShopifySource(mcfg.store, mcfg.base_url, mcfg.currency)
+        return ShopifySource(mcfg.store, mcfg.base_url, mcfg.currency, pages=mcfg.pages)
     if mcfg.type == "rss":
         return RssSource(mcfg.store, mcfg.base_url, mcfg.currency)
     raise ValueError(f"tipo de fuente desconocido: {mcfg.type}")

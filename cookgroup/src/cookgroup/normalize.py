@@ -15,8 +15,13 @@ _FRACTIONS = {"⅓": " 1/3", "⅔": " 2/3", "½": ".5"}
 _PREFIX = re.compile(r"^(EU|EUR)\s*", re.I)
 _REGIONAL = re.compile(r"^(UK|US|USM|USW|JP|CM)\s*(\d{1,2}(?:\.5)?)$", re.I)
 _EU = re.compile(r"^(\d{2})(?:\.5| 1/3| 2/3)?$")
-_KIDS = re.compile(r"^\d{1,2}(?:\.5)?\s*(Y|C|K)$|\b(GS|PS|TD)\b", re.I)
+_KIDS = re.compile(r"^\d{1,2}(?:\.5)?\s*(Y|C|K|T)$|\b(GS|PS|TD)\b", re.I)
+_US = re.compile(r"^(\d{1,2})(?:\.5)?$")                       # tiendas con talla US sin prefijo (p. ej. 4.5, 10)
+_MW = re.compile(r"^M\s?(\d{1,2}(?:\.5)?)\s?/\s?W\s?(\d{1,2}(?:\.5)?)$", re.I)  # "M5.5/W6.5" (unisex US)
 _ALPHA = {"XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL", "2XL", "3XL", "OS", "O/S", "ONE SIZE", "TALLA ÚNICA", "DEFAULT TITLE"}
+_WORDS = {"X-SMALL": "XS", "SMALL": "S", "MEDIUM": "M", "LARGE": "L", "X-LARGE": "XL", "XX-LARGE": "XXL",
+          "XXX-LARGE": "XXXL", "EXTRA SMALL": "XS", "EXTRA LARGE": "XL"}
+_KIDS_TITLE = re.compile(r"\b(GS|PS|TD|toddler|little kids|big kids|infant|baby|kids|niño|niña|junior|enfant)\b|\((GS|PS|TD)\)", re.I)
 
 
 def normalize_size(raw: str) -> str | None:
@@ -33,15 +38,20 @@ def normalize_size(raw: str) -> str | None:
     s = _PREFIX.sub("", s).strip()
     if not s:
         return None
+    if s.upper() in _WORDS:
+        return _WORDS[s.upper()]
     if s.upper() in _ALPHA:
         return "Única" if s.upper() in {"OS", "O/S", "ONE SIZE", "TALLA ÚNICA", "DEFAULT TITLE"} else s.upper()
+    if m := _MW.match(s):
+        return f"M{m.group(1)}/W{m.group(2)}"
     if m := _REGIONAL.match(s):
         return f"{m.group(1).upper()} {m.group(2)}"
     if _KIDS.search(s):
         return s.upper().replace(" ", "")
-    if m := _EU.match(s):
-        n = int(m.group(1))
-        return s if 15 <= n <= 52 else None
+    if (m := _EU.match(s)) and 15 <= int(m.group(1)) <= 52:
+        return s
+    if (m := _US.match(s)) and 1 <= int(m.group(1)) <= 18:
+        return s
     return None  # p. ej. "375", "36666": no se corrige por intuición
 
 
@@ -49,8 +59,15 @@ def is_kids_size(size: str) -> bool:
     return bool(_KIDS.search(size or ""))
 
 
+def is_kids_product(title: str) -> bool:
+    """Marcas de producto infantil en el título (p. ej. "Air Jordan 4 Retro OG GS", "Toddler (TD)")."""
+    return bool(_KIDS_TITLE.search(title or ""))
+
+
 def clean_variants(p: Product, *, skip_kids: bool = False, require_size: bool = True) -> Product:
     """Sustituye títulos de variante por la talla normalizada y elimina las no interpretables."""
+    if skip_kids and is_kids_product(p.title):
+        return replace(p, variants=())
     out: list[Variant] = []
     for v in p.variants:
         n = normalize_size(v.title)

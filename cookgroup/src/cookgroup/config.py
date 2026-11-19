@@ -25,6 +25,8 @@ class MonitorConfig:
     exclude_keywords: list[str] = field(default_factory=list)
     skip_kids_sizes: bool = False        # ruido observado en la referencia (tallas Y/C/GS)
     allow_unknown_price: bool = False    # feeds RSS de chollos pueden no traer precio
+    pages: int = 1                       # páginas de 250 productos por consulta
+    min_temperature: int | None = None   # feeds Pepper: solo chollos con ≥ N° de la comunidad
     dedupe_group: str | None = None      # misma tienda con varios dominios (.fr/.eu) → una sola alerta
 
 
@@ -35,7 +37,9 @@ class Config:
     ping_rules: list[PingRule] = field(default_factory=list)
 
     def webhook_for(self, channel: str) -> str | None:
-        return os.environ.get(f"DISCORD_WEBHOOK_{channel.upper()}")
+        """Webhook del canal; si no hay, DISCORD_WEBHOOK_DEFAULT (útil para probar todo en un solo canal)."""
+        key = "DISCORD_WEBHOOK_" + "".join(c if c.isalnum() else "_" for c in channel.upper())
+        return os.environ.get(key) or os.environ.get("DISCORD_WEBHOOK_DEFAULT")
 
 
 def load_config(path: str | Path) -> Config:
@@ -47,6 +51,8 @@ def load_config(path: str | Path) -> Config:
     for m in mons:
         if m.type not in SOURCE_TYPES:
             raise ValueError(f"{m.name}: tipo '{m.type}' no soportado ({sorted(SOURCE_TYPES)})")
+        if not 1 <= m.pages <= 4:
+            raise ValueError(f"{m.name}: pages debe estar entre 1 y 4")
         min_iv = 300 if m.type == "rss" else 30
         if m.interval_seconds < min_iv:
             raise ValueError(f"{m.name}: interval_seconds < {min_iv} no permitido para {m.type} (respeto a la fuente)")

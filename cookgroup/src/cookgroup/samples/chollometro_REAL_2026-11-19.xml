@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Estructura y valores capturados de https://www.chollometro.com/rss/hot el 2026-11-19 (2 entradas; descripción omitida). -->
+<rss xmlns:media="http://search.yahoo.com/mrss/" xmlns:pepper="http://www.pepper.com/rss" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+<channel><title>Chollometro</title><link>https://www.chollometro.com/subiendo</link>
+<item>
+<title><![CDATA[191° - Art Of Nature Lattafa Pride Set Perfume Unisex 100 ml + Miniatura + desodorante 200ml]]></title>
+<link>https://www.chollometro.com/ofertas/art-of-nature-lattafa-pride-set-perfume-unisex-eau-de-parfum-100-ml-miniatura-2078146</link>
+<guid>https://www.chollometro.com/ofertas/art-of-nature-lattafa-pride-set-perfume-unisex-eau-de-parfum-100-ml-miniatura-2078146</guid>
+<category><![CDATA[Salud y belleza]]></category>
+<pepper:merchant name="AliExpress" price="19,83€"/>
+<media:content medium="image" url="https://static.chollometro.com/threads/raw/s2hK1/2078146_1/re/150x150/qt/55/2078146_1.jpg" width="100" height="100"/>
+<pubDate>Thu, 19 Nov 2026 13:45:07 +0100</pubDate>
+</item>
+<item>
+<title><![CDATA[182° - DOUBLE DRAGON REVIVE - EDICIÓN LIMITADA - PS5]]></title>
+<link>https://www.chollometro.com/ofertas/double-dragon-revive-edicion-limitada-ps5-2078374</link>
+<guid>https://www.chollometro.com/ofertas/double-dragon-revive-edicion-limitada-ps5-2078374</guid>
+<category><![CDATA[Gaming]]></category>
+<pepper:merchant name="Amazon" price="19,95€"/>
+<media:content medium="image" url="https://static.chollometro.com/threads/raw/9mBAz/2078374_1/re/150x150/qt/55/2078374_1.jpg" width="100" height="100"/>
+</item>
+</channel></rss>

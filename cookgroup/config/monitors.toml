@@ -1,58 +1,211 @@
-# Cada [[monitor]] funciona de forma independiente. Añadir tiendas SOLO si sus condiciones
-# permiten consultar el catálogo público. Intervalos conservadores por defecto.
-# Las URLs son EJEMPLOS a verificar antes de activar (no se ha podido probar red real aún).
+# Monitores cookgroup. Cada [[monitor]] es independiente.
+# Tiendas VERIFICADAS el 19-nov-2026: /products.json público responde (200, JSON) y robots.txt no lo prohíbe
+# (solo bloquean /recommendations/products). Revisa igualmente las condiciones de uso de cada tienda.
+# Descartada: shop-eu.doverstreetmarket.com (no permite la consulta).
+#
+# Webhooks: DISCORD_WEBHOOK_<CANAL> en .env. Para probar todo en UN canal, pon solo DISCORD_WEBHOOK_DEFAULT.
+# Intervalos conservadores: 13 fuentes ≈ 4-5 peticiones/min en total.
 
 [defaults]
 min_drop_pct = 10
 cooldown_seconds = 3600       # no repetir la misma alerta dentro de esta ventana
-min_score_alert = 40          # oportunidades por debajo no se envían como 'rentables'
-platform = "stockx"           # plataforma de reventa usada para calcular comisiones
+min_score_alert = 40
+platform = "stockx"
 market_file = "config/market_data.json"
 price_error_pct = 50          # caída ≥ 50 % frente a la MEDIANA del histórico propio
 price_error_min_obs = 5       # sin 5 observaciones previas no se etiqueta "price error"
-releases_file = "config/releases.toml"   # calendario del staff (comentar para desactivar)
-# Copia de las alertas con descuento a canales por tramo (se usa el tramo más alto alcanzado).
-# El % sale de la bajada observada o del precio tachado de la tienda (si es ≤5× el actual).
+releases_file = "config/releases.toml"
 discount_routes = [
   { min_pct = 30, channel = "rebajas_30" },
   { min_pct = 60, channel = "rebajas_60" },
 ]
 
+# ---------------------------------------------------------------- SNEAKERS (Shopify)
+# Solo marcas de calzado; sin tallas ni modelos de niño.
+
 [[monitor]]
-name = "example-shopify-store"
-enabled = false               # activar tras verificar la tienda
+name = "footdistrict"
 type = "shopify"
-store = "ExampleStore"
-base_url = "https://example-store.invalid"
+store = "Footdistrict"
+base_url = "https://footdistrict.com"
 currency = "EUR"
-interval_seconds = 120
-channel = "restocks"          # clave de [channels] en .env: DISCORD_WEBHOOK_<CHANNEL>
-# filtros opcionales
-include_vendors = ["Nike", "Jordan", "adidas", "New Balance", "ASICS", "Salomon"]
-include_keywords = []
-exclude_keywords = ["gift card", "tarjeta regalo"]
-skip_kids_sizes = true        # tallas Y/C/GS: ruido observado en la referencia
-# dedupe_group = "example"    # pon el mismo valor en los monitores de una misma tienda con varios dominios
+interval_seconds = 180
+channel = "sneakers"
+include_vendors = ["Nike", "Jordan", "adidas", "New Balance", "ASICS", "Salomon", "On", "Hoka", "Puma", "Converse", "Vans", "Saucony", "Onitsuka", "Mizuno", "Reebok"]
+exclude_keywords = ["gift card", "tarjeta regalo", "camiseta", "t-shirt", "sudadera", "calcetines"]
+skip_kids_sizes = true
 
-# Feed RSS/Atom de chollos. SOLO feeds que la web ofrece públicamente; revisar condiciones antes de activar.
 [[monitor]]
-name = "example-deals-feed"
-enabled = false
-type = "rss"
-store = "ExampleDeals"
-base_url = "https://example-deals.invalid/rss"   # URL del feed
-interval_seconds = 600        # mínimo 300 para RSS
-channel = "deals"
-allow_unknown_price = true    # muchos feeds no traen precio estructurado
-exclude_keywords = ["cupón expirado"]
+name = "asphaltgold"
+type = "shopify"
+store = "Asphaltgold"
+base_url = "https://www.asphaltgold.com"
+currency = "EUR"
+interval_seconds = 180
+channel = "sneakers"
+include_vendors = ["Nike", "Jordan", "adidas", "New Balance", "ASICS", "Salomon", "On", "Hoka", "Puma", "Converse", "Vans", "Saucony", "Onitsuka", "Mizuno", "Reebok"]
+exclude_keywords = ["gift card", "socks", "crew", "t-shirt", "hoodie", "cap"]
+skip_kids_sizes = true
 
-# Pings por palabra clave: TODAS las keywords deben aparecer; precio ≤ max_price (EUR).
-# role_id = ID numérico del rol (Modo desarrollador > copiar ID). Solo se menciona ese rol.
+[[monitor]]
+name = "overkill"
+type = "shopify"
+store = "Overkill"
+base_url = "https://www.overkillshop.com"
+currency = "EUR"
+interval_seconds = 180
+channel = "sneakers"
+include_vendors = ["Nike", "Jordan", "adidas", "New Balance", "ASICS", "Salomon", "On", "Hoka", "Puma", "Converse", "Vans", "Saucony", "Onitsuka", "Mizuno", "Reebok"]
+exclude_keywords = ["gift card", "t-shirt", "hoodie", "socks"]
+skip_kids_sizes = true
+
+[[monitor]]
+name = "sneakersnstuff"
+type = "shopify"
+store = "Sneakersnstuff"
+base_url = "https://www.sneakersnstuff.com"
+currency = "EUR"              # VERIFICAR: la tienda publica precios en su moneda base
+interval_seconds = 180
+channel = "sneakers"
+include_vendors = ["Nike", "Jordan", "adidas", "New Balance", "ASICS", "Salomon", "On", "Hoka", "Puma", "Converse", "Vans", "Saucony", "Onitsuka", "Mizuno", "Reebok"]
+exclude_keywords = ["gift card"]
+skip_kids_sizes = true
+
+[[monitor]]
+name = "family3-0"
+type = "shopify"
+store = "Family 3.0"
+base_url = "https://www.family3-0.com"
+currency = "EUR"
+interval_seconds = 180
+channel = "sneakers"
+include_vendors = ["Nike", "Jordan", "adidas", "New Balance", "ASICS", "Salomon", "On", "Hoka", "Puma", "Converse", "Vans", "Saucony", "Onitsuka", "Mizuno", "Reebok"]
+exclude_keywords = ["gift card"]
+skip_kids_sizes = true
+
+[[monitor]]
+name = "noirfonce"
+type = "shopify"
+store = "Noirfonce"
+base_url = "https://noirfonce.eu"
+currency = "EUR"
+interval_seconds = 180
+channel = "sneakers"
+include_vendors = ["Nike", "Jordan", "adidas", "New Balance", "ASICS", "Salomon", "On", "Hoka", "Puma", "Converse", "Vans", "Saucony", "Onitsuka", "Mizuno", "Reebok"]
+exclude_keywords = ["gift card"]
+skip_kids_sizes = true
+dedupe_group = "noirfonce"    # la referencia publica la misma tienda por .fr y .eu: si añades .fr, usa el mismo grupo
+
+[[monitor]]
+name = "naked"
+type = "shopify"
+store = "Naked"
+base_url = "https://www.nakedcph.com"
+currency = "EUR"              # VERIFICAR (tienda danesa)
+interval_seconds = 180
+channel = "sneakers"
+include_vendors = ["Nike", "Jordan", "adidas", "New Balance", "ASICS", "Salomon", "On", "Hoka", "Puma", "Converse", "Vans", "Saucony", "Onitsuka", "Mizuno", "Reebok"]
+exclude_keywords = ["gift card", "jacket", "candle", "kit", "t-shirt", "tee", "hoodie"]
+skip_kids_sizes = true
+
+# ---------------------------------------------------------------- STREETWEAR / ROPA (Shopify)
+
+[[monitor]]
+name = "kith-eu"
+type = "shopify"
+store = "Kith EU"
+base_url = "https://eu.kith.com"
+currency = "EUR"
+interval_seconds = 240
+channel = "streetwear"
+exclude_keywords = ["gift card"]
+skip_kids_sizes = true
+
+[[monitor]]
+name = "slamjam"
+type = "shopify"
+store = "Slam Jam"
+base_url = "https://www.slamjam.com"
+currency = "EUR"
+interval_seconds = 240
+channel = "streetwear"
+exclude_keywords = ["gift card"]
+skip_kids_sizes = true
+
+[[monitor]]
+name = "goodhood"
+type = "shopify"
+store = "Goodhood"
+base_url = "https://goodhoodstore.com"
+currency = "GBP"              # tienda UK: el beneficio no se calcula (mercado en EUR)
+interval_seconds = 240
+channel = "streetwear"
+exclude_keywords = ["gift card"]
+skip_kids_sizes = true
+
+[[monitor]]
+name = "voostore"
+type = "shopify"
+store = "Voo Store"
+base_url = "https://www.voostore.com"
+currency = "EUR"
+interval_seconds = 240
+channel = "streetwear"
+exclude_keywords = ["gift card"]
+skip_kids_sizes = true
+
+[[monitor]]
+name = "starcow"
+type = "shopify"
+store = "Starcow"
+base_url = "https://www.starcowparis.com"
+currency = "EUR"
+interval_seconds = 240
+channel = "streetwear"
+exclude_keywords = ["gift card"]
+skip_kids_sizes = true
+
+# ---------------------------------------------------------------- CHOLLOS (RSS público, formato Pepper)
+# Verificado 19-nov-2026: /rss/hot devuelve 30 entradas con tienda, precio y "temperatura".
+
+[[monitor]]
+name = "chollometro-hot"
+type = "rss"
+store = "Chollometro"
+base_url = "https://www.chollometro.com/rss/hot"
+currency = "EUR"
+interval_seconds = 600
+channel = "chollos"
+allow_unknown_price = true
+min_temperature = 100         # solo chollos con ≥100° de la comunidad (evita ruido)
+
+[[monitor]]
+name = "dealabs-hot"
+type = "rss"
+store = "Dealabs"
+base_url = "https://www.dealabs.com/rss/hot"
+currency = "EUR"
+interval_seconds = 900
+channel = "chollos"
+allow_unknown_price = true
+min_temperature = 150
+
+# ---------------------------------------------------------------- PINGS POR PALABRA CLAVE
+# Pon el ID real del rol (Discord: Modo desarrollador > clic derecho en el rol > Copiar ID).
+# Mientras role_id sea de ceros no mencionará a nadie útil; sin DISCORD_WEBHOOK_PINGS ni DEFAULT no se envía.
+
 [[ping_rule]]
-name = "dunk-low-barato"
-keywords = ["dunk", "low"]
+name = "jordan-4-barata"
+keywords = ["jordan", "4"]
 exclude_keywords = ["gs", "td", "ps"]
-max_price = 120
+max_price = 230
 channel = "pings"
 role_id = "000000000000000000"
 event_types = ["restock", "new_product", "price_drop", "price_error"]
+
+[[ping_rule]]
+name = "price-errors"
+keywords = ["*"]              # cualquier producto
+channel = "pings"
+role_id = "000000000000000000"
+event_types = ["price_error"]

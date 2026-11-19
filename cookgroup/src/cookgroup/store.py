@@ -7,7 +7,7 @@ from pathlib import Path
 from .diff import now_iso
 from .models import Product, Variant
 
-MIGRATIONS = Path(__file__).resolve().parents[2] / "migrations"
+MIGRATIONS = Path(__file__).resolve().parent / "migrations"
 
 
 def _enc(p: Product) -> str:

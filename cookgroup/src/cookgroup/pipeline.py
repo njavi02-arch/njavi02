@@ -29,6 +29,8 @@ def evaluate(ev: Event, market: MarketProvider, platform_name: str, store: Store
     v = min(ev.variants, key=lambda x: x.price_cents)
     if v.price_cents <= 0:
         return None  # sin precio no se calcula beneficio (p. ej. chollos RSS sin importe)
+    if ev.product.currency.upper() != "EUR":
+        return None  # los datos de mercado están en EUR; sin tipo de cambio fiable no se mezcla
     md = market.lookup(v.sku, ev.product.title, v.title)
     pr = compute_profit(v.price_cents, md, DEFAULT_PLATFORMS[platform_name])
     urgency = 0.95 if ev.type == EventType.PRICE_ERROR else 0.9 if ev.type in (EventType.RESTOCK, EventType.NEW_PRODUCT) else 0.6

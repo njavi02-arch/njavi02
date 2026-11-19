@@ -1,7 +1,8 @@
 # Pendiente / limitaciones conocidas
 
-1. **Sin verificación con red real**: el entorno de desarrollo bloqueó las tiendas (proxy). `ShopifySource` solo está
-   probada con respuestas simuladas. Hay que probar cada tienda real y comprobar sus condiciones de uso/robots.
+1. **Verificación real (19-nov-2026, desde navegador)**: 12 tiendas Shopify responden a `/products.json` y su robots.txt no
+   lo prohíbe; DSML descartada. El bot aún no ha corrido 24 h seguidas contra ellas: vigilar 429/403 en los logs.
+   Condiciones de uso de cada tienda: no revisadas legalmente.
 2. **Datos de mercado**: sin API autorizada integrada. `FileMarketProvider` lee un JSON manual. Investigar APIs/partners
    oficiales (eBay Browse/Marketplace Insights, afiliados, etc.) antes de automatizar; no se hace scraping de StockX/GOAT.
 3. **Comisiones** en `profit.py`: valores orientativos; verificarlos y moverlos a config.
@@ -21,3 +22,7 @@
     Si el bot está parado en el momento de un recordatorio, ese aviso se pierde (ventana de gracia 15 min).
 15. **Tramos de descuento**: solo copian alertas de los monitores propios; no hay monitor de Amazon (sin API autorizada integrada).
 16. **SQLite compartido entre hilos** (monitores + calendario): válido para pocos monitores; migrar a PostgreSQL al crecer.
+17. **Catálogo parcial**: se lee la 1ª página (250 productos) por tienda; restocks de productos antiguos fuera de esa página
+    no se ven. Subir `pages` (máx. 4) en tiendas grandes si hace falta.
+18. **Moneda**: Sneakersnstuff y Naked marcadas EUR sin confirmar; Goodhood en GBP (sin cálculo de beneficio).
+19. **Reglas de ping** de ejemplo con `role_id` de ceros: poner IDs reales.

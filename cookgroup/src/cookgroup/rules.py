@@ -14,7 +14,7 @@ from .models import Event, EventType
 @dataclass
 class PingRule:
     name: str
-    keywords: list[str]                 # TODAS deben aparecer (insensible a mayúsculas/acentos básicos)
+    keywords: list[str]                 # TODAS deben aparecer (insensible a mayúsculas/acentos); "*" = cualquiera
     channel: str                        # DISCORD_WEBHOOK_<CHANNEL>
     role_id: str | None = None          # ID numérico del rol a mencionar
     max_price_cents: int | None = None
@@ -36,7 +36,7 @@ class PingRule:
         return cls(**d)
 
     def describe(self) -> str:
-        kw = " ".join(self.keywords)
+        kw = " ".join(self.keywords) if self.keywords != ["*"] else "cualquier producto"
         return f"{kw} ≤ {self.max_price_cents/100:g}" if self.max_price_cents else kw
 
 
@@ -61,7 +61,7 @@ def rule_matches(rule: PingRule, ev: Event) -> bool:
         return False
     p = ev.product
     text = _norm(f"{p.title} {p.vendor or ''} {' '.join(p.tags)} {' '.join(v.sku or '' for v in p.variants)}")
-    if not all(_norm(k) in text for k in rule.keywords):
+    if not all(k == "*" or _norm(k) in text for k in rule.keywords):
         return False
     if any(_norm(k) in text for k in rule.exclude_keywords):
         return False
