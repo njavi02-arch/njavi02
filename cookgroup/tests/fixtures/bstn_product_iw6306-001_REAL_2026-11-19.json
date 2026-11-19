@@ -1,0 +1,277 @@
+{
+ "_source": "https://www.bstn.com/eu_es/r/nike-x-carhartt-wip-air-max-goadome-low-iw6306-001-0365606 — productDetails capturado 2026-11-19 ~14:30 Europe/Madrid (antes del lanzamiento); recortado.",
+ "page": "/details/[productType]/[productURL]",
+ "props": {
+  "pageProps": {
+   "productDetails": {
+    "article_number": "IW6306-001",
+    "brand": "Nike",
+    "name": "x Carhartt WIP Air Max Goadome Low",
+    "app_only": 0,
+    "app_release_date_raw": null,
+    "instore_only": false,
+    "release_date": "20. Nov | 9:00 CET",
+    "release_date_raw": "1795161600",
+    "raffle_release_date": null,
+    "hot_release_message": "Hot Release - este artículo no cuenta para la categoría PRO.",
+    "configurable_options": [
+     {
+      "label": "EU",
+      "values": [
+       {
+        "label": "40",
+        "stock": {
+         "qty_in_stock": 6
+        }
+       },
+       {
+        "label": "40,5",
+        "stock": {
+         "qty_in_stock": 1
+        }
+       },
+       {
+        "label": "41",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "42",
+        "stock": {
+         "qty_in_stock": 4
+        }
+       },
+       {
+        "label": "42,5",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "43",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "44",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "44,5",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "45",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "45,5",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "46",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "47",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "47,5",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "48,5",
+        "stock": {
+         "qty_in_stock": 2
+        }
+       }
+      ]
+     },
+     {
+      "label": "UK",
+      "values": [
+       {
+        "label": "6,0-EU40",
+        "stock": {
+         "qty_in_stock": 6
+        }
+       },
+       {
+        "label": "6,5",
+        "stock": {
+         "qty_in_stock": 1
+        }
+       },
+       {
+        "label": "7,0",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "7,5",
+        "stock": {
+         "qty_in_stock": 4
+        }
+       },
+       {
+        "label": "8,0",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "8,5",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "9,0",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "9,5",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "10,0",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "10,5",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "11,0",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "11,5",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "12,0",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "13,0",
+        "stock": {
+         "qty_in_stock": 2
+        }
+       }
+      ]
+     },
+     {
+      "label": "US",
+      "values": [
+       {
+        "label": "7,0",
+        "stock": {
+         "qty_in_stock": 6
+        }
+       },
+       {
+        "label": "7,5",
+        "stock": {
+         "qty_in_stock": 1
+        }
+       },
+       {
+        "label": "8,0",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "8,5",
+        "stock": {
+         "qty_in_stock": 4
+        }
+       },
+       {
+        "label": "9,0",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "9,5",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "10,0",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "10,5",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "11,0",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "11,5",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "12,0",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "12,5",
+        "stock": {
+         "qty_in_stock": 1
+        }
+       }
+      ]
+     }
+    ]
+   }
+  }
+ }
+}

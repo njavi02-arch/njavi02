@@ -65,6 +65,43 @@ class Store:
             self.db.execute("INSERT OR REPLACE INTO alerts VALUES (?,?,?,?,?,?)",
                             (dedupe_key, event_type, store, product_key, now_iso(), message_id))
 
+    # ------------------------------------------------------------ lanzamientos
+    def load_launch_states(self, store: str) -> dict[str, dict]:
+        """uid -> {"launch": {...}, "state": {...}, "present": bool}. Vacío si es la primera vez."""
+        rows = self.db.execute("SELECT uid, data, present FROM launches WHERE store=?", (store,)).fetchall()
+        out = {}
+        for uid, data, present in rows:
+            d = json.loads(data)
+            d["present"] = bool(present)
+            out[uid] = d
+        return out
+
+    def save_launch_states(self, store: str, states: dict[str, dict]) -> None:
+        ts = now_iso()
+        with self.db:
+            for uid, d in states.items():
+                data = json.dumps({"launch": d["launch"], "state": d.get("state", {})}, ensure_ascii=False)
+                self.db.execute(
+                    "INSERT INTO launches(uid, store, data, present, first_seen, updated_at) VALUES (?,?,?,?,?,?) "
+                    "ON CONFLICT(uid) DO UPDATE SET data=excluded.data, present=excluded.present, updated_at=excluded.updated_at",
+                    (uid, store, data, int(d.get("present", True)), ts, ts))
+
+    def record_health(self, source: str, ok: bool, *, items: int | None = None, duration_ms: int | None = None,
+                      error: str | None = None, delay_s: int | None = None) -> None:
+        ts = now_iso()
+        with self.db:
+            self.db.execute("INSERT OR IGNORE INTO source_health(source, consecutive_errors) VALUES (?, 0)", (source,))
+            if ok:
+                self.db.execute("UPDATE source_health SET last_ok=?, consecutive_errors=0, last_items=?, last_duration_ms=?, "
+                                "last_delay_s=COALESCE(?, last_delay_s) WHERE source=?", (ts, items, duration_ms, delay_s, source))
+            else:
+                self.db.execute("UPDATE source_health SET last_error=?, last_error_at=?, consecutive_errors=consecutive_errors+1 "
+                                "WHERE source=?", ((error or "")[:300], ts, source))
+
+    def health(self) -> list[tuple]:
+        return self.db.execute("SELECT source, last_ok, consecutive_errors, last_error, last_error_at, last_items, "
+                               "last_duration_ms, last_delay_s FROM source_health ORDER BY source").fetchall()
+
     def record_run(self, monitor: str, ok: bool, products: int = 0, events: int = 0, error: str | None = None) -> None:
         with self.db:
             self.db.execute("INSERT INTO monitor_runs VALUES (?,?,?,?,?,?)",

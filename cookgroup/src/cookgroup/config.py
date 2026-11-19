@@ -7,7 +7,8 @@ from pathlib import Path
 
 from .rules import PingRule
 
-SOURCE_TYPES = {"shopify", "rss"}
+SOURCE_TYPES = {"shopify", "rss", "bstn"}
+LAUNCH_TYPES = {"bstn"}   # fuentes de calendario de lanzamientos (ciclo propio)
 
 
 @dataclass
@@ -27,7 +28,13 @@ class MonitorConfig:
     allow_unknown_price: bool = False    # feeds RSS de chollos pueden no traer precio
     pages: int = 1                       # páginas de 250 productos por consulta
     min_temperature: int | None = None   # feeds Pepper: solo chollos con ≥ N° de la comunidad
-    dedupe_group: str | None = None      # misma tienda con varios dominios (.fr/.eu) → una sola alerta
+    dedupe_group: str | None = None
+    # --- fuentes de lanzamientos (type = "bstn")
+    regions: list[str] = field(default_factory=lambda: ["eu_es"])
+    listings: list[str] = field(default_factory=lambda: ["men/upcoming", "women/upcoming/footwear"])
+    launch_channels: dict = field(default_factory=lambda: {"launch": "lanzamientos", "raffle": "raffles",
+                                                          "restock": "restocks", "digest": "lanzamientos"})
+    product_checks_per_cycle: int = 4      # misma tienda con varios dominios (.fr/.eu) → una sola alerta
 
 
 @dataclass
@@ -53,7 +60,7 @@ def load_config(path: str | Path) -> Config:
             raise ValueError(f"{m.name}: tipo '{m.type}' no soportado ({sorted(SOURCE_TYPES)})")
         if not 1 <= m.pages <= 4:
             raise ValueError(f"{m.name}: pages debe estar entre 1 y 4")
-        min_iv = 300 if m.type == "rss" else 30
+        min_iv = 300 if m.type in ("rss", "bstn") else 30
         if m.interval_seconds < min_iv:
             raise ValueError(f"{m.name}: interval_seconds < {min_iv} no permitido para {m.type} (respeto a la fuente)")
     for r in raw.get("defaults", {}).get("discount_routes", []):

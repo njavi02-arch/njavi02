@@ -113,16 +113,24 @@ def run_cycle(cfg: MonitorConfig, defaults: dict, source, store: Store, market: 
         raw = source.fetch()
     except RateLimited as e:
         store.record_run(cfg.name, False, error=str(e))
+        store.record_health(cfg.name, False, error=str(e))
         return {"ok": False, "backoff": e.retry_after, "error": str(e)}
     except SourceError as e:
         if str(e) == "not-modified":
             store.record_run(cfg.name, True)
+            store.record_health(cfg.name, True, items=0)
             return {"ok": True, "products": 0, "events": 0, "sent": 0, "dropped": 0, "pings": 0, "routed": 0}
         store.record_run(cfg.name, False, error=str(e))
+        store.record_health(cfg.name, False, error=str(e))
         return {"ok": False, "error": str(e)}
 
     products, dropped = _prepare(raw, cfg)
     old = store.load_snapshot(cfg.store)
+    if old and len(old) >= 5 and len(products) < 0.3 * len(old):
+        msg = f"catálogo sospechoso: {len(products)} productos frente a {len(old)} antes; se ignora el ciclo"
+        store.record_run(cfg.name, False, error=msg)
+        store.record_health(cfg.name, False, error=msg)
+        return {"ok": False, "error": msg}
     events = diff_products(old, products, min_drop_pct=defaults.get("min_drop_pct", 10))
     events, pe_notes = _upgrade_price_errors(events, store, defaults)
     store.save_snapshot(cfg.store, products)
@@ -157,5 +165,6 @@ def run_cycle(cfg: MonitorConfig, defaults: dict, source, store: Store, market: 
                 store.record_alert(pkey, "ping", cfg.store, ev.product.key, pid)
                 pings += 1
     store.record_run(cfg.name, True, len(products), len(events))
+    store.record_health(cfg.name, True, items=len(raw))
     return {"ok": True, "products": len(products), "events": len(events), "sent": sent,
             "dropped": dropped, "pings": pings, "routed": routed}

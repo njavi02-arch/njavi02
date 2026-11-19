@@ -15,10 +15,28 @@ market_file = "config/market_data.json"
 price_error_pct = 50          # caída ≥ 50 % frente a la MEDIANA del histórico propio
 price_error_min_obs = 5       # sin 5 observaciones previas no se etiqueta "price error"
 releases_file = "config/releases.toml"
+launch_digest_time = "09:00"  # resumen diario "abiertos ahora / próximos 7 días" (hora de Madrid)
+raffle_closing_hours = 3      # recordatorio cuando faltan ≤3 h para el cierre de un raffle
 discount_routes = [
   { min_pct = 30, channel = "rebajas_30" },
   { min_pct = 60, channel = "rebajas_60" },
 ]
+
+# ---------------------------------------------------------------- LANZAMIENTOS Y RAFFLES (calendarios de tiendas)
+# BSTN (verificado 19-nov-2026): listado "Coming Soon" con fecha/hora, raffle abierto/cierre/enlace, app/tienda física.
+# Fichas de producto: salida a la venta y stock por talla (EU/UK/US). El bot NO consulta raffle.bstn.com ni /api/
+# (robots.txt); solo enlaza. Región eu_es = escaparate Europa en español (precios EUR, envío a España).
+
+[[monitor]]
+name = "bstn-eu"
+type = "bstn"
+store = "BSTN"
+base_url = "https://www.bstn.com"
+interval_seconds = 600          # 2 páginas de ~1 MB cada 10 min
+regions = ["eu_es"]
+listings = ["men/upcoming", "women/upcoming/footwear"]
+product_checks_per_cycle = 4    # fichas por ciclo (salida a la venta + tallas que vuelven)
+launch_channels = { launch = "lanzamientos", raffle = "raffles", restock = "restocks", digest = "lanzamientos" }
 
 # ---------------------------------------------------------------- SNEAKERS (Shopify)
 # Solo marcas de calzado; sin tallas ni modelos de niño.

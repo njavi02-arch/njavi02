@@ -16,6 +16,9 @@ log = logging.getLogger("cookgroup")
 
 
 def make_source(mcfg):
+    if mcfg.type == "bstn":
+        from .sources.bstn import BstnSource
+        return BstnSource(mcfg.regions, mcfg.listings)
     if mcfg.type == "shopify":
         return ShopifySource(mcfg.store, mcfg.base_url, mcfg.currency, pages=mcfg.pages)
     if mcfg.type == "rss":
@@ -23,7 +26,49 @@ def make_source(mcfg):
     raise ValueError(f"tipo de fuente desconocido: {mcfg.type}")
 
 
+def _launch_loop(mcfg, cfg: Config, store: Store, stop: threading.Event):
+    from datetime import datetime, timezone
+    from zoneinfo import ZoneInfo
+
+    from .launches import build_launch_digest, run_launch_cycle
+    senders = {}
+    for kind, ch in mcfg.launch_channels.items():
+        if (u := cfg.webhook_for(ch)):
+            senders[kind] = WebhookSender(u).send
+    for r in cfg.ping_rules:
+        if (u := cfg.webhook_for(r.channel)):
+            senders[r.channel] = WebhookSender(u).send
+    if "launch" not in senders:
+        log.error("monitor=%s sin webhook para '%s' ni DISCORD_WEBHOOK_DEFAULT; no arranca", mcfg.name, mcfg.launch_channels.get("launch"))
+        return
+    source = make_source(mcfg)
+    failures = 0
+    digest_at = cfg.defaults.get("launch_digest_time", "09:00")
+    while not stop.is_set():
+        res = run_launch_cycle(mcfg, cfg.defaults, source, store, senders, ping_rules=cfg.ping_rules)
+        # resumen diario "abiertos ahora / próximos 7 días"
+        now = datetime.now(ZoneInfo("Europe/Madrid"))
+        key = f"digest|{mcfg.store}|{now.date().isoformat()}"
+        if res.get("ok") and now.strftime("%H:%M") >= digest_at and not store.has_alert(key):
+            dg = build_launch_digest(store.load_launch_states(mcfg.store), now,
+                                     title=f"Resumen del día — {mcfg.store}: abiertos ahora y próximos 7 días")
+            if dg:
+                send = senders.get("digest") or senders["launch"]
+                store.record_alert(key, "launch_digest", mcfg.store, "-", send(dg))
+        if res["ok"]:
+            failures = 0
+            wait = mcfg.interval_seconds
+        else:
+            failures += 1
+            wait = max(res.get("backoff", 0), min(mcfg.interval_seconds * 2 ** failures, 3600))
+            log.warning("monitor=%s error=%s próximo intento en %ss", mcfg.name, res.get("error"), wait)
+        log.info("monitor=%s %s", mcfg.name, res)
+        stop.wait(wait)
+
+
 def _loop(mcfg, cfg: Config, store: Store, market, stop: threading.Event):
+    if mcfg.type == "bstn":
+        return _launch_loop(mcfg, cfg, store, stop)
     url = cfg.webhook_for(mcfg.channel)
     if not url:
         log.error("monitor=%s sin webhook DISCORD_WEBHOOK_%s; no arranca", mcfg.name, mcfg.channel.upper())

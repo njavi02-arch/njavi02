@@ -31,7 +31,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(prog="cookgroup")
     ap.add_argument("--config", default="config/monitors.toml")
     ap.add_argument("--db", default=os.environ.get("COOKGROUP_DB", "cookgroup.db"))
-    ap.add_argument("command", choices=["run", "check-config", "check-releases", "probe", "test-webhook", "preview"])
+    ap.add_argument("command", choices=["run", "check-config", "check-releases", "probe", "test-webhook", "preview", "status"])
     ap.add_argument("--channel", default="default", help="test-webhook: canal cuyo webhook probar")
     ap.add_argument("--out", default="preview.html", help="preview: fichero HTML de salida")
     a = ap.parse_args(argv)
@@ -40,6 +40,21 @@ def main(argv=None):
     h.setFormatter(_JsonFmt())
     logging.basicConfig(level=logging.INFO, handlers=[h])
     cfg = load_config(a.config)
+    if a.command == "status":
+        from datetime import datetime, timezone
+        from .store import Store
+        rows = Store(a.db).health()
+        if not rows:
+            print("Sin datos todavía: arranca con 'run' y vuelve a mirar en unos minutos.")
+            return 0
+        now = datetime.now(timezone.utc)
+        print(f"{'fuente':<20} {'estado':<9} {'último ciclo OK':<22} {'errores seguidos':>16}  último error")
+        for src, last_ok, errs, last_err, err_at, items, ms, delay in rows:
+            age = f"hace {int((now - datetime.fromisoformat(last_ok)).total_seconds() // 60)} min" if last_ok else "nunca"
+            st = "OK" if errs == 0 and last_ok else "FALLA" if errs >= 3 else "AVISO"
+            extra = f" · retraso medido {delay}s" if delay is not None else ""
+            print(f"{src:<20} {st:<9} {age:<22} {errs:>16}  {(last_err or '')[:60]}{extra}")
+        return 0
     if a.command == "preview":
         from .preview import write_preview
         print(f"Vista previa escrita en {write_preview(a.out).resolve()}")
@@ -62,6 +77,14 @@ def main(argv=None):
             if not m.enabled:
                 continue
             try:
+                if m.type == "bstn":
+                    from datetime import datetime, timezone
+                    t0 = datetime.now(timezone.utc)
+                    items = make_source(m).fetch_launches(t0)
+                    raffles = sum(1 for i in items if i.raffle_active)
+                    dated = sum(1 for i in items if i.release_ts)
+                    print(f"OK    {m.name:<18} {len(items):>4} lanzamientos · {raffles} raffles abiertos · {dated} con fecha")
+                    continue
                 raw = make_source(m).fetch()
                 ok, dropped = _prepare(raw, m)
                 avail = sum(1 for p in ok if p.available_variants)
