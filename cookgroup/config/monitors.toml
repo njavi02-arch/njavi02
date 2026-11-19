@@ -10,6 +10,13 @@ platform = "stockx"           # plataforma de reventa usada para calcular comisi
 market_file = "config/market_data.json"
 price_error_pct = 50          # caída ≥ 50 % frente a la MEDIANA del histórico propio
 price_error_min_obs = 5       # sin 5 observaciones previas no se etiqueta "price error"
+releases_file = "config/releases.toml"   # calendario del staff (comentar para desactivar)
+# Copia de las alertas con descuento a canales por tramo (se usa el tramo más alto alcanzado).
+# El % sale de la bajada observada o del precio tachado de la tienda (si es ≤5× el actual).
+discount_routes = [
+  { min_pct = 30, channel = "rebajas_30" },
+  { min_pct = 60, channel = "rebajas_60" },
+]
 
 [[monitor]]
 name = "example-shopify-store"
@@ -25,6 +32,7 @@ include_vendors = ["Nike", "Jordan", "adidas", "New Balance", "ASICS", "Salomon"
 include_keywords = []
 exclude_keywords = ["gift card", "tarjeta regalo"]
 skip_kids_sizes = true        # tallas Y/C/GS: ruido observado en la referencia
+# dedupe_group = "example"    # pon el mismo valor en los monitores de una misma tienda con varios dominios
 
 # Feed RSS/Atom de chollos. SOLO feeds que la web ofrece públicamente; revisar condiciones antes de activar.
 [[monitor]]

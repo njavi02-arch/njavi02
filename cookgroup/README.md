@@ -1,10 +1,12 @@
-# Cookgroup — monitores de stock/precio con alertas Discord (v0.2)
+# Cookgroup — monitores de stock/precio con alertas Discord (v0.3)
 
 Núcleo funcional: fuente Shopify (`/products.json` público), detección de restock/producto nuevo/tallas/bajada
 de precio, filtros, deduplicación con cooldown, cálculo de beneficio neto, score 0-100 y embeds por webhook.
 v0.2 (tras auditar el servidor de referencia): normalización/validación de tallas y mensajes, price errors con
 referencia del histórico propio, pings por palabra clave + precio → rol, y fuente RSS/Atom para chollos.
-**Estado honesto:** probado con datos simulados (43 tests); no verificado contra tiendas, feeds ni Discord reales. Ver `docs/PENDING.md`.
+v0.3: calendario de lanzamientos editable por el staff (`config/releases.toml`, `cookgroup check-releases`),
+canales por tramo de descuento (`discount_routes`) y unificación de tiendas con varios dominios (`dedupe_group`).
+**Estado honesto:** probado con datos simulados (56 tests); no verificado contra tiendas, feeds ni Discord reales. Ver `docs/PENDING.md`.
 
 ## Uso
 ```bash

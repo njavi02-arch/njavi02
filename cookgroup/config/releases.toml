@@ -1,0 +1,37 @@
+# Calendario de lanzamientos — lo edita el STAFF. Se relee cada minuto (no hace falta reiniciar).
+# Validar tras editar:  cookgroup check-releases
+#
+# method:  LEO | FCFS | DAN | RAFFLE | INSTORE | APP | DESCONOCIDO
+# verdict: cop (🟢) | maybe (🟠) | drop (🔴) | unknown (⚪)  ← opinión del staff, se muestra como tal
+# release_at: "2026-11-20T09:00" (hora local del calendario) o una fecha sin hora (= "Durante el día",
+#             solo recibe el recordatorio de 1 día).
+# Todas las URLs deben ser https://
+
+[calendar]
+channel = "releases"              # DISCORD_WEBHOOK_RELEASES
+timezone = "Europe/Madrid"
+reminders_minutes = [1440, 60, 10] # 1 día, 1 hora y 10 min antes
+digest_time = "08:00"             # resumen "Drops del día"
+
+# Los dos lanzamientos siguientes se anotaron en la auditoría del 19-nov-2026 (info pública de producto).
+# VERIFICAR fecha, hora y enlaces en la web oficial antes de dejarlos activos; la valoración se deja sin rellenar.
+
+[[release]]
+id = "nike-mind-001-hq4307-001"
+name = "Nike Mind 001 Pre-Game Mules (Black/Hyper Crimson)"
+release_at = "2026-11-20T09:00"
+method = "LEO"
+verdict = "unknown"
+sku = "HQ4307-001"
+retail_price = 89.99
+stores = [{ name = "Nike", url = "https://www.nike.com/es/launch" }]
+notes = "Pendiente de verificar en la web oficial."
+
+[[release]]
+id = "af1-low-travis-scott-gta6"
+name = "Nike Air Force 1 Low x Travis Scott x Rockstar Games GTA 6"
+release_at = 2026-11-21
+method = "DESCONOCIDO"
+verdict = "unknown"
+stores = [{ name = "Nike", url = "https://www.nike.com/es/launch" }]
+notes = "Hora y método sin confirmar. Pendiente de verificar."

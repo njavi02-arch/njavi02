@@ -57,6 +57,9 @@ class Store:
         age = (datetime.now(timezone.utc) - datetime.fromisoformat(r[0])).total_seconds()
         return age < cooldown_s
 
+    def has_alert(self, dedupe_key: str) -> bool:
+        return self.db.execute("SELECT 1 FROM alerts WHERE dedupe_key=?", (dedupe_key,)).fetchone() is not None
+
     def record_alert(self, dedupe_key: str, event_type: str, store: str, product_key: str, message_id: str | None) -> None:
         with self.db:
             self.db.execute("INSERT OR REPLACE INTO alerts VALUES (?,?,?,?,?,?)",

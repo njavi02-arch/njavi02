@@ -7,7 +7,7 @@
 3. **Comisiones** en `profit.py`: valores orientativos; verificarlos y moverlos a config.
 4. **Botón COMPRAR**: requiere bot propio; con webhook normal solo hay enlace en el embed.
 5. **Estado de alertas** (marcar agotado al editar el mensaje): no implementado (SOLD_OUT no se publica).
-6. **Monitores** de raffles, lanzamientos y diferencias entre tiendas: no implementados. Price errors y feeds RSS: implementados
+6. **Monitores** de raffles (entrada automática) y diferencias entre tiendas: no implementados. Price errors y feeds RSS: implementados
    y probados solo con datos simulados; ningún feed RSS real verificado todavía (revisar condiciones de cada web).
 7. **PostgreSQL/Redis**: la v1 usa SQLite (suficiente para un proceso). Migrar al crecer; `migrations/` ya es SQL simple.
 8. **Panel web, roles, suscripciones/Stripe, bot Discord, capa IA, métricas**: no implementados.
@@ -16,3 +16,8 @@
 11. **Stock por talla**: el `/products.json` público de Shopify no da unidades; solo disponible/no disponible.
 12. **Misma tienda con varios dominios** (.fr/.eu, observado en la referencia): no se unifica aún.
 13. **Pings**: requieren rol con ID real en `[[ping_rule]]` y `DISCORD_WEBHOOK_PINGS`; un webhook solo menciona roles mencionables.
+14. **Calendario**: el ejemplo trae 2 lanzamientos anotados en la auditoría (Mind 001, AF1 x Travis Scott x GTA 6) con enlace
+    genérico a Nike Launch y valoración "unknown": verificar fecha/hora/enlaces antes de activar `DISCORD_WEBHOOK_RELEASES`.
+    Si el bot está parado en el momento de un recordatorio, ese aviso se pierde (ventana de gracia 15 min).
+15. **Tramos de descuento**: solo copian alertas de los monitores propios; no hay monitor de Amazon (sin API autorizada integrada).
+16. **SQLite compartido entre hilos** (monitores + calendario): válido para pocos monitores; migrar a PostgreSQL al crecer.

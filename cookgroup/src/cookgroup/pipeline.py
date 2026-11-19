@@ -76,9 +76,36 @@ def _upgrade_price_errors(events: list[Event], store: Store, defaults: dict) -> 
     return out, notes
 
 
+def discount_pct(ev: Event) -> float | None:
+    """% de descuento del evento: bajada observada, o precio tachado de la tienda si es creíble (≤5×)."""
+    if ev.type in (EventType.PRICE_DROP, EventType.PRICE_ERROR) and ev.old_price_cents and ev.new_price_cents:
+        return (ev.old_price_cents - ev.new_price_cents) * 100 / ev.old_price_cents
+    best = None
+    for v in ev.variants:
+        if v.compare_at_cents and 0 < v.price_cents < v.compare_at_cents <= v.price_cents * 5:
+            pct = (v.compare_at_cents - v.price_cents) * 100 / v.compare_at_cents
+            best = pct if best is None else max(best, pct)
+    return best
+
+
+def pick_discount_route(pct: float | None, routes: list[dict]) -> str | None:
+    """Ruta del tramo más alto alcanzado (p. ej. 60 % antes que 30 %), como los canales por tramo observados."""
+    if pct is None:
+        return None
+    ok = [r for r in routes if pct >= float(r["min_pct"])]
+    return max(ok, key=lambda r: float(r["min_pct"]))["channel"] if ok else None
+
+
+def _alert_key(ev: Event, group: str | None) -> str:
+    if not group:
+        return ev.dedupe_key
+    return ev.dedupe_key.replace(ev.product.key, f"group={group}:{ev.product.product_id}", 1)
+
+
 def run_cycle(cfg: MonitorConfig, defaults: dict, source, store: Store, market: MarketProvider,
               send: Callable[[dict], str | None], *, ping_rules: list[PingRule] | None = None,
-              ping_senders: dict[str, Callable[[dict], str | None]] | None = None) -> dict:
+              ping_senders: dict[str, Callable[[dict], str | None]] | None = None,
+              channel_senders: dict[str, Callable[[dict], str | None]] | None = None) -> dict:
     """Devuelve un resumen; nunca lanza por errores de la fuente (se registran)."""
     try:
         raw = source.fetch()
@@ -88,7 +115,7 @@ def run_cycle(cfg: MonitorConfig, defaults: dict, source, store: Store, market: 
     except SourceError as e:
         if str(e) == "not-modified":
             store.record_run(cfg.name, True)
-            return {"ok": True, "products": 0, "events": 0, "sent": 0, "dropped": 0, "pings": 0}
+            return {"ok": True, "products": 0, "events": 0, "sent": 0, "dropped": 0, "pings": 0, "routed": 0}
         store.record_run(cfg.name, False, error=str(e))
         return {"ok": False, "error": str(e)}
 
@@ -98,27 +125,35 @@ def run_cycle(cfg: MonitorConfig, defaults: dict, source, store: Store, market: 
     events, pe_notes = _upgrade_price_errors(events, store, defaults)
     store.save_snapshot(cfg.store, products)
 
-    sent = pings = 0
+    senders = {**(channel_senders or {}), **(ping_senders or {})}
+    routes = defaults.get("discount_routes", [])
+    sent = pings = routed = 0
     cooldown = defaults.get("cooldown_seconds", 3600)
     for ev in events:
         if ev.type == EventType.SOLD_OUT:
             continue  # el estado de alertas previas se actualiza en una fase futura
-        if store.seen_recently(ev.dedupe_key, cooldown):
+        akey = _alert_key(ev, cfg.dedupe_group)
+        if store.seen_recently(akey, cooldown):
             continue
         opp = evaluate(ev, market, defaults.get("platform", "stockx"), store)
         if opp is not None and pe_notes.get(ev.dedupe_key):
             opp.notes.extend(pe_notes[ev.dedupe_key])
         payload = build_embed(ev, opp)
         mid = send(payload)
-        store.record_alert(ev.dedupe_key, ev.type.value, cfg.store, ev.product.key, mid)
+        store.record_alert(akey, ev.type.value, cfg.store, ev.product.key, mid)
         sent += 1
+        if (ch := pick_discount_route(discount_pct(ev), routes)) and ch != cfg.channel and (snd := senders.get(ch)):
+            rkey = f"route|{ch}|{akey}"
+            if not store.seen_recently(rkey, cooldown):
+                store.record_alert(rkey, "route", cfg.store, ev.product.key, snd(payload))
+                routed += 1
         for rule in ping_rules or []:
-            sender = (ping_senders or {}).get(rule.channel)
-            pkey = f"ping|{rule.name}|{ev.dedupe_key}"
+            sender = senders.get(rule.channel)
+            pkey = f"ping|{rule.name}|{akey}"
             if sender and rule_matches(rule, ev) and not store.seen_recently(pkey, cooldown):
                 pid = sender(build_ping(rule, ev, payload))
                 store.record_alert(pkey, "ping", cfg.store, ev.product.key, pid)
                 pings += 1
     store.record_run(cfg.name, True, len(products), len(events))
     return {"ok": True, "products": len(products), "events": len(events), "sent": sent,
-            "dropped": dropped, "pings": pings}
+            "dropped": dropped, "pings": pings, "routed": routed}
