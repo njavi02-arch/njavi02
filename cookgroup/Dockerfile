@@ -1,0 +1,9 @@
+FROM python:3.13-slim
+WORKDIR /app
+COPY pyproject.toml ./
+COPY src ./src
+COPY migrations ./migrations
+COPY config ./config
+RUN pip install --no-cache-dir . && useradd -m app && mkdir /data && chown app /data
+USER app
+CMD ["cookgroup", "run"]

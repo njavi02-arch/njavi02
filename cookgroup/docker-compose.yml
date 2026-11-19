@@ -1,0 +1,10 @@
+services:
+  monitors:
+    build: .
+    env_file: .env
+    volumes:
+      - cookgroup-data:/data
+      - ./config:/app/config:ro
+    restart: unless-stopped
+volumes:
+  cookgroup-data:

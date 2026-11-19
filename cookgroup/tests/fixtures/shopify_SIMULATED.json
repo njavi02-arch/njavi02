@@ -1,0 +1,9 @@
+{"_SIMULATED_TEST_DATA": true, "products": [
+ {"id": 1001, "title": "Air Jordan 1 Low TEST", "handle": "aj1-low-test", "vendor": "Jordan", "product_type": "Sneakers",
+  "tags": "sneakers, jordan", "images": [{"src": "https://example.invalid/img.jpg"}],
+  "variants": [
+   {"id": 1, "title": "42", "price": "109.99", "available": false, "sku": "DD1391-100"},
+   {"id": 2, "title": "43", "price": "109.99", "available": false, "sku": "DD1391-100"}]},
+ {"id": 1002, "title": "Gift Card TEST", "handle": "gift", "vendor": "Shop", "tags": [],
+  "variants": [{"id": 9, "title": "50", "price": "50.00", "available": true}]}
+]}

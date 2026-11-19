@@ -1,0 +1,24 @@
+# Cada [[monitor]] funciona de forma independiente. Añadir tiendas SOLO si sus condiciones
+# permiten consultar el catálogo público. Intervalos conservadores por defecto.
+# Las URLs son EJEMPLOS a verificar antes de activar (no se ha podido probar red real aún).
+
+[defaults]
+min_drop_pct = 10
+cooldown_seconds = 3600       # no repetir la misma alerta dentro de esta ventana
+min_score_alert = 40          # oportunidades por debajo no se envían como 'rentables'
+platform = "stockx"           # plataforma de reventa usada para calcular comisiones
+market_file = "config/market_data.json"
+
+[[monitor]]
+name = "example-shopify-store"
+enabled = false               # activar tras verificar la tienda
+type = "shopify"
+store = "ExampleStore"
+base_url = "https://example-store.invalid"
+currency = "EUR"
+interval_seconds = 120
+channel = "restocks"          # clave de [channels] en .env: DISCORD_WEBHOOK_<CHANNEL>
+# filtros opcionales
+include_vendors = ["Nike", "Jordan", "adidas", "New Balance", "ASICS", "Salomon"]
+include_keywords = []
+exclude_keywords = ["gift card", "tarjeta regalo"]
