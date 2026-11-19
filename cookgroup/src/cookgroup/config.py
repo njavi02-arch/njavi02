@@ -27,6 +27,8 @@ class MonitorConfig:
     skip_kids_sizes: bool = False        # ruido observado en la referencia (tallas Y/C/GS)
     allow_unknown_price: bool = False    # feeds RSS de chollos pueden no traer precio
     pages: int = 1                       # páginas de 250 productos por consulta
+    collection: str | None = None        # Shopify: vigilar solo esta colección (p. ej. "launches")
+    region: str | None = None            # etiqueta de región para alertas y filtros (p. ej. "eu", "uk", "us")
     min_temperature: int | None = None   # feeds Pepper: solo chollos con ≥ N° de la comunidad
     dedupe_group: str | None = None
     # --- fuentes de lanzamientos (type = "bstn")

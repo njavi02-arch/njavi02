@@ -1,0 +1,288 @@
+{
+ "_source": "https://www.bstn.com/eu_es/p/new-balance-992-u992lb-0353223 — __NEXT_DATA__.props.pageProps.productDetails capturado 2026-11-19 ~14:25 Europe/Madrid; recortado a los campos usados.",
+ "page": "/details/[productType]/[productURL]",
+ "props": {
+  "pageProps": {
+   "productDetails": {
+    "sku": "0353223",
+    "article_number": "U992LB",
+    "brand": "New Balance",
+    "name": "992",
+    "app_only": 0,
+    "app_release_date_raw": null,
+    "instore_only": false,
+    "release_date": null,
+    "release_date_raw": null,
+    "raffle_release_date": null,
+    "hot_release_message": null,
+    "price_range": {
+     "maximum_price": {
+      "discount": {
+       "amount_off": 0,
+       "percent_off": 0
+      },
+      "final_price": {
+       "currency": "EUR",
+       "value": 229.99
+      },
+      "regular_price": {
+       "currency": "EUR",
+       "value": 229.99
+      }
+     }
+    },
+    "configurable_options": [
+     {
+      "label": "EU",
+      "values": [
+       {
+        "label": "40",
+        "stock": {
+         "qty_in_stock": 1
+        }
+       },
+       {
+        "label": "40,5",
+        "stock": {
+         "qty_in_stock": 2
+        }
+       },
+       {
+        "label": "41,5",
+        "stock": {
+         "qty_in_stock": 6
+        }
+       },
+       {
+        "label": "42",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "42,5",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "43",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "44",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "44,5",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "45",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "45,5",
+        "stock": {
+         "qty_in_stock": 6
+        }
+       },
+       {
+        "label": "46,5",
+        "stock": {
+         "qty_in_stock": 6
+        }
+       },
+       {
+        "label": "47,5",
+        "stock": {
+         "qty_in_stock": 3
+        }
+       },
+       {
+        "label": "49",
+        "stock": {
+         "qty_in_stock": 2
+        }
+       }
+      ]
+     },
+     {
+      "label": "UK",
+      "values": [
+       {
+        "label": "6,5",
+        "stock": {
+         "qty_in_stock": 1
+        }
+       },
+       {
+        "label": "7,0",
+        "stock": {
+         "qty_in_stock": 2
+        }
+       },
+       {
+        "label": "7,5",
+        "stock": {
+         "qty_in_stock": 6
+        }
+       },
+       {
+        "label": "8,0",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "8,5",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "9,0",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "9,5",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "10,0",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "10,5",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "11,0",
+        "stock": {
+         "qty_in_stock": 6
+        }
+       },
+       {
+        "label": "11,5",
+        "stock": {
+         "qty_in_stock": 6
+        }
+       },
+       {
+        "label": "12,5",
+        "stock": {
+         "qty_in_stock": 3
+        }
+       },
+       {
+        "label": "13,5",
+        "stock": {
+         "qty_in_stock": 2
+        }
+       }
+      ]
+     },
+     {
+      "label": "US",
+      "values": [
+       {
+        "label": "7,0",
+        "stock": {
+         "qty_in_stock": 1
+        }
+       },
+       {
+        "label": "7,5",
+        "stock": {
+         "qty_in_stock": 2
+        }
+       },
+       {
+        "label": "8,0",
+        "stock": {
+         "qty_in_stock": 6
+        }
+       },
+       {
+        "label": "8,5",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "9,0",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "9,5",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "10,0",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "10,5",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "11,0",
+        "stock": {
+         "qty_in_stock": 10
+        }
+       },
+       {
+        "label": "11,5",
+        "stock": {
+         "qty_in_stock": 6
+        }
+       },
+       {
+        "label": "12,0",
+        "stock": {
+         "qty_in_stock": 6
+        }
+       },
+       {
+        "label": "13,0",
+        "stock": {
+         "qty_in_stock": 3
+        }
+       },
+       {
+        "label": "14,0",
+        "stock": {
+         "qty_in_stock": 2
+        }
+       }
+      ]
+     }
+    ]
+   }
+  }
+ }
+}

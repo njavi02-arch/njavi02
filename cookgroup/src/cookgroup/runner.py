@@ -20,7 +20,7 @@ def make_source(mcfg):
         from .sources.bstn import BstnSource
         return BstnSource(mcfg.regions, mcfg.listings)
     if mcfg.type == "shopify":
-        return ShopifySource(mcfg.store, mcfg.base_url, mcfg.currency, pages=mcfg.pages)
+        return ShopifySource(mcfg.store, mcfg.base_url, mcfg.currency, pages=mcfg.pages, collection=mcfg.collection)
     if mcfg.type == "rss":
         return RssSource(mcfg.store, mcfg.base_url, mcfg.currency)
     raise ValueError(f"tipo de fuente desconocido: {mcfg.type}")
@@ -45,7 +45,12 @@ def _launch_loop(mcfg, cfg: Config, store: Store, stop: threading.Event):
     failures = 0
     digest_at = cfg.defaults.get("launch_digest_time", "09:00")
     while not stop.is_set():
-        res = run_launch_cycle(mcfg, cfg.defaults, source, store, senders, ping_rules=cfg.ping_rules)
+        try:
+            res = run_launch_cycle(mcfg, cfg.defaults, source, store, senders, ping_rules=cfg.ping_rules)
+        except Exception as e:  # p. ej. Discord caído: el hilo sigue vivo y reintenta con espera
+            log.exception("monitor=%s fallo inesperado", mcfg.name)
+            store.record_health(mcfg.name, False, error=f"{type(e).__name__}: {e}")
+            res = {"ok": False, "error": str(e)}
         # resumen diario "abiertos ahora / próximos 7 días"
         now = datetime.now(ZoneInfo("Europe/Madrid"))
         key = f"digest|{mcfg.store}|{now.date().isoformat()}"
@@ -79,8 +84,13 @@ def _loop(mcfg, cfg: Config, store: Store, market, stop: threading.Event):
     channel_senders = {ch: WebhookSender(u).send for ch in wanted if (u := cfg.webhook_for(ch))}
     failures = 0
     while not stop.is_set():
-        res = run_cycle(mcfg, cfg.defaults, source, store, market, sender.send,
-                        ping_rules=cfg.ping_rules, channel_senders=channel_senders)
+        try:
+            res = run_cycle(mcfg, cfg.defaults, source, store, market, sender.send,
+                            ping_rules=cfg.ping_rules, channel_senders=channel_senders)
+        except Exception as e:
+            log.exception("monitor=%s fallo inesperado", mcfg.name)
+            store.record_health(mcfg.name, False, error=f"{type(e).__name__}: {e}")
+            res = {"ok": False, "error": str(e)}
         if res["ok"]:
             failures = 0
             wait = mcfg.interval_seconds

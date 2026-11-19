@@ -67,3 +67,31 @@ def test_preview_renders_all_samples(tmp_path):
     assert "<script" not in page and "onerror" in page
     tp = test_payload()
     assert "PRUEBA" in tp["content"] and tp["allowed_mentions"] == {"parse": []}
+
+
+def test_launch_collection_monitor_titles_and_subfolder_urls():
+    import copy as _c
+    from cookgroup.sources.shopify import ShopifySource
+    d = json.loads((F / "shopify_family30_REAL_2026-11-19.json").read_text())
+    p = clean_variants(parse_products(d, store="END. Launches", base_url="https://www.endclothing.com/en-eu", currency="EUR")[0])
+    assert p.url == "https://www.endclothing.com/en-eu/products/nike-mind-001-hq4307-001-fw26"
+    e = build_embed(Event(EventType.NEW_PRODUCT, p, p.available_variants, detected_at="2026-11-19T12:00:00+00:00"),
+                    launch_collection=True, region="eu")["embeds"][0]
+    vals = {f["name"]: f["value"] for f in e["fields"]}
+    assert e["title"] == "📢 NUEVO EN LANZAMIENTOS — END. Launches" and vals["Tienda"] == "END. Launches · EU"
+    assert "no la publica" in vals["Fecha"]
+
+    class S:
+        def __init__(self): self.url = None
+        def get(self, url, **kw):
+            self.url = url
+            class R: status_code = 200; headers = {}; json = staticmethod(lambda: d)
+            return R()
+    s = S()
+    ShopifySource("END", "https://www.endclothing.com/en-eu", collection="launches", session=s).fetch()
+    assert s.url == "https://www.endclothing.com/en-eu/collections/launches/products.json"
+
+
+@pytest.mark.parametrize("raw,exp", [("- / 5", "5"), ("- / 8.5", "8.5"), ("US5", "US 5"), ("3.5Y/W 5", None)])
+def test_size_formats_wave2(raw, exp):  # Undefeated, Up There, Social Status (19-nov-2026)
+    assert normalize_size(raw) == exp

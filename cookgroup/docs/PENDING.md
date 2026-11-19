@@ -26,3 +26,10 @@
     no se ven. Subir `pages` (máx. 4) en tiendas grandes si hace falta.
 18. **Moneda**: Sneakersnstuff y Naked marcadas EUR sin confirmar; Goodhood en GBP (sin cálculo de beneficio).
 19. **Reglas de ping** de ejemplo con `role_id` de ceros: poner IDs reales.
+20. **Ningún monitor está ejecutándose** en un equipo persistente: esta sesión es temporal. Se activa en tu PC con `INSTALAR_AUTOARRANQUE.bat`.
+21. **Entrega real a Discord sin confirmar**: falta un webhook. `PROBAR.bat` envía una única alerta de prueba identificada.
+22. **Lectura desde Python** de BSTN y de las tiendas nuevas: verificada solo desde el navegador del mismo PC. `cookgroup probe` lo confirma.
+23. **BSTN**: la fecha de salida de los productos con raffle solo está en raffle.bstn.com (excluido por robots.txt): no se lee.
+    La cancelación no se publica: un producto que desaparece del calendario no genera alerta.
+24. **SVD, Courir, EQL, marcas y Asia**: ver `docs/STORES.md` («Próximas oleadas»).
+25. **Discord del grupo de referencia**: la sesión del navegador caducó. Volver a iniciarla para la segunda pasada.

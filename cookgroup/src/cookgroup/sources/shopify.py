@@ -78,6 +78,7 @@ class ShopifySource:
     currency: str = "EUR"
     pages: int = 1
     page_size: int = 250
+    collection: str | None = None     # p. ej. "launches": /collections/launches/products.json
     timeout: float = 15.0
     session: requests.Session | None = None
 
@@ -88,7 +89,8 @@ class ShopifySource:
     def fetch(self) -> list[Product]:
         products: list[Product] = []
         for page in range(1, self.pages + 1):
-            url = f"{self.base_url.rstrip('/')}/products.json"
+            url = (f"{self.base_url.rstrip('/')}/collections/{self.collection}/products.json" if self.collection
+                   else f"{self.base_url.rstrip('/')}/products.json")
             headers = {"User-Agent": USER_AGENT, "Accept": "application/json"}
             if page in self._etags:
                 headers["If-None-Match"] = self._etags[page]

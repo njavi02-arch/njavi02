@@ -31,7 +31,13 @@ def normalize_size(raw: str) -> str | None:
     """
     if raw is None:
         return None
-    s = str(raw).split(" / ")[0].strip()
+    parts = [x.strip() for x in str(raw).split(" / ")]
+    if len(parts) > 1:  # "42 / Black" o "- / 5": el primer segmento que sea una talla
+        for part in parts:
+            if part and part != "-" and (n := normalize_size(part)) is not None:
+                return n
+        return None
+    s = parts[0]
     for k, v in _FRACTIONS.items():
         s = s.replace(k, v)
     s = re.sub(r"\s+", " ", s).replace(",", ".")

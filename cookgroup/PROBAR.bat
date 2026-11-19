@@ -10,5 +10,5 @@ echo.
 echo === 3/3 Generando vista previa de todas las alertas ===
 call .venv\Scripts\cookgroup preview --out preview.html
 start "" preview.html
-echo Si todo esta OK, ejecuta ARRANCAR.bat
+echo Si todo esta OK, ejecuta INSTALAR_AUTOARRANQUE.bat (24/7) o ARRANCAR.bat (ventana visible)
 pause

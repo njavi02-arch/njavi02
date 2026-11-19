@@ -19,9 +19,15 @@ No se conoce el código ni los proveedores internos de la referencia.
 | Chollos / retail / electrónica | [O] Chollometro, Dealabs, Pepper, mydealz, hotukdeals, PcComponentes, Lidl, Privalia, Zalando Privé | `sources/rss.py` con formato Pepper (tienda, precio, temperatura, categoría); Chollometro y Dealabs `/rss/hot` | ✅ feeds reales verificados y parser probado con muestra real |
 | Nike SNKRS / Nike instore | [O] Status, style code, exclusive, max qty, commerce date, stock por talla, tienda física y "last change" | — | ⬜ requiere fuente oficial/condiciones; no se implementa |
 | adidas / Zalando / Demandware (Snipes, Solebox) | [O] Formatos con SKU, regiones, stock por talla | — | ⬜ solo con API/afiliado oficial |
-| Raffles, calendario lanzamientos | [O] Sin canal de raffles; calendario **manual** del staff (foro por drop, horario, método LEO, semáforo 🔴🟠🟢) | `releases.py` + `config/releases.toml`: el staff edita; recordatorios (1 día/1 h/10 min), resumen "Drops del día" por hora, método, semáforo como opinión, sin repetir avisos | ✅ probado (simulado); raffles: solo como `method = "RAFFLE"` |
+| Raffles, calendario lanzamientos (staff) | [O] Sin canal de raffles; calendario **manual** del staff (foro por drop, horario, método LEO, semáforo 🔴🟠🟢) | `releases.py` + `config/releases.toml`: el staff edita; recordatorios (1 día/1 h/10 min), resumen "Drops del día" por hora, método, semáforo como opinión, sin repetir avisos | ✅ probado (simulado); raffles: solo como `method = "RAFFLE"` |
 | Stock bajo demanda (comando) | [O] `/nike-stock` devuelve tallas/stock, fecha, método | — | ⬜ requiere bot propio |
 | Redes sociales | [O] Posts de Instagram de tiendas con caption | — | ⬜ solo vía API oficial |
 | Checkouts de bots / quicktask / ATC | [O] Feeds de bots de compra y enlaces ATC/QT | — | 🚫 fuera de alcance (compra automatizada de terceros) |
 | Panel admin, suscripciones, bot | [O] Roles (Owner, Staff, Helper, Pinger, OG Chef…), tickets, app propia | — | ⬜ pendiente |
 | Capa IA (Claude API) | [I] No se observa nada atribuible | — (score determinista) | ⬜ pendiente |
+| Calendario de tiendas: anuncio, fecha confirmada/cambiada | [O] Hilos del staff en `#important-releases`; «Drops diarios» | `launches.py` + `sources/bstn.py` (BSTN «Coming Soon») | ✅ muestras reales + transiciones simuladas |
+| Raffles de tiendas: abierto, enlace nuevo, cierre próximo | [O] Sin canal propio; info en hilos | BSTN `raffle_is_active`, `raffleends`, `raffle_url` | ✅ (BSTN); EQL y SVD ⬜ |
+| A la venta y vuelta de talla concreta | [O] `#nike-stock-*`, monitores con tallas | Ficha BSTN tras la hora publicada; «Ha vuelto la EU 43 (UK 8.5)» con unidades; retraso medido | ✅ |
+| Colecciones «launches» de END/size?/Footpatrol | [I] cubiertas en monitores por tienda | Shopify `collection = "launches"` | ✅ (sin fecha: la tienda no la publica en el catálogo) |
+| Resumen «abiertos ahora / próximos 7 días» | [O] «Drops diarios» manual | Resumen inicial y diario 09:00 | ✅ |
+| Diagnóstico y arranque 24/7 | — | `status`, `ESTADO.bat`, `INSTALAR_AUTOARRANQUE.bat`, logs con rotación, reinicio automático | ✅ preparado; ⬜ sin ejecutar en un equipo persistente |

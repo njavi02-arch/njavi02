@@ -285,3 +285,40 @@ def test_bstn_source_http_path_and_errors(monkeypatch):
         BstnSource(["eu_es"], ["men/upcoming"], session=_Sess(_Resp(429, headers={"Retry-After": "120"}))).fetch_launches(NOW)
     with pytest.raises(SourceError):
         BstnSource(["eu_es"], ["men/upcoming"], session=_Sess(_Resp(200, "<html>captcha</html>"))).fetch_launches(NOW)
+
+
+def test_webhook_errors_never_leak_the_url():
+    import requests as rq
+    from cookgroup.cli import _JsonFmt
+    import logging
+    from cookgroup.discord import WebhookSender
+
+    class Boom:
+        def post(self, url, **kw):
+            raise rq.ConnectionError(f"Max retries exceeded with url: {url}")
+    url = "https://discord.com/api/" + "webhooks/123/SECRETTOKEN"   # partido: el repo no debe contener URLs de webhook
+    with pytest.raises(RuntimeError) as e:
+        WebhookSender(url, session=Boom(), max_retries=1).send({"content": "x"})
+    assert "SECRETTOKEN" not in str(e.value)
+    rec = logging.LogRecord("x", logging.ERROR, "", 0, f"fallo enviando a {url}", None, None)
+    assert "SECRETTOKEN" not in _JsonFmt().format(rec)
+
+
+def test_store_is_safe_with_many_monitor_threads(tmp_path):
+    import threading
+    s, errs = Store(str(tmp_path / "db.sqlite")), []
+
+    def work(i):
+        try:
+            for j in range(60):
+                s.record_health(f"src{i}", j % 3 == 0, items=j, error="x")
+                s.record_alert(f"k{i}-{j}", "t", "s", "p", None)
+                assert s.has_alert(f"k{i}-{j}")
+                s.save_launch_states(f"st{i}", {f"u{j}": {"launch": {"a": j}, "state": {}, "present": True}})
+                s.load_launch_states(f"st{i}")
+        except Exception as e:  # pragma: no cover
+            errs.append(repr(e))
+    ts = [threading.Thread(target=work, args=(i,)) for i in range(25)]
+    [t.start() for t in ts]
+    [t.join() for t in ts]
+    assert errs == [] and len(s.health()) == 25

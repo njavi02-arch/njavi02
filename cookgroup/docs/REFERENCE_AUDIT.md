@@ -141,3 +141,38 @@ coleccionables/electrónica (aparecen mezclados en rebajas, Amazon y "otros-rele
 | 7 | Nike/adidas/Zalando/Demandware/instore | Requiere revisar condiciones y APIs; mayor riesgo | Solo APIs oficiales/afiliados |
 
 Los puntos 1–5 se implementan en esta iteración (ver `FEATURE_MATRIX.md`).
+
+## 5. Segunda pasada (19-nov-2026, tarde) y lo que se ha incorporado
+
+**Acceso:** al volver al servidor, la sesión de Discord del navegador había caducado («Inicia sesión de nuevo»).
+Para entrar hace falta la contraseña del usuario, así que no se continuó dentro del grupo. Lo que sigue combina la
+auditoría de la mañana con la investigación de las fuentes públicas de las tiendas.
+
+### Secuencia de un lanzamiento: AF1 Cactus Jack x GTA VI, reconstruida
+| Paso | En la referencia [O] | En la tienda (BSTN, fuente pública) [O] | En nuestro bot |
+|---|---|---|---|
+| 1. Primer anuncio | Hilo del staff en `#important-releases` «21/11 – Nike Air Force 1 Low Travis Scott x Rockstar Games GTA 6», con enlace a StockX | Aparece en «Coming Soon» (alta del producto en la tienda: 18-nov 07:03 UTC) | 📢 Anuncio / 🎟️ Raffle abierto en cuanto aparece en el listado |
+| 2. Apertura de inscripciones | — (no visto) | `raffle_is_active = Yes`, enlace a raffle.bstn.com | 🎟️ Raffle abierto con enlace directo y cierre en hora de Madrid |
+| 3. Recordatorio | — | `raffleends = 20. Nov · 15:00 CET` | ⏳ «El raffle cierra en X», una vez, 3 h antes |
+| 4. Salida a la venta | Resumen «Drops diarios» del staff con horarios | Página del raffle: «RELEASE 21. Nov · 9:00 CET» | La fecha de salida de un raffle solo está en la página del raffle (excluida por robots.txt): no se lee. La de los lanzamientos normales sí (🟢 A la venta) |
+| 5. Reposición | Monitores por tienda | Ficha con tallas y unidades | 🔄 «Ha vuelto la EU 43» |
+| 6. Cierre | — | `raffle_is_expired = Yes` | Sale del resumen de «abiertos ahora» (no se envía alerta) |
+
+**Qué llega primero [I]:** el calendario de la tienda se adelanta al resumen manual del staff, que publica el día
+anterior o el mismo día. Los monitores de catálogo solo reaccionan cuando ya hay stock. Por eso el anuncio se vigila
+en el calendario y no en el catálogo.
+
+### Mejoras incorporadas gracias a la referencia
+| Hallazgo | Implementación |
+|---|---|
+| Canales separados por tipo (releases, raffles, stocks, monitores por tienda, rebajas por tramo, pings por rol) | Estructura `LANZAMIENTOS / RAFFLES / RESTOCKS / PINGS / SNEAKERS / SNEAKERS_WORLD / STREETWEAR / REBAJAS_30/60 / CHOLLOS / RELEASES`, todo opcional con un único `DEFAULT` |
+| «Drops diarios» y foro de lanzamientos | Resumen inicial y diario a las 09:00 con «raffles abiertos ahora» y «próximos 7 días», a partir de fuentes verificadas |
+| `#pings-automaticos` (palabra ≤ precio → rol) | Reglas con marcas, tallas EU, regiones, tiendas, precio máximo y tipos de evento |
+| Separación por región (`snkrs-es`, `-eu`, `nike-us`…) | Región en cada alerta y en los filtros. BSTN eu_es frente a uk_en: misma hora, otra zona horaria y otro precio (verificado) |
+| Tallas mal leídas, mensajes vacíos, price errors falsos, duplicados | Validación, normalización EU/US/UK, referencia de precio propia y claves estables que sobreviven a reinicios |
+| Staff anota «Release Method», «hora sin confirmar» | Modalidad online, app o tienda física en cada alerta; si la tienda solo da el día, se respeta |
+
+### Tareas que quedan, con su motivo
+- **Volver a entrar en el grupo** (necesita al usuario): revisar `#bstn`, `#raffles`, si existen, y los hilos de `#important-releases`, para medir qué aviso llega antes que el nuestro.
+- **SVD**: es la tienda española con raffles propios y la referencia la sigue con un canal propio; falta su adaptador.
+- **Raffles de EQL** (size?, Footpatrol): plataforma aparte; hay que comprobar si ofrece una fuente pública estable.

@@ -10,9 +10,17 @@ from .config import load_config
 from .runner import run_all
 
 
+import re
+from logging.handlers import RotatingFileHandler
+
+_SECRET = re.compile(r"https://(?:ptb\.|canary\.)?discord(?:app)?\.com/api/webhooks/\S+")
+
+
 class _JsonFmt(logging.Formatter):
     def format(self, r):
-        return json.dumps({"ts": self.formatTime(r), "level": r.levelname, "msg": r.getMessage()})
+        msg = r.getMessage() + (("\n" + self.formatException(r.exc_info)) if r.exc_info else "")
+        return json.dumps({"ts": self.formatTime(r), "level": r.levelname, "thread": r.threadName,
+                           "msg": _SECRET.sub("[webhook oculto]", msg)}, ensure_ascii=False)
 
 
 def load_dotenv(path: str = ".env") -> None:
@@ -38,7 +46,14 @@ def main(argv=None):
     load_dotenv()
     h = logging.StreamHandler(sys.stdout)
     h.setFormatter(_JsonFmt())
-    logging.basicConfig(level=logging.INFO, handlers=[h])
+    handlers = [h]
+    if a.command == "run":   # log persistente con rotación (5 × 5 MB) en logs/cookgroup.log
+        os.makedirs("logs", exist_ok=True)
+        fh = RotatingFileHandler("logs/cookgroup.log", maxBytes=5_000_000, backupCount=5, encoding="utf-8")
+        fh.setFormatter(_JsonFmt())
+        handlers.append(fh)
+    logging.basicConfig(level=logging.INFO, handlers=handlers)
+    logging.getLogger("urllib3").setLevel(logging.WARNING)
     cfg = load_config(a.config)
     if a.command == "status":
         from datetime import datetime, timezone

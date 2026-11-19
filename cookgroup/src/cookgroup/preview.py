@@ -30,10 +30,40 @@ def _mind001():
     return clean_variants(parse_products(d, store="Family 3.0", base_url="https://www.family3-0.com", currency="EUR")[0])
 
 
+def _bstn_samples() -> list[tuple[str, str, dict]]:
+    from .launches import LaunchEvent, LaunchEventType, apply_product, build_launch_digest, build_launch_embed, diff_launches
+    from .sources.bstn import parse_listing, parse_product
+    now = datetime(2026, 11, 19, 13, 20, tzinfo=timezone.utc)
+    items = parse_listing(json.loads((FIX / "bstn_upcoming_eu_es_REAL_2026-11-19.json").read_text()), region="eu_es", now=now)
+    by = {i.key: i for i in items}
+    _, st = diff_launches({}, items, now)
+    out = [("lanzamientos", "RESUMEN INICIAL · datos reales de BSTN (19-nov-2026)",
+            build_launch_digest(st, now, title="Resumen inicial — BSTN: raffles abiertos y próximos lanzamientos"))]
+    out.append(("raffles", "RAFFLE ABIERTO · datos reales de BSTN",
+                build_launch_embed(LaunchEvent(LaunchEventType.RAFFLE_OPEN, by["JJ7604-001"], "k"), now)))
+    near = datetime(2026, 11, 20, 12, 0, tzinfo=timezone.utc)
+    out.append(("raffles", "RECORDATORIO DE CIERRE · real, mostrado como se vería el 20-nov a las 13:00",
+                build_launch_embed(LaunchEvent(LaunchEventType.RAFFLE_CLOSING, by["JJ7604-001"], "k"), near)))
+    out.append(("lanzamientos", "ANUNCIO · datos reales (aparece como nuevo en «Coming Soon»)",
+                build_launch_embed(LaunchEvent(LaunchEventType.ANNOUNCED, by["IF4396-001"], "k"), now)))
+    car = by["IW6306-001"]
+    out.append(("lanzamientos", "FECHA CAMBIADA (SIMULADA a partir de datos reales)",
+                build_launch_embed(LaunchEvent(LaunchEventType.DATE_CHANGED, car, "k", old_ts=car.release_ts - 86400, simulated=True), now)))
+    page = parse_product(json.loads((FIX / "bstn_product_iw6306-001_REAL_2026-11-19.json").read_text()))
+    at = datetime.fromtimestamp(car.release_ts + 52, timezone.utc)
+    ev = apply_product(car.uid, st[car.uid], page, at, live_check=True)[0]
+    ev.simulated = True
+    out.append(("lanzamientos", "A LA VENTA (SIMULADO: tallas reales de la ficha previa al lanzamiento)", build_launch_embed(ev, at)))
+    from .sources.bstn import SizeStock
+    rs = LaunchEvent(LaunchEventType.SIZE_RESTOCK, car, "k", sizes=[next(x for x in page.sizes if x.eu == "43")], simulated=True)
+    out.append(("restocks", "VUELVE UNA TALLA (SIMULADO)", build_launch_embed(rs, at + timedelta(hours=3))))
+    return out
+
+
 def sample_payloads() -> list[tuple[str, str, dict]]:
     """(canal, etiqueta, payload) para la vista previa."""
     p = _mind001()
-    out: list[tuple[str, str, dict]] = []
+    out: list[tuple[str, str, dict]] = _bstn_samples()
     out.append(("sneakers", "RESTOCK · datos reales de Family 3.0 (estado de stock simulado)",
                 build_embed(Event(EventType.RESTOCK, p, p.available_variants, detected_at=TS))))
     opp = Opportunity(Event(EventType.NEW_PRODUCT, p, p.available_variants), 9000, 15500, 3440, 38.2, 71,
@@ -129,7 +159,7 @@ section{{margin:22px 0}}.chan{{color:var(--muted);font-weight:600;font-size:13px
 code{{background:#1e1f22;padding:1px 4px;border-radius:3px;font-size:13px}}.foot{{clear:both;color:var(--muted);font-size:12px;margin-top:8px}}
 .ts{{background:#3f4147;border-radius:3px;padding:0 3px}}
 </style></head><body><header><h1>{html.escape(title)}</h1>
-<p>Generado con el código real del bot a partir de muestras capturadas el 19-nov-2026 (Family 3.0, Chollometro).
+<p>Generado con el código real del bot a partir de muestras capturadas el 19-nov-2026 (BSTN, Family 3.0, Chollometro).
 Los eventos marcados como SIMULADOS transforman esas muestras para enseñar el formato.</p>
 <p>Así se verán en Discord; los colores y el orden de campos son los mismos que enviará el webhook.</p></header>
 <main>{"".join(msgs)}</main></body></html>"""

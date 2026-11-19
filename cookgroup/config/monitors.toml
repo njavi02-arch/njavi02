@@ -43,6 +43,7 @@ launch_channels = { launch = "lanzamientos", raffle = "raffles", restock = "rest
 
 [[monitor]]
 name = "footdistrict"
+region = "eu"
 type = "shopify"
 store = "Footdistrict"
 base_url = "https://footdistrict.com"
@@ -55,6 +56,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "asphaltgold"
+region = "eu"
 type = "shopify"
 store = "Asphaltgold"
 base_url = "https://www.asphaltgold.com"
@@ -67,6 +69,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "overkill"
+region = "eu"
 type = "shopify"
 store = "Overkill"
 base_url = "https://www.overkillshop.com"
@@ -79,6 +82,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "sneakersnstuff"
+region = "eu"
 type = "shopify"
 store = "Sneakersnstuff"
 base_url = "https://www.sneakersnstuff.com"
@@ -91,6 +95,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "family3-0"
+region = "eu"
 type = "shopify"
 store = "Family 3.0"
 base_url = "https://www.family3-0.com"
@@ -103,6 +108,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "noirfonce"
+region = "eu"
 type = "shopify"
 store = "Noirfonce"
 base_url = "https://noirfonce.eu"
@@ -116,6 +122,7 @@ dedupe_group = "noirfonce"    # la referencia publica la misma tienda por .fr y 
 
 [[monitor]]
 name = "naked"
+region = "eu"
 type = "shopify"
 store = "Naked"
 base_url = "https://www.nakedcph.com"
@@ -126,10 +133,148 @@ include_vendors = ["Nike", "Jordan", "adidas", "New Balance", "ASICS", "Salomon"
 exclude_keywords = ["gift card", "jacket", "candle", "kit", "t-shirt", "tee", "hoodie"]
 skip_kids_sizes = true
 
+# ---------------------------------------------------------------- COLECCIONES "LAUNCHES" (Shopify, verificado 19-nov-2026)
+# Detecta: modelo nuevo en la colección de lanzamientos (anuncio) y apertura/vuelta de tallas.
+# No detecta: fecha ni hora (no están en el catálogo) → la alerta enlaza a la ficha. size?/Footpatrol usan EQL para raffles.
+
+[[monitor]]
+name = "end-launches"
+type = "shopify"
+store = "END. Launches"
+base_url = "https://www.endclothing.com/en-eu"
+collection = "launches"
+region = "eu"
+currency = "EUR"
+interval_seconds = 300
+channel = "lanzamientos"
+exclude_keywords = ["gift card"]
+skip_kids_sizes = true
+
+[[monitor]]
+name = "size-launches"
+type = "shopify"
+store = "size?"
+base_url = "https://www.size.co.uk"
+collection = "launches"
+region = "uk"
+currency = "GBP"
+interval_seconds = 300
+channel = "lanzamientos"
+exclude_keywords = ["gift card"]
+skip_kids_sizes = true
+
+[[monitor]]
+name = "footpatrol-launches"
+type = "shopify"
+store = "Footpatrol"
+base_url = "https://www.footpatrol.com"
+collection = "launches"
+region = "uk"
+currency = "GBP"
+interval_seconds = 300
+channel = "lanzamientos"
+exclude_keywords = ["gift card"]
+skip_kids_sizes = true
+
+# ---------------------------------------------------------------- SNEAKERS MUNDO (Shopify, verificado 19-nov-2026)
+# Moneda = la que devolvió la tienda visitando desde España (Shopify adapta la moneda al país del visitante).
+
+[[monitor]]
+name = "concepts"
+type = "shopify"
+store = "Concepts"
+base_url = "https://cncpts.com"
+region = "us"
+currency = "USD"
+interval_seconds = 300
+channel = "sneakers_world"
+include_vendors = ["Nike", "Jordan", "Air Jordan", "adidas", "New Balance", "ASICS", "Salomon", "On", "Hoka", "Puma", "Converse", "Vans", "Saucony", "Onitsuka", "Mizuno", "Reebok"]
+exclude_keywords = ["gift card"]
+skip_kids_sizes = true
+
+[[monitor]]
+name = "undefeated"
+type = "shopify"
+store = "Undefeated"
+base_url = "https://undefeated.com"
+region = "us"
+currency = "EUR"
+interval_seconds = 300
+channel = "sneakers_world"
+include_vendors = ["Nike", "Jordan", "Air Jordan", "adidas", "New Balance", "ASICS", "Salomon", "On", "Hoka", "Puma", "Converse", "Vans", "Saucony", "Onitsuka", "Mizuno", "Reebok"]
+exclude_keywords = ["gift card"]
+skip_kids_sizes = true
+
+[[monitor]]
+name = "social-status"
+type = "shopify"
+store = "Social Status"
+base_url = "https://www.socialstatuspgh.com"
+region = "us"
+currency = "USD"
+interval_seconds = 300
+channel = "sneakers_world"
+include_vendors = ["Nike", "Jordan", "Air Jordan", "adidas", "New Balance", "ASICS", "Salomon", "On", "Hoka", "Puma", "Converse", "Vans", "Saucony", "Onitsuka", "Mizuno", "Reebok"]
+exclude_keywords = ["gift card"]
+skip_kids_sizes = true
+
+[[monitor]]
+name = "a-ma-maniere"
+type = "shopify"
+store = "A Ma Maniére"
+base_url = "https://www.a-ma-maniere.com"
+region = "us"
+currency = "USD"
+interval_seconds = 300
+channel = "sneakers_world"
+include_vendors = ["Nike", "Jordan", "Air Jordan", "adidas", "New Balance", "ASICS", "Salomon", "On", "Hoka", "Puma", "Converse", "Vans", "Saucony", "Onitsuka", "Mizuno", "Reebok"]
+exclude_keywords = ["gift card", "socks", "hoodie"]
+skip_kids_sizes = true
+
+[[monitor]]
+name = "extra-butter"
+type = "shopify"
+store = "Extra Butter"
+base_url = "https://extrabutterny.com"
+region = "us"
+currency = "EUR"
+interval_seconds = 300
+channel = "sneakers_world"
+include_vendors = ["Nike", "Jordan", "Air Jordan", "adidas", "New Balance", "ASICS", "Salomon", "On", "Hoka", "Puma", "Converse", "Vans", "Saucony", "Onitsuka", "Mizuno", "Reebok"]
+exclude_keywords = ["gift card", "socks"]
+skip_kids_sizes = true
+
+[[monitor]]
+name = "up-there"
+type = "shopify"
+store = "Up There"
+base_url = "https://uptherestore.com"
+region = "au"
+currency = "EUR"
+interval_seconds = 300
+channel = "sneakers_world"
+include_vendors = ["Nike", "Jordan", "Air Jordan", "adidas", "New Balance", "ASICS", "Salomon", "On", "Hoka", "Puma", "Converse", "Vans", "Saucony", "Onitsuka", "Mizuno", "Reebok"]
+exclude_keywords = ["gift card"]
+skip_kids_sizes = true
+
+[[monitor]]
+name = "supply-store"
+type = "shopify"
+store = "Supply Store"
+base_url = "https://www.supplystore.com.au"
+region = "au"
+currency = "AUD"
+interval_seconds = 300
+channel = "sneakers_world"
+include_vendors = ["Nike", "Jordan", "Air Jordan", "adidas", "New Balance", "ASICS", "Salomon", "On", "Hoka", "Puma", "Converse", "Vans", "Saucony", "Onitsuka", "Mizuno", "Reebok"]
+exclude_keywords = ["gift card", "beanie"]
+skip_kids_sizes = true
+
 # ---------------------------------------------------------------- STREETWEAR / ROPA (Shopify)
 
 [[monitor]]
 name = "kith-eu"
+region = "eu"
 type = "shopify"
 store = "Kith EU"
 base_url = "https://eu.kith.com"
@@ -141,6 +286,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "slamjam"
+region = "eu"
 type = "shopify"
 store = "Slam Jam"
 base_url = "https://www.slamjam.com"
@@ -152,6 +298,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "goodhood"
+region = "uk"
 type = "shopify"
 store = "Goodhood"
 base_url = "https://goodhoodstore.com"
@@ -163,6 +310,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "voostore"
+region = "eu"
 type = "shopify"
 store = "Voo Store"
 base_url = "https://www.voostore.com"
@@ -174,6 +322,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "starcow"
+region = "eu"
 type = "shopify"
 store = "Starcow"
 base_url = "https://www.starcowparis.com"
@@ -208,7 +357,29 @@ channel = "chollos"
 allow_unknown_price = true
 min_temperature = 150
 
-# ---------------------------------------------------------------- PINGS POR PALABRA CLAVE
+# ---------------------------------------------------------------- PINGS PERSONALES (filtros)
+# Cada regla re-publica en "pings" las alertas que cumplen TODO lo que indiques, mencionando un rol.
+# Campos: keywords (todas; "*" = cualquiera), exclude_keywords, brands, sizes (EU), regions (eu/uk/us/au),
+# stores, max_price (en la moneda de la tienda), event_types (ver README).
+
+[[ping_rule]]
+name = "raffles-europa"
+keywords = ["*"]
+regions = ["eu"]
+channel = "pings"
+role_id = "000000000000000000"
+event_types = ["raffle_open", "raffle_closing", "raffle_link_changed"]
+
+[[ping_rule]]
+name = "mi-talla-eu43"
+keywords = ["*"]
+sizes = ["43", "42.5"]
+brands = ["Nike", "Jordan", "adidas", "New Balance", "ASICS"]
+max_price = 250
+channel = "pings"
+role_id = "000000000000000000"
+event_types = ["size_restock", "live", "restock", "new_size"]
+
 # Pon el ID real del rol (Discord: Modo desarrollador > clic derecho en el rol > Copiar ID).
 # Mientras role_id sea de ceros no mencionará a nadie útil; sin DISCORD_WEBHOOK_PINGS ni DEFAULT no se envía.
 

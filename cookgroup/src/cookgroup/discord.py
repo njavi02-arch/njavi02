@@ -45,13 +45,14 @@ def base_sku(skus: list[str]) -> str | None:
     return pre if len(pre) >= 5 else None
 
 
-def build_embed(ev: Event, opp: Opportunity | None = None, market_note: str | None = None, *, buttons: bool = False) -> dict:
+def build_embed(ev: Event, opp: Opportunity | None = None, market_note: str | None = None, *, buttons: bool = False,
+                launch_collection: bool = False, region: str | None = None) -> dict:
     p = ev.product
     is_deal = bool(p.variants) and all(v.title == "Oferta" for v in p.variants) and ev.type == EventType.NEW_PRODUCT
     sizes = ", ".join(v.title for v in ev.variants if v.title != "Oferta")
     price = ev.new_price_cents or p.min_price_cents
     fields = [
-        {"name": "Tienda", "value": p.store, "inline": True},
+        {"name": "Tienda", "value": p.store + (f" · {region.upper()}" if region else ""), "inline": True},
         {"name": "Precio", "value": eur(price, p.currency) if price else "No indicado", "inline": True},
     ]
     if ev.type in (EventType.PRICE_DROP, EventType.PRICE_ERROR):
@@ -71,6 +72,8 @@ def build_embed(ev: Event, opp: Opportunity | None = None, market_note: str | No
         fields.append({"name": "Temperatura", "value": f"{temp}°", "inline": True})
     if sizes:
         fields.append({"name": "Tallas disponibles", "value": sizes[:1000], "inline": False})
+    if launch_collection:
+        fields.append({"name": "Fecha", "value": "La tienda no la publica en su catálogo: consúltala en el enlace", "inline": False})
     if opp is not None:
         fields.append({"name": "Precio de mercado", "value": eur(opp.resale_price_cents) + (f" ({market_note})" if market_note else ""), "inline": True})
         fields.append({"name": "Beneficio neto estimado", "value": eur(opp.net_profit_cents), "inline": True})
@@ -82,7 +85,9 @@ def build_embed(ev: Event, opp: Opportunity | None = None, market_note: str | No
         f"[Producto]({p.url}) | [StockX](https://stockx.com/search?s={q}) | [eBay](https://www.ebay.es/sch/i.html?_nkw={q})")
     fields.append({"name": "Enlaces", "value": links, "inline": False})
     embed = {
-        "title": (f"NUEVO CHOLLO — {p.vendor} vía {p.store}" if is_deal and p.vendor else
+        "title": (f"📢 NUEVO EN LANZAMIENTOS — {p.store}" if launch_collection and ev.type == EventType.NEW_PRODUCT else
+                  f"🟢 TALLAS DISPONIBLES (lanzamiento) — {p.store}" if launch_collection and ev.type in (EventType.RESTOCK, EventType.NEW_SIZE) else
+                  f"NUEVO CHOLLO — {p.vendor} vía {p.store}" if is_deal and p.vendor else
                   f"NUEVO CHOLLO — {p.store}" if is_deal else f"{TITLES[ev.type]} — {p.vendor or p.store}"),
         "description": f"**[{p.title}]({p.url})**",
         "url": p.url, "color": COLORS[ev.type], "fields": fields,
@@ -103,13 +108,20 @@ class WebhookSender:
 
     def send(self, payload: dict) -> str | None:
         for attempt in range(self.max_retries):
-            r = self.session.post(self.url, params={"wait": "true"}, json=payload, timeout=15)
+            try:
+                r = self.session.post(self.url, params={"wait": "true"}, json=payload, timeout=15)
+            except requests.RequestException as e:   # el mensaje de requests incluye la URL (con token): no se propaga
+                if attempt == self.max_retries - 1:
+                    raise RuntimeError(f"Discord: error de conexión ({type(e).__name__})") from None
+                time.sleep(2 ** attempt)
+                continue
             if r.status_code == 429:
                 time.sleep(float(r.json().get("retry_after", 1)) if r.content else 1)
                 continue
             if r.status_code >= 500:
                 time.sleep(2 ** attempt)
                 continue
-            r.raise_for_status()
+            if r.status_code >= 400:
+                raise RuntimeError(f"Discord rechazó el mensaje: HTTP {r.status_code} {r.text[:200]}")
             return str(r.json().get("id"))
         raise RuntimeError("Discord: reintentos agotados")

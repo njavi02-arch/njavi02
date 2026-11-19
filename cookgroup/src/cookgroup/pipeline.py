@@ -148,7 +148,7 @@ def run_cycle(cfg: MonitorConfig, defaults: dict, source, store: Store, market: 
         opp = evaluate(ev, market, defaults.get("platform", "stockx"), store)
         if opp is not None and pe_notes.get(ev.dedupe_key):
             opp.notes.extend(pe_notes[ev.dedupe_key])
-        payload = build_embed(ev, opp)
+        payload = build_embed(ev, opp, launch_collection=bool(cfg.collection), region=cfg.region)
         mid = send(payload)
         store.record_alert(akey, ev.type.value, cfg.store, ev.product.key, mid)
         sent += 1
