@@ -45,14 +45,46 @@ def base_sku(skus: list[str]) -> str | None:
     return pre if len(pre) >= 5 else None
 
 
+FLAGS = {"ES": "🇪🇸", "FR": "🇫🇷", "DE": "🇩🇪", "IT": "🇮🇹", "GB": "🇬🇧", "UK": "🇬🇧", "NL": "🇳🇱", "BE": "🇧🇪", "PT": "🇵🇹",
+         "DK": "🇩🇰", "SE": "🇸🇪", "PL": "🇵🇱", "CZ": "🇨🇿", "AT": "🇦🇹", "CH": "🇨🇭", "US": "🇺🇸", "CA": "🇨🇦", "AU": "🇦🇺",
+         "JP": "🇯🇵", "KR": "🇰🇷", "CN": "🇨🇳", "HK": "🇭🇰", "SG": "🇸🇬", "TH": "🇹🇭", "AE": "🇦🇪", "ZA": "🇿🇦", "MX": "🇲🇽",
+         "BR": "🇧🇷", "AR": "🇦🇷", "CL": "🇨🇱", "CO": "🇨🇴", "IE": "🇮🇪", "FI": "🇫🇮", "NO": "🇳🇴", "GR": "🇬🇷", "HU": "🇭🇺"}
+
+
+def size_label(s: str) -> str:
+    """Talla legible con su sistema: "43" -> "EU 43", "US 9" se queda, "9" (sin sistema) -> "talla 9"."""
+    s = str(s).strip()
+    if s[:2].upper() in ("US", "UK", "EU", "JP", "CM") or s.startswith("M") and "/W" in s:
+        return s
+    try:
+        n = float(s.split()[0])
+        return f"EU {s}" if 15 <= n <= 52 else f"talla {s}"
+    except ValueError:
+        return s
+
+
+def madrid_text(iso_ts: str | None) -> str:
+    from datetime import datetime, timezone
+    from zoneinfo import ZoneInfo
+    try:
+        d = datetime.fromisoformat(iso_ts) if iso_ts else datetime.now(timezone.utc)
+    except ValueError:
+        d = datetime.now(timezone.utc)
+    d = d.astimezone(ZoneInfo("Europe/Madrid"))
+    dias = ["lun", "mar", "mié", "jue", "vie", "sáb", "dom"]
+    meses = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
+    return f"{dias[d.weekday()]} {d.day} {meses[d.month - 1]} · {d:%H:%M} (hora de Madrid)"
+
+
 def build_embed(ev: Event, opp: Opportunity | None = None, market_note: str | None = None, *, buttons: bool = False,
-                launch_collection: bool = False, region: str | None = None) -> dict:
+                launch_collection: bool = False, region: str | None = None, country: str | None = None) -> dict:
     p = ev.product
     is_deal = bool(p.variants) and all(v.title == "Oferta" for v in p.variants) and ev.type == EventType.NEW_PRODUCT
     sizes = ", ".join(v.title for v in ev.variants if v.title != "Oferta")
     price = ev.new_price_cents or p.min_price_cents
     fields = [
-        {"name": "Tienda", "value": p.store + (f" · {region.upper()}" if region else ""), "inline": True},
+        {"name": "Tienda", "value": p.store + (f" · {FLAGS.get(country.upper(), '')} {country.upper()}".rstrip() if country else "")
+                                   + (f" · región {region.upper()}" if region and (not country or region.upper() != country.upper()) else ""), "inline": True},
         {"name": "Precio", "value": eur(price, p.currency) if price else "No indicado", "inline": True},
     ]
     if ev.type in (EventType.PRICE_DROP, EventType.PRICE_ERROR):
@@ -71,7 +103,8 @@ def build_embed(ev: Event, opp: Opportunity | None = None, market_note: str | No
     if temp:
         fields.append({"name": "Temperatura", "value": f"{temp}°", "inline": True})
     if sizes:
-        fields.append({"name": "Tallas disponibles", "value": sizes[:1000], "inline": False})
+        fields.append({"name": "Tallas" if ev.type in (EventType.NEW_SIZE, EventType.RESTOCK) else "Tallas disponibles",
+                       "value": ", ".join(size_label(v.title) for v in ev.variants if v.title != "Oferta")[:1000], "inline": False})
     if launch_collection:
         fields.append({"name": "Fecha", "value": "La tienda no la publica en su catálogo: consúltala en el enlace", "inline": False})
     if opp is not None:
@@ -84,8 +117,15 @@ def build_embed(ev: Event, opp: Opportunity | None = None, market_note: str | No
     links = f"[Ver chollo]({p.url})" if is_deal else (
         f"[Producto]({p.url}) | [StockX](https://stockx.com/search?s={q}) | [eBay](https://www.ebay.es/sch/i.html?_nkw={q})")
     fields.append({"name": "Enlaces", "value": links, "inline": False})
+    fields.append({"name": "Detectado", "value": madrid_text(ev.detected_at), "inline": False})
+    one = [v for v in ev.variants if v.title != "Oferta"]
+    size_title = None
+    if ev.type in (EventType.NEW_SIZE, EventType.RESTOCK) and not is_deal:
+        size_title = f"🔄 VUELVE LA {size_label(one[0].title).upper()}" if len(one) == 1 else (
+            f"🔄 RESTOCK · {len(one)} tallas" if ev.type == EventType.RESTOCK else f"🔄 VUELVEN {len(one)} TALLAS")
     embed = {
-        "title": (f"📢 NUEVO EN LANZAMIENTOS — {p.store}" if launch_collection and ev.type == EventType.NEW_PRODUCT else
+        "title": (f"{size_title} — {p.store}" if size_title and not launch_collection else
+                  f"📢 NUEVO EN LANZAMIENTOS — {p.store}" if launch_collection and ev.type == EventType.NEW_PRODUCT else
                   f"🟢 TALLAS DISPONIBLES (lanzamiento) — {p.store}" if launch_collection and ev.type in (EventType.RESTOCK, EventType.NEW_SIZE) else
                   f"NUEVO CHOLLO — {p.vendor} vía {p.store}" if is_deal and p.vendor else
                   f"NUEVO CHOLLO — {p.store}" if is_deal else f"{TITLES[ev.type]} — {p.vendor or p.store}"),

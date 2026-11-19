@@ -152,7 +152,7 @@ def test_live_then_size_restock_then_real_restock_later():
     ev3 = apply_product(uid, st[uid], page, t3, live_check=False)
     assert len(ev3) == 1 and ev3[0].type == LaunchEventType.SIZE_RESTOCK and [s.eu for s in ev3[0].sizes] == ["43"]
     title = build_launch_embed(ev3[0], t3)["embeds"][0]["title"]
-    assert title == "🔄 Ha vuelto la EU 43 (UK 8.5) — BSTN"
+    assert title == "🔄 Vuelve la EU 43 (UK 8.5) — BSTN"
     # misma ficha otra vez: sin evento
     assert apply_product(uid, st[uid], page, t3 + timedelta(minutes=5), live_check=False) == []
     # se agota y vuelve otra vez más tarde: evento NUEVO con otra clave

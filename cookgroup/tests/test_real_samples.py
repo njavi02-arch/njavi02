@@ -78,7 +78,7 @@ def test_launch_collection_monitor_titles_and_subfolder_urls():
     e = build_embed(Event(EventType.NEW_PRODUCT, p, p.available_variants, detected_at="2026-11-19T12:00:00+00:00"),
                     launch_collection=True, region="eu")["embeds"][0]
     vals = {f["name"]: f["value"] for f in e["fields"]}
-    assert e["title"] == "📢 NUEVO EN LANZAMIENTOS — END. Launches" and vals["Tienda"] == "END. Launches · EU"
+    assert e["title"] == "📢 NUEVO EN LANZAMIENTOS — END. Launches" and vals["Tienda"] == "END. Launches · región EU"
     assert "no la publica" in vals["Fecha"]
 
     class S:

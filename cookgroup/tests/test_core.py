@@ -104,9 +104,10 @@ def test_embed_format_and_no_buttons_by_default():
     e = Event(EventType.RESTOCK, p, p.available_variants, detected_at="2026-11-19T10:00:00+00:00")
     out = build_embed(e)
     emb = out["embeds"][0]
-    assert emb["title"].startswith("RESTOCK DETECTADO") and emb["url"] == p.url
+    assert emb["title"].startswith("🔄 VUELVE") or emb["title"].startswith("🔄 RESTOCK")
+    assert emb["url"] == p.url
     assert "components" not in out and "components" in build_embed(e, buttons=True)
-    assert any(f["value"] == "42" for f in emb["fields"])
+    assert any(f["value"] == "EU 42" for f in emb["fields"])
 
 
 def test_pipeline_dedupe_and_filter(tmp_path):

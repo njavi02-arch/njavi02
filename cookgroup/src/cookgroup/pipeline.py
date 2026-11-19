@@ -78,6 +78,20 @@ def _upgrade_price_errors(events: list[Event], store: Store, defaults: dict) -> 
     return out, notes
 
 
+def watch_handles(snapshot: dict, cfg, defaults: dict, limit: int = 40) -> list[str]:
+    """Modelos a vigilar ficha a ficha: los que encajan con `watch_keywords` (monitor o defaults) y con las
+    palabras de las reglas de ping. Prioriza los agotados (son los que pueden volver)."""
+    kws = [k.lower() for k in (cfg.watch_keywords or defaults.get("watch_keywords", [])) if k.strip()]
+    if not kws:
+        return []
+    cand = []
+    for p in snapshot.values():
+        t = f"{p.title} {p.vendor or ''}".lower()
+        if any(k in t for k in kws) and "/products/" in p.url:
+            cand.append((bool(p.available_variants), p.url.rsplit("/products/", 1)[1]))
+    return [h for _, h in sorted(cand)][:limit]
+
+
 def discount_pct(ev: Event) -> float | None:
     """% de descuento del evento: bajada observada, o precio tachado de la tienda si es creíble (≤5×)."""
     if ev.type in (EventType.PRICE_DROP, EventType.PRICE_ERROR) and ev.old_price_cents and ev.new_price_cents:
@@ -126,14 +140,11 @@ def run_cycle(cfg: MonitorConfig, defaults: dict, source, store: Store, market: 
 
     products, dropped = _prepare(raw, cfg)
     old = store.load_snapshot(cfg.store)
-    if old and len(old) >= 5 and len(products) < 0.3 * len(old):
-        msg = f"catálogo sospechoso: {len(products)} productos frente a {len(old)} antes; se ignora el ciclo"
-        store.record_run(cfg.name, False, error=msg)
-        store.record_health(cfg.name, False, error=msg)
-        return {"ok": False, "error": msg}
     events = diff_products(old, products, min_drop_pct=defaults.get("min_drop_pct", 10))
     events, pe_notes = _upgrade_price_errors(events, store, defaults)
     store.save_snapshot(cfg.store, products)
+    if hasattr(source, "watch") and cfg.type == "shopify":
+        source.watch = watch_handles({**(old or {}), **{p.key: p for p in products}}, cfg, defaults)
 
     senders = {**(channel_senders or {}), **(ping_senders or {})}
     routes = defaults.get("discount_routes", [])
@@ -148,7 +159,7 @@ def run_cycle(cfg: MonitorConfig, defaults: dict, source, store: Store, market: 
         opp = evaluate(ev, market, defaults.get("platform", "stockx"), store)
         if opp is not None and pe_notes.get(ev.dedupe_key):
             opp.notes.extend(pe_notes[ev.dedupe_key])
-        payload = build_embed(ev, opp, launch_collection=bool(cfg.collection), region=cfg.region)
+        payload = build_embed(ev, opp, launch_collection=bool(cfg.collection), region=cfg.region, country=cfg.country)
         mid = send(payload)
         store.record_alert(akey, ev.type.value, cfg.store, ev.product.key, mid)
         sent += 1

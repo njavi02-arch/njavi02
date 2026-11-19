@@ -16,7 +16,10 @@ price_error_pct = 50          # caída ≥ 50 % frente a la MEDIANA del históri
 price_error_min_obs = 5       # sin 5 observaciones previas no se etiqueta "price error"
 releases_file = "config/releases.toml"
 launch_digest_time = "09:00"  # resumen diario "abiertos ahora / próximos 7 días" (hora de Madrid)
-raffle_closing_hours = 3      # recordatorio cuando faltan ≤3 h para el cierre de un raffle
+raffle_closing_hours = 3
+# Seguimiento ficha a ficha (Shopify): modelos que interesan aunque estén en páginas antiguas del catálogo.
+watch_keywords = ["jordan 1", "jordan 3", "jordan 4", "jordan 11", "dunk", "travis", "samba", "990", "991", "992", "993",
+                  "1906", "gel-kayano", "gel-1130", "xt-6", "spezial", "yeezy", "air max 1", "air max 95"]      # recordatorio cuando faltan ≤3 h para el cierre de un raffle
 discount_routes = [
   { min_pct = 30, channel = "rebajas_30" },
   { min_pct = 60, channel = "rebajas_60" },
@@ -29,6 +32,7 @@ discount_routes = [
 
 [[monitor]]
 name = "bstn-eu"
+country = "DE"
 type = "bstn"
 store = "BSTN"
 base_url = "https://www.bstn.com"
@@ -43,6 +47,7 @@ launch_channels = { launch = "lanzamientos", raffle = "raffles", restock = "rest
 
 [[monitor]]
 name = "footdistrict"
+country = "ES"
 region = "eu"
 type = "shopify"
 store = "Footdistrict"
@@ -56,6 +61,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "asphaltgold"
+country = "DE"
 region = "eu"
 type = "shopify"
 store = "Asphaltgold"
@@ -69,6 +75,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "overkill"
+country = "DE"
 region = "eu"
 type = "shopify"
 store = "Overkill"
@@ -82,6 +89,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "sneakersnstuff"
+country = "SE"
 region = "eu"
 type = "shopify"
 store = "Sneakersnstuff"
@@ -95,6 +103,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "family3-0"
+country = "FR"
 region = "eu"
 type = "shopify"
 store = "Family 3.0"
@@ -108,6 +117,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "noirfonce"
+country = "FR"
 region = "eu"
 type = "shopify"
 store = "Noirfonce"
@@ -122,6 +132,7 @@ dedupe_group = "noirfonce"    # la referencia publica la misma tienda por .fr y 
 
 [[monitor]]
 name = "naked"
+country = "DK"
 region = "eu"
 type = "shopify"
 store = "Naked"
@@ -139,6 +150,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "end-launches"
+country = "GB"
 type = "shopify"
 store = "END. Launches"
 base_url = "https://www.endclothing.com/en-eu"
@@ -152,6 +164,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "size-launches"
+country = "GB"
 type = "shopify"
 store = "size?"
 base_url = "https://www.size.co.uk"
@@ -165,6 +178,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "footpatrol-launches"
+country = "GB"
 type = "shopify"
 store = "Footpatrol"
 base_url = "https://www.footpatrol.com"
@@ -181,6 +195,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "concepts"
+country = "US"
 type = "shopify"
 store = "Concepts"
 base_url = "https://cncpts.com"
@@ -194,6 +209,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "undefeated"
+country = "US"
 type = "shopify"
 store = "Undefeated"
 base_url = "https://undefeated.com"
@@ -207,6 +223,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "social-status"
+country = "US"
 type = "shopify"
 store = "Social Status"
 base_url = "https://www.socialstatuspgh.com"
@@ -220,6 +237,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "a-ma-maniere"
+country = "US"
 type = "shopify"
 store = "A Ma Maniére"
 base_url = "https://www.a-ma-maniere.com"
@@ -233,6 +251,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "extra-butter"
+country = "US"
 type = "shopify"
 store = "Extra Butter"
 base_url = "https://extrabutterny.com"
@@ -246,6 +265,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "up-there"
+country = "AU"
 type = "shopify"
 store = "Up There"
 base_url = "https://uptherestore.com"
@@ -259,6 +279,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "supply-store"
+country = "AU"
 type = "shopify"
 store = "Supply Store"
 base_url = "https://www.supplystore.com.au"
@@ -274,6 +295,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "kith-eu"
+country = "US"
 region = "eu"
 type = "shopify"
 store = "Kith EU"
@@ -286,6 +308,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "slamjam"
+country = "IT"
 region = "eu"
 type = "shopify"
 store = "Slam Jam"
@@ -298,6 +321,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "goodhood"
+country = "GB"
 region = "uk"
 type = "shopify"
 store = "Goodhood"
@@ -310,6 +334,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "voostore"
+country = "DE"
 region = "eu"
 type = "shopify"
 store = "Voo Store"
@@ -322,6 +347,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "starcow"
+country = "FR"
 region = "eu"
 type = "shopify"
 store = "Starcow"
@@ -337,6 +363,7 @@ skip_kids_sizes = true
 
 [[monitor]]
 name = "chollometro-hot"
+country = "ES"
 type = "rss"
 store = "Chollometro"
 base_url = "https://www.chollometro.com/rss/hot"
@@ -348,6 +375,7 @@ min_temperature = 100         # solo chollos con ≥100° de la comunidad (evita
 
 [[monitor]]
 name = "dealabs-hot"
+country = "FR"
 type = "rss"
 store = "Dealabs"
 base_url = "https://www.dealabs.com/rss/hot"

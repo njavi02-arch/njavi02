@@ -238,7 +238,7 @@ def build_launch_embed(ev: LaunchEvent, now: datetime) -> dict:
     emoji, label, color = TITLES[ev.type]
     t = now.timestamp()
     if ev.type == LaunchEventType.SIZE_RESTOCK:
-        label = f"Ha vuelto la {ev.sizes[0].label()}" if len(ev.sizes) == 1 else f"Han vuelto {len(ev.sizes)} tallas"
+        label = f"Vuelve la {ev.sizes[0].label()}" if len(ev.sizes) == 1 else f"Vuelven {len(ev.sizes)} tallas"
     if ev.type == LaunchEventType.RAFFLE_CLOSING and it.raffle_ends_ts:
         label = f"El raffle cierra en {_human_delta(it.raffle_ends_ts - t)}"
     action = {

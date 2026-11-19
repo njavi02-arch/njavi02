@@ -22,6 +22,7 @@ from zoneinfo import ZoneInfo
 
 import requests
 
+from ..ratelimit import wait_turn
 from .shopify import USER_AGENT, RateLimited, SourceError
 
 BASE = "https://www.bstn.com"
@@ -239,6 +240,7 @@ class BstnSource:
     def _get(self, url: str) -> str:
         if re.search(r"/(raffle|api)/|//raffle\.", url):
             raise SourceError(f"BSTN: {url} excluido por robots.txt; no se consulta")
+        wait_turn(url)
         try:
             r = self.session.get(url, headers={"User-Agent": USER_AGENT, "Accept": "text/html"}, timeout=self.timeout)
         except requests.RequestException as e:

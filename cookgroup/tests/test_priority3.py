@@ -167,7 +167,7 @@ def test_dedupe_group_merges_two_domains(tmp_path):
         sold = copy.deepcopy(FIX)
         run_cycle(cfg, {}, FakeSource([parse(sold, name)]), store, mk, send)          # línea base
         run_cycle(cfg, {}, FakeSource([parse(avail(FIX), name)]), store, mk, send)    # restock
-    restocks = [e for p in sent for e in p["embeds"] if e["title"].startswith("RESTOCK")]
+    restocks = [e for p in sent for e in p["embeds"] if e["title"].startswith("🔄")]
     assert len(restocks) == 1
 
 

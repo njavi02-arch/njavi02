@@ -49,8 +49,8 @@ class Store:
     def save_snapshot(self, store: str, products: list[Product]) -> None:
         ts = now_iso()
         with self.db:
-            self.db.execute("DELETE FROM snapshots WHERE store=?", (store,))
-            self.db.executemany("INSERT INTO snapshots VALUES (?,?,?,?)",
+            # fusión: una lectura parcial (paginación rotatoria) no borra lo que no se ha leído este ciclo
+            self.db.executemany("INSERT OR REPLACE INTO snapshots VALUES (?,?,?,?)",
                                 [(store, p.key, _enc(p), ts) for p in products])
             self.db.executemany("INSERT INTO price_history VALUES (?,?,?)",
                                 [(p.key, ts, p.min_price_cents) for p in products if p.min_price_cents])

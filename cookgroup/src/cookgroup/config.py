@@ -7,7 +7,7 @@ from pathlib import Path
 
 from .rules import PingRule
 
-SOURCE_TYPES = {"shopify", "rss", "bstn"}
+SOURCE_TYPES = {"shopify", "rss", "bstn", "jsonld"}
 LAUNCH_TYPES = {"bstn"}   # fuentes de calendario de lanzamientos (ciclo propio)
 
 
@@ -28,6 +28,9 @@ class MonitorConfig:
     allow_unknown_price: bool = False    # feeds RSS de chollos pueden no traer precio
     pages: int = 1                       # páginas de 250 productos por consulta
     collection: str | None = None        # Shopify: vigilar solo esta colección (p. ej. "launches")
+    deep_pages: int = 6                  # Shopify: paginación rotatoria (1 página extra por ciclo, hasta esta)
+    watch_keywords: list[str] = field(default_factory=list)  # Shopify: modelos a seguir ficha a ficha
+    country: str | None = None           # país de la tienda (ISO-2) para la alerta y el inventario
     region: str | None = None            # etiqueta de región para alertas y filtros (p. ej. "eu", "uk", "us")
     min_temperature: int | None = None   # feeds Pepper: solo chollos con ≥ N° de la comunidad
     dedupe_group: str | None = None
@@ -36,7 +39,12 @@ class MonitorConfig:
     listings: list[str] = field(default_factory=lambda: ["men/upcoming", "women/upcoming/footwear"])
     launch_channels: dict = field(default_factory=lambda: {"launch": "lanzamientos", "raffle": "raffles",
                                                           "restock": "restocks", "digest": "lanzamientos"})
-    product_checks_per_cycle: int = 4      # misma tienda con varios dominios (.fr/.eu) → una sola alerta
+    product_checks_per_cycle: int = 4
+    # --- fichas con datos estructurados (type = "jsonld")
+    listing_urls: list[str] = field(default_factory=list)
+    product_link_pattern: str = "/p/"
+    watch_urls: list[str] = field(default_factory=list)
+    products_per_cycle: int = 6      # misma tienda con varios dominios (.fr/.eu) → una sola alerta
 
 
 @dataclass
@@ -60,9 +68,11 @@ def load_config(path: str | Path) -> Config:
     for m in mons:
         if m.type not in SOURCE_TYPES:
             raise ValueError(f"{m.name}: tipo '{m.type}' no soportado ({sorted(SOURCE_TYPES)})")
+        if not 1 <= m.deep_pages <= 40:
+            raise ValueError(f"{m.name}: deep_pages debe estar entre 1 y 40")
         if not 1 <= m.pages <= 4:
             raise ValueError(f"{m.name}: pages debe estar entre 1 y 4")
-        min_iv = 300 if m.type in ("rss", "bstn") else 30
+        min_iv = 300 if m.type in ("rss", "bstn", "jsonld") else 30
         if m.interval_seconds < min_iv:
             raise ValueError(f"{m.name}: interval_seconds < {min_iv} no permitido para {m.type} (respeto a la fuente)")
     for r in raw.get("defaults", {}).get("discount_routes", []):

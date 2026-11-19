@@ -16,6 +16,7 @@ from dataclasses import dataclass, field
 import requests
 
 from ..models import Product, Variant
+from ..ratelimit import wait_turn
 from .shopify import USER_AGENT, RateLimited, SourceError
 
 MAX_BYTES = 2_000_000
@@ -101,6 +102,7 @@ class RssSource:
         headers = {"User-Agent": USER_AGENT, "Accept": "application/rss+xml, application/atom+xml, application/xml"}
         if self._etag:
             headers["If-None-Match"] = self._etag
+        wait_turn(self.feed_url)
         try:
             r = self.session.get(self.feed_url, headers=headers, timeout=self.timeout)
         except requests.RequestException as e:
