@@ -64,6 +64,6 @@ def test_preview_renders_all_samples(tmp_path):
     assert len(items) >= 9
     page = render_html(items)
     assert page.startswith("<!DOCTYPE html>") and "POSIBLE PRICE ERROR" in page and "Drops del día" in page
-    assert "<script" not in page
+    assert "<script" not in page and "onerror" in page
     tp = test_payload()
     assert "PRUEBA" in tp["content"] and tp["allowed_mentions"] == {"parse": []}

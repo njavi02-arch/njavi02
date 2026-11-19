@@ -92,7 +92,7 @@ def _embed_html(e: dict) -> str:
     title = _md(e.get("title", ""))
     if e.get("url"):
         title = f'<a href="{html.escape(e["url"])}" target="_blank" rel="noopener">{title}</a>'
-    thumb = f'<img class="thumb" src="{html.escape(e["thumbnail"]["url"])}" alt="">' if e.get("thumbnail") else ""
+    thumb = f'<img class="thumb" src="{html.escape(e["thumbnail"]["url"])}" alt="" onerror="this.remove()">' if e.get("thumbnail") else ""
     fields, row = [], []
     for f in e.get("fields", []):
         cell = f'<div class="field{" inline" if f.get("inline") else ""}"><div class="fn">{_md(f["name"])}</div><div class="fv">{_md(f["value"])}</div></div>'
