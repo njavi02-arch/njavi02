@@ -61,6 +61,16 @@ class FakeDiscordRoles:
         return can(effective(self.members.get(uid, set()) | {"Nike", "EU 44,5"}, channel_overwrites(audiencia, "lectura")), VIEW)
 
 
+def snapshot(b, dc, now, name, note):
+    from cookgroup.owner_panel import render_owner
+    from cookgroup.web import CSS
+    html = (f"<!DOCTYPE html><html lang=es><head><meta charset=utf-8><title>Panel del dueño (demo)</title><style>{CSS}</style></head>"
+            f"<body><div class=w><div class=muted>{note} · PRUEBA LOCAL: no son clientes reales</div>"
+            + render_owner(b, dc, now=now, deliveries_csv=str(ROOT / "docs/v09/ENTREGAS_REALES.csv")) + "</div></body></html>")
+    (ROOT / "docs/v09").mkdir(parents=True, exist_ok=True)
+    (ROOT / "docs/v09" / name).write_text(html, encoding="utf-8")
+
+
 def run(log=print) -> dict:
     tmp = Path(tempfile.mkdtemp())
     clock = {"t": time.time()}
@@ -124,6 +134,8 @@ def run(log=print) -> dict:
     an = b.anomalies(dc, now=clock["t"])
     check("9. Ha pagado pero Discord estaba caído → aparece en el panel", any(d == "200000000000000003" for d, _ in an["pagado_sin_acceso"]),
           "«PAGADO SIN ACCESO» con el error; sincronización pendiente")
+    snapshot(b, dc, clock["t"], "PANEL_DUENO_demo.html",
+             "DEMO · INCIDENCIA ABIERTA: un cliente ha pagado mientras Discord estaba caído (fecha simulada del recorrido)")
     dc.down = False
     requests.post(base + f"/admin/reintentar?pin={pin}", data={"d": "200000000000000003"})
     hist = b.member_card("200000000000000003", now=clock["t"])["historial"]
@@ -175,13 +187,7 @@ def run(log=print) -> dict:
     an = b.anomalies(dc, now=clock["t"])
     check("17. Al final, nada descuadrado", not an["pagado_sin_acceso"] and not an["acceso_sin_derecho"], "panel: todo cuadra")
     srv.shutdown()
-    from cookgroup.owner_panel import render_owner
-    from cookgroup.web import CSS
-    html = (f"<!DOCTYPE html><html lang=es><head><meta charset=utf-8><title>Panel del dueño (demo)</title><style>{CSS}</style></head>"
-            f"<body><div class=w><div class=muted>DEMO · PRUEBA LOCAL: datos del recorrido de prueba, no son clientes reales</div>"
-            + render_owner(b, dc, now=clock["t"], deliveries_csv=str(ROOT / "docs/v09/ENTREGAS_REALES.csv")) + "</div></body></html>")
-    (ROOT / "docs/v09").mkdir(parents=True, exist_ok=True)
-    (ROOT / "docs/v09/PANEL_DUENO_demo.html").write_text(html, encoding="utf-8")
+    snapshot(b, dc, clock["t"], "PANEL_DUENO_final.html", "DEMO · AL TERMINAR EL RECORRIDO (fecha simulada)")
     return {"ok": ok_all, "steps": steps, "summary": b.summary(now=clock["t"])}
 
 

@@ -1,4 +1,4 @@
-# Canales prioritarios — pruebas (ejecutado 20/11/2026 13:12, Madrid)
+# Canales prioritarios — pruebas (ejecutado 20/11/2026 13:14, Madrid)
 
 Datos: CAPTURA REAL de BSTN (19-nov) y Footdistrict (20-nov) + CAMBIOS CONTROLADOS + Discord SIMULADO.
 

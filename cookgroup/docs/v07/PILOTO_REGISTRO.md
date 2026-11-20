@@ -1,4 +1,4 @@
-# Registro del piloto local (ejecutado 20/11/2026 13:12, Madrid)
+# Registro del piloto local (ejecutado 20/11/2026 13:14, Madrid)
 
 **Tipo de datos:** CAPTURA REAL (footdistrict.com, 20-nov-2026 12:08 Madrid) + cambios CONTROLADOS aplicados en un servidor local + Discord SIMULADO. No se envió nada a un Discord real.
 
@@ -13,7 +13,7 @@ Resultado global: **TODO OK**
 | 5. Reinicio con Discord aún caído | OK | tras reiniciar no se re-detecta ni se pierde: sigue 1 pendiente |
 | 6. Discord vuelve: se entrega lo pendiente | OK | entregado 1 aviso (id PILOTO-0003); bandeja vacía |
 | 7. Otro reinicio + 2 ciclos: sin duplicados | OK | mensajes totales recibidos: 3 |
-| 8. Último mensaje confirmado registrado | OK | ('2026-11-20T12:12:54+00:00', 'PILOTO-0003') |
+| 8. Último mensaje confirmado registrado | OK | ('2026-11-20T12:14:06+00:00', 'PILOTO-0003') |
 | 9. Ningún aviso publica beneficio sin ventas verificadas | OK | market_data vacío → sin cifras de beneficio |
 
 ## Avisos recibidos por el Discord simulado
