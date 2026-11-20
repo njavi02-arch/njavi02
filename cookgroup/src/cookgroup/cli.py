@@ -127,8 +127,9 @@ def main(argv=None):
         from .releases import load_calendar
         cal = load_calendar(cfg.defaults.get("releases_file", "config/releases.toml"))
         for r in cal.releases:
-            print(f"{r.release_at.isoformat()}  {r.method:<11} {r.verdict:<7} {r.name}")
-        print(f"OK: {len(cal.releases)} lanzamientos, canal '{cal.channel}', recordatorios {cal.reminders_minutes} min")
+            print(f"{r.release_at.isoformat()}  {r.method:<11} {r.verdict:<7} {r.status.upper():<10} {r.name}")
+        n_ok = sum(r.status == "confirmado" for r in cal.releases)
+        print(f"OK: {len(cal.releases)} lanzamientos ({n_ok} confirmados con fuente oficial; los pendientes NO se avisan), canal '{cal.channel}', recordatorios {cal.reminders_minutes} min")
         return 0
     if a.command == "check-config":
         print(f"OK: {len(cfg.monitors)} monitores, {sum(m.enabled for m in cfg.monitors)} activos")

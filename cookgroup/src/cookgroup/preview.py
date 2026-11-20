@@ -89,7 +89,8 @@ def sample_payloads() -> list[tuple[str, str, dict]]:
     out.append(("pings", "PING por regla \"mind 001 ≤ 100\" (rol de ejemplo)", build_ping(rule, ev, build_embed(ev))))
     rel = Release("nike-mind-001-hq4307-001", "Nike Mind 001 Pre-Game Mules (Black/Hyper Crimson)",
                   datetime(2026, 11, 20, 9, 0, tzinfo=timezone(timedelta(hours=1))), "LEO", "unknown", "HQ4307-001",
-                  89.99, [StoreLink("Nike", "https://www.nike.com/es/launch")], notes="Pendiente de verificar en la web oficial.")
+                  89.99, [StoreLink("Nike", "https://www.nike.com/es/launch")], notes="SIMULACIÓN: en producción solo se avisa si status=confirmado.", status="confirmado",
+                  official_source="https://www.nike.com/es/launch")
     out.append(("releases", "RECORDATORIO de lanzamiento (calendario del staff)", build_reminder(rel, 60)))
     cal = Calendar("releases", "Europe/Madrid", [60], "08:00", [rel])
     out.append(("releases", "RESUMEN \"Drops del día\"", build_digest(cal, rel.release_at.date())))

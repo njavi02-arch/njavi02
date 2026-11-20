@@ -41,6 +41,8 @@ class Release:
     image_url: str | None = None
     notes: str | None = None
     all_day: bool = False         # "Durante el día": hora no confirmada
+    status: str = "pendiente"     # "confirmado" (fuente oficial anotada) | "pendiente" (no se avisa automáticamente)
+    official_source: str | None = None
 
 
 @dataclass
@@ -58,6 +60,15 @@ def _url(u: str | None, where: str) -> str | None:
     if not str(u).startswith("https://"):
         raise ValueError(f"{where}: URL debe empezar por https:// ({u})")
     return str(u)
+
+
+def _status(r: dict, rid: str) -> str:
+    st = str(r.get("status", "pendiente")).lower()
+    if st not in ("confirmado", "pendiente"):
+        raise ValueError(f"release '{rid}': status debe ser 'confirmado' o 'pendiente'")
+    if st == "confirmado" and not r.get("official_source"):
+        raise ValueError(f"release '{rid}': 'confirmado' exige official_source (URL oficial de marca o tienda)")
+    return st
 
 
 def load_calendar(path: str | Path) -> Calendar:
@@ -92,6 +103,7 @@ def load_calendar(path: str | Path) -> Calendar:
             stores=[StoreLink(s["name"], _url(s["url"], rid)) for s in r.get("stores", [])],
             market_url=_url(r.get("market_url"), rid), image_url=_url(r.get("image_url"), rid),
             notes=r.get("notes"), all_day=bool(r.get("all_day", False)),
+            status=_status(r, rid), official_source=_url(r.get("official_source"), rid),
         ))
     rels.sort(key=lambda x: x.release_at)
     mins = sorted({int(m) for m in cal.get("reminders_minutes", [1440, 60, 10])}, reverse=True)
@@ -111,6 +123,8 @@ def due_reminders(cal: Calendar, now: datetime, *, grace_minutes: int = 15) -> l
     """
     out = []
     for r in cal.releases:
+        if r.status != "confirmado":
+            continue   # pendiente de fuente oficial → nunca se avisa automáticamente
         for m in cal.reminders_minutes:
             if r.all_day and m < 1440:
                 continue
@@ -174,7 +188,7 @@ def build_reminder(r: Release, minutes_before: int) -> dict:
 def build_digest(cal: Calendar, day: date) -> dict | None:
     """Resumen "drops del día" agrupado por hora (formato observado en `#releases`)."""
     tz = ZoneInfo(cal.timezone)
-    todays = [r for r in cal.releases if r.release_at.astimezone(tz).date() == day]
+    todays = [r for r in cal.releases if r.release_at.astimezone(tz).date() == day and r.status == "confirmado"]
     if not todays:
         return None
     groups: dict[str, list[Release]] = {}

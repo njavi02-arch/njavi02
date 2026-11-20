@@ -5,6 +5,8 @@
 # verdict: cop (🟢) | maybe (🟠) | drop (🔴) | unknown (⚪)  ← opinión del staff, se muestra como tal
 # release_at: "2026-11-20T09:00" (hora local del calendario) o una fecha sin hora (= "Durante el día",
 #             solo recibe el recordatorio de 1 día).
+# status:  "confirmado" (exige official_source = URL oficial de la marca/tienda) | "pendiente" (por defecto).
+#          Los PENDIENTES no reciben recordatorios ni salen en el resumen: no se avisa nada sin fuente oficial.
 # Todas las URLs deben ser https://
 
 [calendar]
@@ -25,7 +27,8 @@ verdict = "unknown"
 sku = "HQ4307-001"
 retail_price = 89.99
 stores = [{ name = "Nike", url = "https://www.nike.com/es/launch" }]
-notes = "Pendiente de verificar en la web oficial."
+status = "pendiente"   # revisado 20-nov-2026
+notes = "Revisión 20-nov: este SKU ya salió a la venta en 2026 (ene–mar según prensa sneaker y GOAT); no hay fuente oficial de un lanzamiento el 20-nov. Probable error de la anotación original: no avisar."
 
 [[release]]
 id = "af1-low-travis-scott-gta6"
@@ -34,4 +37,6 @@ release_at = 2026-11-21
 method = "DESCONOCIDO"
 verdict = "unknown"
 stores = [{ name = "Nike", url = "https://www.nike.com/es/launch" }]
-notes = "Hora y método sin confirmar. Pendiente de verificar."
+sku = "JJ7604-001"
+status = "pendiente"   # revisado 20-nov-2026
+notes = "Revisión 20-nov: prensa sneaker (Sole Retriever) habla de SNKRS el 21-nov; Nike no lo publica aún en su calendario. Pasar a confirmado solo con la ficha de nike.com/es/launch (official_source)."

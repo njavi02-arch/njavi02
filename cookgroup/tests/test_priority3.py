@@ -28,6 +28,8 @@ digest_time = "08:00"
 
 [[release]]
 id = "sim-dunk"
+status = "confirmado"
+official_source = "https://shop.invalid/launch"
 name = "Dunk SIMULADA"
 release_at = "2030-01-10T09:00"
 method = "leo"
@@ -38,6 +40,8 @@ stores = [{ name = "Tienda", url = "https://shop.invalid/p" }]
 
 [[release]]
 id = "sim-allday"
+status = "confirmado"
+official_source = "https://shop.invalid/launch"
 name = "Lanzamiento sin hora"
 release_at = 2030-01-10
 verdict = "drop"
@@ -176,3 +180,17 @@ def test_config_validates_discount_routes(tmp_path):
     f.write_text('[defaults]\ndiscount_routes = [{ min_pct = 150, channel = "x" }]\n')
     with pytest.raises(ValueError):
         load_config(f)
+
+
+def test_pending_release_never_notified(tmp_path):
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+    f = tmp_path / "r.toml"
+    f.write_text('[[release]]\nid = "sin-fuente"\nname = "Sin fuente"\nrelease_at = "2030-01-10T09:00"\n')
+    cal = load_calendar(f)
+    assert cal.releases[0].status == "pendiente"
+    now = datetime(2030, 1, 10, 8, 0, tzinfo=ZoneInfo("Europe/Madrid"))
+    assert due_reminders(cal, now) == [] and build_digest(cal, now.date()) is None
+    f.write_text('[[release]]\nid = "sin-fuente"\nname = "y"\nrelease_at = "2030-01-10T09:00"\nstatus = "confirmado"\n')
+    with pytest.raises(ValueError):
+        load_calendar(f)
