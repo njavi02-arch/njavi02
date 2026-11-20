@@ -23,23 +23,23 @@ from .store import Store
 log = logging.getLogger("cookgroup")
 
 
-def evaluate(ev: Event, market: MarketProvider, platform_name: str, store: Store) -> Opportunity | None:
+def evaluate(ev: Event, market: MarketProvider, platform_name: str, store: Store, cfg=None) -> Opportunity | None:
     if not ev.variants or ev.type == EventType.SOLD_OUT:
         return None
     v = min(ev.variants, key=lambda x: x.price_cents)
     if v.price_cents <= 0:
         return None  # sin precio no se calcula beneficio (p. ej. chollos RSS sin importe)
-    if ev.product.currency.upper() != "EUR":
-        return None  # los datos de mercado están en EUR; sin tipo de cambio fiable no se mezcla
     md = market.lookup(v.sku, ev.product.title, v.title)
-    pr = compute_profit(v.price_cents, md, DEFAULT_PLATFORMS[platform_name])
+    pr = compute_profit(v.price_cents, md, DEFAULT_PLATFORMS[platform_name], size=v.title,
+                        buy_currency=ev.product.currency, ships_es=getattr(cfg, "ships_es", None), require_verified=True)
     urgency = 0.95 if ev.type == EventType.PRICE_ERROR else 0.9 if ev.type in (EventType.RESTOCK, EventType.NEW_PRODUCT) else 0.6
     score, parts = score_opportunity(pr, md, urgency=urgency)
     notes = list(pr.notes)
     hist = store.historical_min(ev.product.key)
     if ev.type in (EventType.PRICE_DROP, EventType.PRICE_ERROR) and hist and ev.new_price_cents and ev.new_price_cents <= hist:
         notes.append("Mínimo del histórico propio (solo desde que este sistema monitoriza)")
-    return Opportunity(ev, v.price_cents, pr.resale_cents, pr.net_profit_cents, pr.roi_pct, score, parts, notes)
+    return Opportunity(ev, v.price_cents, pr.resale_cents, pr.net_profit_cents, pr.roi_pct, score, parts, notes,
+                       margin_pct=pr.margin_pct, verified=pr.verified, basis=pr.basis)
 
 
 def _prepare(products, cfg: MonitorConfig):
@@ -118,64 +118,86 @@ def _alert_key(ev: Event, group: str | None) -> str:
     return ev.dedupe_key.replace(ev.product.key, f"group={group}:{ev.product.product_id}", 1)
 
 
+def deliver_outbox(store: Store, senders: dict[str, Callable[[dict], str | None]], *, store_name: str | None = None) -> dict:
+    """Envía lo pendiente en orden. Al primer fallo de Discord se para (se reintenta en el siguiente ciclo)."""
+    import json as _json
+    by_type: dict[str, int] = {}
+    err = None
+    for key, etype, _st, _pk, channel, payload, _att in store.outbox_pending(store_name):
+        snd = senders.get(channel)
+        if not snd:
+            continue
+        try:
+            mid = snd(_json.loads(payload))
+        except Exception as e:   # Discord caído, 429 persistente, red…
+            err = f"{type(e).__name__}: {e}"[:200]
+            store.outbox_fail(key, err)
+            log.warning("entrega pendiente (%s): %s", key[:60], err)
+            break
+        store.outbox_done(key, mid)
+        k = "route" if etype == "route" else "ping" if etype == "ping" else "main"
+        by_type[k] = by_type.get(k, 0) + 1
+    return {"by_type": by_type, "error": err, "pending": len(store.outbox_pending(store_name, limit=1000))}
+
+
 def run_cycle(cfg: MonitorConfig, defaults: dict, source, store: Store, market: MarketProvider,
               send: Callable[[dict], str | None], *, ping_rules: list[PingRule] | None = None,
               ping_senders: dict[str, Callable[[dict], str | None]] | None = None,
               channel_senders: dict[str, Callable[[dict], str | None]] | None = None) -> dict:
     """Devuelve un resumen; nunca lanza por errores de la fuente (se registran)."""
+    senders = {**(channel_senders or {}), **(ping_senders or {}), cfg.channel: send}
     try:
         raw = source.fetch()
     except RateLimited as e:
         store.record_run(cfg.name, False, error=str(e))
         store.record_health(cfg.name, False, error=str(e))
-        return {"ok": False, "backoff": e.retry_after, "error": str(e)}
+        d = deliver_outbox(store, senders, store_name=cfg.store)   # lo pendiente no depende de la fuente
+        return {"ok": False, "backoff": e.retry_after, "error": str(e), "sent": d["by_type"].get("main", 0), "pending": d["pending"]}
     except SourceError as e:
+        d = deliver_outbox(store, senders, store_name=cfg.store)
         if str(e) == "not-modified":
             store.record_run(cfg.name, True)
             store.record_health(cfg.name, True, items=0)
-            return {"ok": True, "products": 0, "events": 0, "sent": 0, "dropped": 0, "pings": 0, "routed": 0}
+            return {"ok": True, "products": 0, "events": 0, "sent": d["by_type"].get("main", 0), "dropped": 0, "pings": 0,
+                    "routed": 0, "pending": d["pending"], "not_modified": True}
         store.record_run(cfg.name, False, error=str(e))
         store.record_health(cfg.name, False, error=str(e))
-        return {"ok": False, "error": str(e)}
+        return {"ok": False, "error": str(e), "sent": d["by_type"].get("main", 0), "pending": d["pending"]}
 
     products, dropped = _prepare(raw, cfg)
     old = store.load_snapshot(cfg.store)
     events = diff_products(old, products, min_drop_pct=defaults.get("min_drop_pct", 10))
     events, pe_notes = _upgrade_price_errors(events, store, defaults)
-    store.save_snapshot(cfg.store, products)
-    if hasattr(source, "watch") and cfg.type == "shopify":
-        source.watch = watch_handles({**(old or {}), **{p.key: p for p in products}}, cfg, defaults)
-
-    senders = {**(channel_senders or {}), **(ping_senders or {})}
     routes = defaults.get("discount_routes", [])
-    sent = pings = routed = 0
+    queued = 0
     cooldown = defaults.get("cooldown_seconds", 3600)
+    # 1) ENCOLAR (persistente) todo lo detectado, ANTES de tocar la instantánea
     for ev in events:
         if ev.type == EventType.SOLD_OUT:
             continue  # el estado de alertas previas se actualiza en una fase futura
         akey = _alert_key(ev, cfg.dedupe_group)
         if store.seen_recently(akey, cooldown):
             continue
-        opp = evaluate(ev, market, defaults.get("platform", "stockx"), store)
+        opp = evaluate(ev, market, defaults.get("platform", "stockx"), store, cfg)
         if opp is not None and pe_notes.get(ev.dedupe_key):
             opp.notes.extend(pe_notes[ev.dedupe_key])
         payload = build_embed(ev, opp, launch_collection=bool(cfg.collection), region=cfg.region, country=cfg.country)
-        mid = send(payload)
-        store.record_alert(akey, ev.type.value, cfg.store, ev.product.key, mid)
-        sent += 1
-        if (ch := pick_discount_route(discount_pct(ev), routes)) and ch != cfg.channel and (snd := senders.get(ch)):
-            rkey = f"route|{ch}|{akey}"
-            if not store.seen_recently(rkey, cooldown):
-                store.record_alert(rkey, "route", cfg.store, ev.product.key, snd(payload))
-                routed += 1
+        queued += store.outbox_add(akey, ev.type.value, cfg.store, ev.product.key, cfg.channel, payload)
+        if (ch := pick_discount_route(discount_pct(ev), routes)) and ch != cfg.channel and ch in senders:
+            store.outbox_add(f"route|{ch}|{akey}", "route", cfg.store, ev.product.key, ch, payload)
         for rule in ping_rules or []:
-            sender = senders.get(rule.channel)
-            pkey = f"ping|{rule.name}|{akey}"
-            if sender and rule_matches(rule, ev) and not store.seen_recently(pkey, cooldown):
-                pid = sender(build_ping(rule, ev, payload))
-                store.record_alert(pkey, "ping", cfg.store, ev.product.key, pid)
-                pings += 1
+            if rule.channel in senders and rule_matches(rule, ev):
+                store.outbox_add(f"ping|{rule.name}|{akey}", "ping", cfg.store, ev.product.key, rule.channel,
+                                 build_ping(rule, ev, payload))
+    # 2) solo ahora se guarda la instantánea (los avisos ya están a salvo en la bandeja)
+    store.save_snapshot(cfg.store, products)
+    if hasattr(source, "watch") and cfg.type == "shopify":
+        source.watch = watch_handles({**(old or {}), **{p.key: p for p in products}}, cfg, defaults)
+    # 3) ENTREGAR lo pendiente de esta tienda (incluidos fallos de ciclos anteriores)
+    d = deliver_outbox(store, senders, store_name=cfg.store)
+    sent, routed, pings = d["by_type"].get("main", 0), d["by_type"].get("route", 0), d["by_type"].get("ping", 0)
     store.record_run(cfg.name, True, len(products), len(events))
     store.record_health(cfg.name, True, items=len(raw))
     return {"ok": True, "products": len(products), "events": len(events), "sent": sent,
-            "dropped": dropped, "pings": pings, "routed": routed}
+            "dropped": dropped, "pings": pings, "routed": routed, "queued": queued, "pending": d["pending"],
+            "delivery_error": d["error"]}

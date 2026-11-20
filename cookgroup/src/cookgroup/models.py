@@ -79,6 +79,11 @@ class MarketData:
     sample_size: int
     as_of: str
     url: str | None = None
+    size: str | None = None          # talla de las ventas (None = sin talla → no verificable)
+    condition: str | None = None     # "new" / "used"…
+    market: str | None = None        # plataforma de las ventas (stockx, goat, ebay, vinted…)
+    currency: str = "EUR"
+    verified_sales: bool = False     # True solo si son ventas individuales con fecha y fuente
 
 
 @dataclass
@@ -91,3 +96,6 @@ class Opportunity:
     score: int
     score_breakdown: dict[str, float] = field(default_factory=dict)
     notes: list[str] = field(default_factory=list)  # incertidumbres explícitas
+    margin_pct: float | None = None      # beneficio neto / precio de reventa
+    verified: bool = False               # beneficio publicable (ventas recientes de la misma ref/talla/estado/mercado)
+    basis: str | None = None             # texto de la base del cálculo (n ventas, mercado, fechas, fuente)

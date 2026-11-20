@@ -107,12 +107,15 @@ def build_embed(ev: Event, opp: Opportunity | None = None, market_note: str | No
                        "value": ", ".join(size_label(v.title) for v in ev.variants if v.title != "Oferta")[:1000], "inline": False})
     if launch_collection:
         fields.append({"name": "Fecha", "value": "La tienda no la publica en su catálogo: consúltala en el enlace", "inline": False})
-    if opp is not None:
-        fields.append({"name": "Precio de mercado", "value": eur(opp.resale_price_cents) + (f" ({market_note})" if market_note else ""), "inline": True})
-        fields.append({"name": "Beneficio neto estimado", "value": eur(opp.net_profit_cents), "inline": True})
+    if opp is not None and opp.verified and opp.net_profit_cents is not None:
+        fields.append({"name": "💶 Beneficio neto (verificado)", "value": f"**{eur(opp.net_profit_cents)}** · margen {opp.margin_pct:.0f} % "
+                       f"sobre venta · ROI {opp.roi_pct:.0f} % sobre compra", "inline": False})
+        fields.append({"name": "Reventa (mediana)", "value": eur(opp.resale_price_cents), "inline": True})
         fields.append({"name": "Score", "value": f"{opp.score}/100", "inline": True})
-        if opp.notes:
-            fields.append({"name": "⚠ Incertidumbre", "value": "\n".join(f"• {n}" for n in opp.notes)[:1000], "inline": False})
+        if opp.basis:
+            fields.append({"name": "Base del cálculo", "value": opp.basis[:1000], "inline": False})
+    elif opp is not None:
+        fields.append({"name": "💶 Beneficio", "value": "**sin verificar** — " + "; ".join(opp.notes[:3])[:900], "inline": False})
     q = quote_plus(base or p.title)
     links = f"[Ver chollo]({p.url})" if is_deal else (
         f"[Producto]({p.url}) | [StockX](https://stockx.com/search?s={q}) | [eBay](https://www.ebay.es/sch/i.html?_nkw={q})")

@@ -30,6 +30,7 @@ class MonitorConfig:
     collection: str | None = None        # Shopify: vigilar solo esta colección (p. ej. "launches")
     deep_pages: int = 6                  # Shopify: paginación rotatoria (1 página extra por ciclo, hasta esta)
     watch_keywords: list[str] = field(default_factory=list)  # Shopify: modelos a seguir ficha a ficha
+    ships_es: str = "por confirmar"      # "sí" / "no" / "por confirmar": sin "sí" no se publica beneficio
     country: str | None = None           # país de la tienda (ISO-2) para la alerta y el inventario
     region: str | None = None            # etiqueta de región para alertas y filtros (p. ej. "eu", "uk", "us")
     min_temperature: int | None = None   # feeds Pepper: solo chollos con ≥ N° de la comunidad
