@@ -152,3 +152,41 @@ def test_lag_and_heartbeat(tmp_path):
     assert dg.process_state(hb)[0] == "PARADO"
     dg.write_heartbeat(5, 5, hb)
     assert dg.process_state(hb)[0] == "EN MARCHA"
+
+
+def test_resale_size_must_be_buyable():
+    """v0.8: el panel mostraba ventas de la talla 43 con tallas disponibles 40, 41 y 42,5. Prohibido."""
+    import json as _j
+    from cookgroup.discord import build_embed
+    from cookgroup.models import Event, EventType, Opportunity
+    from cookgroup.preview import _mind001
+    p = _mind001()
+    avail = [v.title for v in p.available_variants]
+    ev = Event(EventType.NEW_PRODUCT, p, p.available_variants)
+    bad = Opportunity(ev, 9000, 15500, 3440, 38.2, 71, margin_pct=22.2, verified=True, buy_size="43",
+                      basis="5 ventas talla 43")
+    assert "43" not in avail
+    txt = _j.dumps(build_embed(ev, bad), ensure_ascii=False)
+    assert "verificado" not in txt.lower() and "sin verificar" in txt
+    good = Opportunity(ev, 9000, 15500, 3440, 38.2, 71, margin_pct=22.2, verified=True, buy_size=avail[0],
+                       basis="5 ventas")
+    txt = _j.dumps(build_embed(ev, good), ensure_ascii=False)
+    assert "verificado" in txt.lower() and avail[0] in txt
+
+
+def test_evaluate_picks_size_with_matching_sales(tmp_path):
+    import json as _j
+    from datetime import date
+    from cookgroup.config import MonitorConfig
+    from cookgroup.models import Event, EventType
+    from cookgroup.pipeline import evaluate
+    from cookgroup.preview import _mind001
+    p = _mind001()
+    sz = p.available_variants[-1].title
+    sku = p.available_variants[-1].sku
+    f = tmp_path / "m.json"
+    f.write_text(_j.dumps({"sales": [{"sku": sku, "size": sz, "condition": "new", "market": "stockx", "price": 200,
+                                       "currency": "EUR", "date": f"2026-11-1{i}", "source": "prueba"} for i in range(3)]}))
+    opp = evaluate(Event(EventType.RESTOCK, p, p.available_variants), FileMarketProvider(f, today=date(2026, 11, 20)),
+                   "stockx", Store(tmp_path / "s.db"), MonitorConfig("x", "shopify", "x", "https://x", ships_es="sí"))
+    assert opp.verified and opp.buy_size == sz

@@ -37,3 +37,14 @@ con desplazamientos mayores que 30 días. Luego regenerar la exportación y ejec
 python tools/classify_reference.py      # → docs/reference_classified.tsv y config/shopify_stores.csv
 python tools/build_inventory.py         # → docs/inventory.csv y docs/inventory.html
 ```
+
+## Estado a 20-nov-2026 ~12:50 (Madrid) — v0.8, rama `claude/cookgroup-v0.8`
+- **Recorrido completo** de la referencia: `docs/v08/reference_sidebar_2026-11-20.txt` (339 canales). Observaciones en `docs/v08/RECORRIDO.md`; tabla en `docs/v08/canales.csv` (`python tools/build_channel_map.py`).
+- **Lote 1 (bienvenida, roles y notificaciones): HECHO.** `src/cookgroup/members.py`, `config/miembros.toml`, `tools/lote1.py` (10/10), `tests/test_lote1.py`.
+- **Instalador del servidor:** `config/servidor.toml` + `src/cookgroup/server_setup.py` + `INSTALAR_SERVIDOR.bat`. Probado contra un Discord simulado; pendiente del token del bot.
+- **Siguiente (en este orden):**
+  1. Lote 2, foro de lanzamientos: un hilo por lanzamiento (crearlo con el bot; los webhooks pueden publicar en foros con `thread_name` y en hilos con `thread_id`), actualizarlo si cambia la fecha o aparece una tienda, y la vista de 7 días.
+  2. Raffles: apertura, recordatorio, cambio de plazo y cierre; los vencidos fuera de la lista.
+  3. Restocks por talla en los lanzamientos de BSTN.
+  4. Rebajas por tramos con menciones.
+  5. Retomar el histórico de los canales agregados desde el 20-oct y los hilos archivados de #important-releases.

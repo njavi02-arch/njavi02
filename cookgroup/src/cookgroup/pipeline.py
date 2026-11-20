@@ -24,14 +24,23 @@ log = logging.getLogger("cookgroup")
 
 
 def evaluate(ev: Event, market: MarketProvider, platform_name: str, store: Store, cfg=None) -> Opportunity | None:
+    """Calcula el beneficio TALLA A TALLA sobre las tallas disponibles del aviso: solo se verifica con ventas de esa
+    misma talla. Se elige la talla comprable con mayor beneficio verificado; si ninguna se verifica, se usa la más
+    barata y el aviso dice «beneficio sin verificar» con el motivo."""
     if not ev.variants or ev.type == EventType.SOLD_OUT:
         return None
-    v = min(ev.variants, key=lambda x: x.price_cents)
-    if v.price_cents <= 0:
+    cands = [v for v in ev.variants if v.available and v.price_cents > 0] or [v for v in ev.variants if v.price_cents > 0]
+    if not cands:
         return None  # sin precio no se calcula beneficio (p. ej. chollos RSS sin importe)
-    md = market.lookup(v.sku, ev.product.title, v.title)
-    pr = compute_profit(v.price_cents, md, DEFAULT_PLATFORMS[platform_name], size=v.title,
-                        buy_currency=ev.product.currency, ships_es=getattr(cfg, "ships_es", None), require_verified=True)
+    best = None
+    for v in sorted(cands, key=lambda x: x.price_cents):
+        md = market.lookup(v.sku, ev.product.title, v.title)
+        pr = compute_profit(v.price_cents, md, DEFAULT_PLATFORMS[platform_name], size=v.title,
+                            buy_currency=ev.product.currency, ships_es=getattr(cfg, "ships_es", None), require_verified=True)
+        key = (pr.verified, pr.net_profit_cents or 0)
+        if best is None or key > best[0]:
+            best = (key, v, md, pr)
+    _, v, md, pr = best
     urgency = 0.95 if ev.type == EventType.PRICE_ERROR else 0.9 if ev.type in (EventType.RESTOCK, EventType.NEW_PRODUCT) else 0.6
     score, parts = score_opportunity(pr, md, urgency=urgency)
     notes = list(pr.notes)
@@ -39,7 +48,7 @@ def evaluate(ev: Event, market: MarketProvider, platform_name: str, store: Store
     if ev.type in (EventType.PRICE_DROP, EventType.PRICE_ERROR) and hist and ev.new_price_cents and ev.new_price_cents <= hist:
         notes.append("Mínimo del histórico propio (solo desde que este sistema monitoriza)")
     return Opportunity(ev, v.price_cents, pr.resale_cents, pr.net_profit_cents, pr.roi_pct, score, parts, notes,
-                       margin_pct=pr.margin_pct, verified=pr.verified, basis=pr.basis)
+                       margin_pct=pr.margin_pct, verified=pr.verified, basis=pr.basis, buy_size=v.title if v.available else None)
 
 
 def _prepare(products, cfg: MonitorConfig):
@@ -143,7 +152,8 @@ def deliver_outbox(store: Store, senders: dict[str, Callable[[dict], str | None]
 def run_cycle(cfg: MonitorConfig, defaults: dict, source, store: Store, market: MarketProvider,
               send: Callable[[dict], str | None], *, ping_rules: list[PingRule] | None = None,
               ping_senders: dict[str, Callable[[dict], str | None]] | None = None,
-              channel_senders: dict[str, Callable[[dict], str | None]] | None = None) -> dict:
+              channel_senders: dict[str, Callable[[dict], str | None]] | None = None,
+              profiles: list | None = None) -> dict:
     """Devuelve un resumen; nunca lanza por errores de la fuente (se registran)."""
     senders = {**(channel_senders or {}), **(ping_senders or {}), cfg.channel: send}
     try:
@@ -182,9 +192,19 @@ def run_cycle(cfg: MonitorConfig, defaults: dict, source, store: Store, market: 
         if opp is not None and pe_notes.get(ev.dedupe_key):
             opp.notes.extend(pe_notes[ev.dedupe_key])
         payload = build_embed(ev, opp, launch_collection=bool(cfg.collection), region=cfg.region, country=cfg.country)
-        queued += store.outbox_add(akey, ev.type.value, cfg.store, ev.product.key, cfg.channel, payload)
+        main_payload = payload
+        if profiles:
+            from .members import FAMILY_BY_CHANNEL, personalize
+            main_payload, _ = personalize(payload, ev, profiles, store, channel=cfg.channel,
+                                          family=FAMILY_BY_CHANNEL.get(cfg.channel, "Sneakers"), ships_es=cfg.ships_es,
+                                          size_stock=cfg.type != "jsonld")
+        queued += store.outbox_add(akey, ev.type.value, cfg.store, ev.product.key, cfg.channel, main_payload)
         if (ch := pick_discount_route(discount_pct(ev), routes)) and ch != cfg.channel and ch in senders:
-            store.outbox_add(f"route|{ch}|{akey}", "route", cfg.store, ev.product.key, ch, payload)
+            route_payload = payload
+            if profiles:
+                route_payload, _ = personalize(payload, ev, profiles, store, channel=ch, family="Rebajas",
+                                               ships_es=cfg.ships_es, size_stock=cfg.type != "jsonld")
+            store.outbox_add(f"route|{ch}|{akey}", "route", cfg.store, ev.product.key, ch, route_payload)
         for rule in ping_rules or []:
             if rule.channel in senders and rule_matches(rule, ev):
                 store.outbox_add(f"ping|{rule.name}|{akey}", "ping", cfg.store, ev.product.key, rule.channel,

@@ -91,11 +91,13 @@ def _loop(mcfg, cfg: Config, store: Store, market, stop: threading.Event):
     stop.wait(zlib.crc32(mcfg.name.encode()) % min(120, mcfg.interval_seconds))
     wanted = {r.channel for r in cfg.ping_rules} | {r["channel"] for r in cfg.defaults.get("discount_routes", [])}
     channel_senders = {ch: WebhookSender(u).send for ch in wanted if (u := cfg.webhook_for(ch))}
+    from .members import load_profiles
+    profiles = load_profiles(cfg.defaults.get("members_file", "config/miembros.toml"))
     failures = 0
     while not stop.is_set():
         try:
             res = run_cycle(mcfg, cfg.defaults, source, store, market, sender.send,
-                            ping_rules=cfg.ping_rules, channel_senders=channel_senders)
+                            ping_rules=cfg.ping_rules, channel_senders=channel_senders, profiles=profiles)
         except Exception as e:
             log.exception("monitor=%s fallo inesperado", mcfg.name)
             store.record_health(mcfg.name, False, error=f"{type(e).__name__}: {e}")

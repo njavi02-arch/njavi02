@@ -1,0 +1,12 @@
+# Perfiles de miembros (v0.8). Normalmente se rellenan solos con:  cookgroup miembros --sincronizar
+# (lee los roles que cada miembro eligió en la bienvenida). Aquí solo hay un perfil de PRUEBA.
+# Campos: id (id de usuario de Discord), nombre (solo para el staff), familias, marcas, regiones, tallas (EU),
+#         palabras (todas deben aparecer), negativas, precio_max_eur, excluir_canales, pausa, destino ("canal"|"md")
+
+[[miembro]]
+id = "100000000000000001"        # PRUEBA: sustituir por tu id real de Discord (o sincronizar con el bot)
+nombre = "Javi (perfil de prueba)"
+familias = ["Sneakers", "Rebajas", "Lanzamientos", "Raffles"]
+marcas = ["ASICS", "New Balance"]
+regiones = ["Envío a España"]
+tallas = ["44,5"]

@@ -144,6 +144,13 @@ class Store:
         return {r[0]: (r[1], r[2]) for r in rows}
 
     @_locked
+    def claim_mention(self, member_id: str, signal_key: str, channel: str) -> bool:
+        """True la primera vez que se menciona a este miembro por esta señal; False si ya se hizo (en cualquier canal)."""
+        cur = self.db.execute("INSERT OR IGNORE INTO mentions VALUES (?,?,?,?)", (member_id, signal_key, channel, now_iso()))
+        self.db.commit()
+        return cur.rowcount == 1
+
+    @_locked
     def has_alert(self, dedupe_key: str) -> bool:
         return self.db.execute("SELECT 1 FROM alerts WHERE dedupe_key=?", (dedupe_key,)).fetchone() is not None
 

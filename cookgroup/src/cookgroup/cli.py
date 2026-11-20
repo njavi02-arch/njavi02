@@ -39,13 +39,15 @@ def main(argv=None):
     ap = argparse.ArgumentParser(prog="cookgroup")
     ap.add_argument("--config", default="config/monitors.toml")
     ap.add_argument("--db", default=os.environ.get("COOKGROUP_DB", "cookgroup.db"))
-    ap.add_argument("command", choices=["run", "check-config", "check-releases", "probe", "test-webhook", "preview", "status"])
+    ap.add_argument("command", choices=["run", "check-config", "check-releases", "probe", "test-webhook", "preview", "status", "servidor", "miembros"])
     ap.add_argument("--channel", default="default", help="test-webhook: canal cuyo webhook probar")
     ap.add_argument("--out", default="preview.html", help="preview: fichero HTML de salida")
     ap.add_argument("--solo", help="probe: monitores o dominios separados por comas")
     ap.add_argument("--buscar", help="probe: solo los que contengan este texto (nombre, tienda o dominio)")
     ap.add_argument("--limite", type=int, help="probe: como mucho N fuentes")
     ap.add_argument("--reanudar", action="store_true", help="probe: continuar el último lote donde se cortó")
+    ap.add_argument("--aplicar", action="store_true", help="servidor: crear en Discord lo que falte (si no, solo muestra el plan)")
+    ap.add_argument("--sincronizar", action="store_true", help="miembros: leer los roles elegidos y escribir config/miembros.toml")
     a = ap.parse_args(argv)
     load_dotenv()
     h = logging.StreamHandler(sys.stdout)
@@ -131,6 +133,29 @@ def main(argv=None):
             print(f"{r.release_at.isoformat()}  {r.method:<11} {r.verdict:<7} {r.status.upper():<10} {r.name}")
         n_ok = sum(r.status == "confirmado" for r in cal.releases)
         print(f"OK: {len(cal.releases)} lanzamientos ({n_ok} confirmados con fuente oficial; los pendientes NO se avisan), canal '{cal.channel}', recordatorios {cal.reminders_minutes} min")
+        return 0
+    if a.command == "servidor":
+        from pathlib import Path
+        from .server_setup import DiscordAPI, apply, load_design, make_plan, read_env_keys, render_plan
+        d = load_design()
+        tok, gid = os.environ.get("DISCORD_BOT_TOKEN"), os.environ.get("DISCORD_GUILD_ID")
+        if not a.aplicar or not (tok and gid):
+            print(render_plan(make_plan(d, [], [], read_env_keys(Path(".env")))))
+            if a.aplicar:
+                print("\nFalta DISCORD_BOT_TOKEN y/o DISCORD_GUILD_ID en .env: no se ha creado nada.")
+                return 1
+            print("\n(Vista previa sobre un servidor vacío. Con --aplicar y el token del bot se crea lo que falte.)")
+            return 0
+        apply(d, DiscordAPI(tok, gid), Path(".env"))
+        return 0
+    if a.command == "miembros":
+        from .members import load_profiles
+        if a.sincronizar:
+            print("La sincronización lee los roles con el bot (DISCORD_BOT_TOKEN) y requiere activar «Server Members Intent» "
+                  "en el portal de desarrolladores. Pendiente de tu token; mientras, se usa config/miembros.toml.")
+        for pr in load_profiles(cfg.defaults.get("members_file", "config/miembros.toml")):
+            print(f"{pr.name}: familias={sorted(pr.families)} marcas={sorted(pr.brands)} regiones={sorted(pr.regions)} "
+                  f"tallas={sorted(pr.sizes)} pausa={pr.paused}")
         return 0
     if a.command == "check-config":
         print(f"OK: {len(cfg.monitors)} monitores, {sum(m.enabled for m in cfg.monitors)} activos")

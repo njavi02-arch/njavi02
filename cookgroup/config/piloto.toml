@@ -10,6 +10,7 @@
 # Intervalos conservadores: 13 fuentes ≈ 4-5 peticiones/min en total.
 
 [defaults]
+members_file = "config/miembros.toml"   # perfiles de miembros (v0.8)
 min_drop_pct = 10
 cooldown_seconds = 3600       # no repetir la misma alerta dentro de esta ventana
 min_score_alert = 40
@@ -39,6 +40,7 @@ discount_routes = [
 
 [[monitor]]
 name = "bstn-eu"
+ships_es = "sí"            # envío a España confirmado en el inventario (docs/inventory.csv)
 country = "DE"
 type = "bstn"
 store = "BSTN"
@@ -52,6 +54,7 @@ launch_channels = { launch = "lanzamientos", raffle = "raffles", restock = "rest
 
 [[monitor]]
 name = "footdistrict"
+ships_es = "sí"            # envío a España confirmado en el inventario (docs/inventory.csv)
 country = "ES"
 region = "eu"
 type = "shopify"
@@ -92,6 +95,7 @@ min_temperature = 100         # solo chollos con ≥100° de la comunidad (evita
 
 [[monitor]]
 name = "snipes-es"
+ships_es = "sí"            # envío a España confirmado en el inventario (docs/inventory.csv)
 type = "jsonld"
 store = "Snipes"
 country = "DE"

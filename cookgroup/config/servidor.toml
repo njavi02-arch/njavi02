@@ -1,0 +1,318 @@
+# Estructura de MI servidor de Discord (v0.8). Nombres, guías y textos propios.
+# La instala `INSTALAR_SERVIDOR.bat` (cookgroup servidor --aplicar) con el token de un bot tuyo.
+# Se puede repetir: lo que ya existe (mismo nombre) no se duplica, y los canales y conversaciones que ya tienes no se tocan.
+#
+# acceso:  "lectura"   = todos leen; solo el bot y el staff publican
+#          "miembros"  = todos leen y escriben
+#          "privado"   = solo staff (y el bot)
+# fuente:  quién publica: "bot:<canal del pipeline>" | "staff" | "miembros"
+# estado:  "construido" (el código existe y tiene pruebas) | "siguiente-lote" | "ampliacion" | "moderacion-humana"
+
+[servidor]
+nombre = "Drops Shoes Madrid (desarrollo)"
+canal_pruebas = "pruebas-bot"          # único canal para la PRIMERA entrega real autorizada
+
+# --------------------------------------------------------------------------------------------- ROLES
+[roles]
+staff = ["Staff"]
+familias = ["Sneakers", "Lanzamientos", "Raffles", "Rebajas", "Streetwear", "Pokémon-TCG", "LEGO", "Electrónica",
+            "Tiendas Madrid", "Reventa"]
+marcas = ["Nike", "Jordan", "adidas", "New Balance", "ASICS", "Salomon", "UGG", "Converse", "Vans", "Puma", "On",
+          "Hoka", "Timberland", "Yeezy"]
+regiones = ["Envío a España", "Recogida en Madrid", "UE", "Reino Unido", "EE. UU."]
+# Tallas EU de la 35 a la 49 en medias tallas: se crean como roles «EU 44,5»…
+tallas_eu = ["35", "35,5", "36", "36,5", "37", "37,5", "38", "38,5", "39", "39,5", "40", "40,5", "41", "41,5", "42",
+             "42,5", "43", "43,5", "44", "44,5", "45", "45,5", "46", "46,5", "47", "47,5", "48", "48,5", "49"]
+
+# --------------------------------------------------------------------------------------------- CANALES
+[[categoria]]
+nombre = "👋 EMPIEZA AQUÍ"
+[[categoria.canal]]
+nombre = "bienvenida"
+tipo = "texto"
+acceso = "lectura"
+fuente = "staff"
+estado = "construido"
+finalidad = "Qué es el servidor y los tres pasos para empezar"
+regla = "Mensaje fijo de bienvenida; se actualiza a mano"
+[[categoria.canal]]
+nombre = "normas"
+tipo = "texto"
+acceso = "lectura"
+fuente = "staff"
+estado = "construido"
+finalidad = "Normas de convivencia y de uso de los avisos"
+regla = "Mensaje fijo"
+[[categoria.canal]]
+nombre = "elige-tus-avisos"
+tipo = "texto"
+acceso = "lectura"
+fuente = "staff"
+estado = "construido"
+finalidad = "Elegir familias, marcas, región y tallas (preguntas de bienvenida de Discord)"
+regla = "Las preguntas asignan roles; el bot lee los roles para filtrar menciones"
+[[categoria.canal]]
+nombre = "guía-de-avisos"
+tipo = "texto"
+acceso = "lectura"
+fuente = "staff"
+estado = "construido"
+finalidad = "Cómo leer cada aviso: talla, moneda, envío, beneficio verificado o sin verificar"
+regla = "Mensaje fijo"
+[[categoria.canal]]
+nombre = "anuncios"
+tipo = "anuncios"
+acceso = "lectura"
+fuente = "staff"
+estado = "construido"
+finalidad = "Novedades del servidor"
+regla = "Solo staff"
+
+[[categoria]]
+nombre = "📆 LANZAMIENTOS"
+[[categoria.canal]]
+nombre = "lanzamientos"
+tipo = "foro"
+acceso = "lectura"
+fuente = "bot:lanzamientos"
+estado = "siguiente-lote"
+finalidad = "Un hilo por lanzamiento: modelo, SKU, fecha y hora de Madrid, retail, tiendas y enlaces oficiales"
+regla = "Hilo nuevo al detectar; los cambios se publican en el mismo hilo"
+[[categoria.canal]]
+nombre = "próximos-7-días"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:lanzamientos"
+estado = "siguiente-lote"
+finalidad = "Vista de los lanzamientos de la semana"
+regla = "Un resumen diario, solo confirmados"
+[[categoria.canal]]
+nombre = "raffles"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:raffles"
+estado = "siguiente-lote"
+finalidad = "Sorteos abiertos con cierre, requisitos, envío o recogida"
+regla = "Apertura, recordatorio, cambio de plazo y cierre; los vencidos desaparecen de la lista"
+
+[[categoria]]
+nombre = "👟 RESTOCKS Y TIENDAS"
+[[categoria.canal]]
+nombre = "restocks"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:restocks"
+estado = "construido"
+finalidad = "Vuelve una talla o un modelo (lanzamientos con ficha)"
+regla = "Solo con stock confirmado por talla"
+[[categoria.canal]]
+nombre = "sneakers-eu"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:sneakers"
+estado = "construido"
+finalidad = "Agregado de tiendas de sneakers de Europa (132 tiendas)"
+regla = "Nuevo, restock, talla nueva, bajada de precio"
+[[categoria.canal]]
+nombre = "sneakers-mundo"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:sneakers_world"
+estado = "construido"
+finalidad = "Tiendas de fuera de la UE (aduanas e IVA aparte)"
+regla = "Igual que sneakers-eu"
+[[categoria.canal]]
+nombre = "baloncesto"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:baloncesto"
+estado = "construido"
+finalidad = "Tiendas de baloncesto"
+regla = "Igual que sneakers-eu"
+[[categoria.canal]]
+nombre = "skate"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:skate"
+estado = "construido"
+finalidad = "Skateshops (SB Dunk, Vans…)"
+regla = "Igual que sneakers-eu"
+
+[[categoria]]
+nombre = "💸 REBAJAS"
+[[categoria.canal]]
+nombre = "rebajas-30"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:rebajas_30"
+estado = "siguiente-lote"
+finalidad = "Bajadas de precio del 30 % o más"
+regla = "Copia de la bajada en el tramo; sin mención duplicada"
+[[categoria.canal]]
+nombre = "rebajas-60"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:rebajas_60"
+estado = "siguiente-lote"
+finalidad = "Bajadas del 60 % o más y posibles errores de precio"
+regla = "Igual"
+[[categoria.canal]]
+nombre = "chollos"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:chollos"
+estado = "construido"
+finalidad = "Chollos de Chollometro/Dealabs/Mydealz…"
+regla = "Chollo nuevo con temperatura mínima"
+[[categoria.canal]]
+nombre = "outlet"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:outlet"
+estado = "construido"
+finalidad = "Outlets y retail con descuentos"
+regla = "Igual que sneakers-eu"
+
+[[categoria]]
+nombre = "🧩 OTRAS FAMILIAS"
+[[categoria.canal]]
+nombre = "streetwear"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:streetwear"
+estado = "construido"
+finalidad = "Corteiz, Stüssy, Palace, Supreme y tiendas de ropa (en la referencia)"
+regla = "Nuevo y restock por talla de ropa"
+[[categoria.canal]]
+nombre = "pokémon-tcg"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:coleccionables"
+estado = "construido"
+finalidad = "Pokémon y TCG (65 tiendas de la referencia)"
+regla = "Producto nuevo o vuelve a stock (sin tallas)"
+[[categoria.canal]]
+nombre = "lego"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:lego"
+estado = "ampliacion"
+finalidad = "LEGO (la referencia tiene un foro de calls-lego)"
+regla = "Por número de set"
+[[categoria.canal]]
+nombre = "electrónica"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:electronica"
+estado = "ampliacion"
+finalidad = "Consolas, GPU y componentes (referencia: calls-componentes, aio-componentes, playstation)"
+regla = "Por EAN o referencia del fabricante"
+[[categoria.canal]]
+nombre = "madrid-tiendas"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:madrid"
+estado = "ampliacion"
+finalidad = "Disponibilidad en tiendas físicas de Madrid"
+regla = "Tienda, ciudad, modalidad (recogida o venta en tienda) y hora de comprobación"
+
+[[categoria]]
+nombre = "📈 OPORTUNIDADES"
+[[categoria.canal]]
+nombre = "reventa"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:reventa"
+estado = "construido"
+finalidad = "Solo beneficio verificado con ventas cerradas comparables"
+regla = "Talla comprable = talla de las ventas; si no, no se publica aquí"
+
+[[categoria]]
+nombre = "💬 COMUNIDAD"
+[[categoria.canal]]
+nombre = "chat"
+tipo = "texto"
+acceso = "miembros"
+fuente = "miembros"
+estado = "construido"
+finalidad = "Conversación general"
+regla = "Normas; moderación del staff"
+[[categoria.canal]]
+nombre = "ayuda"
+tipo = "foro"
+acceso = "miembros"
+fuente = "miembros"
+estado = "construido"
+finalidad = "Preguntas: un hilo por duda; el staff marca la respuesta"
+regla = "Responde el staff en 24 h"
+[[categoria.canal]]
+nombre = "sugerencias"
+tipo = "foro"
+acceso = "miembros"
+fuente = "miembros"
+estado = "construido"
+finalidad = "Pedir tiendas, filtros o canales nuevos"
+regla = "El staff etiqueta: aceptada / en curso / descartada"
+[[categoria.canal]]
+nombre = "resultados"
+tipo = "texto"
+acceso = "miembros"
+fuente = "miembros"
+estado = "moderacion-humana"
+finalidad = "Los miembros comparten lo que consiguieron"
+regla = "Sin datos personales de pedidos; el staff revisa"
+[[categoria.canal]]
+nombre = "tickets"
+tipo = "texto"
+acceso = "lectura"
+fuente = "staff"
+estado = "moderacion-humana"
+finalidad = "Abrir un caso privado con el staff (pagos, problemas con avisos)"
+regla = "El miembro escribe en un hilo privado; lo atiende el staff"
+
+[[categoria]]
+nombre = "🔒 STAFF"
+privada = true
+[[categoria.canal]]
+nombre = "pruebas-bot"
+tipo = "texto"
+acceso = "privado"
+fuente = "bot:pruebas"
+estado = "construido"
+finalidad = "Primera entrega real autorizada y pruebas"
+regla = "Solo staff"
+[[categoria.canal]]
+nombre = "registro-bot"
+tipo = "texto"
+acceso = "privado"
+fuente = "bot:registro"
+estado = "construido"
+finalidad = "Errores de fuentes y entregas pendientes"
+regla = "Solo staff"
+[[categoria.canal]]
+nombre = "moderación"
+tipo = "texto"
+acceso = "privado"
+fuente = "staff"
+estado = "moderacion-humana"
+finalidad = "Casos de tickets, resultados y avisos de miembros"
+regla = "Solo staff"
+
+# --------------------------------------------------------------------------------------------- BIENVENIDA (Onboarding)
+# Preguntas nativas de Discord: el miembro elige y Discord le da los roles. No hace falta un bot en marcha para elegir.
+[[pregunta]]
+titulo = "¿Qué quieres que te avisemos?"
+roles = "familias"
+multiple = true
+[[pregunta]]
+titulo = "¿Qué marcas te interesan?"
+roles = "marcas"
+multiple = true
+[[pregunta]]
+titulo = "¿Dónde compras?"
+roles = "regiones"
+multiple = true
+[[pregunta]]
+titulo = "Tu talla de zapatilla (EU). Puedes elegir varias"
+roles = "tallas_eu"
+multiple = true

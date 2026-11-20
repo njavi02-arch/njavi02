@@ -99,3 +99,4 @@ class Opportunity:
     margin_pct: float | None = None      # beneficio neto / precio de reventa
     verified: bool = False               # beneficio publicable (ventas recientes de la misma ref/talla/estado/mercado)
     basis: str | None = None             # texto de la base del cálculo (n ventas, mercado, fechas, fuente)
+    buy_size: str | None = None          # talla concreta que se puede comprar y a la que corresponden las ventas

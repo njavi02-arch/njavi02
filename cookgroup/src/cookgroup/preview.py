@@ -66,10 +66,11 @@ def sample_payloads() -> list[tuple[str, str, dict]]:
     out: list[tuple[str, str, dict]] = _bstn_samples()
     out.append(("sneakers", "RESTOCK · datos reales de Family 3.0 (estado de stock simulado)",
                 build_embed(Event(EventType.RESTOCK, p, p.available_variants, detected_at=TS))))
-    opp = Opportunity(Event(EventType.NEW_PRODUCT, p, p.available_variants), 9000, 15500, 3440, 38.2, 71,
-                      margin_pct=22.2, verified=True,
-                      basis="SIMULACIÓN: 5 ventas cerradas de EJEMPLO en stockx, talla 43, nuevo, últimos 30 días; "
-                            "comisión 9 % + envío venta 5,00 €")
+    sz = p.available_variants[0].title          # la talla de las ventas ES una talla disponible (corrección v0.8)
+    opp = Opportunity(Event(EventType.NEW_PRODUCT, p, p.available_variants), p.available_variants[0].price_cents, 15500,
+                      3440, 38.2, 71, margin_pct=22.2, verified=True, buy_size=sz,
+                      basis=f"SIMULACIÓN: 5 ventas cerradas de EJEMPLO en stockx, talla {sz}, nuevo, la más reciente hace "
+                            f"3 días y la más antigua hace 26; costes: comisión 9 % + envío de venta 5,00 € + envío de compra 0 €")
     out.append(("sneakers", "NUEVO PRODUCTO con beneficio VERIFICADO (ventas de EJEMPLO: simulación)",
                 build_embed(Event(EventType.NEW_PRODUCT, p, p.available_variants, detected_at=TS), opp)))
     opp2 = Opportunity(Event(EventType.NEW_PRODUCT, p, p.available_variants), 9000, None, None, None, 0,

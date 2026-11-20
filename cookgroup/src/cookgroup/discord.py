@@ -2,11 +2,13 @@
 from __future__ import annotations
 
 import time
+from dataclasses import replace
 from urllib.parse import quote_plus
 
 import requests
 
 from .models import Event, EventType, Opportunity
+from .normalize import normalize_size
 
 COLORS = {EventType.RESTOCK: 0x2ECC71, EventType.NEW_PRODUCT: 0x3498DB, EventType.NEW_SIZE: 0xF1C40F,
           EventType.PRICE_DROP: 0xE67E22, EventType.SOLD_OUT: 0x95A5A6, EventType.PRICE_ERROR: 0xE74C3C}
@@ -107,9 +109,15 @@ def build_embed(ev: Event, opp: Opportunity | None = None, market_note: str | No
                        "value": ", ".join(size_label(v.title) for v in ev.variants if v.title != "Oferta")[:1000], "inline": False})
     if launch_collection:
         fields.append({"name": "Fecha", "value": "La tienda no la publica en su catálogo: consúltala en el enlace", "inline": False})
+    buyable = {normalize_size(v.title) for v in ev.variants if v.available}
+    if opp is not None and opp.verified and normalize_size(opp.buy_size or "") not in buyable:
+        # Defensa: nunca presentar como comprable un beneficio calculado con ventas de una talla que no está a la venta
+        opp = replace(opp, verified=False, notes=["las ventas son de una talla que no está disponible en este aviso"])
     if opp is not None and opp.verified and opp.net_profit_cents is not None:
-        fields.append({"name": "💶 Beneficio neto (verificado)", "value": f"**{eur(opp.net_profit_cents)}** · margen {opp.margin_pct:.0f} % "
-                       f"sobre venta · ROI {opp.roi_pct:.0f} % sobre compra", "inline": False})
+        fields.append({"name": f"💶 Beneficio neto verificado · talla {size_label(opp.buy_size)}",
+                       "value": f"**{eur(opp.net_profit_cents)}** comprando la {size_label(opp.buy_size)} a "
+                                f"{eur(opp.buy_price_cents)} · margen {opp.margin_pct:.0f} % sobre venta · "
+                                f"ROI {opp.roi_pct:.0f} % sobre compra", "inline": False})
         fields.append({"name": "Reventa (mediana)", "value": eur(opp.resale_price_cents), "inline": True})
         fields.append({"name": "Score", "value": f"{opp.score}/100", "inline": True})
         if opp.basis:
