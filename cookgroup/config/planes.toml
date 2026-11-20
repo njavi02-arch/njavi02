@@ -1,0 +1,11 @@
+# Planes de suscripción (v0.9). PRECIO PROPUESTO, PENDIENTE DE TU DECISIÓN: no se cobra nada real hasta que
+# pongas una clave sk_live_ en .env y lo decidas tú (ver docs/v09/APERTURA.md).
+[plan.mensual]
+nombre = "Suscripción mensual"
+precio_eur = 19.99          # IVA incluido (propuesta)
+intervalo = "month"
+gracia_dias = 3             # si falla un cobro, se mantiene el acceso 3 días mientras Stripe reintenta
+stripe_price_env = "STRIPE_PRICE_MENSUAL"   # id del precio en Stripe (price_…) en .env
+incluye = ["Avisos de restocks y novedades de 260 tiendas, con tu talla", "Foro de lanzamientos con hora de Madrid",
+           "Raffles con cierre y recordatorio", "Rebajas y chollos por tramos", "Menciones solo para tus tallas y marcas",
+           "Soporte por ticket privado"]

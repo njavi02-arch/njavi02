@@ -27,7 +27,7 @@ def load_design(path: str | Path = "config/servidor.toml") -> dict:
 
 def all_roles(design: dict) -> list[str]:
     r = design["roles"]
-    out = list(r.get("staff", [])) + r.get("familias", []) + r.get("marcas", []) + r.get("regiones", [])
+    out = list(dict.fromkeys(r.get("acceso", []) + r.get("staff", []))) + r.get("familias", []) + r.get("marcas", []) + r.get("regiones", [])
     out += [f"EU {t}" for t in r.get("tallas_eu", [])]
     return out
 
@@ -40,15 +40,15 @@ def _norm(n: str) -> str:
     return re.sub(r"[^\w-]", "", n.lower().replace(" ", "-"))
 
 
-def overwrites(acceso: str, guild_id: str, staff_role_id: str | None) -> list[dict]:
-    if acceso == "lectura":
-        return [{"id": guild_id, "type": 0, "allow": str(VIEW), "deny": str(SEND | SEND_THREADS | CREATE_PUB_THREADS)}]
-    if acceso == "privado":
-        ow = [{"id": guild_id, "type": 0, "allow": "0", "deny": str(VIEW)}]
-        if staff_role_id:
-            ow.append({"id": staff_role_id, "type": 0, "allow": str(VIEW | SEND), "deny": "0"})
-        return ow
-    return []
+def overwrites(audiencia: str, acceso: str, guild_id: str, role_ids: dict[str, str]) -> list[dict]:
+    """Sobrescrituras de Discord a partir de la matriz de access.py (misma fuente que las pruebas de permisos)."""
+    from .access import EVERYONE, channel_overwrites
+    out = []
+    for role, (allow, deny) in channel_overwrites(audiencia, acceso).items():
+        rid = guild_id if role == EVERYONE else role_ids.get(role)
+        if rid:
+            out.append({"id": rid, "type": 0, "allow": str(allow), "deny": str(deny)})
+    return out
 
 
 @dataclass
@@ -110,8 +110,8 @@ class DiscordAPI:
 
     def roles(self): return self._ok(self.http.get(f"{API}/guilds/{self.g}/roles", headers=self.h))
     def channels(self): return self._ok(self.http.get(f"{API}/guilds/{self.g}/channels", headers=self.h))
-    def create_role(self, name): return self._ok(self.http.post(f"{API}/guilds/{self.g}/roles", headers=self.h,
-                                                                json={"name": name, "mentionable": False}))
+    def create_role(self, name, permissions: int = 0): return self._ok(self.http.post(
+        f"{API}/guilds/{self.g}/roles", headers=self.h, json={"name": name, "mentionable": False, "permissions": str(permissions)}))
     def create_channel(self, body): return self._ok(self.http.post(f"{API}/guilds/{self.g}/channels", headers=self.h, json=body))
     def create_webhook(self, channel_id, name): return self._ok(self.http.post(f"{API}/channels/{channel_id}/webhooks",
                                                                              headers=self.h, json={"name": name}))
@@ -128,24 +128,24 @@ def apply(design: dict, api: DiscordAPI, env_path: Path, log=print) -> dict:
     roles, chans = api.roles(), api.channels()
     plan = make_plan(design, roles, chans, read_env_keys(env_path))
     role_ids = {r["name"]: r["id"] for r in roles}
+    from .access import GUILD_PERMS, OWNER
     for name in plan.roles:
-        role_ids[name] = api.create_role(name)["id"]
-    staff = next((role_ids.get(n) for n in design["roles"].get("staff", [])), None)
+        perms = 0 if name == OWNER else GUILD_PERMS.get(name, 0)   # Propietario: tu cuenta ya es dueña; el rol es visible, sin admin
+        role_ids[name] = api.create_role(name, perms)["id"]
     cat_ids = {_norm(c["name"]): c["id"] for c in chans if c["type"] == 4}
     ch_ids = {_norm(c["name"]): c["id"] for c in chans if c["type"] != 4}
     notes = []
     for cat in design["categoria"]:
         if _norm(cat["nombre"]) not in cat_ids:
-            body = {"name": cat["nombre"], "type": 4}
-            if cat.get("privada"):
-                body["permission_overwrites"] = overwrites("privado", api.g, staff)
+            body = {"name": cat["nombre"], "type": 4,
+                    "permission_overwrites": overwrites(cat.get("audiencia", "suscriptores"), "lectura", api.g, role_ids)}
             cat_ids[_norm(cat["nombre"])] = api.create_channel(body)["id"]
         for ch in cat["canal"]:
             if _norm(ch["nombre"]) in ch_ids:
                 continue
             body = {"name": ch["nombre"], "type": TYPES[ch["tipo"]], "parent_id": cat_ids[_norm(cat["nombre"])],
                     "topic": ch.get("finalidad", "")[:1024],
-                    "permission_overwrites": overwrites(ch["acceso"], api.g, staff)}
+                    "permission_overwrites": overwrites(cat.get("audiencia", "suscriptores"), ch["acceso"], api.g, role_ids)}
             try:
                 ch_ids[_norm(ch["nombre"])] = api.create_channel(body)["id"]
             except RuntimeError as e:   # foros/anuncios exigen «Comunidad»: se crea como texto y se anota

@@ -39,13 +39,15 @@ def main(argv=None):
     ap = argparse.ArgumentParser(prog="cookgroup")
     ap.add_argument("--config", default="config/monitors.toml")
     ap.add_argument("--db", default=os.environ.get("COOKGROUP_DB", "cookgroup.db"))
-    ap.add_argument("command", choices=["run", "check-config", "check-releases", "probe", "test-webhook", "preview", "status", "servidor", "miembros"])
+    ap.add_argument("command", choices=["run", "check-config", "check-releases", "probe", "test-webhook", "preview", "status", "servidor", "miembros", "web", "cuenta"])
     ap.add_argument("--channel", default="default", help="test-webhook: canal cuyo webhook probar")
     ap.add_argument("--out", default="preview.html", help="preview: fichero HTML de salida")
     ap.add_argument("--solo", help="probe: monitores o dominios separados por comas")
     ap.add_argument("--buscar", help="probe: solo los que contengan este texto (nombre, tienda o dominio)")
     ap.add_argument("--limite", type=int, help="probe: como mucho N fuentes")
     ap.add_argument("--reanudar", action="store_true", help="probe: continuar el último lote donde se cortó")
+    ap.add_argument("--reintentar", help="cuenta: reintentar la sincronización del rol de este miembro (id de Discord)")
+    ap.add_argument("--puerto", type=int, default=8765, help="web: puerto local")
     ap.add_argument("--aplicar", action="store_true", help="servidor: crear en Discord lo que falte (si no, solo muestra el plan)")
     ap.add_argument("--sincronizar", action="store_true", help="miembros: leer los roles elegidos y escribir config/miembros.toml")
     a = ap.parse_args(argv)
@@ -100,18 +102,17 @@ def main(argv=None):
         print(f"Vista previa escrita en {write_preview(a.out).resolve()}")
         return 0
     if a.command == "test-webhook":
-        from .discord import WebhookSender
-        from .preview import test_payload
-        url = cfg.webhook_for(a.channel)
-        if not url:
-            print("Falta el webhook: pon DISCORD_WEBHOOK_DEFAULT=<url> en el fichero .env")
-            return 1
-        mid = WebhookSender(url).send(test_payload())
-        from datetime import datetime, timezone
+        # v0.9: la prueba SOLO puede ir a #pruebas-bot (DISCORD_WEBHOOK_PRUEBAS); nunca al webhook general
+        from .real_delivery import Refused, send_first_real
         from .store import Store
-        Store(a.db).record_alert(f"prueba|{datetime.now(timezone.utc).isoformat()}", "prueba", "PRUEBA", "-", mid)
-        print(f"OK: mensaje de PRUEBA confirmado por Discord (id {mid}). Míralo en tu canal privado de pruebas.")
-        return 0
+        try:
+            row = send_first_real(store=Store(a.db))
+        except Refused as e:
+            print(f"NO SE HA ENVIADO NADA: {e}")
+            return 1
+        print(f"{row['estado'].upper()}: mensaje {row['message_id']} en #{row['canal']} (canal {row['channel_id']}, "
+              f"servidor {row['guild_id']}). Registrado en docs/v09/ENTREGAS_REALES.csv")
+        return 0 if row["estado"] == "entrega real confirmada" else 2
     if a.command == "probe":
         from .diagnostics import finish_batch, run_probe, select
         from .pipeline import _prepare
@@ -133,6 +134,31 @@ def main(argv=None):
             print(f"{r.release_at.isoformat()}  {r.method:<11} {r.verdict:<7} {r.status.upper():<10} {r.name}")
         n_ok = sum(r.status == "confirmado" for r in cal.releases)
         print(f"OK: {len(cal.releases)} lanzamientos ({n_ok} confirmados con fuente oficial; los pendientes NO se avisan), canal '{cal.channel}', recordatorios {cal.reminders_minutes} min")
+        return 0
+    if a.command in ("web", "cuenta"):
+        from .billing import Billing, DiscordRoles, load_plans
+        from .store import Store
+        from .web import App, LocalRoles, auto_reconcile_once, serve, start_auto_reconcile
+        b = Billing(Store(a.db), load_plans())
+        tok, gid, rid = (os.environ.get(k) for k in ("DISCORD_BOT_TOKEN", "DISCORD_GUILD_ID", "DISCORD_ROL_SUSCRIPTOR_ID"))
+        roles = DiscordRoles(tok, gid, rid) if (tok and gid and rid) else LocalRoles()
+        app = App(b, roles)
+        if a.command == "cuenta":
+            if not a.reintentar:
+                print("Uso: cookgroup cuenta --reintentar <id de Discord>")
+                return 1
+            print(b.reconcile(roles, only=a.reintentar, actor="dueño (consola)"))
+            return 0
+        pin = os.environ.get("PANEL_PIN") or __import__("secrets").token_hex(3)
+        start_auto_reconcile(app)
+        srv = serve(app, pin, a.puerto)
+        print(f"Modo: {app.mode} · Discord: {'bot real' if isinstance(roles, DiscordRoles) else 'SIMULADO (sin DISCORD_BOT_TOKEN/ROL)'}")
+        print(f"Página de venta:   http://127.0.0.1:{a.puerto}/")
+        print(f"Panel del dueño:   http://127.0.0.1:{a.puerto}/admin?pin={pin}")
+        try:
+            srv.serve_forever()
+        except KeyboardInterrupt:
+            pass
         return 0
     if a.command == "servidor":
         from pathlib import Path

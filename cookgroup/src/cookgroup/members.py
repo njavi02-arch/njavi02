@@ -60,6 +60,7 @@ class Profile:
     excluded_channels: set[str] = field(default_factory=set)
     paused: bool = False
     destination: str = "canal"           # "canal" (mención en el canal) | "md" (mensaje privado, requiere bot)
+    entitled: bool = True                # v0.9: tiene acceso de pago (Suscriptor activo o equipo). Lo fija la facturación
 
     @classmethod
     def from_dict(cls, d: dict) -> "Profile":
@@ -67,15 +68,16 @@ class Profile:
         return cls(str(d["id"]), d.get("nombre", ""), set(d.get("familias", [])), set(d.get("marcas", [])), sizes,
                    set(d.get("regiones", [])), list(d.get("palabras", [])), list(d.get("negativas", [])),
                    d.get("precio_max_eur"), set(d.get("excluir_canales", [])), bool(d.get("pausa", False)),
-                   d.get("destino", "canal"))
+                   d.get("destino", "canal"), bool(d.get("activo", True)))
 
     @classmethod
     def from_roles(cls, member_id: str, name: str, role_names: list[str], design: dict) -> "Profile":
         r = design.get("roles", {})
         roles = set(role_names)
         sizes = {eu_size(x[3:]) for x in roles if x.startswith("EU ")}
+        from .access import is_entitled
         return cls(member_id, name, roles & set(r.get("familias", [])), roles & set(r.get("marcas", [])),
-                   {s for s in sizes if s}, roles & set(r.get("regiones", [])))
+                   {s for s in sizes if s}, roles & set(r.get("regiones", [])), entitled=is_entitled(roles))
 
 
 def load_profiles(path: str | Path) -> list[Profile]:
@@ -102,6 +104,8 @@ def _has_word(text: str, word: str) -> bool:
 
 def decide(p: Profile, ev: Event, *, channel: str, family: str, ships_es: str | None, size_stock: bool = True) -> Decision:
     """¿Hay que mencionar a este miembro por esta señal? Devuelve el motivo en ambos casos (sirve para pruebas y panel)."""
+    if not p.entitled:
+        return Decision(False, "sin suscripción activa: sus preferencias se conservan, pero no recibe menciones")
     if p.paused:
         return Decision(False, "avisos en pausa")
     if channel in p.excluded_channels:

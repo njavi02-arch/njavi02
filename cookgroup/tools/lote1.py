@@ -60,7 +60,7 @@ def run(log=print) -> dict:
 
     # 0. el miembro elige en la bienvenida
     design = __import__("tomllib").loads((ROOT / "config/servidor.toml").read_text(encoding="utf-8"))
-    from_roles = Profile.from_roles(me.member_id, "Javi", ["Sneakers", "Rebajas", "Lanzamientos", "Raffles", "ASICS",
+    from_roles = Profile.from_roles(me.member_id, "Javi", ["Suscriptor activo", "Sneakers", "Rebajas", "Lanzamientos", "Raffles", "ASICS",
                                                          "New Balance", "Envío a España", "EU 44,5"], design)
     check("0. Bienvenida → perfil", from_roles.sizes == {"44.5"} and from_roles.brands == {"ASICS", "New Balance"}
           and "Envío a España" in from_roles.regions,

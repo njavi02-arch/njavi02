@@ -1,0 +1,16 @@
+# Tareas editoriales del equipo (las ve el panel del dueño). estado: pendiente | hecha
+[[tarea]]
+titulo = "Publicar el texto de #bienvenida, #normas y #guía-de-avisos (docs/v08/TEXTOS_SERVIDOR.md)"
+responsable = "Javier"
+fecha = "antes de abrir"
+estado = "pendiente"
+[[tarea]]
+titulo = "Confirmar con fuente oficial el AF1 Travis Scott × GTA VI (config/releases.toml) o dejarlo pendiente"
+responsable = "Staff"
+fecha = "21/11"
+estado = "pendiente"
+[[tarea]]
+titulo = "Revisar precio, condiciones y textos legales de la página de venta (docs/v09/APERTURA.md)"
+responsable = "Javier"
+fecha = "antes de cobrar"
+estado = "pendiente"

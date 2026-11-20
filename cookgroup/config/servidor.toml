@@ -2,7 +2,12 @@
 # La instala `INSTALAR_SERVIDOR.bat` (cookgroup servidor --aplicar) con el token de un bot tuyo.
 # Se puede repetir: lo que ya existe (mismo nombre) no se duplica, y los canales y conversaciones que ya tienes no se tocan.
 #
-# acceso:  "lectura"   = todos leen; solo el bot y el staff publican
+# audiencia (quién VE la categoría; v0.9):
+#          "todos"        = también visitantes (presentación, planes, muestra, soporte)
+#          "suscriptores" = solo con el rol «Suscriptor activo» (y el equipo)
+#          "equipo"       = solo Propietario, Staff y Moderador
+# acceso (quién ESCRIBE, dentro de quien ve):
+#          "lectura"   = solo el bot y el equipo publican
 #          "miembros"  = todos leen y escriben
 #          "privado"   = solo staff (y el bot)
 # fuente:  quién publica: "bot:<canal del pipeline>" | "staff" | "miembros"
@@ -14,7 +19,10 @@ canal_pruebas = "pruebas-bot"          # único canal para la PRIMERA entrega re
 
 # --------------------------------------------------------------------------------------------- ROLES
 [roles]
+# Roles de ACCESO (dan permisos). «Visitante» = cualquiera sin «Suscriptor activo» (es @everyone; no se asigna).
+acceso = ["Propietario", "Staff", "Moderador", "Suscriptor activo"]
 staff = ["Staff"]
+# Roles de PREFERENCIA (no dan ningún permiso: solo personalizan menciones de quien ya tiene acceso)
 familias = ["Sneakers", "Lanzamientos", "Raffles", "Rebajas", "Streetwear", "Pokémon-TCG", "LEGO", "Electrónica",
             "Tiendas Madrid", "Reventa"]
 marcas = ["Nike", "Jordan", "adidas", "New Balance", "ASICS", "Salomon", "UGG", "Converse", "Vans", "Puma", "On",
@@ -27,6 +35,7 @@ tallas_eu = ["35", "35,5", "36", "36,5", "37", "37,5", "38", "38,5", "39", "39,5
 # --------------------------------------------------------------------------------------------- CANALES
 [[categoria]]
 nombre = "👋 EMPIEZA AQUÍ"
+audiencia = "todos"
 [[categoria.canal]]
 nombre = "bienvenida"
 tipo = "texto"
@@ -69,7 +78,40 @@ finalidad = "Novedades del servidor"
 regla = "Solo staff"
 
 [[categoria]]
+nombre = "💳 PLANES Y MUESTRA"
+audiencia = "todos"
+[[categoria.canal]]
+nombre = "planes"
+tipo = "texto"
+acceso = "lectura"
+fuente = "staff"
+estado = "construido"
+finalidad = "Qué incluye la suscripción, precio y cómo darse de alta"
+regla = "Mensaje fijo con enlace a la página de alta"
+[[categoria.canal]]
+nombre = "muestra-gratis"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:muestra"
+estado = "construido"
+finalidad = "Ejemplos reales con retraso para que un visitante vea el servicio"
+regla = "Como mucho 3 avisos al día, publicados 60 min después y sin menciones"
+
+[[categoria]]
+nombre = "🛟 SOPORTE"
+audiencia = "todos"
+[[categoria.canal]]
+nombre = "soporte"
+tipo = "texto"
+acceso = "tickets"
+fuente = "staff"
+estado = "moderacion-humana"
+finalidad = "Abrir un ticket privado (pagos, acceso, avisos). Lo ven solo el cliente y el equipo"
+regla = "El cliente crea un hilo PRIVADO; lo atiende Staff/Moderador; ver guía del dueño"
+
+[[categoria]]
 nombre = "📆 LANZAMIENTOS"
+audiencia = "suscriptores"
 [[categoria.canal]]
 nombre = "lanzamientos"
 tipo = "foro"
@@ -97,6 +139,7 @@ regla = "Apertura, recordatorio, cambio de plazo y cierre; los vencidos desapare
 
 [[categoria]]
 nombre = "👟 RESTOCKS Y TIENDAS"
+audiencia = "suscriptores"
 [[categoria.canal]]
 nombre = "restocks"
 tipo = "texto"
@@ -140,6 +183,7 @@ regla = "Igual que sneakers-eu"
 
 [[categoria]]
 nombre = "💸 REBAJAS"
+audiencia = "suscriptores"
 [[categoria.canal]]
 nombre = "rebajas-30"
 tipo = "texto"
@@ -175,6 +219,7 @@ regla = "Igual que sneakers-eu"
 
 [[categoria]]
 nombre = "🧩 OTRAS FAMILIAS"
+audiencia = "suscriptores"
 [[categoria.canal]]
 nombre = "streetwear"
 tipo = "texto"
@@ -218,6 +263,7 @@ regla = "Tienda, ciudad, modalidad (recogida o venta en tienda) y hora de compro
 
 [[categoria]]
 nombre = "📈 OPORTUNIDADES"
+audiencia = "suscriptores"
 [[categoria.canal]]
 nombre = "reventa"
 tipo = "texto"
@@ -229,6 +275,7 @@ regla = "Talla comprable = talla de las ventas; si no, no se publica aquí"
 
 [[categoria]]
 nombre = "💬 COMUNIDAD"
+audiencia = "suscriptores"
 [[categoria.canal]]
 nombre = "chat"
 tipo = "texto"
@@ -261,18 +308,9 @@ fuente = "miembros"
 estado = "moderacion-humana"
 finalidad = "Los miembros comparten lo que consiguieron"
 regla = "Sin datos personales de pedidos; el staff revisa"
-[[categoria.canal]]
-nombre = "tickets"
-tipo = "texto"
-acceso = "lectura"
-fuente = "staff"
-estado = "moderacion-humana"
-finalidad = "Abrir un caso privado con el staff (pagos, problemas con avisos)"
-regla = "El miembro escribe en un hilo privado; lo atiende el staff"
-
 [[categoria]]
 nombre = "🔒 STAFF"
-privada = true
+audiencia = "equipo"
 [[categoria.canal]]
 nombre = "pruebas-bot"
 tipo = "texto"
