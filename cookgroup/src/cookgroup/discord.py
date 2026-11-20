@@ -186,3 +186,9 @@ class WebhookSender:
                 raise RuntimeError(f"Discord rechazó el mensaje: HTTP {r.status_code} {r.text[:200]}")
             return str(r.json().get("id"))
         raise RuntimeError("Discord: reintentos agotados")
+
+    def edit(self, message_id: str, payload: dict) -> None:
+        """Edita un mensaje propio del webhook (p. ej. la lista fijada de raffles abiertos)."""
+        r = self.session.patch(f"{self.url}/messages/{message_id}", json=payload, timeout=15)
+        if r.status_code >= 400:
+            raise RuntimeError(f"Discord rechazó la edición: HTTP {r.status_code}")

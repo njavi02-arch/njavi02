@@ -32,18 +32,28 @@ FAMILY_BY_CHANNEL = {"sneakers": "Sneakers", "sneakers_world": "Sneakers", "balo
 
 
 def eu_size(raw: str | None) -> str | None:
-    """'44,5' / 'EU 44.5' / '44½' → '44.5'. Otros sistemas (US/UK) y tallas de ropa → None."""
+    """'44,5' / 'EU 44.5' / '44½' / '44 1/2' / 'UK 6 (EU 40)' → EU canónica. UK/US sin EU y tallas de ropa → None."""
     if raw is None:
         return None
     s = str(raw).strip().replace(",", ".")
+    if (m := re.search(r"\(EU\s*(\d{2}(?:\.5)?)\)", s, re.I)):          # «UK 6 (EU 40)»: la tienda da la EU
+        s = m.group(1)
+    if re.match(r"^(XXS|XS|S|M|L|XL|XXL|\dXL)\b", s, re.I):               # ropa («XXL - EU 44») no es talla de calzado
+        return None
     n = normalize_size(s)
     if not n or not re.fullmatch(r"\d{2}(\.5| 1/3| 2/3)?", n):
         return None
     return n
 
 
+def uk_size(raw: str | None) -> str | None:
+    """'UK 9.5' / 'UK9.5' / 'UK 6 (EU 40) / Black' → '9.5' (solo si la tienda usa UK)."""
+    m = re.match(r"^\s*UK\s*(\d{1,2}(?:\.5)?)\b", str(raw or ""), re.I)
+    return m.group(1) if m else None
+
+
 def size_label_es(s: str) -> str:
-    return "EU " + s.replace(".", ",")
+    return ("UK " + s[2:] if s.startswith("UK") else "EU " + s).replace(".", ",")
 
 
 @dataclass
@@ -60,6 +70,7 @@ class Profile:
     excluded_channels: set[str] = field(default_factory=set)
     paused: bool = False
     destination: str = "canal"           # "canal" (mención en el canal) | "md" (mensaje privado, requiere bot)
+    uk_sizes: set[str] = field(default_factory=set)        # opcional: tallas UK para tiendas que solo publican UK
     stores: set[str] = field(default_factory=set)          # solo estas tiendas (vacío = todas)
     excluded_stores: set[str] = field(default_factory=set)
     entitled: bool = True                # v0.9: tiene acceso de pago (Suscriptor activo o equipo). Lo fija la facturación
@@ -70,7 +81,8 @@ class Profile:
         return cls(str(d["id"]), d.get("nombre", ""), set(d.get("familias", [])), set(d.get("marcas", [])), sizes,
                    set(d.get("regiones", [])), list(d.get("palabras", [])), list(d.get("negativas", [])),
                    d.get("precio_max_eur"), set(d.get("excluir_canales", [])), bool(d.get("pausa", False)),
-                   d.get("destino", "canal"), {x.upper() for x in d.get("tiendas", [])},
+                   d.get("destino", "canal"), {str(x).replace(",", ".") for x in d.get("tallas_uk", [])},
+                   {x.upper() for x in d.get("tiendas", [])},
                    {x.upper() for x in d.get("excluir_tiendas", [])}, bool(d.get("activo", True)))
 
     @classmethod
@@ -78,9 +90,10 @@ class Profile:
         r = design.get("roles", {})
         roles = set(role_names)
         sizes = {eu_size(x[3:]) for x in roles if x.startswith("EU ")}
+        uk = {x[3:].replace(",", ".") for x in roles if x.startswith("UK ")}
         from .access import is_entitled
         return cls(member_id, name, roles & set(r.get("familias", [])), roles & set(r.get("marcas", [])),
-                   {s for s in sizes if s}, roles & set(r.get("regiones", [])), entitled=is_entitled(roles))
+                   {s for s in sizes if s}, roles & set(r.get("regiones", [])), uk_sizes=uk, entitled=is_entitled(roles))
 
 
 def load_profiles(path: str | Path) -> list[Profile]:
@@ -136,6 +149,18 @@ def decide(p: Profile, ev: Event, *, channel: str, family: str, ships_es: str | 
         return Decision(True, "cumple familia, marca y región (no ha elegido talla)")
     sized = {eu_size(v.title): v for v in avail}
     sized.pop(None, None)
+    all_vars = ev.product.variants or avail
+    uks = {uk_size(v.title) for v in avail} - {None}
+    if not sized and (uks or any(uk_size(v.title) for v in all_vars)):
+        mine_uk = tuple(sorted((s for s in uks if s in p.uk_sizes), key=float))
+        if mine_uk and size_stock:
+            return Decision(True, "su talla UK está disponible: " + ", ".join(f"UK {s}" for s in mine_uk),
+                            tuple(f"UK{s}" for s in mine_uk))
+        return Decision(False, "la tienda publica tallas UK sin equivalencia EU" + (": añade tu talla UK en tus preferencias"
+                                                                                      if not p.uk_sizes else " y la tuya no está"))
+    clothing = not sized and any(re.match(r"^\s*-?\s*/?\s*(XXS|XS|S|M|L|XL|XXL|\dXL)\b", v.title, re.I) for v in all_vars)
+    if clothing:
+        return Decision(False, "es ropa: tus tallas de zapatilla no aplican (no has elegido talla de ropa)")
     if not size_stock or not sized:
         if ev.type in SIZE_EVENTS:
             return Decision(False, "la tienda solo da stock general: no se puede confirmar su talla")

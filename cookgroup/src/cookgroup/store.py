@@ -151,6 +151,11 @@ class Store:
         return cur.rowcount == 1
 
     @_locked
+    def alert_message_id(self, dedupe_key: str) -> str | None:
+        r = self.db.execute("SELECT message_id FROM alerts WHERE dedupe_key=?", (dedupe_key,)).fetchone()
+        return r[0] if r and r[0] not in (None, "", "None") else None
+
+    @_locked
     def has_alert(self, dedupe_key: str) -> bool:
         return self.db.execute("SELECT 1 FROM alerts WHERE dedupe_key=?", (dedupe_key,)).fetchone() is not None
 

@@ -144,7 +144,7 @@ def deliver_outbox(store: Store, senders: dict[str, Callable[[dict], str | None]
             log.warning("entrega pendiente (%s): %s", key[:60], err)
             break
         store.outbox_done(key, mid)
-        k = "route" if etype == "route" else "ping" if etype == "ping" else "main"
+        k = "route" if etype == "route" else "ping" if etype == "ping" else "tienda" if etype == "tienda" else "main"
         by_type[k] = by_type.get(k, 0) + 1
     return {"by_type": by_type, "error": err, "pending": len(store.outbox_pending(store_name, limit=1000))}
 
@@ -153,7 +153,7 @@ def run_cycle(cfg: MonitorConfig, defaults: dict, source, store: Store, market: 
               send: Callable[[dict], str | None], *, ping_rules: list[PingRule] | None = None,
               ping_senders: dict[str, Callable[[dict], str | None]] | None = None,
               channel_senders: dict[str, Callable[[dict], str | None]] | None = None,
-              profiles: list | None = None) -> dict:
+              profiles: list | None = None, forum=None, extra_channels: tuple = (), dedicated=None) -> dict:
     """Devuelve un resumen; nunca lanza por errores de la fuente (se registran)."""
     senders = {**(channel_senders or {}), **(ping_senders or {}), cfg.channel: send}
     try:
@@ -191,13 +191,29 @@ def run_cycle(cfg: MonitorConfig, defaults: dict, source, store: Store, market: 
         opp = evaluate(ev, market, defaults.get("platform", "stockx"), store, cfg)
         if opp is not None and pe_notes.get(ev.dedupe_key):
             opp.notes.extend(pe_notes[ev.dedupe_key])
+        if forum is not None and cfg.collection and ev.type == EventType.NEW_PRODUCT:
+            from .forum import launch_from_product
+            forum.ingest(launch_from_product(ev.product, cfg.region or "eu"))   # nuevo lanzamiento → su hilo del foro
+            store.record_alert(akey, ev.type.value, cfg.store, ev.product.key, "hilo")
+            continue
         payload = build_embed(ev, opp, launch_collection=bool(cfg.collection), region=cfg.region, country=cfg.country)
         main_payload = payload
+        from .members import FAMILY_BY_CHANNEL, personalize
+        fam = FAMILY_BY_CHANNEL.get(cfg.channel, "Sneakers")
+        # canal dedicado de la tienda (si existe): misma señal, la mención se hace aquí y no se repite en el agregado
+        extras = list(extra_channels)
+        if dedicated is not None:
+            extras += dedicated.channels_for(cfg.name, cfg.country, f"{ev.product.vendor or ''} {ev.product.title}")
+        for ch in dict.fromkeys(extras):
+            if ch in senders:
+                pl = payload
+                if profiles:
+                    pl, _ = personalize(payload, ev, profiles, store, channel=ch, family=fam, ships_es=cfg.ships_es,
+                                        size_stock=cfg.type != "jsonld")
+                store.outbox_add(f"tienda|{ch}|{akey}", "tienda", cfg.store, ev.product.key, ch, pl)
         if profiles:
-            from .members import FAMILY_BY_CHANNEL, personalize
-            main_payload, _ = personalize(payload, ev, profiles, store, channel=cfg.channel,
-                                          family=FAMILY_BY_CHANNEL.get(cfg.channel, "Sneakers"), ships_es=cfg.ships_es,
-                                          size_stock=cfg.type != "jsonld")
+            main_payload, _ = personalize(payload, ev, profiles, store, channel=cfg.channel, family=fam,
+                                          ships_es=cfg.ships_es, size_stock=cfg.type != "jsonld")
         queued += store.outbox_add(akey, ev.type.value, cfg.store, ev.product.key, cfg.channel, main_payload)
         if (ch := pick_discount_route(discount_pct(ev), routes)) and ch != cfg.channel and ch in senders:
             route_payload = payload

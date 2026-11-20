@@ -149,6 +149,14 @@ class Forum:
         self.save(t)
         return done
 
+    def post_update(self, sku: str, payload: dict) -> bool:
+        """Publica una actualización (p. ej. «a la venta») dentro del hilo de ese SKU. False si no hay hilo."""
+        t = self.get(base_sku(sku))
+        if not t or not t.thread_id:
+            return False
+        self.pub.reply(t.thread_id, payload)
+        return True
+
     def next_7_days(self, now: float, guild_id: str = "TU_SERVIDOR") -> dict | None:
         soon = sorted((t for t in self.all() if t.release_ts and now <= t.release_ts <= now + 7 * DAY), key=lambda t: t.release_ts)
         if not soon:
@@ -196,3 +204,12 @@ class FakeForum:
     def edit(self, tid, mid, payload):
         self.threads[tid]["starter"] = payload
         self.threads[tid]["edits"] += 1
+
+
+def launch_from_product(p, region: str = "eu"):
+    """Producto de una colección «launches» de Shopify → lanzamiento para el foro (sin fecha: la tienda no la publica)."""
+    from .sources.bstn import Launch
+    skus = sorted({v.sku for v in p.variants if v.sku})
+    key = skus[0].rsplit("-", 1)[0] if skus and "-" in skus[0] else (skus[0] if skus else p.product_id)
+    price = min((v.price_cents for v in p.variants if v.price_cents), default=None)
+    return Launch(p.store, region, key, p.vendor or "", p.title, p.url, p.image_url, p.currency, price)

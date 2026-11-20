@@ -21,8 +21,14 @@ TYPES = {"texto": 0, "categoria": 4, "anuncios": 5, "foro": 15}
 VIEW, SEND, SEND_THREADS, CREATE_PUB_THREADS, ADD_REACTIONS = 1 << 10, 1 << 11, 1 << 38, 1 << 35, 1 << 6
 
 
-def load_design(path: str | Path = "config/servidor.toml") -> dict:
-    return tomllib.loads(Path(path).read_text(encoding="utf-8"))
+def load_design(path: str | Path = "config/servidor.toml", dedicated: str | Path | None = "auto") -> dict:
+    """Diseño base + canales dedicados generados (tiendas, regiones, temas, foros) si existen."""
+    path = Path(path)
+    d = tomllib.loads(path.read_text(encoding="utf-8"))
+    extra = path.parent / "canales_dedicados.toml" if dedicated == "auto" else (Path(dedicated) if dedicated else None)
+    if extra and extra.exists():
+        d["categoria"] = d["categoria"] + tomllib.loads(extra.read_text(encoding="utf-8")).get("categoria", [])
+    return d
 
 
 def all_roles(design: dict) -> list[str]:
@@ -75,13 +81,14 @@ def make_plan(design: dict, existing_roles: list[dict], existing_channels: list[
         if c["type"] != 4:
             plan.kept.append(c["name"])
     for cat in design["categoria"]:
-        if _norm(cat["nombre"]) not in cats:
+        if _norm(cat["nombre"]) not in cats and cat["nombre"] not in plan.categories:
             plan.categories.append(cat["nombre"])
         for ch in cat["canal"]:
-            if _norm(ch["nombre"]) not in by_name:
+            if _norm(ch["nombre"]) not in by_name and all(_norm(ch["nombre"]) != _norm(n) for _, n, _ in plan.channels):
                 plan.channels.append((cat["nombre"], ch["nombre"], ch["tipo"]))
             k = webhook_key(ch["fuente"])
-            if k and f"DISCORD_WEBHOOK_{k.upper()}" not in env_keys:
+            if k and f"DISCORD_WEBHOOK_{k.upper()}" not in env_keys and all(key != f"DISCORD_WEBHOOK_{k.upper()}" for _, key in plan.webhooks) \
+                    and ch.get("estado") != "pendiente":
                 plan.webhooks.append((ch["nombre"], f"DISCORD_WEBHOOK_{k.upper()}"))
     return plan
 

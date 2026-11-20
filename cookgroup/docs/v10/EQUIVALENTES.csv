@@ -1,0 +1,340 @@
+categoria,canal,tipo,para_que,quien_alimenta,tipo_equivalente,equivalente_dedicado,fuente_o_responsable,hueco,tiendas_ref
+(arriba),The Zesty Chefs: 490,voz,Contador público de miembros,Discord,ver tabla v0.9,—,,,0
+(arriba),THE ZESTY CHEFS ~ SPANISH COOKGROUP: 5.05K,voz,Contador público de miembros,Discord,ver tabla v0.9,—,,,0
+(arriba),Total de miembros: 326,voz,Contador público de miembros,Discord,ver tabla v0.9,—,,,0
+EMPEZAR AQUÍ,1⃣-bienvenido,texto,Primer contacto,staff,ver tabla v0.9,#bienvenida,,,0
+EMPEZAR AQUÍ,📲posts-redes,texto,Aprender a usar el servidor,staff,ver tabla v0.9,#guía-de-avisos,,,0
+EMPEZAR AQUÍ,✅checklist,texto,Aprender a usar el servidor,staff,ver tabla v0.9,#guía-de-avisos,,,0
+EMPEZAR AQUÍ,📲zestyapp,texto,Aprender a usar el servidor,staff,ver tabla v0.9,#guía-de-avisos,,,0
+EMPEZAR AQUÍ,🎥vídeo-guías,texto,Aprender a usar el servidor,staff,ver tabla v0.9,#guía-de-avisos,,,0
+EMPEZAR AQUÍ,📚guías,texto,Aprender a usar el servidor,staff,ver tabla v0.9,#guía-de-avisos,,,0
+EMPEZAR AQUÍ,🌎roles,texto,Elegir qué pings recibe,staff + bot de roles,ver tabla v0.9,#elige-tus-avisos (preguntas de bienvenida),,,0
+EMPEZAR AQUÍ,🤖auto-pinger,texto,Configurar avisos personales,staff + bot propio,ver tabla v0.9,perfil del miembro (config/miembros.toml),,,0
+EMPEZAR AQUÍ,📳notificaciones,texto,Configurar avisos personales,staff + bot propio,ver tabla v0.9,perfil del miembro (config/miembros.toml),,,0
+EMPEZAR AQUÍ,⚙comandos,texto,Configurar avisos personales,staff + bot propio,ver tabla v0.9,perfil del miembro (config/miembros.toml),,,0
+Recompensas y reglas,💰recompensas,texto,Normas y sanciones,staff,ver tabla v0.9,#normas,,,0
+Recompensas y reglas,📃transparencia,texto,Normas y sanciones,staff,ver tabla v0.9,#normas,,,0
+Recompensas y reglas,📋reglas,texto,Normas y sanciones,staff,ver tabla v0.9,#normas,,,0
+Recompensas y reglas,📑registro-faltas,texto,Normas y sanciones,staff,ver tabla v0.9,#normas,,,0
+the zesty chefs extension,📯anuncios-extensión,texto,Extensión de navegador de la referencia,proveedor de la referencia,ver tabla v0.9,—,,,0
+the zesty chefs extension,📚guías-extensión,texto,Extensión de navegador de la referencia,proveedor de la referencia,ver tabla v0.9,—,,,0
+the zesty chefs extension,🤖zesty-extension-updates,texto,Extensión de navegador de la referencia,proveedor de la referencia,ver tabla v0.9,—,,,0
+the zesty chefs extension,🤖extensión-success,texto,Extensión de navegador de la referencia,proveedor de la referencia,ver tabla v0.9,—,,,0
+the zesty chefs extension,💭extensión-chat,texto,Extensión de navegador de la referencia,proveedor de la referencia,ver tabla v0.9,—,,,0
+🔊IMPORTANT,🔊-pings,texto,Recibir menciones de oportunidades,staff + bot,ver tabla v0.9,menciones personalizadas en cada canal,,,0
+🔊IMPORTANT,🔊pings-automaticos,texto,Recibir menciones de oportunidades,staff + bot,ver tabla v0.9,menciones personalizadas en cada canal,,,0
+🔊IMPORTANT,🔴anuncios,texto,Enterarse de novedades,staff,ver tabla v0.9,#anuncios,,,0
+🔊IMPORTANT,🔔importante,texto,Enterarse de novedades,staff,ver tabla v0.9,#anuncios,,,0
+🔊IMPORTANT,🔛updates,texto,Enterarse de novedades,staff,ver tabla v0.9,#anuncios,,,0
+🔊IMPORTANT,📈releases,texto,Ver qué sale,staff,ver tabla v0.9,#próximos-7-días,,,1
+🔊IMPORTANT,📈weekly-drops,texto,Ver qué sale,staff,ver tabla v0.9,#próximos-7-días,,,0
+🔊IMPORTANT,📈monthly-drops,texto,Ver qué sale,staff,ver tabla v0.9,#próximos-7-días,,,0
+🔊IMPORTANT,🔌links,texto,Enlaces directos de compra,staff,ver tabla v0.9,enlaces oficiales en el hilo del lanzamiento,,,0
+🔊IMPORTANT,✅brick-links-autorizados,texto,Enlaces directos de compra,staff,ver tabla v0.9,enlaces oficiales en el hilo del lanzamiento,,,0
+🔊IMPORTANT,🧱brick-links,texto,Enlaces directos de compra,staff,ver tabla v0.9,enlaces oficiales en el hilo del lanzamiento,,,0
+🔊IMPORTANT,💎steals,texto,Oportunidades señaladas por el staff,staff,ver tabla v0.9,#reventa (solo verificadas),,,2
+🔊IMPORTANT,⚠risky-calls,texto,Oportunidades señaladas por el staff,staff,ver tabla v0.9,#reventa (solo verificadas),,,0
+🔊IMPORTANT,🏪instore-info,texto,Saber qué hay en tienda física,staff,ver tabla v0.9,#madrid-tiendas,,,0
+🔊IMPORTANT,🤑success,texto,Compartir resultados,miembros,ver tabla v0.9,#resultados,,,0
+🔊IMPORTANT,💰success-otros,texto,Compartir resultados,miembros,ver tabla v0.9,#resultados,,,0
+🔊IMPORTANT,💸success-ventas,texto,Compartir resultados,miembros,ver tabla v0.9,#resultados,,,0
+🔊IMPORTANT,❓sugerencias,texto,Proponer mejoras,miembros,ver tabla v0.9,#sugerencias (foro),,,0
+🔊IMPORTANT,📲sugerencias-app,texto,Proponer mejoras,miembros,ver tabla v0.9,#sugerencias (foro),,,0
+🔊IMPORTANT,📢-sugerencias-pings,texto,Proponer mejoras,miembros,ver tabla v0.9,#sugerencias (foro),,,0
+🔊IMPORTANT,🎉giveaways,texto,Sorteos internos y compras en grupo,staff,ver tabla v0.9,—,,,0
+🔊IMPORTANT,🤝groupbuys,texto,Sorteos internos y compras en grupo,staff,ver tabla v0.9,—,,,0
+🔊IMPORTANT,🔜leaks,texto,Rumores de lanzamientos,staff,ver tabla v0.9,hilo de lanzamiento en estado «pendiente»,,,0
+🔊IMPORTANT,📩tickets,texto,Pedir ayuda privada,staff,ver tabla v0.9,#tickets,,,0
+Releases,✅❌cop-or-drop,texto,Votar si merece la pena,staff + miembros,ver tabla v0.9,veredicto en el hilo del lanzamiento,,,0
+Releases,📆adidas-releases,texto,Calendario por marca,staff,ver tabla v0.9,#lanzamientos (etiqueta por marca),,,6
+Releases,📆nike-releases,texto,Calendario por marca,staff,ver tabla v0.9,#lanzamientos (etiqueta por marca),,,0
+Releases,📆z4lando-releases,texto,Calendario por marca,staff,ver tabla v0.9,#lanzamientos (etiqueta por marca),,,2
+Releases,📆otros-releases,texto,Calendario por marca,staff,ver tabla v0.9,#lanzamientos (etiqueta por marca),,,24
+Releases,📆important-releases,foro,Seguir un lanzamiento importante,staff,foro,#lanzamientos,staff (hilo por artículo) + avisos automáticos en el hilo,,0
+Releases,🟢nikecraft-mars-yard-shoe-30-tom-sachs,texto,Calendario por marca,staff,ver tabla v0.9,#lanzamientos (etiqueta por marca),,,0
+Stocks,📊adidas-stock,texto,Ver cuánto stock hubo,bot de la referencia,ver tabla v0.9,—,,,2
+Stocks,📊nike-stock-drops,texto,Ver cuánto stock hubo,bot de la referencia,ver tabla v0.9,—,,,0
+Stocks,📊nike-stock-daily,texto,Ver cuánto stock hubo,bot de la referencia,ver tabla v0.9,—,,,0
+Stocks,📊nike-stock-cargado,texto,Ver cuánto stock hubo,bot de la referencia,ver tabla v0.9,—,,,0
+Stocks,📊stock-otros-releases,texto,Ver cuánto stock hubo,bot de la referencia,ver tabla v0.9,—,,,2
+🤖Monitores,aio-custom,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-eu,monitores de su familia (2 de sus 29 tiendas coinciden),,29
+🤖Monitores,aio-custom-2,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-eu,monitores de su familia (2 de sus 5 tiendas coinciden),,5
+🤖Monitores,aio-eu,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-eu,monitores de su familia (0 de sus 12 tiendas coinciden),ninguna de sus tiendas tiene monitor,12
+🤖Monitores,aio-eu-2,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-eu,monitores de su familia (0 de sus 3 tiendas coinciden),ninguna de sus tiendas tiene monitor,3
+🤖Monitores,aio-world,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-mundo,monitores de su familia (0 de sus 9 tiendas coinciden),ninguna de sus tiendas tiene monitor,9
+🤖Monitores,aboutyou-yoox,texto,Avisos de una tienda concreta,bot (monitores),tienda,#aboutyou-yoox,,About You: afiliados → sin fuente aún,4
+🤖Monitores,adidas-es,texto,Avisos de una tienda concreta,bot (monitores),tienda,#adidas-es,,adidas.es/.eu sin API pública de stock (probar JSON-LD de fichas) → sin fuente aún,1
+🤖Monitores,adidas-eu,texto,Avisos de una tienda concreta,bot (monitores),tienda,#adidas-eu,,adidas.es/.eu sin API pública de stock (probar JSON-LD de fichas) → sin fuente aún,5
+🤖Monitores,asics,texto,Avisos de una tienda concreta,bot (monitores),tienda,#asics,,asics.com: probar JSON-LD → sin fuente aún,1
+🤖Monitores,asos,texto,Avisos de una tienda concreta,bot (monitores),tienda,#asos,,ASOS: afiliados → sin fuente aún,1
+🤖Monitores,asos-es,texto,Avisos de una tienda concreta,bot (monitores),tienda,#asos-es,,ASOS: afiliados → sin fuente aún,1
+🤖Monitores,basket-shops,texto,Avisos de una tienda concreta,bot (monitores),agregado,#baloncesto,monitores de su familia (0 de sus 8 tiendas coinciden),ninguna de sus tiendas tiene monitor,8
+🤖Monitores,basketballemotion,texto,Avisos de una tienda concreta,bot (monitores),tienda,#basketballemotion,,listado cargado con JavaScript → sin fuente aún,1
+🤖Monitores,basket4ballers,texto,Avisos de una tienda concreta,bot (monitores),tienda,#basket4ballers,,probar JSON-LD → sin fuente aún,1
+🤖Monitores,bstn,texto,Avisos de una tienda concreta,bot (monitores),tienda,#bstn,bstn-eu,,1
+🤖Monitores,end,texto,Avisos de una tienda concreta,bot (monitores),tienda,#end,end-launches,,1
+🤖Monitores,footlocker-eu,texto,Avisos de una tienda concreta,bot (monitores),tienda,#footlocker-eu,,Foot Locker: JSON-LD sin tallas → sin fuente aún,5
+🤖Monitores,footlocker-es,texto,Avisos de una tienda concreta,bot (monitores),tienda,#footlocker-es,footlocker-es,,1
+🤖Monitores,footshop,texto,Avisos de una tienda concreta,bot (monitores),tienda,#footshop,,probar JSON-LD → sin fuente aún,2
+🤖Monitores,luisaviaroma,texto,Avisos de una tienda concreta,bot (monitores),tienda,#luisaviaroma,,probar JSON-LD → sin fuente aún,1
+🤖Monitores,kickz,texto,Avisos de una tienda concreta,bot (monitores),tienda,#kickz,,probar JSON-LD → sin fuente aún,1
+🤖Monitores,mesh-frontend,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-eu,monitores de su familia (2 de sus 6 tiendas coinciden),,6
+🤖Monitores,mesh-backend,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-eu,monitores de su familia (1 de sus 10 tiendas coinciden),,10
+🤖Monitores,new-balance,texto,Avisos de una tienda concreta,bot (monitores),tienda,#new-balance,,newbalance.com: probar JSON-LD → sin fuente aún,1
+🤖Monitores,sivasdescalzo,texto,Avisos de una tienda concreta,bot (monitores),tienda,#sivasdescalzo,,SVD: permiso de lectura en Chrome pendiente → sin fuente aún,1
+🤖Monitores,sports-direct,texto,Avisos de una tienda concreta,bot (monitores),tienda,#sports-direct,,sportsdirect: probar JSON-LD → sin fuente aún,3
+🤖Monitores,skateshops,texto,Avisos de una tienda concreta,bot (monitores),agregado,#skate,monitores de su familia (5 de sus 26 tiendas coinciden),,26
+🤖Monitores,skatedeluxe,texto,Avisos de una tienda concreta,bot (monitores),tienda,#skatedeluxe,,probar JSON-LD → sin fuente aún,1
+🤖Monitores,socials-monitors,texto,Avisos de una tienda concreta,bot (monitores),ver tabla v0.9,#sneakers-eu (+ menciones por talla),,,0
+🤖Monitores,ugg,texto,Avisos de una tienda concreta,bot (monitores),tienda,#ugg-oficial,,sin monitor para sus tiendas → sin fuente aún,1
+🤖Monitores,ugg-all-special,texto,Avisos de una tienda concreta,bot (monitores),tema,#ugg,"cualquier monitor, palabras clave: ugg",,15
+🤖Monitores,uk,texto,Ver avisos de muchas tiendas juntas,bot (monitores),región,#reino-unido,monitores con país GB: 26,,5
+🤖Monitores,yeezy-especial-monitor,texto,Avisos de una tienda concreta,bot (monitores),tema,#yeezy,"cualquier monitor, palabras clave: yeezy",,8
+🤖Monitores,web-naranja-españa,texto,Avisos de una tienda concreta,bot (monitores),tienda,#web-naranja-españa,,Zalando: programa de afiliados/partner → sin fuente aún,1
+🤖Monitores,web-naranja-eu,texto,Avisos de una tienda concreta,bot (monitores),tienda,#web-naranja-eu,,Zalando: programa de afiliados/partner → sin fuente aún,5
+🤖Monitores,43einhalb,texto,Avisos de una tienda concreta,bot (monitores),tienda,#43einhalb,,probar JSON-LD → sin fuente aún,1
+🤖Monitores,timberland,texto,Avisos de una tienda concreta,bot (monitores),tema,#timberland,"cualquier monitor, palabras clave: timberland",,1
+🤖Monitores,vans,texto,Avisos de una tienda concreta,bot (monitores),tema,#vans,"cualquier monitor, palabras clave: vans",,1
+Shopify monitors,shopify-eu,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-eu,monitores de su familia (39 de sus 41 tiendas coinciden),,73
+Shopify monitors,shopify-eu-unfiltered,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-eu,monitores de su familia (40 de sus 41 tiendas coinciden),,56
+Shopify monitors,shopify-all,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-mundo,monitores de su familia (42 de sus 41 tiendas coinciden),,54
+Shopify monitors,asphaltgold,texto,Avisos de una tienda concreta,bot (monitores),tienda,#asphaltgold,asphaltgold,,1
+Shopify monitors,dsml,texto,Avisos de una tienda concreta,bot (monitores),tienda,#dsml,shop:shop.doverstreetmarket.com,,1
+Shopify monitors,footdistrict,texto,Avisos de una tienda concreta,bot (monitores),tienda,#footdistrict,footdistrict,,1
+Shopify monitors,kitheu,texto,Avisos de una tienda concreta,bot (monitores),tienda,#kitheu,kith-eu,,1
+Shopify monitors,naked,texto,Avisos de una tienda concreta,bot (monitores),tienda,#naked,naked,,1
+Shopify monitors,overkill-oneblockdown,texto,Avisos de una tienda concreta,bot (monitores),tienda,#overkill-oneblockdown,"overkill, shop:oneblockdown.com",,2
+Shopify monitors,slamjam,texto,Avisos de una tienda concreta,bot (monitores),tienda,#slamjam,"shop:drop.slamjam.com, shop:it.slamjam.com, slamjam",,3
+Shopify monitors,sneakersnstuff,texto,Avisos de una tienda concreta,bot (monitores),tienda,#sneakersnstuff,sneakersnstuff,,2
+Shopify monitors,voostore,texto,Avisos de una tienda concreta,bot (monitores),tienda,#voostore,voostore,,1
+Shopify monitors,starcow,texto,Avisos de una tienda concreta,bot (monitores),tienda,#starcow,starcow,,1
+Shopify monitors,canary-yellow,texto,Avisos de una tienda concreta,bot (monitores),tienda,#canary-yellow,shop:canary---yellow.com,,1
+Shopify monitors,goodhood,texto,Avisos de una tienda concreta,bot (monitores),tienda,#goodhood,"goodhood, shop:us.goodhoodstore.com",,2
+Shopify clothes,corteiz,texto,Ropa de marcas hype,bot (monitores),tienda,#corteiz,shop:crtz.xyz,,1
+Shopify clothes,supreme,texto,Ropa de marcas hype,bot (monitores),tienda,#supreme,,sin monitor para sus tiendas → sin fuente aún,1
+Shopify clothes,stussy,texto,Ropa de marcas hype,bot (monitores),tienda,#stussy,"shop:eu.stussy.com, shop:uk.stussy.com",,2
+Shopify clothes,palace,texto,Ropa de marcas hype,bot (monitores),tienda,#palace,shop:palace-skateboards-eu.myshopify.com,,1
+Demandware monitors,info,texto,Avisos de una tienda concreta,bot (monitores),ver tabla v0.9,#sneakers-eu (+ menciones por talla),,,0
+Demandware monitors,solebox,texto,Avisos de una tienda concreta,bot (monitores),tienda,#solebox,solebox-eu,,1
+Demandware monitors,snipes,texto,Avisos de una tienda concreta,bot (monitores),tienda,#snipes,snipes-es,,1
+Demandware monitors,solebox-custom,texto,Avisos de una tienda concreta,bot (monitores),tienda,#solebox,solebox-eu,,1
+Demandware monitors,snipes-custom,texto,Avisos de una tienda concreta,bot (monitores),tienda,#snipes,snipes-es,,1
+Nike monitors,nike-inactive,texto,Nike/SNKRS,bot de la referencia,ver tabla v0.9,—,,,1
+Nike monitors,nike-eu-active,texto,Nike/SNKRS,bot de la referencia,ver tabla v0.9,—,,,1
+Nike monitors,snkrs-es,texto,Nike/SNKRS,bot de la referencia,ver tabla v0.9,—,,,1
+Nike monitors,snkrs-eu,texto,Nike/SNKRS,bot de la referencia,ver tabla v0.9,—,,,1
+Nike monitors,snkrs-eu-backup,texto,Nike/SNKRS,bot de la referencia,ver tabla v0.9,—,,,0
+Nike monitors,snkrs-eu-inactive,texto,Nike/SNKRS,bot de la referencia,ver tabla v0.9,—,,,0
+Nike monitors,snkrs-special-releases,texto,Nike/SNKRS,bot de la referencia,ver tabla v0.9,—,,,0
+Nike monitors,nike-us,texto,Nike/SNKRS,bot de la referencia,ver tabla v0.9,—,,,1
+Nike monitors,snkrs-launch-custom,texto,Nike/SNKRS,bot de la referencia,ver tabla v0.9,—,,,0
+instore monitors,adidas-instore,texto,Stock en tiendas físicas,bot de la referencia,ver tabla v0.9,#madrid-tiendas,,,1
+instore monitors,jd-sports-instore,texto,Stock en tiendas físicas,bot de la referencia,ver tabla v0.9,#madrid-tiendas,,,1
+instore monitors,solebox-instore,texto,Stock en tiendas físicas,bot de la referencia,ver tabla v0.9,#madrid-tiendas,,,0
+instore monitors,nike-instore-es,texto,Stock en tiendas físicas,bot de la referencia,ver tabla v0.9,#madrid-tiendas,,,1
+instore monitors,nike-instore-italia,texto,Stock en tiendas físicas,bot de la referencia,ver tabla v0.9,#madrid-tiendas,,,1
+instore monitors,nike-instore-holanda,texto,Stock en tiendas físicas,bot de la referencia,ver tabla v0.9,#madrid-tiendas,,,0
+instore monitors,nike-instore-polonia,texto,Stock en tiendas físicas,bot de la referencia,ver tabla v0.9,#madrid-tiendas,,,0
+instore monitors,nike-instore-austria,texto,Stock en tiendas físicas,bot de la referencia,ver tabla v0.9,#madrid-tiendas,,,0
+instore monitors,nike-instore-bélgica,texto,Stock en tiendas físicas,bot de la referencia,ver tabla v0.9,#madrid-tiendas,,,0
+instore monitors,nike-instore-irlanda,texto,Stock en tiendas físicas,bot de la referencia,ver tabla v0.9,#madrid-tiendas,,,0
+instore monitors,nike-instore-dinamarca,texto,Stock en tiendas físicas,bot de la referencia,ver tabla v0.9,#madrid-tiendas,,,0
+instore monitors,nike-instore-portugal,texto,Stock en tiendas físicas,bot de la referencia,ver tabla v0.9,#madrid-tiendas,,,0
+monitores rebajas,aio-rebajas-30disc,texto,Encontrar descuentos fuertes,bot (monitores),ver tabla v0.9,#rebajas-30 / #rebajas-60,,,4
+monitores rebajas,aio-rebajas-60disc,texto,Encontrar descuentos fuertes,bot (monitores),ver tabla v0.9,#rebajas-30 / #rebajas-60,,,3
+monitores rebajas,chollometro,texto,Chollos de comunidad,bot (feeds),ver tabla v0.9,#chollos,,,1
+monitores rebajas,dealabs,texto,Chollos de comunidad,bot (feeds),ver tabla v0.9,#chollos,,,1
+monitores rebajas,miravia,texto,Descuentos de grandes tiendas,bot de la referencia,ver tabla v0.9,#rebajas-30,,,1
+monitores rebajas,mydealz,texto,Chollos de comunidad,bot (feeds),ver tabla v0.9,#chollos,,,1
+monitores rebajas,pepper,texto,Chollos de comunidad,bot (feeds),ver tabla v0.9,#chollos,,,1
+monitores rebajas,hotukdeals,texto,Chollos de comunidad,bot (feeds),ver tabla v0.9,#chollos,,,1
+monitores rebajas,lidl,texto,Descuentos de grandes tiendas,bot de la referencia,ver tabla v0.9,#rebajas-30,,,1
+monitores rebajas,pccomponentes,texto,Descuentos de grandes tiendas,bot de la referencia,ver tabla v0.9,#rebajas-30,,,1
+monitores rebajas,privalia-campañas,texto,Descuentos de grandes tiendas,bot de la referencia,ver tabla v0.9,#rebajas-30,,,1
+monitores rebajas,privalia-productos,texto,Descuentos de grandes tiendas,bot de la referencia,ver tabla v0.9,#rebajas-30,,,1
+monitores rebajas,privalia-articulos,texto,Descuentos de grandes tiendas,bot de la referencia,ver tabla v0.9,#rebajas-30,,,1
+monitores rebajas,jd-rebajas,texto,Encontrar descuentos fuertes,bot (monitores),ver tabla v0.9,#rebajas-30 / #rebajas-60,,,1
+monitores rebajas,jd-rebajas-2,texto,Encontrar descuentos fuertes,bot (monitores),ver tabla v0.9,#rebajas-30 / #rebajas-60,,,1
+monitores rebajas,shopify-rebajas-eu,texto,Encontrar descuentos fuertes,bot (monitores),ver tabla v0.9,#rebajas-30 / #rebajas-60,,,29
+monitores rebajas,shopify-rebajas-30disc,texto,Encontrar descuentos fuertes,bot (monitores),ver tabla v0.9,#rebajas-30 / #rebajas-60,,,32
+monitores rebajas,shopify-rebajas-60disc,texto,Encontrar descuentos fuertes,bot (monitores),ver tabla v0.9,#rebajas-30 / #rebajas-60,,,27
+monitores rebajas,shopify-rebajas-all,texto,Encontrar descuentos fuertes,bot (monitores),ver tabla v0.9,#rebajas-30 / #rebajas-60,,,25
+monitores rebajas,starcow-rebajas,texto,Encontrar descuentos fuertes,bot (monitores),ver tabla v0.9,#rebajas-30 / #rebajas-60,,,1
+monitores rebajas,zalando-prive,texto,Descuentos de grandes tiendas,bot de la referencia,ver tabla v0.9,#rebajas-30,,,1
+monitores rebajas,zalandoprive-campañas,texto,Descuentos de grandes tiendas,bot de la referencia,ver tabla v0.9,#rebajas-30,,,1
+monitores rebajas,asos-sample,texto,Descuentos de grandes tiendas,bot de la referencia,ver tabla v0.9,#rebajas-30,,,1
+Amazon rebajas,amazon-haul,texto,Descuentos de grandes tiendas,bot de la referencia,ver tabla v0.9,#rebajas-30,,,1
+Amazon rebajas,amazon-error,texto,Descuentos de grandes tiendas,bot de la referencia,ver tabla v0.9,#rebajas-30,,,1
+Amazon rebajas,amazon-sale,texto,Descuentos de grandes tiendas,bot de la referencia,ver tabla v0.9,#rebajas-30,,,1
+Amazon rebajas,amazon-hasta-30,texto,Encontrar descuentos fuertes,bot (monitores),ver tabla v0.9,#rebajas-30 / #rebajas-60,,,0
+Amazon rebajas,amazon-31-50,texto,Descuentos de grandes tiendas,bot de la referencia,ver tabla v0.9,#rebajas-30,,,0
+Amazon rebajas,amazon-51-70,texto,Descuentos de grandes tiendas,bot de la referencia,ver tabla v0.9,#rebajas-30,,,0
+Amazon rebajas,amazon-más-70,texto,Descuentos de grandes tiendas,bot de la referencia,ver tabla v0.9,#rebajas-30,,,0
+bots checkouts,adonis-monitor,texto,Monitores de bots de compra,proveedores de bots,ver tabla v0.9,—,,,0
+bots checkouts,adonis-nike,texto,Monitores de bots de compra,proveedores de bots,ver tabla v0.9,—,,,0
+bots checkouts,alpine-monitor,texto,Monitores de bots de compra,proveedores de bots,ver tabla v0.9,—,,,0
+bots checkouts,antares-monitor,texto,Monitores de bots de compra,proveedores de bots,ver tabla v0.9,—,,,0
+bots checkouts,caspian-monitor,texto,Monitores de bots de compra,proveedores de bots,ver tabla v0.9,—,,,0
+bots checkouts,cyber-monitor,texto,Monitores de bots de compra,proveedores de bots,ver tabla v0.9,—,,,0
+bots checkouts,dislord-monitor,texto,Monitores de bots de compra,proveedores de bots,ver tabla v0.9,—,,,0
+bots checkouts,nsb-monitor,texto,Monitores de bots de compra,proveedores de bots,ver tabla v0.9,—,,,0
+bots checkouts,pan-aio-monitor,texto,Monitores de bots de compra,proveedores de bots,ver tabla v0.9,—,,,0
+bots checkouts,restocks-aio-monitor,texto,Monitores de bots de compra,proveedores de bots,ver tabla v0.9,—,,,0
+bots checkouts,tsb-monitor,texto,Monitores de bots de compra,proveedores de bots,ver tabla v0.9,—,,,0
+👥General,🤟🏽chat-general,texto,Hablar con la comunidad,miembros,ver tabla v0.9,#chat,,,0
+👥General,💬chat-invest,texto,Hablar con la comunidad,miembros,ver tabla v0.9,#chat,,,0
+👥General,🗨chat-ayuda,texto,Resolver dudas,miembros + staff,ver tabla v0.9,#ayuda (foro),,,0
+👥General,💬off-topic,texto,Hablar con la comunidad,miembros,ver tabla v0.9,#chat,,,0
+👥General,🤖chat-bots,texto,Hablar con la comunidad,miembros,ver tabla v0.9,#chat,,,0
+👥General,📈hold-or-sell-o-cop-or-drop,texto,Hablar con la comunidad,miembros,ver tabla v0.9,#chat,,,0
+👥General,➗discount-codes,texto,Hablar con la comunidad,miembros,ver tabla v0.9,#chat,,,0
+👥General,📸wdywt-wdyht-food,texto,Hablar con la comunidad,miembros,ver tabla v0.9,#chat,,,0
+👥General,📳comparte-tus-redes,texto,Hablar con la comunidad,miembros,ver tabla v0.9,#chat,,,0
+👥General,🏦scrapers,texto,Hablar con la comunidad,miembros,ver tabla v0.9,#chat,,,0
+👥General,🚮spam,texto,Hablar con la comunidad,miembros,ver tabla v0.9,#chat,,,0
+👥General,🔈chat-de-voz,texto,Hablar con la comunidad,miembros,ver tabla v0.9,#chat,,,0
+👥General,🔊charlando,voz,Hablar con la comunidad,miembros,ver tabla v0.9,#chat,,,0
+Canales Privados,"(canal privado del propio usuario, no se recorre)",texto,Canal privado del miembro,—,ver tabla v0.9,—,,,0
+Outlets,📚primeros-pasos-outlet,texto,Comprar en outlets y revender,staff + scraper,ver tabla v0.9,#outlet,,,0
+Outlets,🔊avisos-outlets,texto,Comprar en outlets y revender,staff + scraper,ver tabla v0.9,#outlet,,,0
+Outlets,✌calls-outlets,texto,Comprar en outlets y revender,staff + scraper,ver tabla v0.9,#outlet,,,0
+Outlets,🏪tiendas-outlets,texto,Comprar en outlets y revender,staff + scraper,ver tabla v0.9,#outlet,,,0
+Outlets,💵tendencias-compraventa,texto,Comprar en outlets y revender,staff + scraper,ver tabla v0.9,#outlet,,,0
+Outlets,💵adidas-rangos-compraventa,texto,Comprar en outlets y revender,staff + scraper,ver tabla v0.9,#outlet,,,0
+Outlets,💵asics-rangos-compraventa,texto,Comprar en outlets y revender,staff + scraper,ver tabla v0.9,#outlet,,,0
+Outlets,💵converse-rangos-compraventa,texto,Comprar en outlets y revender,staff + scraper,ver tabla v0.9,#outlet,,,0
+Outlets,💵jordan-rangos-compraventa,texto,Comprar en outlets y revender,staff + scraper,ver tabla v0.9,#outlet,,,0
+Outlets,💵new-balance-rangos-compraventa,texto,Comprar en outlets y revender,staff + scraper,ver tabla v0.9,#outlet,,,0
+Outlets,💵nike-rangos-compraventa,texto,Comprar en outlets y revender,staff + scraper,ver tabla v0.9,#outlet,,,0
+Outlets,💵puma-rangos-compraventa,texto,Comprar en outlets y revender,staff + scraper,ver tabla v0.9,#outlet,,,0
+Outlets,💵salomon-rangos-compraventa,texto,Comprar en outlets y revender,staff + scraper,ver tabla v0.9,#outlet,,,0
+Outlets,💵vans-rangos-compraventa,texto,Comprar en outlets y revender,staff + scraper,ver tabla v0.9,#outlet,,,0
+Outlets,💵yeezy-rangos-compraventa,texto,Comprar en outlets y revender,staff + scraper,ver tabla v0.9,#outlet,,,0
+Outlets,📊outlet-scraper,texto,Comprar en outlets y revender,staff + scraper,ver tabla v0.9,#outlet,,,0
+Outlets,✅👕random-cop-or-drop,texto,Comprar en outlets y revender,staff + scraper,ver tabla v0.9,#outlet,,,0
+Outlets,✅❌cop-or-drop-outlet,texto,Comprar en outlets y revender,staff + scraper,ver tabla v0.9,#outlet,,,0
+Outlets,🗯chat-outlet,texto,Comprar en outlets y revender,staff + scraper,ver tabla v0.9,#outlet,,,0
+Pokemon,🔊pings-pokemon,texto,Comunidad Pokémon,staff + miembros,ver tabla v0.9,#pokémon-tcg,,,0
+Pokemon,📢importante-pokémon,texto,Comunidad Pokémon,staff + miembros,ver tabla v0.9,#pokémon-tcg,,,0
+Pokemon,📯calls-pokemon,foro,Comunidad Pokémon,staff + miembros,foro,#pokémon-expansiones,staff (hilo por artículo) + avisos automáticos en el hilo,responsable editorial,0
+Pokemon,📲-invitaciones-pokemon,foro,Comunidad Pokémon,staff + miembros,ver tabla v0.9,#pokémon-tcg,,,0
+Pokemon,📚guías-pokemon,foro,Comunidad Pokémon,staff + miembros,ver tabla v0.9,#pokémon-tcg,,,0
+Pokemon,🔜leaks-pokemon,texto,Comunidad Pokémon,staff + miembros,ver tabla v0.9,#pokémon-tcg,,,0
+Pokemon,🏪instore-pokemon,texto,Comunidad Pokémon,staff + miembros,ver tabla v0.9,#pokémon-tcg,,,0
+Pokemon,🔌links-pokemon,texto,Comunidad Pokémon,staff + miembros,ver tabla v0.9,#pokémon-tcg,,,0
+Pokemon,🤑poke-steals,texto,Comunidad Pokémon,staff + miembros,ver tabla v0.9,#pokémon-tcg,,,0
+Pokemon,📈invest-pokemon,texto,Comunidad Pokémon,staff + miembros,ver tabla v0.9,#pokémon-tcg,,,0
+Pokemon,💣poke-flex,texto,Comunidad Pokémon,staff + miembros,ver tabla v0.9,#pokémon-tcg,,,0
+Pokemon,🤝wtb-kai-collect,texto,Comunidad Pokémon,staff + miembros,ver tabla v0.9,#pokémon-tcg,,,0
+Pokemon,📦wtb-wts-pokemon,texto,Comunidad Pokémon,staff + miembros,ver tabla v0.9,#pokémon-tcg,,,0
+Pokemon,pokemon-custom-aio,texto,Avisos de Pokémon/TCG,bot,agregado,#pokémon-tcg,monitores de su familia (0 de sus 0 tiendas coinciden),,0
+Pokemon,pokemon-aio,texto,Avisos de Pokémon/TCG,bot,agregado,#pokémon-tcg,monitores de su familia (0 de sus 0 tiendas coinciden),,0
+Pokemon,pokemon-aio-uk,texto,Avisos de Pokémon/TCG,bot,región,#pokémon-uk,monitores con país GB: 26,,0
+Pokemon,pokemon-custom-shopify,texto,Avisos de Pokémon/TCG,bot,agregado,#pokémon-tcg,monitores de su familia (0 de sus 0 tiendas coinciden),,0
+Pokemon,pokemon-amazon,texto,Avisos de Pokémon/TCG,bot,tienda,#pokemon-amazon,,Amazon: programa de afiliados (PA-API) → sin fuente aún,0
+Pokemon,pokemon-prismatic,texto,Avisos de Pokémon/TCG,bot,tema,#pokémon-prismatic,"cualquier monitor, palabras clave: prismatic, prismátic, prismatische",,0
+Pokemon,twitter-pokemon,texto,Avisos de Pokémon/TCG,bot,tienda,#twitter-pokemon,,fuente por localizar → sin fuente aún,0
+Pokemon,game,texto,Avisos de Pokémon/TCG,bot,tienda,#game,,GAME España: probar JSON-LD → sin fuente aún,0
+Pokemon,game-instore,texto,Avisos de Pokémon/TCG,bot,tienda,#game-instore,,disponibilidad en tienda física: sin fuente autorizada,0
+Pokemon,carrefour,texto,Avisos de Pokémon/TCG,bot,tienda,#carrefour,,Carrefour: probar JSON-LD → sin fuente aún,0
+Pokemon,carrefour-instore,texto,Avisos de Pokémon/TCG,bot,tienda,#carrefour-instore,,disponibilidad en tienda física: sin fuente autorizada,0
+Pokemon,drim,texto,Avisos de Pokémon/TCG,bot,tienda,#drim,,Drim: probar JSON-LD → sin fuente aún,0
+Pokemon,toysrus,texto,Avisos de Pokémon/TCG,bot,tienda,#toysrus,,Toys R Us España: probar JSON-LD → sin fuente aún,0
+Pokemon,alcampo,texto,Avisos de Pokémon/TCG,bot,tienda,#alcampo,,Alcampo: probar JSON-LD → sin fuente aún,0
+Pokemon,darizard,texto,Avisos de Pokémon/TCG,bot,tienda,#darizard,,fuente por localizar → sin fuente aún,0
+Random invest,📯calls-invest,foro,Inversión variada,staff + bot,foro,#lanzamientos-otros,staff (hilo por artículo) + avisos automáticos en el hilo,responsable editorial,0
+Random invest,📯calls-mattel,foro,Inversión variada,staff + bot,foro,#mattel,staff (hilo por artículo) + avisos automáticos en el hilo,responsable editorial,0
+Random invest,📯calls-funko,foro,Inversión variada,staff + bot,foro,#funko,staff (hilo por artículo) + avisos automáticos en el hilo,responsable editorial,0
+Random invest,📯calls-tcg,foro,Inversión variada,staff + bot,foro,#tcg-expansiones,staff (hilo por artículo) + avisos automáticos en el hilo,responsable editorial,0
+Random invest,📯calls-lego,foro,LEGO,staff,foro,#lego,staff (hilo por artículo) + avisos automáticos en el hilo,responsable editorial,0
+Random invest,📯calls-componentes,texto,Electrónica,staff + bot,ver tabla v0.9,#electrónica,,,0
+Random invest,👥member-invest,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,🔜random-leaks,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,aio-componentes,texto,Electrónica,staff + bot,ver tabla v0.9,#electrónica,,,0
+Random invest,aio-random,texto,Inversión variada,staff + bot,agregado,#otros-artículos,monitores de su familia (0 de sus 0 tiendas coinciden),ninguna de sus tiendas tiene monitor,0
+Random invest,amazon-es,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,amazon-eu,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,amazon-custom,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,amazon-ram,texto,Electrónica,staff + bot,ver tabla v0.9,#electrónica,,,0
+Random invest,aliexpress-labubu,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,deals-ram,texto,Electrónica,staff + bot,ver tabla v0.9,#electrónica,,,0
+Random invest,elcorteingles,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,fnac,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,otros-tcg,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,mattel,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,playstation,texto,Electrónica,staff + bot,ver tabla v0.9,#electrónica,,,0
+Random invest,sephora,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,finalmouse,texto,Electrónica,staff + bot,ver tabla v0.9,#electrónica,,,0
+Random invest,funko,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,milfshakes,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,hym,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,zara,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,zara-instore,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,shop-app,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,steiff,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,relojes,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,uniqlo,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,esa-pokemon,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Random invest,ikea,texto,Inversión variada,staff + bot,ver tabla v0.9,—,,,0
+Raffles,raffles-info,texto,Apuntarse a sorteos,bot,ver tabla v0.9,#raffles,,,0
+Raffles,raffles-stock,texto,Apuntarse a sorteos,bot,ver tabla v0.9,#raffles,,,0
+Raffles,raffles-links,texto,Apuntarse a sorteos,bot,ver tabla v0.9,#raffles,,,0
+Raffles,raffles-europe,texto,Apuntarse a sorteos,bot,ver tabla v0.9,#raffles,,,0
+Cashbacks,📚qué-son,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Cashbacks,💰igraal,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Cashbacks,💰lety-shops,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Cashbacks,💰soleback,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Herramientas,💰neobancos,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Herramientas,📊excel-inventario,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Herramientas,🛠zesty-tools,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Herramientas,👟cuentas-nike,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Herramientas,🛠️early-access-checker,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Herramientas,📒guía-ebay,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Herramientas,📚guía-vinted,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Monkey-Consign Partner,monkey-invest,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Monkey-Consign Partner,hold-monkey-invest,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Monkey-Consign Partner,sell-monkey-invest,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Monkey-Consign Partner,reviews-monkey-invest,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Partners y descuentos,🤝aycd-partnership,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Partners y descuentos,🤝2captcha,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Partners y descuentos,🤝boiling-proxies,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Partners y descuentos,🤝wolves-proxies,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Partners y descuentos,🤝byte-proxies,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Partners y descuentos,🤝bird-proxies,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Partners y descuentos,🤝zhub,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Partners y descuentos,🤝proxy-vps-partner,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+Partners y descuentos,🤝seamless-proxies,texto,Herramientas y acuerdos,staff/partners,ver tabla v0.9,—,,,0
+🏦Market,🛍wtb-pierogi,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,🛍select-store,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,🛍nextstep,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,🛍plug-game,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,🛍saturday-concept,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,🛍zneakerz,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,🛍aura-the-club,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,🛍kickzcaviar,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,🛍brutalzapas,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,🛍kickzbyortiz,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,🛍doggysneakers,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,🛍jefa-sneakers,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,🖼️gen-wtb-wts,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,📥wtb-wtt,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,📤wts-retail,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,📤wts,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,📤wts-wtb-clothes-accessories,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,📤wtb-wts-used,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,📥wtb-wts-random,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,💻wts-wtb-sl07s,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,👼pares-td-ps,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,👟accesorios-sneakers,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,⭐feedback,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,🚫black-list-scammers,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+🏦Market,✅legit-check,texto,Comprar y vender entre miembros,miembros,ver tabla v0.9,—,,,0
+Old-releases,🟢30-08-jordan-5-retro-x-awake-ny-black,texto,Calendario por marca,staff,ver tabla v0.9,#lanzamientos (etiqueta por marca),,,0
+Old-releases,🟢02-08-jordan-4-retro-og-sp-undefeated,texto,Calendario por marca,staff,ver tabla v0.9,#lanzamientos (etiqueta por marca),,,0
+Old-releases,🟢18-7-nike-kobe-6-protro-total-orange,texto,Calendario por marca,staff,ver tabla v0.9,#lanzamientos (etiqueta por marca),,,0
+Old-releases,🟠26-07-adidas-gazelle-indoor-bad-bunny-cabo-rojo,texto,Calendario por marca,staff,ver tabla v0.9,#lanzamientos (etiqueta por marca),,,0
+Old-releases,🟢11-07-nike-air-max-95-levis,texto,Calendario por marca,staff,ver tabla v0.9,#lanzamientos (etiqueta por marca),,,0
+Old-releases,🟢snkrs-restock-27-28-05,texto,Calendario por marca,staff,ver tabla v0.9,#lanzamientos (etiqueta por marca),,,0
+Old-releases,🟢🟠jordan-3-retro-seoul-20,texto,Calendario por marca,staff,ver tabla v0.9,#lanzamientos (etiqueta por marca),,,0
+Old-releases,🟠fc-barcelona-x-kobe,texto,Calendario por marca,staff,ver tabla v0.9,#lanzamientos (etiqueta por marca),,,0
+Old-releases,🔴🟠jordan-4-retro-white-cement,texto,Calendario por marca,staff,ver tabla v0.9,#lanzamientos (etiqueta por marca),,,0

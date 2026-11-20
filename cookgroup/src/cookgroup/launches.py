@@ -323,7 +323,7 @@ def build_launch_digest(states: dict[str, dict], now: datetime, *, title: str, d
 
 # ------------------------------------------------------------------ ciclo
 def run_launch_cycle(cfg, defaults: dict, source, store, senders: dict[str, Callable[[dict], str | None]],
-                     now: datetime | None = None, *, ping_rules=None) -> dict:
+                     now: datetime | None = None, *, ping_rules=None, forum=None, raffle_board=None) -> dict:
     """senders: {"launch"|"raffle"|"restock"|"digest"|<canal de ping>: send}. Nunca lanza por errores de la fuente."""
     from .rules import build_ping, rule_matches_launch  # evitar import circular
     now = now or datetime.now(timezone.utc)
@@ -365,6 +365,17 @@ def run_launch_cycle(cfg, defaults: dict, source, store, senders: dict[str, Call
             events += new_ev
 
     sent = pings = 0
+    # v1.0: foro (un hilo por SKU, cambios dentro del hilo) y tablón de raffles (apertura/recordatorio/plazo/cierre)
+    now_ts = int(now.timestamp())
+    if forum is not None:
+        for it in items:
+            sent += len(forum.ingest(it))
+    if raffle_board is not None:
+        from .raffles import from_bstn
+        for it in items:
+            if it.raffle:
+                sent += len(raffle_board.ingest(from_bstn(it, now_ts), now_ts))
+        sent += len(raffle_board.tick(now_ts))
     if first_run:
         dg = build_launch_digest(states, now, title=f"Resumen inicial — {cfg.store}: raffles abiertos y próximos lanzamientos")
         send = senders.get("digest") or senders.get("launch")
@@ -374,10 +385,19 @@ def run_launch_cycle(cfg, defaults: dict, source, store, senders: dict[str, Call
     for ev in events:
         if store.has_alert(ev.key):
             continue
-        send = senders.get(KIND[ev.type]) or senders.get("launch")
+        kind = KIND[ev.type]
+        payload = build_launch_embed(ev, now)
+        if raffle_board is not None and kind == "raffle":
+            store.record_alert(ev.key, ev.type.value, cfg.store, ev.launch.uid, None)   # lo publica el tablón de raffles
+            continue
+        if forum is not None and kind == "launch":
+            if forum.post_update(ev.launch.key, payload):                             # dentro del hilo de ese SKU
+                store.record_alert(ev.key, ev.type.value, cfg.store, ev.launch.uid, "hilo")
+                sent += 1
+            continue
+        send = senders.get(kind) or (None if forum is not None else senders.get("launch"))
         if not send:
             continue
-        payload = build_launch_embed(ev, now)
         store.record_alert(ev.key, ev.type.value, cfg.store, ev.launch.uid, send(payload))
         sent += 1
         for rule in ping_rules or []:

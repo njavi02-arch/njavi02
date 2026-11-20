@@ -11,7 +11,7 @@ from dataclasses import replace
 
 from .models import Product, Variant
 
-_FRACTIONS = {"⅓": " 1/3", "⅔": " 2/3", "½": ".5"}
+_FRACTIONS = {"⅓": " 1/3", "⅔": " 2/3", "½": ".5", " 1/2": ".5"}   # " 1/2": visto en baskets-store.com (20-nov)
 _PREFIX = re.compile(r"^(EU|EUR)\s*", re.I)
 _REGIONAL = re.compile(r"^(UK|US|USM|USW|JP|CM)\s*(\d{1,2}(?:\.5)?)$", re.I)
 _EU = re.compile(r"^(\d{2})(?:\.5| 1/3| 2/3)?$")
@@ -38,6 +38,8 @@ def normalize_size(raw: str) -> str | None:
                 return n
         return None
     s = parts[0]
+    if (m := re.match(r"^(XXS|XS|S|M|L|XL|XXL|XXXL|\dXL)\s*-\s*EU\s*\d+$", s.strip(), re.I)):
+        return m.group(1).upper()          # ropa «XXL - EU 44» (ASOS Sample Sale): la talla es XXL, no un 44 de calzado
     for k, v in _FRACTIONS.items():
         s = s.replace(k, v)
     s = re.sub(r"\s+", " ", s).replace(",", ".")

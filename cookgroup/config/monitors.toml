@@ -452,6 +452,21 @@ include_vendors = []
 skip_kids_sizes = true
 
 [[monitor]]
+name = "solebox-eu"
+type = "jsonld"
+store = "Solebox"
+country = "DE"
+region = "eu"
+base_url = "https://www.solebox.com"
+currency = "EUR"
+listing_urls = ["https://www.solebox.com/en-eu/c/footwear-2777"]   # 20-nov-2026: 44 fichas en el listado
+product_link_pattern = "/en-eu/p/"
+products_per_cycle = 4
+interval_seconds = 900
+channel = "sneakers"
+skip_kids_sizes = true
+
+[[monitor]]
 name = "footlocker-es"
 ships_es = "sí"            # envío a España confirmado en el inventario (docs/inventory.csv)
 type = "jsonld"
