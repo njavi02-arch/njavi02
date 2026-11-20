@@ -36,9 +36,17 @@ Con solo `DEFAULT` todo llega a un canal. Para organizarlo, crea estos canales y
 En el **primer arranque** no llega una avalancha: el bot guarda lo que existe y manda **un resumen** con los raffles
 abiertos y los lanzamientos de los próximos 7 días.
 
+## v0.7 — qué cambia
+Abre **`VER_PANEL.bat`** (o `docs/v07/PANEL.html`): resumen, cifras, piloto, ejemplos de avisos e inventario con buscador.
+- `COMPROBAR.bat` lee las fuentes y no envía nada (`COMPROBAR.bat piloto` solo las 6 del piloto; `reanudar` sigue un lote cortado).
+- `ENVIAR_PRUEBA.bat` manda 1 mensaje de PRUEBA a tu canal privado (webhook en `.env`).
+- `ESTADO.bat` dice si el proceso está vivo y qué fuentes van retrasadas.
+- Detalle: `docs/v07/RESUMEN.md`, `docs/v07/COMPARACION_V06.md`, `docs/v07/PILOTO_REGISTRO.md`.
+
 ## Tiendas
-**v0.6: 262 monitores** (231 tiendas Shopify sacadas del cookgroup de referencia, cargadas desde `config/shopify_stores.csv`,
-más 31 configuradas a mano). Inventario filtrable por tienda, país, categoría, evento y estado: **`docs/inventory.html`**.
+**260 monitores activos** (230 tiendas Shopify activas de las 231 filas de `config/shopify_stores.csv` + 30 configurados a
+mano en `config/monitors.toml`). *Corrección v0.7: v0.6 decía 262 por contar la fila desactivada (milk-store) y 31 monitores
+a mano en vez de 30.* Cifras siempre generadas: `python tools/stats.py` → `docs/CIFRAS.md`. Inventario filtrable por tienda, país, categoría, evento y estado: **`docs/inventory.html`**.
 Progreso y punto de reanudación: `docs/PROGRESS.md`.
 
 ### Configuradas a mano (verificadas el 19/20-nov-2026)

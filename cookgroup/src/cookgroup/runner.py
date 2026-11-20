@@ -143,8 +143,16 @@ def run_all(cfg: Config, db_path: str = "cookgroup.db"):
         threads.append(threading.Thread(target=_calendar_loop, args=(cfg, store, stop, rf), name="calendar", daemon=True))
     for t in threads:
         t.start()
+    from .diagnostics import write_heartbeat
+    beat = 0.0
     try:
         while any(t.is_alive() for t in threads):
+            if time.monotonic() - beat >= 30:   # latido para ESTADO.bat: ¿sigue vivo el proceso?
+                try:
+                    write_heartbeat(len(threads), sum(t.is_alive() for t in threads))
+                except OSError:
+                    pass
+                beat = time.monotonic()
             time.sleep(1)
     except KeyboardInterrupt:
         stop.set()

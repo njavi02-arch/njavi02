@@ -67,9 +67,15 @@ def sample_payloads() -> list[tuple[str, str, dict]]:
     out.append(("sneakers", "RESTOCK · datos reales de Family 3.0 (estado de stock simulado)",
                 build_embed(Event(EventType.RESTOCK, p, p.available_variants, detected_at=TS))))
     opp = Opportunity(Event(EventType.NEW_PRODUCT, p, p.available_variants), 9000, 15500, 3440, 38.2, 71,
-                      notes=["Dato de mercado de ejemplo (config/market_data.json): verificar antes de usar"])
-    out.append(("sneakers", "NUEVO PRODUCTO con beneficio estimado (precio de mercado de EJEMPLO)",
+                      margin_pct=22.2, verified=True,
+                      basis="SIMULACIÓN: 5 ventas cerradas de EJEMPLO en stockx, talla 43, nuevo, últimos 30 días; "
+                            "comisión 9 % + envío venta 5,00 €")
+    out.append(("sneakers", "NUEVO PRODUCTO con beneficio VERIFICADO (ventas de EJEMPLO: simulación)",
                 build_embed(Event(EventType.NEW_PRODUCT, p, p.available_variants, detected_at=TS), opp)))
+    opp2 = Opportunity(Event(EventType.NEW_PRODUCT, p, p.available_variants), 9000, None, None, None, 0,
+                       notes=["solo 1 ventas en los últimos 30 días (mínimo 3)", "envío a España sin confirmar"])
+    out.append(("sneakers", "NUEVO PRODUCTO con «beneficio sin verificar» (lo normal hoy: market_data vacío)",
+                build_embed(Event(EventType.NEW_PRODUCT, p, p.available_variants, detected_at=TS), opp2)))
     cheap = replace(p, variants=tuple(replace(v, price_cents=5400, compare_at_cents=9000) for v in p.variants))
     out.append(("rebajas_30", "BAJADA DE PRECIO (SIMULADA) · copiada también al canal del tramo 30 %",
                 build_embed(Event(EventType.PRICE_DROP, cheap, cheap.available_variants, 9000, 5400, TS))))

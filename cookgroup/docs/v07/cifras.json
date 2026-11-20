@@ -1,0 +1,64 @@
+{
+ "generado": "20/11/2026 12:17",
+ "monitores_toml": 30,
+ "filas_csv": 231,
+ "filas_csv_activas": 230,
+ "monitores_cargados": 260,
+ "monitores_activos": 260,
+ "activos_por_tipo": {
+  "bstn": 1,
+  "shopify": 252,
+  "rss": 5,
+  "jsonld": 2
+ },
+ "tiendas_unicas_activas": 260,
+ "inventario_filas": 422,
+ "inventario_referencia": 412,
+ "inventario_propias": 10,
+ "inventario_cobertura": {
+  "pendiente": 148,
+  "parcial": 243,
+  "completa": 17,
+  "bloqueada": 13,
+  "descartada": 1
+ },
+ "cobertura_por_aviso": {
+  "lanzamiento anunciado": {
+   "completa": 1
+  },
+  "raffle abierto/cierre": {
+   "completa": 1
+  },
+  "fecha cambiada": {
+   "completa": 1
+  },
+  "vuelve talla": {
+   "parcial": 1
+  },
+  "producto nuevo": {
+   "completa": 252,
+   "parcial": 2
+  },
+  "vuelta a stock": {
+   "parcial": 254
+  },
+  "talla nueva": {
+   "parcial": 252
+  },
+  "bajada de precio": {
+   "parcial": 254
+  },
+  "price error": {
+   "parcial": 252
+  },
+  "chollo nuevo": {
+   "completa": 5
+  }
+ },
+ "bd": "/tmp/piloto.db",
+ "lecturas_utiles": 1,
+ "eventos_detectados": 3,
+ "envios_confirmados": 3,
+ "envios_pendientes": 0,
+ "comprobaciones_por_estado": {}
+}

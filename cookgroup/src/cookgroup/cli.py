@@ -42,6 +42,10 @@ def main(argv=None):
     ap.add_argument("command", choices=["run", "check-config", "check-releases", "probe", "test-webhook", "preview", "status"])
     ap.add_argument("--channel", default="default", help="test-webhook: canal cuyo webhook probar")
     ap.add_argument("--out", default="preview.html", help="preview: fichero HTML de salida")
+    ap.add_argument("--solo", help="probe: monitores o dominios separados por comas")
+    ap.add_argument("--buscar", help="probe: solo los que contengan este texto (nombre, tienda o dominio)")
+    ap.add_argument("--limite", type=int, help="probe: como mucho N fuentes")
+    ap.add_argument("--reanudar", action="store_true", help="probe: continuar el último lote donde se cortó")
     a = ap.parse_args(argv)
     load_dotenv()
     h = logging.StreamHandler(sys.stdout)
@@ -58,6 +62,10 @@ def main(argv=None):
     if a.command == "status":
         from datetime import datetime, timezone
         from .store import Store
+        from .diagnostics import lag_label, process_state
+        pst, pdet = process_state()
+        print(f"PROCESO: {pst} — {pdet}\n")
+        intervals = {m.name: m.interval_seconds for m in cfg.monitors}
         rows = Store(a.db).health()
         if not rows:
             print("Sin datos todavía: arranca con 'run' y vuelve a mirar en unos minutos.")
@@ -67,7 +75,7 @@ def main(argv=None):
         def ago(m):
             return "nunca" if m is None else f"hace {m} min" if m < 120 else f"hace {m // 60} h" if m < 2880 else f"hace {m // 1440} d"
         ok = att = bad = 0
-        print(f"{'fuente':<22} {'estado':<10} {'último OK':<13} {'desde (Madrid)':<16} {'ciclos':>6}  detalle")
+        print(f"{'fuente':<22} {'estado':<10} {'ritmo':<14} {'último OK':<13} {'desde (Madrid)':<16} {'ciclos':>6}  detalle")
         for src, last_ok, errs, last_err, err_at, items, ms, delay, first_ok, cycles in rows:
             age = mins(last_ok)
             if errs == 0 and last_ok and age is not None and age <= 60:
@@ -78,10 +86,11 @@ def main(argv=None):
                 st, att = "AVISO", att + 1
             from zoneinfo import ZoneInfo
             since = datetime.fromisoformat(first_ok).astimezone(ZoneInfo("Europe/Madrid")).strftime("%d-%m %H:%M") if first_ok else "-"
-            det = (last_err or "")[:70] if errs else (f"{items} productos" if items is not None else "")
+            det = (last_err or "")[:70] if errs else ("respuesta VACÍA (0 elementos)" if items == 0 else f"{items} elementos leídos" if items is not None else "")
+            lag = lag_label(last_ok, intervals.get(src, 600))
             if delay is not None:
                 det += f" · retraso medido {delay}s"
-            print(f"{src:<22} {st:<10} {ago(age):<13} {since:<16} {cycles or 0:>6}  {det}")
+            print(f"{src:<22} {st:<10} {lag:<14} {ago(age):<13} {since:<16} {cycles or 0:>6}  {det}")
         print(f"\nResumen: {ok} OK · {att} con aviso · {bad} necesitan atención (sin ciclo correcto en la última hora o ≥3 errores seguidos)")
         return 0
     if a.command == "preview":
@@ -96,33 +105,25 @@ def main(argv=None):
             print("Falta el webhook: pon DISCORD_WEBHOOK_DEFAULT=<url> en el fichero .env")
             return 1
         mid = WebhookSender(url).send(test_payload())
-        print(f"OK: mensaje de prueba enviado (id {mid}). Míralo en tu canal de Discord.")
+        from datetime import datetime, timezone
+        from .store import Store
+        Store(a.db).record_alert(f"prueba|{datetime.now(timezone.utc).isoformat()}", "prueba", "PRUEBA", "-", mid)
+        print(f"OK: mensaje de PRUEBA confirmado por Discord (id {mid}). Míralo en tu canal privado de pruebas.")
         return 0
     if a.command == "probe":
+        from .diagnostics import finish_batch, run_probe, select
         from .pipeline import _prepare
         from .runner import make_source
-        bad = 0
-        for m in cfg.monitors:
-            if not m.enabled:
-                continue
-            try:
-                if m.type == "bstn":
-                    from datetime import datetime, timezone
-                    t0 = datetime.now(timezone.utc)
-                    items = make_source(m).fetch_launches(t0)
-                    raffles = sum(1 for i in items if i.raffle_active)
-                    dated = sum(1 for i in items if i.release_ts)
-                    print(f"OK    {m.name:<18} {len(items):>4} lanzamientos · {raffles} raffles abiertos · {dated} con fecha")
-                    continue
-                raw = make_source(m).fetch()
-                ok, dropped = _prepare(raw, m)
-                avail = sum(1 for p in ok if p.available_variants)
-                print(f"OK    {m.name:<18} {len(raw):>4} leídos · {len(ok):>4} pasan filtros · {avail:>4} con stock · {dropped} descartados")
-            except Exception as e:
-                bad += 1
-                print(f"ERROR {m.name:<18} {e}")
-        print("Todo correcto: puedes arrancar con 'run'." if not bad else f"{bad} fuentes con error (el resto funciona).")
-        return 0 if not bad else 2
+        from .store import Store
+        ms = select(cfg.monitors, only=a.solo, match=a.buscar, limit=a.limite, resume=a.reanudar)
+        if not ms:
+            print("No hay fuentes que comprobar con ese filtro (o el lote ya estaba terminado).")
+            return 0
+        print(f"Comprobando {len(ms)} fuentes (solo lectura, no se envía nada a Discord)…")
+        rows = run_probe(ms, make_source, _prepare, Store(a.db), resume=a.reanudar)
+        if not a.limite and not a.solo and not a.buscar:
+            finish_batch()
+        return 0 if not any(r.status == "FALLO" for r in rows) else 2
     if a.command == "check-releases":
         from .releases import load_calendar
         cal = load_calendar(cfg.defaults.get("releases_file", "config/releases.toml"))

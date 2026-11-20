@@ -111,3 +111,44 @@ def test_embed_says_unverified(tmp_path):
     run_cycle(MCFG, {}, FakeSource([with_available({1})]), st, mk, d)
     txt = json.dumps(d.got, ensure_ascii=False)
     assert "Beneficio neto estimado" not in txt
+
+
+def test_probe_states_and_resume(tmp_path, monkeypatch):
+    from cookgroup import diagnostics as dg
+    from cookgroup.pipeline import _prepare
+    from cookgroup.sources.shopify import RateLimited, SourceError, parse_products
+    monkeypatch.setattr(dg, "STATE_FILE", tmp_path / "lote.json")
+
+    class Src:
+        def __init__(self, x): self.x = x
+        def fetch(self):
+            if isinstance(self.x, Exception): raise self.x
+            return parse_products(self.x, store="T", base_url="https://t.invalid", currency="EUR")
+    cases = {"util": FIX, "vacia": {"products": []}, "sin304": SourceError("not-modified"),
+             "limit": RateLimited(60), "fallo": SourceError("T: HTTP 500")}
+    ms = [MonitorConfig(n, "shopify", n, f"https://{n}.invalid") for n in cases]
+    nomatch = MonitorConfig("nomatch", "shopify", "nomatch", "https://nm.invalid", include_vendors=["Nadie"])
+    cases["nomatch"] = FIX
+    rows = dg.run_probe(ms + [nomatch], lambda m: Src(cases[m.name]), _prepare, Store(tmp_path / "s.db"),
+                        out_dir=str(tmp_path), printer=lambda *_: None)
+    got = {r.monitor: r.status for r in rows}
+    assert got == {"util": "ÚTIL", "vacia": "VACÍA", "sin304": "SIN CAMBIOS", "limit": "LIMITADA", "fallo": "FALLO",
+                   "nomatch": "SIN COINCIDENCIAS"}
+    assert rows[0].sample and "talla" in rows[0].sample
+    assert list(tmp_path.glob("comprobacion_*.csv"))
+    # reanudar: lo ya hecho no se repite
+    assert dg.select(ms + [nomatch], resume=True) == []
+    assert [m.name for m in dg.select(ms, match="lim")] == ["limit"]
+
+
+def test_lag_and_heartbeat(tmp_path):
+    from datetime import datetime, timedelta, timezone
+    from cookgroup import diagnostics as dg
+    now = datetime.now(timezone.utc)
+    assert dg.lag_label((now - timedelta(seconds=500)).isoformat(), 600, now) == "AL DÍA"
+    assert dg.lag_label((now - timedelta(hours=3)).isoformat(), 600, now).startswith("RETRASADA")
+    assert dg.lag_label(None, 600) == "SIN LECTURA"
+    hb = tmp_path / "hb.json"
+    assert dg.process_state(hb)[0] == "PARADO"
+    dg.write_heartbeat(5, 5, hb)
+    assert dg.process_state(hb)[0] == "EN MARCHA"
