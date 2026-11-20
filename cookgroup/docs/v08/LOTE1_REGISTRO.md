@@ -1,4 +1,4 @@
-# Lote 1 — bienvenida, roles y notificaciones (ejecutado 20/11/2026 12:47, Madrid)
+# Lote 1 — bienvenida, roles y notificaciones (ejecutado 20/11/2026 13:12, Madrid)
 
 **Datos:** CAPTURA REAL de Footdistrict (20-nov 12:39) + cambios CONTROLADOS + Discord SIMULADO. Perfil de prueba: EU 44,5 · ASICS y New Balance · envío a España.
 

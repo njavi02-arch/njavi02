@@ -36,6 +36,12 @@ Con solo `DEFAULT` todo llega a un canal. Para organizarlo, crea estos canales y
 En el **primer arranque** no llega una avalancha: el bot guarda lo que existe y manda **un resumen** con los raffles
 abiertos y los lanzamientos de los próximos 7 días.
 
+## v0.9 — cookgroup comercial (modo prueba)
+- `VER_PANEL.bat`: abre el panel con las pestañas Negocio, Panel del dueño, Alta y baja, Permisos y Mis canales. No necesita Python.
+- `PANEL_DUENO.bat`: abre la web local con la página de venta, el alta en modo prueba, la cuenta del cliente y el panel en vivo (`PANEL_PIN`).
+- `ENVIAR_PRUEBA.bat`: envía solo a #pruebas-bot. Comprueba servidor y canal antes de enviar y vuelve a leer el mensaje por su ID.
+- Guía del dueño: `docs/v09/COMO_OPERO.md` · Apertura: `docs/v09/APERTURA.md` · Plan: `PLAN_MAESTRO.md`.
+
 ## v0.7 — qué cambia
 Abre **`VER_PANEL.bat`** (o `docs/v07/PANEL.html`): resumen, cifras, piloto, ejemplos de avisos e inventario con buscador.
 - `COMPROBAR.bat` lee las fuentes y no envía nada (`COMPROBAR.bat piloto` solo las 6 del piloto; `reanudar` sigue un lote cortado).

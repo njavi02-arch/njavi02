@@ -1,4 +1,4 @@
-# Membresías en PRUEBA LOCAL (ejecutado 20/11/2026 13:04, Madrid)
+# Membresías en PRUEBA LOCAL (ejecutado 20/11/2026 13:12, Madrid)
 
 Web local real (HTTP) + simulador de Stripe (eventos firmados como Stripe, livemode=false) + Discord simulado.
 No se cobra nada y no se toca Discord.
@@ -9,7 +9,7 @@ Resultado: **TODO OK**
 |---|---|---|
 | 1. Visitante abre la página de venta | OK | ve el plan, el precio (19,99 €/mes), qué incluye y las condiciones |
 | 2. Visitante sin pagar: solo zona pública | OK | ve bienvenida, planes, muestra y soporte; no ve los canales de pago |
-| 3. Alta: vincula Discord → pago de prueba → rol | OK | pago simulado con firma de Stripe; rol «Suscriptor activo» concedido; vigente hasta 2026-12-20T12:04:03+00:00 |
+| 3. Alta: vincula Discord → pago de prueba → rol | OK | pago simulado con firma de Stripe; rol «Suscriptor activo» concedido; vigente hasta 2026-12-20T12:12:55+00:00 |
 | 4. Bienvenida enviada una sola vez | OK | mensaje privado de bienvenida |
 | 5. Acceso a los canales contratados | OK | ahora ve #sneakers-eu, #lanzamientos, #raffles… |
 | 6. El cliente ve su suscripción | OK | página /cuenta: estado, vigencia y botón de cancelar |

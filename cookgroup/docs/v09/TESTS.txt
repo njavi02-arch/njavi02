@@ -1,0 +1,143 @@
+142 passed in 5.92s
+tests/test_access.py::test_visitor_sees_only_public
+tests/test_access.py::test_subscriber_gets_contracted_content_but_not_staff
+tests/test_access.py::test_former_subscriber_loses_access_even_with_preferences_and_old_link
+tests/test_access.py::test_team_and_owner
+tests/test_access.py::test_tickets_private_to_client_and_team
+tests/test_access.py::test_preferences_only_personalize_for_entitled
+tests/test_bstn.py::test_parse_real_listing
+tests/test_bstn.py::test_store_dates_keep_origin_timezone[20. Nov | 15:00 CET-2026-11-20T14:00:00+00:00]
+tests/test_bstn.py::test_store_dates_keep_origin_timezone[20. Nov | 14:00 GMT-2026-11-20T14:00:00+00:00]
+tests/test_bstn.py::test_store_dates_keep_origin_timezone[2. Jan | 9:00 CET-2027-01-02T08:00:00+00:00]
+tests/test_bstn.py::test_store_dates_keep_origin_timezone[27. Nov-2026-11-26T23:00:00+00:00]
+tests/test_bstn.py::test_parse_real_product_sizes_and_equivalences
+tests/test_bstn.py::test_missing_next_data_is_an_error_not_an_empty_list
+tests/test_bstn.py::test_robots_excluded_urls_are_never_fetched
+tests/test_bstn.py::test_first_run_is_baseline_and_digest_lists_raffle_and_week
+tests/test_bstn.py::test_announced_date_changed_raffle_open_and_no_duplicates
+tests/test_bstn.py::test_date_confirmed_from_no_date
+tests/test_bstn.py::test_disappearing_items_are_not_cancellations_and_empty_listing_is_rejected
+tests/test_bstn.py::test_raffle_closing_reminder_once
+tests/test_bstn.py::test_live_then_size_restock_then_real_restock_later
+tests/test_bstn.py::test_price_drop_from_product_page
+tests/test_bstn.py::test_embed_mobile_order_and_madrid_time
+tests/test_bstn.py::test_ping_rule_by_size_brand_region
+tests/test_bstn.py::test_cycle_first_run_digest_then_events_restart_safe
+tests/test_bstn.py::test_bstn_source_http_path_and_errors
+tests/test_bstn.py::test_webhook_errors_never_leak_the_url
+tests/test_bstn.py::test_store_is_safe_with_many_monitor_threads
+tests/test_core.py::test_parse_money_and_fields
+tests/test_core.py::test_baseline_emits_nothing
+tests/test_core.py::test_restock_vs_new_size_vs_soldout
+tests/test_core.py::test_price_drop_threshold
+tests/test_core.py::test_profit_never_invented_without_market
+tests/test_core.py::test_profit_math_and_listing_warning
+tests/test_core.py::test_score_bounds_and_no_market
+tests/test_core.py::test_embed_format_and_no_buttons_by_default
+tests/test_core.py::test_pipeline_dedupe_and_filter
+tests/test_core.py::test_pipeline_errors_do_not_raise
+tests/test_core.py::test_source_http_errors
+tests/test_core.py::test_webhook_retries_on_429
+tests/test_core.py::test_config_rejects_aggressive_interval
+tests/test_core.py::test_repo_config_loads_and_has_no_secrets
+tests/test_jsonld.py::test_product_group_with_sizes
+tests/test_jsonld.py::test_aggregate_offer_and_simple
+tests/test_jsonld.py::test_listing_links_same_host_and_pattern
+tests/test_jsonld.py::test_cycle_size_comes_back_from_structured_data
+tests/test_jsonld.py::test_antibot_page_is_an_error_not_an_empty_store
+tests/test_jsonld.py::test_real_snipes_product_page
+tests/test_lote1.py::test_lote1_member_journey
+tests/test_lote1.py::test_eu_size_parsing
+tests/test_lote2.py::test_channels_batch
+tests/test_lote2.py::test_store_filter_in_profile
+tests/test_lote2.py::test_sample_feed_delay_cap_and_no_mentions
+tests/test_membresias.py::test_membership_journey
+tests/test_membresias.py::test_signature_scheme
+tests/test_pilot.py::test_pilot_end_to_end
+tests/test_priority2.py::test_normalize_size[42-42]
+tests/test_priority2.py::test_normalize_size[42,5-42.5]
+tests/test_priority2.py::test_normalize_size[EU 44-44]
+tests/test_priority2.py::test_normalize_size[36 2/3-36 2/3]
+tests/test_priority2.py::test_normalize_size[36\u2154-36 2/3]
+tests/test_priority2.py::test_normalize_size[uk 6-UK 6]
+tests/test_priority2.py::test_normalize_size[US 9.5-US 9.5]
+tests/test_priority2.py::test_normalize_size[4Y-4Y]
+tests/test_priority2.py::test_normalize_size[42 / Black-42]
+tests/test_priority2.py::test_normalize_size[M-M]
+tests/test_priority2.py::test_normalize_size[Default Title-\xdanica]
+tests/test_priority2.py::test_normalize_size[375-None]
+tests/test_priority2.py::test_normalize_size[36666-None]
+tests/test_priority2.py::test_normalize_size[-None]
+tests/test_priority2.py::test_normalize_size[99-None]
+tests/test_priority2.py::test_kids_sizes_filtered_only_when_requested
+tests/test_priority2.py::test_unparseable_sizes_are_dropped_not_guessed
+tests/test_priority2.py::test_validation_rejects_empty_and_numeric_titles
+tests/test_priority2.py::test_price_error_needs_history
+tests/test_priority2.py::test_price_error_uses_own_median_and_ignores_absurd_compare_at
+tests/test_priority2.py::test_normal_drop_is_not_price_error
+tests/test_priority2.py::test_ping_rule_keywords_price_and_exclusions
+tests/test_priority2.py::test_ping_payload_only_mentions_its_role
+tests/test_priority2.py::test_ping_rule_rejects_bad_role
+tests/test_priority2.py::test_parse_price_cents
+tests/test_priority2.py::test_parse_feed_rss_skips_untitled_entries
+tests/test_priority2.py::test_rss_cycle_publishes_new_deals_and_drops_invalid
+tests/test_priority2.py::test_cycle_upgrades_drop_to_price_error_and_pings
+tests/test_priority2.py::test_config_loads_ping_rules_and_rejects_fast_rss
+tests/test_priority3.py::test_load_calendar_normalises
+tests/test_priority3.py::test_calendar_rejects_bad_entries[id = "Mal ID"]
+tests/test_priority3.py::test_calendar_rejects_bad_entries[method = "BOT"]
+tests/test_priority3.py::test_calendar_rejects_bad_entries[verdict = "yes"]
+tests/test_priority3.py::test_calendar_rejects_bad_entries[stores = [{ name = "x", url = "http://inseguro" }]]
+tests/test_priority3.py::test_due_reminders_windows
+tests/test_priority3.py::test_reminder_and_digest_format
+tests/test_priority3.py::test_digest_due_uses_local_time
+tests/test_priority3.py::test_calendar_tick_never_repeats
+tests/test_priority3.py::test_discount_pct_and_routes
+tests/test_priority3.py::test_cycle_copies_drop_to_tier_channel
+tests/test_priority3.py::test_dedupe_group_merges_two_domains
+tests/test_priority3.py::test_config_validates_discount_routes
+tests/test_priority3.py::test_pending_release_never_notified
+tests/test_real_delivery.py::test_never_falls_back_to_default
+tests/test_real_delivery.py::test_refuses_other_guild_or_channel
+tests/test_real_delivery.py::test_confirmed_delivery_is_logged
+tests/test_real_samples.py::test_family30_real_payload_parses_and_normalises
+tests/test_real_samples.py::test_real_size_formats[M5.5/W6.5 / Grey-M5.5/W6.5]
+tests/test_real_samples.py::test_real_size_formats[2T-2T]
+tests/test_real_samples.py::test_real_size_formats[10.5C-10.5C]
+tests/test_real_samples.py::test_real_size_formats[4.5-4.5]
+tests/test_real_samples.py::test_real_size_formats[Small-S]
+tests/test_real_samples.py::test_real_size_formats[X-Large-XL]
+tests/test_real_samples.py::test_real_size_formats[ONE SIZE-\xdanica]
+tests/test_real_samples.py::test_real_size_formats[OS-\xdanica]
+tests/test_real_samples.py::test_real_size_formats[Default Title-\xdanica]
+tests/test_real_samples.py::test_real_size_formats[42,5-42.5]
+tests/test_real_samples.py::test_kids_titles_seen_in_real_stores[Air Jordan 4 Retro OG GS "Bred"-True]
+tests/test_real_samples.py::test_kids_titles_seen_in_real_stores[Air Jordan Retro 4 Toddler (TD)-True]
+tests/test_real_samples.py::test_kids_titles_seen_in_real_stores[Kith Kids Toy Story Just Us Tee-True]
+tests/test_real_samples.py::test_kids_titles_seen_in_real_stores[Air Jordan 3 Retro "Not Nice"-False]
+tests/test_real_samples.py::test_kids_titles_seen_in_real_stores[Made in USA 990v7-False]
+tests/test_real_samples.py::test_chollometro_real_feed
+tests/test_real_samples.py::test_preview_renders_all_samples
+tests/test_real_samples.py::test_launch_collection_monitor_titles_and_subfolder_urls
+tests/test_real_samples.py::test_size_formats_wave2[- / 5-5]
+tests/test_real_samples.py::test_size_formats_wave2[- / 8.5-8.5]
+tests/test_real_samples.py::test_size_formats_wave2[US5-US 5]
+tests/test_real_samples.py::test_size_formats_wave2[3.5Y/W 5-None]
+tests/test_scale.py::test_rotation_visits_whole_catalog_and_wraps
+tests/test_scale.py::test_restock_of_old_model_on_page_3_is_detected_and_partial_reads_are_not_new
+tests/test_scale.py::test_selective_watch_fetches_product_json
+tests/test_scale.py::test_empty_first_page_after_full_one_is_suspicious
+tests/test_scale.py::test_domain_limiter_spaces_requests_per_domain
+tests/test_scale.py::test_bulk_store_list_loader
+tests/test_scale.py::test_auto_currency_from_cart_js
+tests/test_servidor.py::test_install_is_idempotent_and_keeps_existing
+tests/test_servidor.py::test_plan_counts
+tests/test_v07.py::test_v06_bug_snapshot_before_send_no_longer_loses_alerts
+tests/test_v07.py::test_pending_delivered_even_when_source_not_modified
+tests/test_v07.py::test_profit_verified_only_with_full_conditions
+tests/test_v07.py::test_market_sales_file_window_and_size
+tests/test_v07.py::test_embed_says_unverified
+tests/test_v07.py::test_probe_states_and_resume
+tests/test_v07.py::test_lag_and_heartbeat
+tests/test_v07.py::test_resale_size_must_be_buyable
+tests/test_v07.py::test_evaluate_picks_size_with_matching_sales
