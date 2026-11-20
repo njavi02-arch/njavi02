@@ -60,6 +60,8 @@ class Profile:
     excluded_channels: set[str] = field(default_factory=set)
     paused: bool = False
     destination: str = "canal"           # "canal" (mención en el canal) | "md" (mensaje privado, requiere bot)
+    stores: set[str] = field(default_factory=set)          # solo estas tiendas (vacío = todas)
+    excluded_stores: set[str] = field(default_factory=set)
     entitled: bool = True                # v0.9: tiene acceso de pago (Suscriptor activo o equipo). Lo fija la facturación
 
     @classmethod
@@ -68,7 +70,8 @@ class Profile:
         return cls(str(d["id"]), d.get("nombre", ""), set(d.get("familias", [])), set(d.get("marcas", [])), sizes,
                    set(d.get("regiones", [])), list(d.get("palabras", [])), list(d.get("negativas", [])),
                    d.get("precio_max_eur"), set(d.get("excluir_canales", [])), bool(d.get("pausa", False)),
-                   d.get("destino", "canal"), bool(d.get("activo", True)))
+                   d.get("destino", "canal"), {x.upper() for x in d.get("tiendas", [])},
+                   {x.upper() for x in d.get("excluir_tiendas", [])}, bool(d.get("activo", True)))
 
     @classmethod
     def from_roles(cls, member_id: str, name: str, role_names: list[str], design: dict) -> "Profile":
@@ -110,6 +113,9 @@ def decide(p: Profile, ev: Event, *, channel: str, family: str, ships_es: str | 
         return Decision(False, "avisos en pausa")
     if channel in p.excluded_channels:
         return Decision(False, f"ha excluido el canal #{channel}")
+    st = (ev.product.store or "").upper()
+    if (p.stores and st not in p.stores) or st in p.excluded_stores:
+        return Decision(False, f"ha limitado sus menciones por tienda ({ev.product.store})")
     if p.families and family not in p.families:
         return Decision(False, f"no sigue la familia «{family}»")
     text = f"{ev.product.vendor or ''} {ev.product.title}"

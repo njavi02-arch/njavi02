@@ -68,6 +68,36 @@ RULES = [
 ]
 
 
+# Comprobado abriendo el canal (20-nov, solo lectura). Resumen propio, sin datos de miembros.
+CHECKED = {
+    "📆important-releases": "foro: 12 hilos (dic-2025→nov-2026), uno por lanzamiento, con veredicto, fecha, mercado, tiendas y keywords",
+    "📯calls-pokemon": "foro: 12 hilos, uno por expansión de Pokémon TCG con veredicto 🟢🟠🔴",
+    "📲-invitaciones-pokemon": "foro: 0 hilos visibles para esta cuenta (pendiente de verificar)",
+    "📚guías-pokemon": "foro: 7 guías (introducción, dónde comprar/vender, tipos de producto, envío por Cardmarket, mercado)",
+    "📯calls-invest": "foro: 30 hilos de lanzamientos variados (consolas, Finalmouse, colaboraciones Pokémon…)",
+    "📯calls-mattel": "foro: 6 hilos (Hot Wheels por serie, Monster High, diecast, instore)",
+    "📯calls-funko": "foro: 43 hilos, uno por Funko Pop con fecha y veredicto",
+    "📯calls-tcg": "foro: 24 hilos (One Piece, Magic, Lorcana, Dragon Ball, Riftbound…)",
+    "📯calls-lego": "foro: 6 hilos, uno por set con su número (#75192, #10335…)",
+    "🌎roles": "4 mensajes de roles por reacción: tipos de aviso, marcas, otros, comunidad autónoma; sin tallas",
+    "🤖auto-pinger": "bot por MD: palabras, negativas, precio máximo, excluir canal, pausa, destino, CSV",
+    "raffles-europe": "fichas automáticas; última del 1-jul-2026 (inactivo)",
+    "aio-eu": "avisos de restock con tallas, precio y enlaces de mercado",
+    "📤wts": "market: miembros publican ventas con talla y precio (tema del canal: precio obligatorio); activo",
+    "✅legit-check": "market: miembros suben fotos para que otros validen autenticidad; activo",
+    "🚫black-list-scammers": "market: avisos de estafadores; moderado por el staff",
+    "adonis-monitor": "bot de compra de terceros: publica checkouts (tienda, modo, pago, precio, talla, hora)",
+    "🤝aycd-partnership": "partner de 2022: herramientas para generar cuentas y correos en masa",
+}
+DEPENDS = [(r"Market", "moderación humana + normas de compraventa + responsabilidad legal sobre transacciones entre miembros"),
+           (r"bots checkouts", "proveedor de bot de compra (licencia de pago) y su webhook de éxitos"),
+           (r"Partners", "acuerdo comercial con el proveedor (afiliación/descuento)"),
+           (r"Amazon|privalia|zalando|miravia", "fuente comercial: programa de afiliados/API"),
+           (r"Nike monitors|instore", "fuente autorizada inexistente hoy (SNKRS/tiendas físicas)"),
+           (r"Cashbacks", "acuerdos de afiliación con plataformas de cashback"),
+           (r"Monkey", "partner de consigna (acuerdo comercial)")]
+
+
 def parse_sidebar(path: Path):
     cat, out = None, []
     for line in path.read_text(encoding="utf-8").splitlines():
@@ -111,13 +141,24 @@ def main():
         bot = [mine[n][1]["fuente"].split(":", 1)[1] for n in exists if mine[n][1]["fuente"].startswith("bot:")]
         recibe = "sí (" + ", ".join(f"{feeding[b]} monitores" for b in bot if feeding.get(b)) + ")" if any(feeding.get(b) for b in bot) else "no"
         st = sorted(set(stores_by.get(plain, [])))
+        estado_eq = [mine[n][1]["estado"] for n in exists]
+        if r["canal"] in CHECKED or plain in CHECKED:
+            nivel = "función comprobada"
+        elif key:
+            nivel = "función comprobada (muestreo v0.6)"
+        else:
+            nivel = "visto en la barra lateral"
+        if "construido" in estado_eq:
+            nivel += " · equivalente implementado y probado localmente"
+        dep = next((d for rx, d in DEPENDS if re.search(rx, (r["categoria"] or "") + " " + plain, re.I)), "")
         out.append({**r, "canal": r["canal"], "para_que": para, "que_publica": publica, "quien_alimenta": quien,
                     "equivalente": equiv, "que_falta": falta, "como_se_prueba": prueba,
                     "documentado": "sí (muestreado v0.6)" if key else "sí (recorrido 20-nov)",
                     "mensajes_muestreados": sampled[key]["messages_sampled"] if key else "",
                     "existe_en_mi_servidor": "no (instalador listo)" if exists else "no aplica" if equiv in ("—", "") else "función, sin canal propio",
                     "recibe_datos": recibe, "entrega_confirmada": "no (sin webhook)",
-                    "tiendas": " ".join(st[:40]) + (f" … (+{len(st) - 40})" if len(st) > 40 else ""), "n_tiendas": len(st)})
+                    "nivel_evidencia": nivel, "comprobado_20nov": CHECKED.get(r["canal"], CHECKED.get(plain, "")),
+                    "dependencia": dep, "tiendas": " ".join(st[:40]) + (f" … (+{len(st) - 40})" if len(st) > 40 else ""), "n_tiendas": len(st)})
     cols = list(out[0].keys())
     with open(ROOT / "docs/v08/canales.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=cols)

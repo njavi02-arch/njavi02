@@ -90,12 +90,19 @@ def build_embed(ev: Event, opp: Opportunity | None = None, market_note: str | No
         {"name": "Precio", "value": eur(price, p.currency) if price else "No indicado", "inline": True},
     ]
     if ev.type in (EventType.PRICE_DROP, EventType.PRICE_ERROR):
-        label = "Referencia (mediana propia)" if ev.type == EventType.PRICE_ERROR else "Antes"
-        fields.append({"name": label, "value": eur(ev.old_price_cents, p.currency), "inline": True})
+        # v0.9: precio anterior y actual, cada uno con su origen
+        if ev.type == EventType.PRICE_ERROR:
+            fields.append({"name": "Referencia", "value": f"{eur(ev.old_price_cents, p.currency)}\n*origen: mediana de los precios que "
+                                                          f"hemos leído en esta tienda*", "inline": True})
+        else:
+            fields.append({"name": "Antes", "value": f"{eur(ev.old_price_cents, p.currency)}\n*origen: nuestra lectura anterior de la "
+                                                     f"ficha de la tienda*", "inline": True})
+        fields[1] = {"name": "Ahora", "value": f"{eur(price, p.currency)}\n*origen: ficha de la tienda al detectar*", "inline": True}
     else:
         cmp_at = max((v.compare_at_cents or 0 for v in ev.variants), default=0)
         if cmp_at and price and cmp_at > price:
-            fields.append({"name": "Descuento tienda", "value": f"~~{eur(cmp_at, p.currency)}~~ (-{round((cmp_at-price)*100/cmp_at)} %)", "inline": True})
+            fields.append({"name": "Descuento tienda", "value": f"~~{eur(cmp_at, p.currency)}~~ (-{round((cmp_at-price)*100/cmp_at)} %)"
+                                                                f"\n*origen: precio tachado que publica la tienda*", "inline": True})
     skus = sorted({v.sku for v in ev.variants if v.sku})
     if (base := base_sku(skus)):
         fields.append({"name": "SKU", "value": f"`{base}`", "inline": True})
@@ -131,7 +138,10 @@ def build_embed(ev: Event, opp: Opportunity | None = None, market_note: str | No
     fields.append({"name": "Detectado", "value": madrid_text(ev.detected_at), "inline": False})
     one = [v for v in ev.variants if v.title != "Oferta"]
     size_title = None
-    if ev.type in (EventType.NEW_SIZE, EventType.RESTOCK) and not is_deal:
+    sized = [v for v in one if normalize_size(v.title) not in (None, "Única")]
+    if ev.type in (EventType.NEW_SIZE, EventType.RESTOCK) and not is_deal and not sized:
+        size_title = "🔄 VUELVE A STOCK (la tienda no indica tallas)"     # v0.9: sin stock por talla no se anuncia una talla
+    elif ev.type in (EventType.NEW_SIZE, EventType.RESTOCK) and not is_deal:
         size_title = f"🔄 VUELVE LA {size_label(one[0].title).upper()}" if len(one) == 1 else (
             f"🔄 RESTOCK · {len(one)} tallas" if ev.type == EventType.RESTOCK else f"🔄 VUELVEN {len(one)} TALLAS")
     embed = {
