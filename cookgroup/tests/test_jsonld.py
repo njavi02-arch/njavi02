@@ -78,3 +78,12 @@ def test_antibot_page_is_an_error_not_an_empty_store():
     src = JsonLdSource("S", "https://s.invalid", listing_urls=["https://s.invalid/es/novedades"], session=site)
     with pytest.raises(SourceError, match="anti-bot"):
         src.fetch()
+
+
+def test_real_snipes_product_page():
+    from pathlib import Path
+    html = (Path(__file__).parent / "fixtures" / "snipes_es_product_REAL_2026-11-20.html").read_text()
+    url = "https://www.snipes.com/es-es/p/nike-air-force-1-07-blanco-1727"
+    p = parse_product_page(html, url=url, store="Snipes")
+    assert p.title == "Air Force 1 '07" and p.currency == "EUR"
+    assert [(v.title, v.available, v.price_cents) for v in p.variants] == [("Única", True, 9599)]   # isSimilarTo ignorado

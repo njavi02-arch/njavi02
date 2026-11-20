@@ -15,6 +15,10 @@ market_file = "config/market_data.json"
 price_error_pct = 50          # caída ≥ 50 % frente a la MEDIANA del histórico propio
 price_error_min_obs = 5       # sin 5 observaciones previas no se etiqueta "price error"
 releases_file = "config/releases.toml"
+# Lote de tiendas Shopify descubiertas en el cookgroup de referencia (tools/classify_reference.py). Una fila = un monitor.
+# Desactiva una tienda poniendo enabled=0 en el CSV. Moneda detectada sola (/cart.js), filtros según la categoría.
+shopify_stores_file = "config/shopify_stores.csv"
+bulk_deep_pages = 4
 launch_digest_time = "09:00"  # resumen diario "abiertos ahora / próximos 7 días" (hora de Madrid)
 raffle_closing_hours = 3
 # Seguimiento ficha a ficha (Shopify): modelos que interesan aunque estén en páginas antiguas del catálogo.
@@ -384,6 +388,78 @@ interval_seconds = 900
 channel = "chollos"
 allow_unknown_price = true
 min_temperature = 150
+
+# ---------------------------------------------------------------- CHOLLOS EUROPA (RSS Pepper, verificado 20-nov-2026)
+
+[[monitor]]
+name = "mydealz-hot"
+type = "rss"
+store = "Mydealz"
+country = "DE"
+base_url = "https://www.mydealz.de/rss/hot"
+currency = "EUR"
+interval_seconds = 900
+channel = "chollos"
+allow_unknown_price = true
+min_temperature = 300
+
+[[monitor]]
+name = "hotukdeals-hot"
+type = "rss"
+store = "HotUKDeals"
+country = "GB"
+base_url = "https://www.hotukdeals.com/rss/hot"
+currency = "GBP"
+interval_seconds = 900
+channel = "chollos"
+allow_unknown_price = true
+min_temperature = 200
+
+[[monitor]]
+name = "pepper-pl-hot"
+type = "rss"
+store = "Pepper.pl"
+country = "PL"
+base_url = "https://www.pepper.pl/rss/hot"
+currency = "PLN"
+interval_seconds = 1800
+channel = "chollos"
+allow_unknown_price = true
+min_temperature = 300
+
+# ---------------------------------------------------------------- CADENAS SIN SHOPIFY (datos estructurados JSON-LD, verificado 20-nov-2026)
+# Detecta: modelo nuevo en el listado, vuelta a stock del producto y bajada de precio. NO por talla (la ficha no la publica).
+
+[[monitor]]
+name = "snipes-es"
+type = "jsonld"
+store = "Snipes"
+country = "DE"
+region = "eu"
+base_url = "https://www.snipes.com"
+currency = "EUR"
+listing_urls = ["https://www.snipes.com/es-es/c/hombre/zapatillas/"]
+product_link_pattern = "/es-es/p/"
+products_per_cycle = 4
+interval_seconds = 900
+channel = "sneakers"
+include_vendors = []
+skip_kids_sizes = true
+
+[[monitor]]
+name = "footlocker-es"
+type = "jsonld"
+store = "Foot Locker"
+country = "ES"
+region = "eu"
+base_url = "https://www.footlocker.es"
+currency = "EUR"
+listing_urls = ["https://www.footlocker.es/es/category/hombre/zapatillas.html"]
+product_link_pattern = "/es/product/"
+products_per_cycle = 4
+interval_seconds = 900
+channel = "sneakers"
+skip_kids_sizes = true
 
 # ---------------------------------------------------------------- PINGS PERSONALES (filtros)
 # Cada regla re-publica en "pings" las alertas que cumplen TODO lo que indiques, mencionando un rol.

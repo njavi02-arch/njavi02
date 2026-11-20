@@ -31,3 +31,26 @@ No se conoce el código ni los proveedores internos de la referencia.
 | Colecciones «launches» de END/size?/Footpatrol | [I] cubiertas en monitores por tienda | Shopify `collection = "launches"` | ✅ (sin fecha: la tienda no la publica en el catálogo) |
 | Resumen «abiertos ahora / próximos 7 días» | [O] «Drops diarios» manual | Resumen inicial y diario 09:00 | ✅ |
 | Diagnóstico y arranque 24/7 | — | `status`, `ESTADO.bat`, `INSTALAR_AUTOARRANQUE.bat`, logs con rotación, reinicio automático | ✅ preparado; ⬜ sin ejecutar en un equipo persistente |
+
+## Igualación evento a evento por familia (20-nov-2026)
+
+Ref = lo que publica ZESTY CREW (observado). Nuestro = lo que detecta nuestro bot con fuente pública verificada.
+
+| Familia | Evento | Ref | Nuestro | Estado |
+|---|---|---|---|---|
+| Shopify (231 + 19 tiendas: boutiques, skate, TCG, streetwear) | Producto nuevo / restock / tallas | Sí (enlaces ATC/QT) | Sí: catálogo + rotación de páginas + fichas vigiladas | Igualado (los enlaces de compra automática no se replican) |
+| | Bajada de precio / % rebaja (canales 30/60 %) | Sí | Sí (`discount_routes`) | Igualado |
+| Nike / SNKRS ES-EU-US | Lanzamiento futuro (Commerce date, LEO), stock LOW/MED/HIGH | Sí | No | **Pendiente**: requiere API de Nike/app; sin fuente autorizada |
+| Nike instore (Madrid, Málaga…) | Stock por tienda física | Sí | No | **Pendiente**: sin fuente pública por tienda |
+| adidas ES/EU, CONFIRMED | Restock con stock por talla | Sí | No | Pendiente (probar JSON-LD de fichas); CONFIRMED solo en app |
+| BSTN | Calendario, raffle, cierre, a la venta, talla | Restock | Sí, más eventos que la referencia | **Superado** |
+| END. / size? / Footpatrol | Lanzamientos | Restock/nuevo | Colección «launches»: nuevo y tallas, sin fecha | Parcial |
+| JD Sports (ES/FR/DE/IT/NL/UK) | Restock/nuevo | Sí (mesh) | No | **Bloqueada** (anti-bot) |
+| Snipes, Foot Locker ES | Restock por talla | Sí | Producto nuevo y vuelta a stock, sin tallas | Parcial |
+| Zalando (ES/EU) y Zalando Privé | Restock por talla y región; campañas outlet | Sí | No | Pendiente (sin fuente pública; buscar afiliados) |
+| Privalia, Miravia, Lidl, PcComponentes | Campañas/productos | Sí | No | Pendiente |
+| Amazon (error, haul, tramos) | Price error | Sí (con falsos positivos) | No (nuestra lógica de price error es mejor, pero sin fuente) | Pendiente: API de afiliados |
+| Chollometro, Dealabs, Mydealz, HotUKDeals, Pepper.pl | Chollo nuevo | Sí (Chollometro salía vacío) | Sí, con tienda, precio y temperatura | **Superado** (mensajes válidos) |
+| Instagram de tiendas | Post nuevo | Sí | No | Pendiente: solo vía API oficial |
+| Checkouts de bots | Checkout | Sí | No | No se replica (compra automatizada) |
+| Calendario manual del staff | Drops del día | Sí | `releases.toml` + resumen diario automático de calendarios | Igualado |

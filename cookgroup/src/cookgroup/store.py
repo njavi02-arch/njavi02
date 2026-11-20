@@ -38,7 +38,12 @@ class Store:
         self.db = sqlite3.connect(path, check_same_thread=False, timeout=30)
         self.db.execute("PRAGMA journal_mode=WAL") if path != ":memory:" else None
         for f in sorted(MIGRATIONS.glob("*.sql")):
-            self.db.executescript(f.read_text())
+            for stmt in filter(str.strip, f.read_text().split(";")):
+                try:
+                    self.db.execute(stmt)
+                except sqlite3.OperationalError as e:
+                    if "duplicate column" not in str(e):
+                        raise
 
     @_locked
     def load_snapshot(self, store: str) -> dict[str, Product] | None:
@@ -115,8 +120,9 @@ class Store:
         with self.db:
             self.db.execute("INSERT OR IGNORE INTO source_health(source, consecutive_errors) VALUES (?, 0)", (source,))
             if ok:
-                self.db.execute("UPDATE source_health SET last_ok=?, consecutive_errors=0, last_items=?, last_duration_ms=?, "
-                                "last_delay_s=COALESCE(?, last_delay_s) WHERE source=?", (ts, items, duration_ms, delay_s, source))
+                self.db.execute("UPDATE source_health SET last_ok=?, first_ok=COALESCE(first_ok, ?), ok_cycles=ok_cycles+1, "
+                                "consecutive_errors=0, last_items=?, last_duration_ms=?, last_delay_s=COALESCE(?, last_delay_s) "
+                                "WHERE source=?", (ts, ts, items, duration_ms, delay_s, source))
             else:
                 self.db.execute("UPDATE source_health SET last_error=?, last_error_at=?, consecutive_errors=consecutive_errors+1 "
                                 "WHERE source=?", ((error or "")[:300], ts, source))
@@ -124,7 +130,7 @@ class Store:
     @_locked
     def health(self) -> list[tuple]:
         return self.db.execute("SELECT source, last_ok, consecutive_errors, last_error, last_error_at, last_items, "
-                               "last_duration_ms, last_delay_s FROM source_health ORDER BY source").fetchall()
+                               "last_duration_ms, last_delay_s, first_ok, ok_cycles FROM source_health ORDER BY source").fetchall()
 
     @_locked
     def record_run(self, monitor: str, ok: bool, products: int = 0, events: int = 0, error: str | None = None) -> None:

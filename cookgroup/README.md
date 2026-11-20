@@ -1,4 +1,4 @@
-# Cookgroup — lanzamientos, raffles, restocks y chollos en Discord (v0.5)
+# Cookgroup — lanzamientos, raffles, restocks y chollos en Discord (v0.6)
 
 Vigila calendarios de lanzamientos y raffles, catálogos de tiendas y webs de chollos, y te avisa en Discord con
 enlace directo, tallas, precio en la moneda original y hora de Madrid. Funciona en tu PC con Windows.
@@ -29,17 +29,24 @@ Con solo `DEFAULT` todo llega a un canal. Para organizarlo, crea estos canales y
 | 🔔 `pings` | Tus reglas: talla, marca, tienda, región, precio máximo, palabras; con mención de rol |
 | 👟 `sneakers` / 🌎 `sneakers_world` / 👕 `streetwear` | Catálogos: producto nuevo, restock, tallas, bajadas, posible price error |
 | 💸 `rebajas_30` / `rebajas_60` | Copia de alertas con ≥30 % / ≥60 % de descuento |
-| 🔥 `chollos` | Chollometro y Dealabs (solo chollos calientes) |
+| 🔥 `chollos` | Chollometro, Dealabs, Mydealz, HotUKDeals, Pepper.pl (solo chollos calientes) |
+| 🛹 `skate` / 🏀 `baloncesto` / 🃏 `coleccionables` / 🏷️ `outlet` | Tiendas del lote Shopify según su categoría (TCG: Pokémon, One Piece, Lorcana…) |
 | 📆 `releases` | Calendario que edita el staff (`config/releases.toml`) |
 
 En el **primer arranque** no llega una avalancha: el bot guarda lo que existe y manda **un resumen** con los raffles
 abiertos y los lanzamientos de los próximos 7 días.
 
-## Tiendas (todas verificadas el 19-nov-2026)
+## Tiendas
+**v0.6: 262 monitores** (231 tiendas Shopify sacadas del cookgroup de referencia, cargadas desde `config/shopify_stores.csv`,
+más 31 configuradas a mano). Inventario filtrable por tienda, país, categoría, evento y estado: **`docs/inventory.html`**.
+Progreso y punto de reanudación: `docs/PROGRESS.md`.
+
+### Configuradas a mano (verificadas el 19/20-nov-2026)
 - **Lanzamientos y raffles**: BSTN (calendario completo con fechas y raffles), END. Launches, size? y Footpatrol (colección de lanzamientos).
 - **Catálogos Europa**: Footdistrict, Asphaltgold, Overkill, Sneakersnstuff, Family 3.0, Noirfonce, Naked, Kith EU, Slam Jam, Goodhood, Voo Store, Starcow.
 - **Catálogos mundo**: Concepts, Undefeated, Social Status, A Ma Maniére, Extra Butter, Up There, Supply Store.
-- **Chollos**: Chollometro y Dealabs.
+- **Chollos**: Chollometro, Dealabs, Mydealz, HotUKDeals, Pepper.pl.
+- **Cadenas sin Shopify (JSON-LD)**: Snipes ES, Foot Locker ES (producto nuevo, vuelta a stock, bajada de precio).
 
 Detalle de cada tienda (región, moneda, qué detecta de verdad y estado): **`docs/STORES.md`**.
 
@@ -77,5 +84,5 @@ cookgroup run
 - Un 403, un 429, una página vacía o un listado incompleto **nunca** generan alertas de cierre, cancelación o restock masivo.
 - Sin datos no se inventa nada: «N/D» o «la tienda no lo publica».
 
-**Estado:** 99 tests, entre ellos transiciones con muestras reales de BSTN, Family 3.0 y Chollometro, y no duplicación tras
+**Estado:** 113 tests, entre ellos transiciones con muestras reales de BSTN, Family 3.0 y Chollometro, y no duplicación tras
 reinicios. Docs: `docs/STORES.md`, `docs/REFERENCE_AUDIT.md`, `docs/FEATURE_MATRIX.md`, `docs/PENDING.md`.

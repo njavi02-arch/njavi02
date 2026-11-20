@@ -63,12 +63,26 @@ def main(argv=None):
             print("Sin datos todavía: arranca con 'run' y vuelve a mirar en unos minutos.")
             return 0
         now = datetime.now(timezone.utc)
-        print(f"{'fuente':<20} {'estado':<9} {'último ciclo OK':<22} {'errores seguidos':>16}  último error")
-        for src, last_ok, errs, last_err, err_at, items, ms, delay in rows:
-            age = f"hace {int((now - datetime.fromisoformat(last_ok)).total_seconds() // 60)} min" if last_ok else "nunca"
-            st = "OK" if errs == 0 and last_ok else "FALLA" if errs >= 3 else "AVISO"
-            extra = f" · retraso medido {delay}s" if delay is not None else ""
-            print(f"{src:<20} {st:<9} {age:<22} {errs:>16}  {(last_err or '')[:60]}{extra}")
+        mins = lambda iso: int((now - datetime.fromisoformat(iso)).total_seconds() // 60) if iso else None
+        def ago(m):
+            return "nunca" if m is None else f"hace {m} min" if m < 120 else f"hace {m // 60} h" if m < 2880 else f"hace {m // 1440} d"
+        ok = att = bad = 0
+        print(f"{'fuente':<22} {'estado':<10} {'último OK':<13} {'desde (Madrid)':<16} {'ciclos':>6}  detalle")
+        for src, last_ok, errs, last_err, err_at, items, ms, delay, first_ok, cycles in rows:
+            age = mins(last_ok)
+            if errs == 0 and last_ok and age is not None and age <= 60:
+                st, ok = "OK", ok + 1
+            elif errs >= 3 or not last_ok or (age or 0) > 60:
+                st, bad = "ATENCIÓN", bad + 1
+            else:
+                st, att = "AVISO", att + 1
+            from zoneinfo import ZoneInfo
+            since = datetime.fromisoformat(first_ok).astimezone(ZoneInfo("Europe/Madrid")).strftime("%d-%m %H:%M") if first_ok else "-"
+            det = (last_err or "")[:70] if errs else (f"{items} productos" if items is not None else "")
+            if delay is not None:
+                det += f" · retraso medido {delay}s"
+            print(f"{src:<22} {st:<10} {ago(age):<13} {since:<16} {cycles or 0:>6}  {det}")
+        print(f"\nResumen: {ok} OK · {att} con aviso · {bad} necesitan atención (sin ciclo correcto en la última hora o ≥3 errores seguidos)")
         return 0
     if a.command == "preview":
         from .preview import write_preview

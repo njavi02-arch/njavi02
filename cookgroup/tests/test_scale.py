@@ -112,3 +112,38 @@ def test_domain_limiter_spaces_requests_per_domain(monkeypatch):
     ratelimit.wait_turn("https://www.a.example/y", clock=clock, sleep=sleep)   # mismo dominio → espera 2 s
     ratelimit.wait_turn("https://b.example/z", clock=clock, sleep=sleep)       # otro dominio → sin espera
     assert waits == [2.0]
+
+
+def test_bulk_store_list_loader(tmp_path):
+    from cookgroup.config import load_config
+    (tmp_path / "config").mkdir()
+    (tmp_path / "config" / "shopify_stores.csv").write_text(
+        "domain,name,country,category,channel,enabled,source\n"
+        "plaza.dk,Plaza DK,DK,coleccionables/TCG,coleccionables,1,referencia:shopify-rebajas-eu\n"
+        "rufusmacba.com,Rufus Macba,ES,skate,skate,1,referencia:skateshops\n"
+        "off.example,Off,FR,sneakers/deporte,sneakers,0,x\n", encoding="utf-8")
+    f = tmp_path / "config" / "monitors.toml"
+    f.write_text('[defaults]\nshopify_stores_file = "config/shopify_stores.csv"\nbulk_deep_pages = 3\n')
+    mons = {m.name: m for m in load_config(f).monitors}
+    assert set(mons) == {"shop:plaza.dk", "shop:rufusmacba.com"}
+    p = mons["shop:plaza.dk"]
+    assert p.currency == "auto" and p.region == "eu" and p.country == "DK" and p.channel == "coleccionables"
+    assert "pokemon" in p.include_keywords and p.include_vendors == [] and p.deep_pages == 3
+    assert "Nike SB" in mons["shop:rufusmacba.com"].include_vendors
+
+
+def test_auto_currency_from_cart_js():
+    cat = Catalog(3, 3)
+    orig = cat.get
+
+    def get(url, params=None, headers=None, timeout=None):
+        if url.endswith("/cart.js"):
+            class R:
+                status_code, headers = 200, {}
+                json = staticmethod(lambda: {"currency": "DKK"})
+            return R()
+        return orig(url, params, headers, timeout)
+    cat.get = get
+    s = ShopifySource("T", "https://t.invalid", currency="auto", page_size=3, session=cat)
+    ps = s.fetch()
+    assert s.currency == "DKK" and ps[0].currency == "DKK"

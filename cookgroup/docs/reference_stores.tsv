@@ -1,0 +1,422 @@
+domain	names	alerts_sampled	events	last_seen	channels
+aw-lab.com	AwLab	400	N400	11-19	aio-custom,aio-custom-2,aio-eu-2,ugg-all-special
+solebox.com	Solebox	309	R300,N6	11-19	aio-rebajas-30disc,aio-rebajas-60disc,ugg-all-special,solebox,solebox-custom,otros-releases,adidas-releases,steals
+es.privalia.com	Privalia/Privalia Artículos	247		11-19	privalia-productos,privalia-articulos,privalia-campañas
+store.ferrari.com	Ferrari	212	N212	11-12	aio-eu
+e.yeet.ai	Zal (monitor Zalando del proveedor)	212	R212	11-19	web-naranja-eu,ugg-all-special,web-naranja-españa
+newbalance.com	New Balance	180	N180	11-17	aio-eu,aio-world,uk,new-balance
+nike.com	Nike	148	N69,R37,S16	11-19	nike-inactive,nike-eu-active,snkrs-es,snkrs-eu,nike-us,nike-instore-es,nike-instore-italia
+schuh.eu	Schuh	131	R127,N4	11-19	aio-world,ugg-all-special
+instagram.com	www.instagram.com	130	N130	10-20	socials-monitors
+footpatrol.com	FOOTPATROL	119		11-19	mesh-frontend
+plaza.dk	PLAZA DK	117		11-19	shopify-rebajas-eu,shopify-rebajas-30disc,shopify-rebajas-60disc
+24segons.es	24Segons	92	N15,R6,P14	11-19	aio-eu,basket-shops
+sportsshoes.com	sportsshoes.com	68	N6,R16	11-18	aio-custom,aio-custom-2
+farfetch.com	Farfetch	68	R68	11-19	aio-world,yeezy-especial-monitor
+adidas.es	www.adidas.es/Adidas Instore Monitor	58	R49,N1	11-19	adidas-es,adidas-instore,adidas-stock
+blackboxstore.com	blackboxstore.com	57	N1,R1	11-06	shopify-eu,shopify-rebajas-30disc,shopify-rebajas-60disc
+jdsports.fr	www.jdsports.fr	56	R43,N13	11-19	mesh-backend
+snipes.com	Snipes	55	R51,N1,P2	11-19	aio-rebajas-30disc,aio-rebajas-60disc,ugg-all-special,snipes,snipes-custom
+shop.rfef.es	ZTYSHOPIFY	54		11-17	aio-custom,aio-custom-2
+warsawsneakerstore.com	WSS	52	N41,P9,R2	11-19	aio-custom,aio-eu-2
+5pm.fr	5 PM	52		11-01	shopify-rebajas-60disc
+noirfonce.eu	NOIRFONCE	50	N4,R2	11-19	shopify-eu,shopify-eu-unfiltered,otros-releases
+asphaltgold.com	ASPHALTGOLD	49	R23,P6	11-19	shopify-eu,shopify-eu-unfiltered,asphaltgold,adidas-releases
+redgoblin.ro	REDGOBLIN	48		11-04	shopify-rebajas-eu
+olakala.de	OLAKALA	43		10-28	shopify-rebajas-eu,shopify-rebajas-30disc,shopify-rebajas-60disc
+sneakersnstuff.com	SNEAKERSNSTUFF	42	N37,R5	11-19	shopify-rebajas-eu,sneakersnstuff,shopify-eu-unfiltered
+kimskram.dk	KIMSKRAM.DK	42		11-12	shopify-rebajas-30disc,shopify-rebajas-60disc
+oneblockdown.com	oneblockdown.com	40	N25,R14	11-19	shopify-rebajas-eu,overkill-oneblockdown,adidas-releases
+asics.com	www.asics.com	40	R40	11-04	asics
+elcorteingles.es	ElcorteIngles ES	36	N36	11-19	aio-eu,aio-rebajas-30disc
+aboutyou.com	AboutYou	35	N35	11-19	aio-rebajas-30disc,aio-rebajas-60disc,aboutyou-yoox
+routeone.co.uk	ROUTEONE	33	N8	11-11	shopify-eu,skateshops
+breuninger.com	www.breuninger.com	30	R30	11-12	aio-custom
+jdsports.es	JD rebajas	30	N10	11-03	jd-rebajas,jd-rebajas-2,jd-sports-instore
+amazon.es	Amazon Haul Monitor/Amazon	29		11-05	amazon-haul,amazon-error,amazon-sale
+footdistrict.com	footdistrict.com	28	N5,R4	11-19	shopify-eu,otros-releases,footdistrict,adidas-releases
+goodhoodstore.com	GOODHOODSTORE	27		11-19	shopify-all,goodhood
+shoebacca.com	SHOEBACCA	27		11-19	yeezy-especial-monitor
+flatspot.com	FLATSPOT	26		11-18	shopify-all,skateshops,shopify-rebajas-all
+jdsports.de	www.jdsports.de	26	R24,N2	11-12	mesh-backend
+zalando.fr	www.zalando.fr	26	R26	11-19	web-naranja-eu
+adidas.co.uk	Adidas GB	25	R25	10-20	adidas-eu
+noirfonce.fr	NOIRFONCE	24		11-19	shopify-eu,shopify-eu-unfiltered
+eu.kith.com	KITHEU	24	R1,N1	11-19	shopify-eu-unfiltered,otros-releases,kitheu
+tradingcardsxxx.fr	TRADINGCARDSXXX	24		11-17	shopify-rebajas-eu,shopify-rebajas-30disc,shopify-rebajas-60disc
+jdsports.nl	www.jdsports.nl	24	R17,N7	11-19	mesh-backend
+thinkempire.com	THINKEMPIRE	23		11-19	shopify-all
+prm.com	prm.com	22	R22	11-12	aio-custom
+milk-store.com	MILKSTORE	22	R1	11-14	shopify-eu,skateshops
+offcutsshoes.co.uk	OFFCUTSSHOES	22		11-12	shopify-all,shopify-rebajas-all
+trollaustralia.com.au	TROLL AUSTRALIA	22		10-29	shopify-rebajas-all
+skstore.eu	skstore.eu	21	P2,R8,N11	11-19	basket-shops
+jdsports.it	www.jdsports.it	21	R16,N5	11-19	mesh-backend
+zalando.de	www.zalando.de	21	R20	11-19	web-naranja-eu,z4lando-releases
+eu.supreme.com	Otros releases	21		11-18	otros-releases
+unisportstore.de	www.unisportstore.de	20	R19,N1	11-05	aio-custom
+slamjam.com	SLAMJAM	20	N7,R5	11-19	shopify-eu-unfiltered,shopify-rebajas-eu,slamjam,adidas-releases
+streetart.fr	STREETART	20	N5	11-17	skateshops
+size.co.uk	Size? GB	20	N10,R10	10-20	mesh-frontend,mesh-backend
+zalando.be	www.zalando.be	20	R20	11-19	web-naranja-eu
+asos.com	ASOS	20	R17,N3	11-19	asos,asos-es
+starcowparis.com	STARCOW LAUNCH	20		11-19	starcow,starcow-rebajas
+soleback.me	Z prive/zalando prive campañas	20		10-28	zalando-prive,zalandoprive-campañas
+sklep.sizeer.com	sklep.sizeer.com	19	R18,P1	11-12	aio-custom
+en.afew-store.com	AFEWSTORE	19	R4	11-12	shopify-eu,shopify-eu-unfiltered,otros-releases
+offspring.co.uk	OffSpring	19	N19	11-19	uk
+unisportstore.nl	www.unisportstore.nl	18	R17,N1	11-05	aio-custom
+rufusmacba.com	RUFUS MACBA	18		11-06	skateshops
+consortium.co.uk	Consortium	18	N6,R12	11-19	uk
+jdsports.co.uk	www.jdsports.co.uk	18	R18	11-19	mesh-backend
+tascon.es	TASCON	17		10-30	shopify-eu-unfiltered,ugg-all-special
+shopsportsplus.com.au	SHOPSPORTSPLUS	17		11-19	shopify-all
+highrollersdublin.com	HIGHROLLERSDUBLIN	17		11-17	skateshops
+laplazaskateshop.com	LAPLAZA SKATESHOP	17		11-12	skateshops
+vans.com	www.vans.com	17	R10	11-18	otros-releases,vans,releases,stock-otros-releases
+lovellsports.com	AIO CUSTOM2	16	R16	10-26	aio-custom,aio-custom-2
+gameon.games	GAMEON.GAMES	16		11-05	shopify-all,shopify-rebajas-all
+revolve.com	Revolve	15	N15	11-12	aio-world
+juicestore.com	JUICESTORE	15		11-05	shopify-eu,shopify-rebajas-all
+wit-training.com	WIT TRAINING	14	R4	11-05	aio-custom,aio-custom-2,shopify-rebajas-all
+lelabostore.com	LELABOSTORE	14	N4,R2	11-12	shopify-eu,shopify-eu-unfiltered
+schuhdealer.de	SCHUHDEALER	13		11-12	shopify-eu,shopify-eu-unfiltered
+overkillshop.com	OVERKILL	13	N2,R1	11-19	shopify-eu-unfiltered,overkill-oneblockdown
+welcomesk8.com	WELCOMESK8	13		11-07	shopify-eu-unfiltered,skateshops
+thedarkslide.com	THEDARKSLIDE	13		11-05	shopify-all
+endclothing.com	www.endclothing.com	13	R7,N3	11-18	otros-releases,end
+footlocker.es	www.footlocker.es	13	R7,P3	11-19	otros-releases,footlocker-es,steals
+pepper.pl	Pepper	13		11-19	pepper
+dbrandstore.es	D Brand Store	12	N11,R1	10-29	aio-eu,aio-custom
+nakedcph.com	NAKED COPENHAGEN	12	R1,N1	11-19	shopify-eu-unfiltered,otros-releases,naked
+jdsports.com.sg	JDSPORTS SG	12		11-05	shopify-all
+urbanjunglestore.com	URBAN JUNGLE	12		11-13	shopify-rebajas-60disc
+zalando.it	www.zalando.it	12	R11,P1	11-19	web-naranja-eu
+eu.asossamplesale.com	ZTYSHOPIFY	12		11-19	asos-sample
+yellowshop.es	YELLOWSHOP	11		11-12	shopify-eu,shopify-eu-unfiltered
+sns-prod.myshopify.com	SNEAKERSNSTUFF	11		11-19	shopify-eu-unfiltered,sneakersnstuff
+uk-goodhood.myshopify.com	GOODHOODSTORE	11		11-05	shopify-all
+kith.com	KITH	11		10-29	shopify-all
+dtlr.com	DTLR	11		11-19	shopify-all,ugg-all-special
+shop.doverstreetmarket.com	DSML	11		11-19	shopify-all,dsml
+empireskate.co.nz	EMPIRESKATE	11		11-10	skateshops
+zalando.at	www.zalando.at	11	R11	11-12	web-naranja-eu
+bstn.com	BSTN	11	R5	11-19	otros-releases,bstn
+basketballemotion.com	www.basketballemotion.com	11	R10	11-19	otros-releases,basketballemotion
+43einhalb.com	www.43einhalb.com	11	R9,P1	11-19	otros-releases,43einhalb
+hotukdeals.com	HotUKdeals	11		11-19	hotukdeals
+noirfonce.es	NOIRFONCE	10		11-19	shopify-eu,shopify-eu-unfiltered
+titus-shop.com	TITUS-SHOP	10		11-19	shopify-eu,shopify-eu-unfiltered,shopify-rebajas-30disc
+localskateshop.com.au	LOCALSKATESHOP	10		11-12	shopify-all
+jdsports.ca	JDSPORTS CA	10		11-19	shopify-all,shopify-rebajas-all
+ben-g.nl	BEN-G	10		11-18	skateshops
+miniramp.pl	miniramp.pl	10	N10	11-10	skateshops
+anatolia.fr	ANATOLIA	10		10-30	shopify-rebajas-30disc
+thecombatcompany.com	THECOMBATCOMPANY	10		11-12	shopify-rebajas-all
+basket4ballers.com	Basket4Ballers	10	N9,R1	11-19	basket4ballers
+luisaviaroma.com	LuisaViaRoma	10	R10	03-28	luisaviaroma
+kickz.com	www.kickz.com	10	R9,N1	11-19	kickz
+sivasdescalzo.com	SivasDeScalzo	10	N7,P1,R2	11-19	sivasdescalzo
+skatedeluxe.com	SkateDeluxe	10	R5,N5	11-19	skatedeluxe
+ugg.com	www.ugg.com	10	R10	11-19	ugg
+zalando.es	www.zalando.es	10	R3	11-19	web-naranja-españa,z4lando-releases
+timberland.de	www.timberland.de	10	R10	10-21	timberland
+voostore.com	Shopify Monitor	10		07-02	voostore
+canary---yellow.com	Canary Yellow	10		11-19	canary-yellow
+crtz.xyz	CRTZ	10		11-19	corteiz
+supreme.com	Supreme EU	10	N10	11-19	supreme
+palace-skateboards-eu.myshopify.com	PALACESKATEBOARDS EU	10		11-18	palace
+chollometro.com	Chollometro	10		11-19	chollometro
+dealabs.com	Dealabs	10		11-19	dealabs
+miravia.es	Miravia	10		10-30	miravia
+mydealz.de	Mydealz	10		11-19	mydealz
+lidl.es	Lidl custom monitor	10		11-19	lidl
+pccomponentes.com	PcComponentes rebajas	10	Rebaja10	07-25	pccomponentes
+shinzo.paris	ShinzoParis	9	R5,N4	10-29	aio-eu
+sizeer.de	sizeer.de	9	R8,P1	11-12	aio-custom
+1290sqm.com	1290SQM	9		10-29	shopify-eu
+smets.lu	SMETS	9		11-19	shopify-eu-unfiltered
+lvlupgaming.co.uk	LVL UP GAMING UK	9		10-20	shopify-all
+us.goodhoodstore.com	GOODHOODSTORE US	9		11-19	shopify-all,goodhood
+footasylum.com	FootAsylum	9	N9	11-19	uk
+hikarudistribution.com	HIKARU DISTRIBUTION	9		11-12	shopify-rebajas-eu,shopify-rebajas-30disc
+supremecommunity.com	Otros releases (info)	9		11-18	otros-releases
+adidas.fr	www.adidas.fr	9	R9	11-19	adidas-eu
+eu.stussy.com	STUSSY EU	9		11-19	stussy
+urbanstaroma.com	URBANSTAROMA	8	N1	11-09	shopify-eu,ugg-all-special,otros-releases
+jbalvin.com	JBALVIN	8		11-12	shopify-all
+slamdunk.gr	www.slamdunk.gr	8	R2,N6	11-12	basket-shops
+skateshop.be	www.skateshop.be	8	N3,R5	10-22	skateshops
+bonkers-shop.com	BONKER	8	N4,R1	11-11	skateshops,shopify-rebajas-eu
+jdsports.at	www.jdsports.at	8	R6,N2	10-20	mesh-backend
+opiumparis.com	OpiumParis	7	N7	11-12	aio-eu
+boozt.com	www.boozt.com	7	R6,P1	11-12	aio-custom
+maha-amsterdam.com	MAHAAMSTERDAM	7		11-12	shopify-eu
+capitansiroco.com	CAPITANSIROCO	7		11-12	shopify-eu
+specialmilano.com	SPECIAL MILANO	7	N1	10-29	shopify-eu
+nugnes1920.com	NUGNES1920	7		11-12	shopify-eu,shopify-eu-unfiltered
+stoy.com	STOY	7		11-12	shopify-eu-unfiltered
+ceciliebahnsen.com	CECILIEBAHNSEN	7		11-05	shopify-eu-unfiltered
+footlocker.co.il	FOOTLOCKER IL	7		10-20	shopify-all,ugg-all-special
+colorskates.com	www.colorskates.com	7	R1,N6	11-13	skateshops
+kingcards.nl	KING CARDS	7		11-12	shopify-rebajas-eu,shopify-rebajas-30disc
+brickznmore.myshopify.com	BRICKZNMORE	7		11-04	shopify-rebajas-30disc
+cardgames24.de	CARD GAMES DE	7		11-04	shopify-rebajas-30disc
+maharishistore.com	MAHARISHI	7		11-19	shopify-rebajas-all
+sneakerjunkiesusa.com	SNEAKERJUNKIESUSA	7		10-19	yeezy-especial-monitor
+footshop.eu	www.footshop.eu	7	R4,P3	11-17	footshop
+gymshark-eur.myshopify.com	GYMSHARK EU	6		11-05	aio-eu
+otto.de	www.otto.de	6	N1,R5	11-12	aio-custom
+jacquemus.com	www.jacquemus.com	6	R4	10-20	aio-custom,otros-releases
+routeone.eu	routeone.eu	6	N6	11-05	shopify-eu
+stayonline.de	STAYONLINE	6	N2	11-12	shopify-eu
+rezetstore.com	REZETSTORE	6		11-19	shopify-eu,shopify-eu-unfiltered
+monar.be	MONAR	6	N2	10-29	shopify-eu
+it.nugnes1920.com	NUGNES1920	6		11-19	shopify-eu,shopify-eu-unfiltered
+munkstore.com	MUNKSTORE	6		11-05	shopify-eu-unfiltered
+jbalvinshop.com	JBALVINSHOP	6		11-12	shopify-all
+boredofsouthsea.co.uk	BOREDOFSOUTHSEA	6		10-29	shopify-all
+remixcasuals.co.uk	REMIXCASUALS	6		11-19	shopify-all,shopify-rebajas-all
+bouncewear.com	BOUNCEWEAR	6		11-06	basket-shops
+plaze-shop.de	www.plaze-shop.de	6	R6	11-15	skateshops
+ajogar.com	A JOGAR	6		11-17	shopify-rebajas-eu,shopify-rebajas-60disc
+kofuku.de	KOFUKU.DE	6		11-19	shopify-rebajas-30disc
+pokemillon.com	POKEMILLON	6		11-15	shopify-rebajas-30disc,shopify-rebajas-60disc
+carhartt-wip.com	Otros releases	6		11-12	otros-releases,stock-otros-releases
+wunder.com.tr	Wunder	5	N5	11-05	aio-world
+hyperice.com	hyperice.com	5	R5	11-12	shopify-eu
+stress95.com	STRESS95	5		10-20	shopify-eu
+intersport.dk	INTERSPORT DK	5	P3	11-19	shopify-eu
+thefootfactory.co.uk	THEFOOTFACTORY	5	P1	11-12	shopify-eu,shopify-all
+thbx.nl	THBX	5		11-12	shopify-eu-unfiltered
+munkstore.dk	MUNKSTORE	5		11-05	shopify-eu-unfiltered
+munkstore.se	MUNKSTORE	5		11-05	shopify-eu-unfiltered
+vittoriocitro.it	VITTORIOCITRO	5		10-20	shopify-eu-unfiltered
+drop.slamjam.com	SLAMJAM	5		11-19	shopify-eu-unfiltered,slamjam
+jdsports.my	JDSPORTS MY	5		11-05	shopify-all
+soohotrightnow.com	soohotrightnow.com	5	P1,N4	11-07	skateshops
+shop.foosh.ca	FOOSH	5		10-20	shopify-rebajas-all
+scalperscompany.com	SCALPERSCOMPANY	5		11-08	yeezy-especial-monitor
+raffle.bstn.com	raffle.bstn.com	5	N5	11-19	bstn
+hypedc.com	Hype DC AU	4	N4	11-05	aio-world
+fangostore.it	FANGOSTORE	4		10-20	shopify-eu
+eu.viettishop.com	VIETTISHOP	4	N2	11-05	shopify-eu
+cardyx.sk	CARDYX	4		11-19	shopify-eu,shopify-eu-unfiltered
+pukassurfshop.com	PUKASSURFSHOP	4		11-19	shopify-eu-unfiltered
+7hillsroma.com	7HILLSROMA	4		11-19	shopify-eu-unfiltered,skateshops
+boardcollective.com.au	BOARDCOLLECTIVE	4		11-12	shopify-all
+shop-us.doverstreetmarket.com	DSM US	4		10-29	shopify-all
+extrabutterny.com	EXTRABUTTERNY	4		11-09	shopify-all,ugg-all-special
+tx-sports.com	www.tx-sports.com	4	N2,R2	11-07	skateshops
+office.co.uk	Office	4	N4	11-12	uk
+launchesuk.topps.com	EQL	4	N4	11-12	uk
+card-collector.net	CARD-COLLECTOR	4		11-12	shopify-rebajas-eu
+freshcotton.com	FRESHCOTTON	4		10-22	shopify-rebajas-30disc,shopify-rebajas-60disc
+bravado.de	BRAVADO	4		11-18	shopify-rebajas-60disc
+adidas.de	www.adidas.de	4	R2	11-19	adidas-eu,adidas-stock
+sportsdirect.de	www.sportsdirect.de	4	R4	11-19	sports-direct
+sportsdirect.com	www.sportsdirect.com	4	R4	11-19	sports-direct
+cuylas.com	Cuylas	3	N3	11-05	aio-eu
+ixudeviance.com	Ixudeviance	3	N3	11-05	aio-eu
+converse.com	www.converse.com	3	R3	10-29	aio-custom
+mytheresa.com	www.mytheresa.com	3	R3	11-12	aio-custom
+courir.com	www.courir.com	3	R3	11-12	aio-custom,aio-eu-2
+18montrose.com	18Montrose	3	N3	10-31	aio-custom,aio-world,yeezy-especial-monitor
+grifo210.com	www.grifo210.com	3	R3	11-12	shopify-eu
+delastore.com	DELA STORE	3		10-29	shopify-eu
+patta.nl	PATTA	3		10-29	shopify-eu
+intersport.it	INTERSPORT IT	3	R2	11-19	shopify-eu
+family3-0.com	FAMILY3-0	3	N1	11-19	shopify-eu
+dope-factory.com	DOPE FACTORY	3	N1	11-19	shopify-eu,shopify-eu-unfiltered
+gate194.berlin	GATE194	3		11-05	shopify-eu-unfiltered
+blitzsurf.co.nz	BLITZSURF	3		11-19	shopify-all
+elyswimbledon.co.uk	ELYS WIMBLEDON	3		11-19	shopify-all
+shoepalace.com	SHOEPALACE	3		10-29	shopify-all
+odsdesignerclothing.com	ODS DESIGNER CLOTHING	3		11-09	shopify-all,ugg-all-special
+airdom.com	airdom.com	3	N1,R2	10-30	basket-shops
+skatestore.com	www.skatestore.com	3	R3	11-18	skateshops
+alcarrerskateshop.com	ALCARRERSKATESHOP	3		11-15	skateshops
+checkout.civilistberlin.com	CIVILISTBERLIN	3		11-06	skateshops
+lobby-skateshop.de	www.lobby-skateshop.de	3	N2,R1	10-23	skateshops
+cardverse.it	CARDVERSE	3		11-12	shopify-rebajas-eu
+pokecardsstore.it	POKECARDSSTORE	3		11-13	shopify-rebajas-eu,shopify-rebajas-30disc,shopify-rebajas-60disc
+cardcosmos.de	CARDCOSMOS	3		10-29	shopify-rebajas-eu,shopify-rebajas-30disc,shopify-rebajas-60disc
+play-maniac.de	PLAY-MANIAC	3		11-12	shopify-rebajas-eu,shopify-rebajas-30disc
+tcgreus.nl	TCGREUS	3		11-18	shopify-rebajas-eu,shopify-rebajas-30disc,shopify-rebajas-60disc
+pika-boutique.fr	PIKA-BOUTIQUE	3		11-19	shopify-rebajas-30disc
+collectorstorecards.it	COLLECTOR STORE CARDS	3		11-05	shopify-rebajas-30disc,shopify-rebajas-60disc
+hobbytechtoys.com.au	HOBBYTECHTOYS	3		11-19	shopify-rebajas-all
+loadeddice.uk	LOADED DICE	3		11-12	shopify-rebajas-all
+galleriagraffiti.com	GALLERIAGRAFFITI	3		10-29	shopify-rebajas-all
+esdemarca.com	Esdemarca	3	N3	11-09	ugg-all-special
+losangelesarchive.com	LOSANGELESARCHIVE	3		11-18	yeezy-especial-monitor
+space23.it	SPACE23	3		11-11	yeezy-especial-monitor
+aboutyou.fr	www.aboutyou.fr	3	R3	11-19	aboutyou-yoox
+footlocker.fr	www.footlocker.fr	3	R3	11-19	footlocker-eu
+footlocker.de	www.footlocker.de	3	R3	11-19	footlocker-eu
+ftshp.de	www.ftshp.de	3	N3	11-12	footshop
+deliberti.it	Deliberti	2	N2	11-12	aio-eu
+shelta.eu	Shelta	2	N2	11-12	aio-eu
+stacs.de	www.stacs.de	2	R2	11-05	aio-custom
+topps.runfair.com	topps.runfair.com	2	N2	11-12	aio-custom
+engelhorn.de	www.engelhorn.de	2	R2	11-05	aio-custom
+back-door.it	back-door.it	2	R1,N1	11-05	aio-custom
+susi.it	Susi	2	N2	10-29	aio-world
+ssense.com	SSense	2	N2	10-20	aio-world
+poke-power.eu	POKE-POWER	2		11-19	shopify-eu
+zupport.de	zupport.de	2	N2	11-19	shopify-eu
+viettishop.com	VIETTI	2		11-05	shopify-eu
+baskets-store.com	BASKETS-STORE	2		11-05	shopify-eu
+pauraclothing.com	pauraclothing.com	2	R2	10-29	shopify-eu
+antonia.it	antonia.it	2	N2	10-29	shopify-eu
+pokefamily.nl	POKEFAMILY	2		10-29	shopify-eu
+en.152store.com	152STORE	2		10-20	shopify-eu
+littleamericastore.com	LITTLEAMERICASTORE	2		11-19	shopify-eu,shopify-eu-unfiltered
+prodirectsport.com	prodirectsport.com	2	R1,N1	11-12	shopify-eu
+shopigo.com	SHOPIGO	2		11-05	shopify-eu,shopify-eu-unfiltered
+pl-line.com	PL-LINE	2		11-19	shopify-eu,shopify-eu-unfiltered
+sparkystore.nl	SPARKYSTORE	2	P1	10-29	shopify-eu
+pharmabergen.no	PHARMABERGEN	2	N1	10-29	shopify-eu
+sabot.tv	SABOT	2		11-09	shopify-eu,ugg-all-special
+eleganza.nl	ELEGANZA	2	R1	11-04	shopify-eu,shopify-rebajas-30disc
+de.afew-store.com	AFEWSTORE	2	R1	11-12	shopify-eu,shopify-rebajas-eu
+carmenboutique.it	CARMENBOUTIQUE	2	N1	10-20	shopify-eu
+bahne.dk	BAHNE	2		11-19	shopify-eu-unfiltered
+roa-hiking.com	ROA HIKING	2		11-19	shopify-eu-unfiltered
+titus.de	TITUS	2		11-12	shopify-eu-unfiltered
+stil-laden.com	STIL-LADEN	2		11-12	shopify-eu-unfiltered
+ingla.de	INGLA	2		11-12	shopify-eu-unfiltered
+atipicishop.com	ATIPICISHOP	2		11-05	shopify-eu-unfiltered
+cappellettoshop.com	CAPPELLETTOSHOP	2		10-29	shopify-eu-unfiltered
+zebraclub.store	ZEBRACLUB	2		10-29	shopify-eu-unfiltered
+de-store.msi.com	MSI E-SHOP DE	2		10-20	shopify-eu-unfiltered
+le-fix.com	LE-FIX	2		10-20	shopify-eu-unfiltered
+sergiofabbri.com	SERGIOFABBRI	2		11-19	shopify-eu-unfiltered,ugg-all-special
+kyoto.dk	KYOTO	2		10-20	shopify-eu-unfiltered,shopify-rebajas-60disc
+tavernadelgargoyle.it	TAVERNA DEL GARGOYLE	2		11-19	shopify-all
+landaustore.co.uk	LANDAU STORE	2		11-12	shopify-all
+funside.it	FUNSIDE	2		11-12	shopify-all
+shopnicekicks.com	SHOPNICEKICKS	2		11-12	shopify-all
+homebase610.com	HOMEBASE610	2		11-05	shopify-all
+childsplayclothing.co.uk	CHILDSPLAYCLOTHING	2		11-05	shopify-all
+nubiantokyo.com	NUBIANTOKYO	2		10-29	shopify-all
+shopwss.com	SHOPWSS	2		10-29	shopify-all
+envoycards.com.au	ENVOYCARDS	2		10-20	shopify-all
+plentyofgames.com.au	PLENTYOFGAMES	2		10-20	shopify-all
+zardocards.com	ZARDOCARDS	2		11-12	shopify-all,shopify-rebajas-all
+gbny.com	GBNY	2		11-12	shopify-all,yeezy-especial-monitor
+crashrecords.co.uk	CRASH RECORDS	2		11-12	shopify-all,shopify-rebajas-all
+pivot-skateshop.de	PIVOT-SKATESHOP	2		11-17	skateshops
+fantasiacards.de	FANTASIACARDS	2		11-12	shopify-rebajas-eu
+primeprotector.at	PRIME PROTECTOR	2		11-05	shopify-rebajas-eu
+gamesavenue.fr	GAMES AVENUE	2		11-05	shopify-rebajas-eu,shopify-rebajas-30disc
+blueyesccg.it	BLUE EYES CCG	2		11-19	shopify-rebajas-eu,shopify-rebajas-30disc
+blackvinylrecordsspain.com	BLACKVINYLRECORDSSPAIN	2		10-30	shopify-rebajas-eu,shopify-rebajas-30disc
+opcards.de	OPCARDS	2		11-10	shopify-rebajas-30disc,shopify-rebajas-60disc
+pokeprinz.de	POKEPRINZ	2		10-16	shopify-rebajas-30disc,shopify-rebajas-60disc
+breakthecase.de	BREAKTHECASE	2		11-15	shopify-rebajas-60disc
+adventurecardz.de	ADVENTURECARDZ	2		11-12	shopify-rebajas-60disc
+senpaimangashop.com	SENPAI MANGA SHOP	2		11-02	shopify-rebajas-60disc
+noteshop.co.uk	NOTESHOP	2		11-19	shopify-rebajas-all
+slamcity.com	SLAMCITY	2		11-12	shopify-rebajas-all
+sizeofficial.ie	Size? IE	2	N2	10-20	mesh-frontend
+sizeofficial.nl	Size? NL	2	N1,R1	11-01	mesh-frontend,mesh-backend
+sizeofficial.de	Size? DE	2	N1,R1	10-20	mesh-frontend,mesh-backend
+kolablisbon.com	Otros releases	2		09-09	otros-releases
+newbalance.es	Otros releases	2		08-05	otros-releases
+aboutyou.de	www.aboutyou.de	2	R2	11-19	aboutyou-yoox
+aboutyou.cz	www.aboutyou.cz	2	R2	11-19	aboutyou-yoox
+adidas.ch	www.adidas.ch	2	R2	11-19	adidas-eu
+adidas.be	www.adidas.be	2	R2	11-19	adidas-eu
+footlocker.lu	www.footlocker.lu	2	R2	11-19	footlocker-eu
+sportsdirect.es	SportsDirect	2	N2	11-18	sports-direct
+kastner-oehler.de	www.kastner-oehler.de	1	R1	10-20	aio-custom
+sneakers76.com	www.sneakers76.com	1	N1	11-05	aio-custom
+solekitchen.de	www.solekitchen.de	1	R1	11-05	aio-custom
+hhv.de	www.hhv.de	1	N1	10-29	aio-custom
+underarmour.es	www.underarmour.es	1	R1	10-29	aio-custom
+top4running.de	top4running.de	1	R1	10-29	aio-custom
+glueckstreter.com	GLUECKSTRETER	1		11-19	shopify-eu
+magicnerd.it	MAGICNERD	1		11-19	shopify-eu
+cybercafeskateshop.com	CYBERCAFESKATESHOP	1		11-19	shopify-eu
+reservoir-store.com	RESERVOIR STORE	1		11-12	shopify-eu
+distance-store.com	DISTANCE-STORE	1		11-12	shopify-eu
+culturaurbanashop.es	culturaurbanashop.es	1	N1	11-12	shopify-eu
+camdenrimini.com	camdenrimini.com	1	R1	11-05	shopify-eu
+stitch.lu	STITCH	1		11-05	shopify-eu
+schrittmacher-shop.com	SCHRITTMACHER	1		10-29	shopify-eu
+logues.ie	www.logues.ie	1	R1	10-29	shopify-eu
+bananabenz.it	BANANABENZ	1		10-29	shopify-eu
+walesbonner.net	WALESBONNER	1		10-29	shopify-eu
+loggishop.com	LOGGISHOP	1		10-29	shopify-eu
+fuscoboutique.com	FUSCO BOUTIQUE	1		10-20	shopify-eu
+152store.com	152STORE	1		10-20	shopify-eu
+prodirectsport.de	prodirectsport.de	1	N1	10-20	shopify-eu
+newseum.de	NEWSEUM	1		10-20	shopify-eu
+242shop.ch	242SHOP	1		11-19	shopify-eu-unfiltered
+justplay.store	JUSTPLAY	1		11-19	shopify-eu-unfiltered
+tres-bien.com	TRESBIEN	1		11-19	shopify-eu-unfiltered
+fravshop.com	FRAVSHOP	1		11-19	shopify-eu-unfiltered
+andpants.com	ANDPANTS	1		10-29	shopify-eu-unfiltered
+deviceone.gr	DEVICEONE	1		10-29	shopify-eu-unfiltered
+thomasipunkt.de	THOMASIPUNKT	1		10-20	shopify-eu-unfiltered
+drifthouse.com	DRIFTHOUSE	1		11-19	shopify-all
+humiditynola.com	HUMIDITYNOLA	1		11-12	shopify-all
+thecardvault.co.uk	THE CARD VAULT	1		11-12	shopify-all
+the-wants.com	THE-WANTS	1		11-12	shopify-all
+atmos.co.id	ATMOS	1		11-12	shopify-all
+function18.com	FUNCTION18	1		11-12	shopify-all
+subsect-skateshop.myshopify.com	SUBSECT-SKATESHOP	1		11-12	shopify-all
+ukstore.thebeatles.com	THE BEATLES STORE	1		10-20	shopify-all
+undefeated.com	UNDEFEATED	1		10-20	shopify-all
+thepremierstore.com	THEPREMIERSTORE	1		10-20	shopify-all
+jeanstore.co.uk	JEANSTORE	1		10-20	shopify-all
+checkout.complex.com	COMPLEX	1		10-20	shopify-all
+bouncewear.es	BOUNCEWEAR ES	1		10-28	basket-shops
+basketballshop24.de	www.basketballshop24.de	1	N1	10-21	basket-shops
+weplaybasketball.de	www.weplaybasketball.de	1	R1	10-21	basket-shops
+ojskate.com	OJ SKATE	1		11-10	skateshops
+digitalskateshop.com	digitalskateshop.com	1	N1	11-03	skateshops
+civilistberlin.com	www.civilistberlin.com	1	N1	10-28	skateshops
+yonko-tcg.de	YONKO TCG	1		11-12	shopify-rebajas-eu
+sunnystore.es	SUNNYSTORE	1		11-05	shopify-rebajas-eu
+juwelier-kleinschnitz.de	JUWELIER KLEINSCHNITZ	1		11-05	shopify-rebajas-eu
+gemcards.de	GEMCARDS	1		10-29	shopify-rebajas-eu
+crispycards.de	CRISPYCARDS	1		10-20	shopify-rebajas-eu
+mangaverse.it	MANGAVERSE	1		10-20	shopify-rebajas-eu
+relictcg.com	RELIC TCG	1		11-03	shopify-rebajas-30disc
+gamesalley.it	GAMES ALLEY	1		11-04	shopify-rebajas-30disc
+elementcards.de	ELEMENTCARDS	1		10-20	shopify-rebajas-30disc
+strongamesnapoli.com	STRONGAMESNAPOLI	1		10-20	shopify-rebajas-30disc
+lagildastore.it	LA GILDA STORE	1		10-23	shopify-rebajas-30disc
+gs-gameon.com	GS-GAME ON	1		10-23	shopify-rebajas-30disc
+metamorphcenter.com	METAMORPH CENTER	1		11-17	shopify-rebajas-60disc
+kingdultes.com	KINGDULTES	1		11-18	shopify-rebajas-60disc
+tcgdojo.de	TCG DOJO	1		10-30	shopify-rebajas-60disc
+pokeminati.de	POKEMINATI	1		11-01	shopify-rebajas-60disc
+mrjoshop.com	MRJOSHOP	1		10-27	shopify-rebajas-60disc
+thronestoregaming.com	THRONE STORE GAMING	1		10-30	shopify-rebajas-60disc
+cherrycollectables.com.au	CHERRY COLLECTABLES	1		11-12	shopify-rebajas-all
+tcgroupau.com.au	TCGROUP AU	1		11-12	shopify-rebajas-all
+stylecreep.com	STYLECREEP	1		11-12	shopify-rebajas-all
+hammerheadtcg.co.uk	HAMMERHEADTCG	1		11-05	shopify-rebajas-all
+collect.thegamecollection.net	THE GAME COLLECTION	1		11-05	shopify-rebajas-all
+thepokehive.com	THEPOKEHIVE	1		10-29	shopify-rebajas-all
+pampamlondon.com	PAMPAMLONDON	1		10-20	shopify-rebajas-all
+sizeofficial.fr	Size? FR	1	N1	10-20	mesh-frontend
+sizeofficial.it	www.sizeofficial.it	1	N1	10-18	mesh-backend
+delibertiboutique.com	DELIBERTIBOUTIQUE	1		11-09	ugg-all-special
+popandshoes.com	POPANDSHOES	1		10-20	ugg-all-special
+r419.com	Otros releases	1		11-03	otros-releases
+corteiz.com	Otros releases	1		11-04	otros-releases
+es.miinto.com	Otros releases	1		08-31	otros-releases
+jjjjound.com	Otros releases	1		06-25	otros-releases
+futbolemotion.com	Otros releases	1		06-28	otros-releases
+11teamsports.com	Otros releases	1		06-29	otros-releases
+footlocker.be	www.footlocker.be	1	R1	11-19	footlocker-eu
+footlocker.at	www.footlocker.at	1	R1	11-19	footlocker-eu
+it.slamjam.com	SLAMJAM	1		11-19	slamjam
+uk.stussy.com	STUSSY UK	1		11-19	stussy
+newcop.com	Adidas releases (info)	1		09-21	adidas-releases
+adidas.onelink.me	Adidas releases (app)	1		09-23	adidas-releases
+labelsfashion.com	Adidas releases	1		09-25	adidas-releases

@@ -1,5 +1,9 @@
 # Inventario de tiendas y fuentes
 
+> **Inventario completo y filtrable (20-nov-2026):** `docs/inventory.html` (abrir en el navegador) y `docs/inventory.csv`.
+> Lo genera `tools/build_inventory.py` a partir de la referencia (`docs/reference_*.tsv`), del registro verificado
+> (`docs/store_registry.json`) y de los monitores reales. Esta página resume lo verificado a mano en la v0.5.
+
 Última comprobación de todas: **19-nov-2026** (desde Chrome en el PC del usuario, Windows, España).
 
 **Estados**, de menos a más:

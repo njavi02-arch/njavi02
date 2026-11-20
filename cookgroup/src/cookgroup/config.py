@@ -59,6 +59,52 @@ class Config:
         return os.environ.get(key) or os.environ.get("DISCORD_WEBHOOK_DEFAULT")
 
 
+SNEAKER_BRANDS = ["Nike", "Jordan", "Air Jordan", "adidas", "New Balance", "ASICS", "Salomon", "On", "Hoka", "Puma",
+                  "Converse", "Vans", "Saucony", "Onitsuka", "Mizuno", "Reebok", "Merrell", "Clarks", "UGG", "Timberland"]
+CATEGORY_PRESETS = {
+    # categoría → filtros y frecuencia para tiendas cargadas en bloque (config/shopify_stores.csv)
+    "sneakers/deporte": {"include_vendors": SNEAKER_BRANDS, "interval_seconds": 600},
+    "baloncesto": {"include_vendors": SNEAKER_BRANDS, "interval_seconds": 600},
+    "skate": {"include_vendors": SNEAKER_BRANDS + ["Nike SB", "Last Resort", "Emerica", "DC Shoes", "Etnies", "New Balance Numeric"],
+              "interval_seconds": 900},
+    "streetwear": {"include_vendors": [], "interval_seconds": 900},
+    "moda/lujo": {"include_vendors": SNEAKER_BRANDS, "interval_seconds": 900},
+    "outlet/retail": {"include_vendors": [], "interval_seconds": 900},
+    "coleccionables/TCG": {"include_keywords": ["pokemon", "pokémon", "one piece", "lorcana", "yu-gi-oh", "yugioh", "magic",
+                                                "dragon ball", "booster", "display", "etb", "elite trainer", "lego"],
+                           "include_vendors": [], "interval_seconds": 900},
+}
+EU = {"ES", "FR", "DE", "IT", "NL", "BE", "AT", "DK", "SE", "PL", "CZ", "SK", "RO", "GR", "LU", "IE", "PT", "FI", "HU", "NO", "CH"}
+
+
+def load_store_list(defaults: dict, *, base_dir: Path, existing: set[str]) -> list[MonitorConfig]:
+    """Tiendas Shopify en bloque desde un CSV (domain,name,country,category,channel,enabled). Cada fila = un monitor."""
+    import csv
+    f = defaults.get("shopify_stores_file")
+    if not f:
+        return []
+    path = Path(f) if Path(f).is_absolute() else base_dir.parent / f
+    if not path.exists():
+        return []
+    out = []
+    for r in csv.DictReader(path.open(encoding="utf-8")):
+        dom = r["domain"].strip().lower()
+        name = f"shop:{dom}"
+        if not dom or r.get("enabled", "1").strip() in ("0", "no", "false") or name in existing:
+            continue
+        preset = CATEGORY_PRESETS.get(r.get("category", ""), CATEGORY_PRESETS["sneakers/deporte"])
+        cc = (r.get("country") or "").upper() or None
+        region = "eu" if cc in EU else ("uk" if cc == "GB" else (cc.lower() if cc else None))
+        out.append(MonitorConfig(
+            name=name, type="shopify", store=r.get("name") or dom, base_url=f"https://{dom}", currency="auto",
+            interval_seconds=int(r.get("interval_seconds") or preset["interval_seconds"]),
+            channel=r.get("channel") or "sneakers", country=cc, region=region,
+            include_vendors=list(preset.get("include_vendors", [])), include_keywords=list(preset.get("include_keywords", [])),
+            exclude_keywords=["gift card", "geschenkkarte", "carte cadeau", "tarjeta regalo"], skip_kids_sizes=True,
+            deep_pages=int(defaults.get("bulk_deep_pages", 4))))
+    return out
+
+
 def load_config(path: str | Path) -> Config:
     raw = tomllib.loads(Path(path).read_text())
     mons = [MonitorConfig(**m) for m in raw.get("monitor", [])]
@@ -78,6 +124,7 @@ def load_config(path: str | Path) -> Config:
     for r in raw.get("defaults", {}).get("discount_routes", []):
         if not (0 < float(r.get("min_pct", 0)) < 100) or not r.get("channel"):
             raise ValueError("discount_routes: cada ruta necesita min_pct (0-100) y channel")
+    mons += load_store_list(raw.get("defaults", {}), base_dir=Path(path).parent, existing={m.name for m in mons})
     rules = [PingRule.from_dict(r) for r in raw.get("ping_rule", [])]
     if len({r.name for r in rules}) != len(rules):
         raise ValueError("Nombres de ping_rule duplicados")

@@ -20,32 +20,52 @@ DOCS = ROOT / "docs"
 STATES = ["identificada", "fuente localizada", "lectura verificada", "evento probado", "ejecutándose", "entrega confirmada"]
 
 
+EVN = {"N": "nuevo", "R": "restock", "P": "bajada de precio", "S": "rebajas", "F": "raffle", "L": "lanzamiento", "B": "vuelve stock"}
+
+
 def load_harvest() -> dict[str, dict]:
+    """docs/reference_classified.tsv (canal → tienda → dominio → eventos, clasificado)."""
     by_dom: dict[str, dict] = {}
-    f = DOCS / "reference_harvest.tsv"
+    f = DOCS / "reference_classified.tsv"
     if not f.exists():
         return by_dom
     for row in csv.DictReader(f.open(encoding="utf-8"), delimiter="\t"):
-        dom = (row["domain"] or "?").lower()
-        d = by_dom.setdefault(dom, {"names": set(), "channels": set(), "events": defaultdict(int), "count": 0, "last": ""})
-        d["names"].add(row["author"])
-        d["channels"].add(row["channel"])
-        d["count"] += int(row["count"] or 0)
+        dom = row["domain"].lower().removeprefix("www.")
+        ev = defaultdict(int)
         for e in filter(None, (row["events"] or "").split(",")):
-            k, _, v = e.partition(":")
-            d["events"][k] += int(v or 1)
-        d["last"] = max(d["last"], row["last"] or "")
+            k = e.rstrip("0123456789")
+            ev[EVN.get(k, k)] += int(e[len(k):] or 1)
+        by_dom[dom] = {"names": {row["names"]}, "channels": set(row["channels"].split(",")), "events": ev,
+                       "count": int(row["alerts_sampled"] or 0), "last": "2026-" + row["last_seen"] if row["last_seen"] else "",
+                       "platform": row["platform"], "category": row["category"], "country": row["country"]}
     return by_dom
 
 
 def monitors_by_domain() -> dict[str, list[str]]:
-    cfg = tomllib.loads((ROOT / "config" / "monitors.toml").read_text())
+    sys.path.insert(0, str(ROOT / "src"))
+    from urllib.parse import urlparse
+
+    from cookgroup.config import load_config
     out: dict[str, list[str]] = defaultdict(list)
-    for m in cfg.get("monitor", []):
-        from urllib.parse import urlparse
-        dom = (urlparse(m["base_url"]).hostname or "").removeprefix("www.")
-        out[dom].append(f"{m['name']} ({m['type']}{', ' + m['collection'] if m.get('collection') else ''})")
+    for m in load_config(ROOT / "config" / "monitors.toml").monitors:
+        dom = (urlparse(m.base_url).hostname or "").removeprefix("www.")
+        out[dom].append(f"{m.name} ({m.type}{', ' + m.collection if m.collection else ''}{'' if m.enabled else ', desactivado'})")
+    for f in ("bstn.com",):
+        out.setdefault(f, [])
     return out
+
+
+PENDING_REASON = {
+    "mesh (grupo JD)": ("bloqueada", "JD Sports/size?/Footpatrol: la consulta automatizada de JD falla incluso en navegador; size? y Footpatrol cubiertos vía colección launches de Shopify"),
+    "zalando": ("pendiente", "Zalando no ofrece catálogo público consultable; la referencia usa un proveedor externo (yeet). Buscar API de afiliados"),
+    "marca (web propia)": ("pendiente", "web de marca con protección anti-bot o calendario solo en app (SNKRS/CONFIRMED); probar JSON-LD de fichas"),
+    "propia/por confirmar": ("pendiente", "plataforma propia: probar adaptador JSON-LD (listado + fichas)"),
+    "propia/por confirmar (skate/basket)": ("pendiente", "plataforma propia: probar adaptador JSON-LD"),
+    "amazon": ("pendiente", "requiere API de afiliados de Amazon (acceso comercial autorizado)"),
+    "retail/outlet propio": ("pendiente", "Privalia/Miravia/Lidl/PcComponentes: sin fuente pública estable localizada; Privalia exige sesión"),
+    "rss pepper": ("completa", ""),
+    "shopify": ("parcial", "monitor configurado; falta confirmar lectura desde el bot (PROBAR.bat)"),
+}
 
 
 def build() -> list[dict]:
@@ -58,7 +78,13 @@ def build() -> list[dict]:
         if dom in ("?", ""):
             continue
         h, r = harvest.get(dom), reg.get(dom, {})
+        if h and h["platform"] == "no es tienda":
+            continue
         monitor = "; ".join(mons.get(dom, [])) or r.get("monitor", "")
+        plat = h["platform"] if h else r.get("platform", "")
+        cov, why = PENDING_REASON.get(plat, ("pendiente", ""))
+        if not monitor and cov in ("parcial", "completa") and plat == "shopify":
+            cov, why = "pendiente", "Shopify duplicado de otra web de la misma tienda o desactivado"
         rows.append({
             "tienda": r.get("name") or (sorted(h["names"])[0] if h else dom),
             "dominio": dom,
@@ -67,18 +93,18 @@ def build() -> list[dict]:
             "alertas_observadas": h["count"] if h else 0,
             "eventos_referencia": ", ".join(f"{k}:{v}" for k, v in sorted(h["events"].items(), key=lambda x: -x[1])) if h else "",
             "ultima_vista": h["last"] if h else "",
-            "pais": r.get("country", ""),
+            "pais": r.get("country") or (h or {}).get("country", ""),
             "region": r.get("region", ""),
-            "categoria": r.get("category", ""),
+            "categoria": r.get("category") or (h or {}).get("category", ""),
             "moneda": r.get("currency", ""),
             "envio_es": r.get("ships_es", "por confirmar"),
-            "plataforma": r.get("platform", ""),
+            "plataforma": r.get("platform") or plat,
             "fuente": r.get("source", ""),
             "eventos_propios": r.get("events", ""),
             "monitor": monitor,
-            "estado": r.get("status", "identificada" if h else "fuente localizada"),
-            "cobertura": r.get("coverage", "pendiente"),
-            "motivo_o_nota": r.get("note", ""),
+            "estado": r.get("status") or ("fuente localizada" if monitor else "identificada en la referencia"),
+            "cobertura": (r.get("coverage") or cov).split(" (")[0],
+            "motivo_o_nota": r.get("note") or (r.get("coverage", "").partition(" (")[2].rstrip(")")) or why,
             "ultima_prueba": r.get("checked", ""),
         })
     return rows

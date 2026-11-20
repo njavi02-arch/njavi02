@@ -442,5 +442,204 @@
   "coverage": "pendiente",
   "note": "robots excluye /pick-out-jordan (sorteos)",
   "checked": "2026-11-19"
+ },
+ "plaza.dk": {
+  "platform": "Shopify",
+  "source": "/products.json + /cart.js",
+  "status": "lectura verificada",
+  "checked": "2026-11-20",
+  "currency": "DKK",
+  "coverage": "completa",
+  "events": "nuevo, restock, tallas, bajada de precio (catálogo); ficha vigilada para modelos antiguos",
+  "note": "verificado desde el navegador del PC del usuario"
+ },
+ "blackboxstore.com": {
+  "platform": "Shopify",
+  "source": "/products.json + /cart.js",
+  "status": "lectura verificada",
+  "checked": "2026-11-20",
+  "currency": "EUR",
+  "coverage": "completa",
+  "events": "nuevo, restock, tallas, bajada de precio (catálogo); ficha vigilada para modelos antiguos",
+  "note": "verificado desde el navegador del PC del usuario"
+ },
+ "shop.rfef.es": {
+  "platform": "Shopify",
+  "source": "/products.json + /cart.js",
+  "status": "lectura verificada",
+  "checked": "2026-11-20",
+  "currency": "EUR",
+  "coverage": "completa",
+  "events": "nuevo, restock, tallas, bajada de precio (catálogo); ficha vigilada para modelos antiguos",
+  "note": "verificado desde el navegador del PC del usuario"
+ },
+ "5pm.fr": {
+  "platform": "Shopify",
+  "source": "/products.json + /cart.js",
+  "status": "lectura verificada",
+  "checked": "2026-11-20",
+  "currency": "EUR",
+  "coverage": "completa",
+  "events": "nuevo, restock, tallas, bajada de precio (catálogo); ficha vigilada para modelos antiguos",
+  "note": "verificado desde el navegador del PC del usuario"
+ },
+ "redgoblin.ro": {
+  "platform": "Shopify",
+  "source": "/products.json + /cart.js",
+  "status": "lectura verificada",
+  "checked": "2026-11-20",
+  "currency": "RON",
+  "coverage": "completa",
+  "events": "nuevo, restock, tallas, bajada de precio (catálogo); ficha vigilada para modelos antiguos",
+  "note": "verificado desde el navegador del PC del usuario"
+ },
+ "oneblockdown.com": {
+  "platform": "Shopify",
+  "source": "/products.json + /cart.js",
+  "status": "lectura verificada",
+  "checked": "2026-11-20",
+  "currency": "EUR",
+  "coverage": "completa",
+  "events": "nuevo, restock, tallas, bajada de precio (catálogo); ficha vigilada para modelos antiguos",
+  "note": "verificado desde el navegador del PC del usuario"
+ },
+ "flatspot.com": {
+  "platform": "Shopify",
+  "source": "/products.json + /cart.js",
+  "status": "lectura verificada",
+  "checked": "2026-11-20",
+  "currency": "EUR",
+  "coverage": "completa",
+  "events": "nuevo, restock, tallas, bajada de precio (catálogo); ficha vigilada para modelos antiguos",
+  "note": "verificado desde el navegador del PC del usuario"
+ },
+ "tascon.es": {
+  "platform": "Shopify",
+  "source": "/products.json + /cart.js",
+  "status": "lectura verificada",
+  "checked": "2026-11-20",
+  "currency": "USD",
+  "coverage": "completa",
+  "events": "nuevo, restock, tallas, bajada de precio (catálogo); ficha vigilada para modelos antiguos",
+  "note": "verificado desde el navegador del PC del usuario"
+ },
+ "en.afew-store.com": {
+  "platform": "Shopify",
+  "source": "/products.json + /cart.js",
+  "status": "lectura verificada",
+  "checked": "2026-11-20",
+  "currency": "EUR",
+  "coverage": "completa",
+  "events": "nuevo, restock, tallas, bajada de precio (catálogo); ficha vigilada para modelos antiguos",
+  "note": "verificado desde el navegador del PC del usuario"
+ },
+ "yellowshop.es": {
+  "platform": "Shopify",
+  "source": "/products.json + /cart.js",
+  "status": "lectura verificada",
+  "checked": "2026-11-20",
+  "currency": "EUR",
+  "coverage": "completa",
+  "events": "nuevo, restock, tallas, bajada de precio (catálogo); ficha vigilada para modelos antiguos",
+  "note": "verificado desde el navegador del PC del usuario"
+ },
+ "kith.com": {
+  "platform": "Shopify",
+  "source": "/products.json + /cart.js",
+  "status": "lectura verificada",
+  "checked": "2026-11-20",
+  "currency": "EUR",
+  "coverage": "completa",
+  "events": "nuevo, restock, tallas, bajada de precio (catálogo); ficha vigilada para modelos antiguos",
+  "note": "verificado desde el navegador del PC del usuario"
+ },
+ "milk-store.com": {
+  "name": "Milk Store",
+  "platform": "Shopify",
+  "status": "fuente localizada",
+  "coverage": "pendiente",
+  "checked": "2026-11-20",
+  "note": "no responde desde el navegador (20-nov); desactivada"
+ },
+ "mydealz.de": {
+  "name": "Mydealz",
+  "country": "DE",
+  "currency": "EUR",
+  "category": "chollos",
+  "platform": "RSS Pepper",
+  "source": "/rss/hot",
+  "events": "chollo nuevo (tienda, precio, temperatura)",
+  "status": "lectura verificada",
+  "coverage": "completa",
+  "checked": "2026-11-20"
+ },
+ "hotukdeals.com": {
+  "name": "HotUKDeals",
+  "country": "GB",
+  "currency": "GBP",
+  "category": "chollos",
+  "platform": "RSS Pepper",
+  "source": "/rss/hot",
+  "events": "chollo nuevo (tienda, precio, temperatura)",
+  "status": "lectura verificada",
+  "coverage": "completa",
+  "checked": "2026-11-20"
+ },
+ "pepper.pl": {
+  "name": "Pepper.pl",
+  "country": "PL",
+  "currency": "PLN",
+  "category": "chollos",
+  "platform": "RSS Pepper",
+  "source": "/rss/hot",
+  "events": "chollo nuevo (tienda, precio, temperatura)",
+  "status": "lectura verificada",
+  "coverage": "completa",
+  "checked": "2026-11-20"
+ },
+ "snipes.com": {
+  "name": "Snipes",
+  "country": "DE",
+  "region": "es-es",
+  "currency": "EUR",
+  "category": "sneakers",
+  "ships_es": "sí",
+  "platform": "Salesforce (JSON-LD)",
+  "source": "/es-es/c/hombre/zapatillas/ + fichas JSON-LD",
+  "events": "modelo nuevo, vuelta a stock (producto), bajada de precio",
+  "status": "lectura verificada",
+  "coverage": "parcial (la referencia da tallas con stock; la ficha pública no publica tallas)",
+  "checked": "2026-11-20"
+ },
+ "footlocker.es": {
+  "name": "Foot Locker ES",
+  "country": "ES",
+  "currency": "EUR",
+  "category": "sneakers",
+  "ships_es": "sí",
+  "platform": "propia (JSON-LD)",
+  "source": "/es/category/hombre/zapatillas.html + fichas JSON-LD",
+  "events": "modelo nuevo, vuelta a stock (producto), bajada de precio",
+  "status": "lectura verificada",
+  "coverage": "parcial (sin tallas en la ficha pública)",
+  "checked": "2026-11-20"
+ },
+ "jdsports.es": {
+  "name": "JD Sports",
+  "category": "sneakers",
+  "platform": "mesh (grupo JD)",
+  "status": "fuente localizada",
+  "coverage": "bloqueada",
+  "checked": "2026-11-20",
+  "note": "la consulta automatizada falla incluso desde el navegador (protección anti-bot); seguimiento manual"
+ },
+ "jdsports.co.uk": {
+  "name": "JD Sports",
+  "category": "sneakers",
+  "platform": "mesh (grupo JD)",
+  "status": "fuente localizada",
+  "coverage": "bloqueada",
+  "checked": "2026-11-20",
+  "note": "la consulta automatizada falla incluso desde el navegador (protección anti-bot); seguimiento manual"
  }
 }

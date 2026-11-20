@@ -86,6 +86,9 @@ def _loop(mcfg, cfg: Config, store: Store, market, stop: threading.Event):
         return
     sender = WebhookSender(url)
     source = make_source(mcfg)
+    # arranque escalonado: con cientos de tiendas, no todas a la vez (0-120 s según el nombre, estable entre reinicios)
+    import zlib
+    stop.wait(zlib.crc32(mcfg.name.encode()) % min(120, mcfg.interval_seconds))
     wanted = {r.channel for r in cfg.ping_rules} | {r["channel"] for r in cfg.defaults.get("discount_routes", [])}
     channel_senders = {ch: WebhookSender(u).send for ch in wanted if (u := cfg.webhook_for(ch))}
     failures = 0

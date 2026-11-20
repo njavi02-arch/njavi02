@@ -128,6 +128,16 @@ class ShopifySource:
         except ValueError as e:
             raise SourceError(f"{self.store}: respuesta no JSON") from e
 
+    def _resolve_currency(self) -> None:
+        """currency = "auto": la moneda que Shopify devuelve a este visitante (/cart.js). Si falla, "N/D" (no se inventa)."""
+        if self.currency != "auto":
+            return
+        try:
+            data = self._get(f"{self.base_url.rstrip('/')}/cart.js")
+            self.currency = (data or {}).get("currency") or "N/D"
+        except (SourceError, RateLimited):
+            self.currency = "N/D"
+
     def _page(self, page: int) -> list[Product] | None:
         payload = self._get(self._url(page), {"limit": self.page_size, "page": page}, etag_key=page)
         if payload is None:
@@ -135,6 +145,7 @@ class ShopifySource:
         return parse_products(payload, store=self.store, base_url=self.base_url, currency=self.currency)
 
     def fetch(self) -> list[Product]:
+        self._resolve_currency()
         products: list[Product] = []
         first = self._page(1)
         if first is None and self.pages == 1 and self.deep_pages <= 1 and not self.watch:
