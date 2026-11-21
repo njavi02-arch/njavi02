@@ -172,14 +172,18 @@ class JsonLdSource:
             start = self._pos % len(rest)
             targets += (rest[start:] + rest[:start])[:n]
             self._pos += n
-        out = []
+        out, errors = [], 0
         for u in targets:
             try:
                 p = parse_product_page(self._get(u), url=u, store=self.store, default_currency=self.currency)
             except SourceError as e:
                 if "anti-bot" in str(e) or "denegado" in str(e):
                     raise
+                errors += 1
                 continue
             if p:
                 out.append(p)
+        if targets and errors == len(targets):
+            # v1.3: si no se pudo leer NINGUNA ficha, el ciclo falla (no se interpreta como «todo agotado/retirado»)
+            raise SourceError(f"{self.store}: no se pudo leer ninguna ficha ({errors})")
         return out

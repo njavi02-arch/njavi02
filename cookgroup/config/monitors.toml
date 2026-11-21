@@ -478,7 +478,123 @@ currency = "EUR"
 listing_urls = ["https://www.footlocker.es/es/category/hombre/zapatillas.html"]
 product_link_pattern = "/es/product/"
 products_per_cycle = 4
-interval_seconds = 900
+interval_seconds = 300          # v1.3: mínimo para JSON-LD
+channel = "sneakers"
+skip_kids_sizes = true
+
+# ---------------------------------------------------------------- v1.3 · tiendas auditadas el 21-nov-2026 (fase 2)
+# Fuente: el JSON-LD público de cada ficha (schema.org Product / ProductGroup), el mismo que lee Google.
+# Captura real y prueba por tienda: docs/v12/capturas_tiendas_2026-11-21.jsonl · tests/test_tiendas_fase2.py
+
+[[monitor]]
+name = "kickz-releases"
+ships_es = "sí"
+type = "jsonld"
+store = "KICKZ"
+country = "DE"
+region = "eu"
+base_url = "https://www.kickz.com"
+currency = "EUR"
+listing_urls = ["https://www.kickz.com/en/Releases/c/releases"]
+product_link_pattern = "/p/"
+products_per_cycle = 4
+interval_seconds = 300
+channel = "lanzamientos"
+skip_kids_sizes = true
+
+[[monitor]]
+name = "43einhalb"
+ships_es = "sí"
+type = "jsonld"
+store = "43einhalb"
+country = "DE"
+region = "eu"
+base_url = "https://www.43einhalb.com"
+currency = "EUR"
+listing_urls = ["https://www.43einhalb.com/en/sneaker"]
+product_link_pattern = "/en/p/"
+products_per_cycle = 4
+interval_seconds = 300
+channel = "sneakers"
+skip_kids_sizes = true
+
+[[monitor]]
+name = "skatedeluxe"
+ships_es = "sí"
+type = "jsonld"
+store = "skatedeluxe"
+country = "DE"
+region = "eu"
+base_url = "https://www.skatedeluxe.com"
+currency = "EUR"
+listing_urls = ["https://www.skatedeluxe.com/es/c/zapatillas"]
+product_link_pattern = "/es/p/"
+products_per_cycle = 4
+interval_seconds = 300
+channel = "skate"
+skip_kids_sizes = true
+
+[[monitor]]
+name = "basket4ballers"
+ships_es = "sí"
+type = "jsonld"
+store = "Basket4Ballers"
+country = "FR"
+region = "eu"
+base_url = "https://www.basket4ballers.com"
+currency = "EUR"
+listing_urls = ["https://www.basket4ballers.com/es/novedades"]
+product_link_pattern = "/es/novedades/"
+products_per_cycle = 4
+interval_seconds = 300
+channel = "baloncesto"
+skip_kids_sizes = true
+
+[[monitor]]
+name = "newbalance-es"
+ships_es = "sí"
+type = "jsonld"
+store = "New Balance"
+country = "ES"
+region = "eu"
+base_url = "https://www.newbalance.es"
+currency = "EUR"
+listing_urls = ["https://www.newbalance.es/es/hombre/zapatillas/"]
+product_link_pattern = "/es/pd/"
+products_per_cycle = 4
+interval_seconds = 300
+channel = "sneakers"
+skip_kids_sizes = true
+
+[[monitor]]
+name = "zalando-es"
+ships_es = "sí"
+type = "jsonld"
+store = "Zalando"
+country = "ES"
+region = "eu"
+base_url = "https://www.zalando.es"
+currency = "EUR"
+listing_urls = ["https://www.zalando.es/zapatillas-hombre/"]
+product_link_pattern = "-a13.html"
+products_per_cycle = 4
+interval_seconds = 300
+channel = "sneakers"
+skip_kids_sizes = true
+
+[[monitor]]
+name = "adidas-es"
+ships_es = "sí"
+type = "jsonld"
+store = "adidas"
+country = "ES"
+region = "eu"
+base_url = "https://www.adidas.es"
+currency = "EUR"
+listing_urls = ["https://www.adidas.es/zapatillas-hombre"]
+product_link_pattern = ".html"
+products_per_cycle = 4
+interval_seconds = 300
 channel = "sneakers"
 skip_kids_sizes = true
 
