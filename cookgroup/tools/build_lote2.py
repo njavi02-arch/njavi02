@@ -33,13 +33,16 @@ def main():
     r = subprocess.run([sys.executable, "-m", "pytest", "-q", "-rs", "tests/test_tiendas_lote2.py"], cwd=ROOT,
                        capture_output=True, text=True, env={"PYTHONPATH": str(ROOT / "src"), "PATH": "/usr/bin:/bin"})
     skipped = set(re.findall(r"SKIPPED.*?: ([\w.\-]+): el producto", r.stdout))
+    print(r.stdout.strip().splitlines()[-1])
     failed = set(re.findall(r"FAILED .*?\[([\w.\-]+)\]", r.stdout))
     names = {}
     for x in csv.DictReader(open(ROOT / "docs/inventory.csv", encoding="utf-8")):
         names.setdefault(merchant_key(x["dominio"]), x["tienda"])
-    mons = {}
+    mons, siblings = {}, {}
     for m in load_config(ROOT / "config/monitors.toml").monitors:
-        mons.setdefault(urlparse(m.base_url).netloc.removeprefix("www."), m.name)
+        dom = urlparse(m.base_url).netloc.removeprefix("www.")
+        mons.setdefault(dom, m.name)
+        siblings.setdefault(merchant_key(dom), []).append(m.name)   # versiones regionales del mismo comercio
     import tomllib
     existing = {}                                   # monitor → canal de tienda que ya existe como equivalente de la referencia
     for cat in tomllib.loads((ROOT / "config/canales_dedicados.toml").read_text(encoding="utf-8")).get("categoria", []):
@@ -64,7 +67,7 @@ def main():
             nombre = nombre.title()
         out += ["[[tienda]]", f'nombre = "{nombre}"', f'canal = "{canal}"', f'pais = "{c}"', f'web = "https://{d}/"',
                 f'envio_es = "{"sí" if es == "s" else "no" if es == "n" else "por confirmar"} (ships_to_countries, 21-nov)"',
-                'raffle_es = "—"', f'monitores = ["{mon}"]', 'raffle = "sin-fuente"', 'lanzamiento = "por-probar"',
+                'raffle_es = "—"', "monitores = [" + ", ".join(f'"{x}"' for x in dict.fromkeys([mon] + siblings.get(k, []))) + "]", 'raffle = "sin-fuente"', 'lanzamiento = "por-probar"',
                 'restock = "probado"', 'rebaja = "probado"',
                 f'prueba_restock = "test_tiendas_lote2[{d}] · muestra real 21-nov"',
                 f'prueba_rebaja = "test_tiendas_lote2[{d}] · muestra real 21-nov"', 'lote = 2', ""]

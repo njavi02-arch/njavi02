@@ -91,3 +91,64 @@ loggishop.com|AMISH JEANS JEREMIAH IN DENIM |2026-11-21|Blu / 30~135.00~0.00~1,B
 thronestoregaming.com|Collezione Ultra Premium Pokém|2026-11-21|Default Title~229.90~~0
 camdenrimini.com|Pantalone Wide Leg Nero|2026-11-21|XS~68.00~80.00~0,S~68.00~80.00~0,M~68.00~80.00~1
 slamjam.com|Men's Broader Chino Crash Beig|2026-11-21|2 / Beige~1137.00~0.00~1,3 / Beige~1137.00~0.00~0,4 / Beige~1137.00~0.00~0
+# --- lote 3 (21-nov-2026 ~04:00 Madrid): resto de tiendas europeas con envío a España ---
+overkillshop.com|U990LV4|2026-11-21|41.5~243.02~~1,42~243.02~~1,42.5~243.02~~1
+kingcards.nl|One Piece – Mini Case Set [TS-|2026-11-21|Paars Hancock~24.95~~0,Roze Hancock~24.95~~0,Rood Luffy~24.95~~0
+maha-amsterdam.com|Carhartt WIP x Nike T-Shirt Bl|2026-11-21|XS~49.00~~1,S~49.00~~1,M~49.00~~1
+sparkystore.nl|Carhartt WIP Ardon Jacket Blac|2026-11-20|XS~248.95~~1,S~248.95~~1,M~248.95~~0
+pokefamily.nl|Pokémon 30th Celebration Battl|2026-11-21|Umbreon~49.99~~1,Espeon~49.99~~1
+wit-training.com|Nike Free Metcon 6|2026-11-21|UK 7~70.00~119.99~0,UK 7.5~70.00~119.99~0,UK 8~70.00~119.99~0
+stress95.com|Air Jordan 3 Retro OG &quot No|2026-11-21|EU 40 US 7 UK 6 CM 25 ~2499.00~~0,EU 40.5 US 7.5 UK 6.5 ~2499.00~~0,EU 41 US 8 UK 7 CM 26 ~2499.00~~0
+monar.be|GEL-TRANSCEND FJ|2026-11-21|37.5~180.00~~1,38~180.00~~1,39~180.00~~1
+eleganza.nl|Heren Ss Polo|2026-11-21|Zwart / S~214.00~305.00~0,Zwart / M~214.00~305.00~0,Zwart / L~214.00~305.00~1
+patta.nl|Carhartt WIP Nike T-Shirt (Bla|2026-11-21|S~49.00~~1,M~49.00~~1,L~49.00~~1
+thefootfactory.co.uk|ROKA Bond Thunderstorm Recycle|2026-11-21|Default Title~36.95~42.95~0
+thbx.nl|PAL Sporting Goods Late night |2026-11-21|S / Vintage Brown~179.95~~0,M / Vintage Brown~179.95~~0,L / Vintage Brown~179.95~~1
+endclothing.com|SCRT® Wake Up Laser-Etched Jea|2026-11-21|Medium~200.00~~0,XLarge~200.00~~0,Large~200.00~~0
+routeone.co.uk|Independent Curb Skateboard Tr|2026-11-21|144mm~99.95~99.95~1,149mm~99.95~99.95~1
+footpatrol.com|Timberland 6 Inch Premium Boot|2026-11-21|7~110.00~190.00~1,8~110.00~190.00~1,9~110.00~190.00~1
+ajogar.com|Ants English Board Game|2026-11-21|Default Title~49.99~59.99~0
+landaustore.co.uk|The North Face Womens Zaneck J|2026-11-21|XS~267.58~~0,S~267.58~~0,M~267.58~~0
+size.co.uk|Nike x NOCTA Cardinal Fleece S|2026-11-21|S~35.00~65.00~1,L~35.00~65.00~0,XL~35.00~65.00~1
+palace-skateboards-eu.myshopify.com|PALACE NIKE MANOR PLACE TRACK |2026-11-21|X-Small~188.00~~0,Small~188.00~~0,Medium~188.00~~1
+crashrecords.co.uk|Primus, The Claypool-Lennon De|2026-11-21|Vinyl LP~19.99~~1,CD Album~10.99~~1
+childsplayclothing.co.uk|Moncler Enfant Kids Grenoble S|2026-11-21|Black / 10 Yrs~670.00~0.00~1,Black / 12 Yrs~775.00~0.00~1,Black / 14 Yrs~775.00~0.00~1
+boredofsouthsea.co.uk|Obey Clothing Deer Sherpa Jack|2026-11-21|Small~194.95~0.00~1,Medium~194.95~0.00~1,Large~194.95~0.00~0
+remixcasuals.co.uk|Dickies Unlined Eisenhower Coa|2026-11-21|S / Black~78.95~~0,M / Black~78.95~~1,L / Black~78.95~~0
+kyoto.dk|Carhartt WIP S/S American Scri|2026-11-21|M~199.00~350.00~0,L~199.00~350.00~0,XL~199.00~350.00~1
+loadeddice.uk|QTRMSTR Resin Salvage TS-22: E|2026-11-21|Default Title~16.99~~1
+thecardvault.co.uk|Magic: The Gathering - Nauctis|2026-11-21|Default Title~775.95~988.20~1
+deviceone.gr|Diet Starts Monday Meth Hoodie|2026-11-21|S~220.00~~0,M~220.00~~1,L~220.00~~0
+cardyx.sk|Latias ex - 220/191 - SV08: Su|2026-11-21|Default Title~7.99~~0
+kimskram.dk|Kjole fra Petit Piao - Light B|2026-11-21|86 cm~299.00~~0,92 cm~299.00~~0,98 cm~299.00~~0
+sneakersnstuff.com|Pocket SPZL Tee|2026-11-21|S~60.00~60.00~0,M~60.00~60.00~0,L~60.00~60.00~1
+nakedcph.com|adidas Originals x Simone Roch|2026-11-21|XS~256.00~320.00~0,S~256.00~320.00~1,M~256.00~320.00~0
+munkstore.dk|Trackside Fleece Crew|2026-11-21|XS~480.00~0.00~0,S~480.00~0.00~1,M~480.00~0.00~0
+noteshop.co.uk|Violet I Need A Miracle Crew N|2026-11-21|Small~110.95~~0,Medium~110.95~~1,Large~110.95~~1
+smets.lu|Cesar sleeveless puffer jacket|2026-11-21|XS / BLACK~200.00~~0,S / BLACK~200.00~~0,M / BLACK~200.00~~1
+pharmabergen.no|LOS ANGELES DODGERS ACPERF 59F|2026-11-21|7~599.00~~1,6 7/8~599.00~~0,7 1/2~599.00~~1
+stitch.lu|W TOKYO EARTH STRATA/OFF WHITE|2026-11-21|EU 36 (US 5) W~100.00~~1,EU 36 2/3 (US 5.5) W~100.00~~1,EU 37 1/3 (US 6) W~100.00~~1
+lvlupgaming.co.uk|Kuzan (OP16-063) - Alternative|2026-11-21|Foil / Near Mint~3.70~~0
+jeanstore.co.uk|Wrangler Blue Bell 13MWZ Origi|2026-11-21|W32 L34~110.95~184.95~0,W33 L32~110.95~184.95~0,W34 L32~110.95~184.95~0
+logues.ie|CLAYTON TONI PONS RAIN BOOTS|2026-11-21|POTRO / 36 EU /3 UK~80.00~~0,POTRO / 42 EU/8 UK~80.00~~0,POTRO / 37 EU /4 UK~80.00~~1
+plaza.dk|Ring brilliant 0 11ct W-s - 14|2026-11-21|54~3237.00~6475.00~0,55~6475.00~6475.00~1,56~3237.00~6475.00~0
+pl-line.com|FELTED OVERSHIRT|2026-11-21|M / Beige~1750.00~~0,L / Beige~1750.00~~1,XL / Beige~1750.00~~1
+eu.stussy.com|BASIC STÜSSY CREW|2026-11-21|Army / S~140.00~~0,Army / M~140.00~~1,Army / L~140.00~~0
+stil-laden.com|Blevin Liner|2026-11-21|S / Fleur De Sel~159.00~~0,XL / Fleur De Sel~159.00~~0
+stoy.com|Satin Ruffle Skirt in Black|2026-11-21|34~590.00~~0,36~590.00~~0,38~590.00~~1
+cybercafeskateshop.com|Terrain Tee - Chestnut|2026-11-21|S~50.00~~0,M~50.00~~1,L~50.00~~1
+tres-bien.com|Public Release / feeling x non|2026-11-21|1~11000.00~~0,2~11000.00~~1,3~11000.00~~1
+shop.doverstreetmarket.com|Nike - Women's Rejuven8 Run 4x|2026-11-21|Size US 6.5~130.00~~1,Size US 7.5~130.00~~1,Size US 8.5~130.00~~1
+rezetstore.com|Air Force 1 '01|2026-11-21|36~1050.00~1050.00~0,36.5~1050.00~1050.00~0,37.5~1050.00~1050.00~0
+ceciliebahnsen.com|CBUKA   SKIRT FLORAL BELLIS BL|2026-11-21|UK4~700.00~~0,UK6~700.00~~1,UK8~700.00~~1
+reservoir-store.com|HYPERWAY LOW SUEDE/MESH Cotton|2026-11-21|36~195.00~~1,37~195.00~~1,38~195.00~~0
+slamcity.com|New Balance x Atlantic Drift T|2026-11-21|UK3.5~94.99~~0,UK4~94.99~~0,UK4.5~94.99~~1
+freshcotton.com|Welter Shelter Joba Carcoat Ni|2026-11-21|S / Black~318.47~454.95~0,M / Black~318.47~454.95~1,L / Black~318.47~454.95~0
+maharishistore.com|7024 Hemp Custom Pants Taupe|2026-11-21|XS / 28 / Taupe~155.00~260.00~1,S / 30 / Taupe~155.00~260.00~1,M / 32 / Taupe~155.00~260.00~0
+poke-power.eu|Magic: The Gathering - Foundat|2026-11-21|Calling All Angels~29.99~39.99~0,Keen Engineering~29.99~39.99~0,Wretched Ranks~29.99~39.99~0
+le-fix.com|The North Face Red Box Nylon S|2026-11-21|S~560.00~800.00~0,M~560.00~800.00~0,L~560.00~800.00~1
+andpants.com|WBLior Nat Ripstop Pants Sand|2026-11-21|Sand / XS~800.00~~1,Sand / S~800.00~~1,Sand / M~800.00~~0
+ukstore.thebeatles.com|Sgt. Pepper T-shirt|2026-11-21|S~29.00~~0,M~29.00~~0,L~29.00~~0
+gs-gameon.com|Eevee - SV Black Star Promos (|2026-11-21|Inglese / Near Mint / ~12.98~~1,Italiano / Near Mint /~5.93~~0,Italiano / Excellent /~7.89~~0
+function18.com|BOSS Commuter-Slim Golf Trouse|2026-11-21|30/31.5~139.00~~1,32/32~139.00~~1,34/32.5~139.00~~1
+pampamlondon.com|Clarks Womens Meare Walla Mapl|2026-11-21|3 / Maple Suede~92.95~115.95~0,4 / Maple Suede~92.95~115.95~1,5 / Maple Suede~92.95~115.95~0

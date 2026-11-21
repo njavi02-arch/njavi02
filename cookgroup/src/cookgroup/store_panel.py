@@ -148,7 +148,7 @@ def render(d: dict, *, refresh: int = 30) -> str:
              "".join(f"<option>{E(x)}</option>" for x in countries) + "</select><select id=fs onchange=flt()><option value=''>Todas las señales</option>" +
              "".join(f"<option value={s}>{s.upper()}</option>" for s in SIGNALS) +
              "</select><input id=fq placeholder='Buscar tienda' oninput=flt()></div>")
-    o.append("<h2>Tiendas con canal propio (lote 1)</h2><table><tr><th>Tienda</th><th>Estado</th><th>Ritmo</th>"
+    o.append(f"<h2>Tiendas con canal propio ({len(d['stores'])})</h2><table><tr><th>Tienda</th><th>Estado</th><th>Ritmo</th>"
              "<th>Última lectura buena</th><th>Próximo intento</th><th>Último raffle / aviso</th><th>Señales</th><th>Canal</th></tr>")
     for s in d["stores"]:
         sig = " ".join(k for k, v in s["senales"].items() if v == "probado")
