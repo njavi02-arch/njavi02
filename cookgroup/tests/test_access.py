@@ -12,7 +12,7 @@ M = {r["canal"]: r for r in matrix(D)}
 
 def test_visitor_sees_only_public():
     vis = {c for c, r in M.items() if r["visitante"] != "—"}
-    assert vis == {"Miembros", "bienvenida", "normas", "elige-tus-avisos", "guía-de-avisos", "anuncios", "planes", "muestra-gratis", "soporte"}
+    assert vis == {"Miembros", "bienvenida", "normas", "elige-tus-avisos", "guía-de-avisos", "índice", "anuncios", "planes", "muestra-gratis", "soporte"}
     assert M["soporte"]["visitante"] == "ve y abre ticket privado"
 
 

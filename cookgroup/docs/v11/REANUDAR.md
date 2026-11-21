@@ -14,3 +14,8 @@
 - Diferencias convertidas en tareas: «New add» → LANZAMIENTO probado por tienda (test_tiendas_lote2); «Price Change» → REBAJA; «[stock]» por talla → la fuente pública de Shopify no da unidades (no se replica); QT/enlaces de bots → no (terceros), sí StockX/eBay.
 - Lote 3: 58 tiendas más → 156 tiendas con canal y tarjeta (146 de los lotes 2-3 con lanzamiento/restock/rebaja probados).
 - Próxima tarea exacta: Excel actualizado, panel publicado, informe final; con token: INSTALAR_SERVIDOR + PRUEBA_RAFFLE + ARRANCAR en el PC.
+
+## 21-nov 17:30 · sesión «12 bloques»
+- Hecho: fase 2 (8 tiendas JSON-LD con captura real + prueba; GAME por lista de seguimiento), fallo «todas las fichas fallan» corregido, 7 guías + plantilla, EDITORIAL/BOTS_CHECKOUT/ACUERDOS/MARCA_ZESTY/NIKE/POKEMON, #índice, inventario maestro Z-001…Z-339 (docs/v12/INVENTARIO_MAESTRO.csv), TIENDAS_MONITORIZADAS.csv, OPERAR_24_7.md.
+- Pendiente exacto: auditar About You, YOOX, Sports Direct, Carrefour, DRIM, Toys"R"Us, Alcampo, El Corte Inglés, Fnac; adaptador de tallas ASICS/ASOS/Foot Locker; mercados EU de adidas/Zalando/Foot Locker; Footshop (permiso de Chrome).
+- Bloqueo único para Discord: DISCORD_BOT_TOKEN en el .env del PC → INSTALAR_SERVIDOR.bat → PRUEBA_RAFFLE.bat → ARRANCAR.bat.

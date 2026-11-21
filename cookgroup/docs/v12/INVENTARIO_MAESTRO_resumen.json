@@ -1,0 +1,18 @@
+{
+ "total": 339,
+ "estado_tecnico": {
+  "investigado": 119,
+  "construido": 90,
+  "probado localmente": 130
+ },
+ "estado_discord": {
+  "no instalado": 339
+ },
+ "responsable": {
+  "bot": 178,
+  "staff (editorial)": 90,
+  "miembros + moderación": 43,
+  "webhook del bot de cada miembro (decisión del dueño)": 11,
+  "acuerdo con tercero (decisión del dueño)": 17
+ }
+}

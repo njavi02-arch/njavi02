@@ -1,0 +1,129 @@
+# v1.3 · lote 4: tiendas sin Shopify (JSON-LD público), auditadas el 21-nov-2026. Envío a España: confirmar en la web de cada tienda.
+
+[[tienda]]
+nombre = "KICKZ"
+canal = "kickz"
+pais = "DE"
+web = "https://www.kickz.com/en/Releases/c/releases"
+envio_es = "por confirmar"
+raffle_es = "—"
+monitores = ["kickz-releases"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_fase2[www.kickz.com] · captura real 21-nov"
+prueba_rebaja = "test_tiendas_fase2[www.kickz.com] · captura real 21-nov"
+lote = 4
+
+[[tienda]]
+nombre = "43einhalb"
+canal = "43einhalb"
+pais = "DE"
+web = "https://www.43einhalb.com/"
+envio_es = "por confirmar"
+raffle_es = "—"
+monitores = ["43einhalb"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_fase2[www.43einhalb.com] · captura real 21-nov"
+prueba_rebaja = "test_tiendas_fase2[www.43einhalb.com] · captura real 21-nov"
+lote = 4
+
+[[tienda]]
+nombre = "skatedeluxe"
+canal = "skatedeluxe"
+pais = "DE"
+web = "https://www.skatedeluxe.com/es/"
+envio_es = "por confirmar"
+raffle_es = "—"
+monitores = ["skatedeluxe"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_fase2[www.skatedeluxe.com] · captura real 21-nov"
+prueba_rebaja = "test_tiendas_fase2[www.skatedeluxe.com] · captura real 21-nov"
+lote = 4
+
+[[tienda]]
+nombre = "Basket4Ballers"
+canal = "basket4ballers"
+pais = "FR"
+web = "https://www.basket4ballers.com/es/"
+envio_es = "por confirmar"
+raffle_es = "—"
+monitores = ["basket4ballers"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_fase2[www.basket4ballers.com] · captura real 21-nov"
+prueba_rebaja = "test_tiendas_fase2[www.basket4ballers.com] · captura real 21-nov"
+lote = 4
+
+[[tienda]]
+nombre = "New Balance ES"
+canal = "new-balance"
+pais = "ES"
+web = "https://www.newbalance.es/"
+envio_es = "sí (inventario)"
+raffle_es = "—"
+monitores = ["newbalance-es"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_fase2[www.newbalance.es] · captura real 21-nov"
+prueba_rebaja = "test_tiendas_fase2[www.newbalance.es] · captura real 21-nov"
+lote = 4
+
+[[tienda]]
+nombre = "Zalando ES"
+canal = "zalando-es"
+pais = "ES"
+web = "https://www.zalando.es/"
+envio_es = "sí (inventario)"
+raffle_es = "—"
+monitores = ["zalando-es"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_fase2[www.zalando.es] · captura real 21-nov"
+prueba_rebaja = "test_tiendas_fase2[www.zalando.es] · captura real 21-nov"
+lote = 4
+
+[[tienda]]
+nombre = "adidas ES"
+canal = "adidas-es"
+pais = "ES"
+web = "https://www.adidas.es/"
+envio_es = "sí (inventario)"
+raffle_es = "—"
+monitores = ["adidas-es"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_fase2[www.adidas.es] · captura real 21-nov"
+prueba_rebaja = "test_tiendas_fase2[www.adidas.es] · captura real 21-nov"
+lote = 4
+
+[[tienda]]
+nombre = "Foot Locker ES"
+canal = "footlocker-es"
+pais = "ES"
+web = "https://www.footlocker.es/"
+envio_es = "sí (inventario)"
+raffle_es = "—"
+monitores = ["footlocker-es"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_fase2[www.footlocker.es] · captura real 21-nov"
+prueba_rebaja = "test_tiendas_fase2[www.footlocker.es] · captura real 21-nov"
+lote = 4

@@ -116,6 +116,13 @@ def main():
         rows.append({**{k: r[k] for k in ("categoria", "canal", "tipo", "para_que", "quien_alimenta")},
                      "tipo_equivalente": kind or "ver tabla v0.9", "equivalente_dedicado": f"#{eq}" if eq else r["equivalente"],
                      "fuente_o_responsable": src, "hueco": gap, "tiendas_ref": r["n_tiendas"]})
+    # v1.3: nombres claros en lugar de la jerga de la referencia («web naranja» = Zalando)
+    RENAME = {"web-naranja-españa": "zalando-es", "web-naranja-eu": "zalando-eu"}
+    for chans in dedicated.values():
+        for c in chans:
+            if c["nombre"] in RENAME:
+                c["nombre"] = RENAME[c["nombre"]]
+                c["fuente"] = "bot:tienda_" + keyname(c["nombre"])
     # v1.1: tiendas del lote (config/lote_tiendas.toml) que aún no tienen canal propio
     from cookgroup.store_directory import load_lote
     lote = load_lote(ROOT / "config/lote_tiendas.toml")
