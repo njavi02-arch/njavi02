@@ -88,3 +88,31 @@ def test_aboutyou_color_pages_do_not_collide_and_restock_once(tmp_path):
     assert len(got) == 1 and "35,5" in json.dumps(got[0], ensure_ascii=False)
     cycle()
     assert len(got) == 1
+
+
+TRU = json.loads((FIX / "toysrus_es_REAL_2026-11-21.json").read_text(encoding="utf-8"))
+
+
+def tru_html(d):
+    return (f'<h1 class="name">{d["name"]}</h1><meta itemprop="price" content="{d["price"]}"/>'
+            f'<meta itemprop="priceCurrency" content="EUR"/><input type="hidden" id="stockLevelStatus" name="stockLevelStatus" '
+            f'value="{d["stock"]}"/>')
+
+
+def test_toysrus_hybris_stock_and_price_drop(tmp_path):
+    cfg = mon("toysrus-pokemon")
+    prods = copy.deepcopy(TRU["products"])
+    site = Site("https://www.toysrus.es", cfg.listing_urls[0], {p["url"]: p for p in prods}, tru_html)
+    cycle, got = run(cfg, site, tmp_path)
+    prods[0]["stock"] = "outOfStock"                                          # SIMULACIÓN (valor estándar de Hybris)
+    cycle()
+    assert got == []
+    prods[0]["stock"] = "inStock"
+    cycle()
+    assert len(got) == 1 and "Eevee" in json.dumps(got[0], ensure_ascii=False)
+    prods[1]["price"] = 149.99                                                # SIMULACIÓN: bajada de precio
+    cycle()
+    assert len(got) == 2
+    prods[2]["stock"] = "algoRaro"                                            # valor no reconocido → desconocido
+    cycle()
+    assert len(got) == 2

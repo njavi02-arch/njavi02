@@ -2542,26 +2542,28 @@ palabras = []
 [[categoria.canal]]
 nombre = "drim"
 clase = "tienda"
-pais = ""
+pais = "ES"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_drim"
 estado = "pendiente"
 equivalente_de = "drim"
 falta = "Drim: probar JSON-LD → sin fuente aún"
-monitores = []
+senales = "RESTOCK, REBAJA"
+monitores = ["drim-pokemon"]
 palabras = []
 [[categoria.canal]]
 nombre = "toysrus"
 clase = "tienda"
-pais = ""
+pais = "ES"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_toysrus"
 estado = "pendiente"
 equivalente_de = "toysrus"
 falta = "Toys R Us España: probar JSON-LD → sin fuente aún"
-monitores = []
+senales = "REBAJA"
+monitores = ["toysrus-pokemon"]
 palabras = []
 [[categoria.canal]]
 nombre = "alcampo"

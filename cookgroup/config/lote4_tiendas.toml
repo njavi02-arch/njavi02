@@ -263,3 +263,35 @@ tallas = "no aplica"
 prueba_restock = "test_tiendas_fase2[www.elcorteingles.es] · 5 capturas reales 21-nov (2 agotadas)"
 prueba_rebaja = "test_tiendas_fase2[www.elcorteingles.es] · captura real 21-nov"
 lote = 7
+
+[[tienda]]
+nombre = "DRIM · Pokémon"
+canal = "drim"
+pais = "ES"
+web = "https://www.drim.es/personaje_pokemon"
+envio_es = "sí (tienda española)"
+raffle_es = "—"
+monitores = ["drim-pokemon"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+tallas = "no aplica"
+prueba_rebaja = "test_tiendas_lote3/fase2[www.drim.es] · 2 capturas reales 21-nov (VTEX JSON-LD)"
+lote = 7
+
+[[tienda]]
+nombre = "Toys\"R\"Us · Pokémon"
+canal = "toysrus"
+pais = "ES"
+web = "https://www.toysrus.es/Pokemon/c/Pokemon"
+envio_es = "sí (tienda española)"
+raffle_es = "—"
+monitores = ["toysrus-pokemon"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "por-probar"
+rebaja = "probado"
+tallas = "no aplica"
+prueba_rebaja = "test_tiendas_lote3/fase2[toysrus] · adaptador hybris · 4 capturas reales (todas en stock: vuelta a stock sin muestra agotada real)"
+lote = 7

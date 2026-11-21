@@ -779,6 +779,37 @@ products_per_cycle = 4
 interval_seconds = 300
 channel = "coleccionables"   # familia Pokémon-TCG (+ canal propio de la tienda)
 
+[[monitor]]
+name = "drim-pokemon"
+ships_es = "sí"
+type = "jsonld"
+store = "DRIM"
+country = "ES"
+region = "eu"
+base_url = "https://www.drim.es"
+currency = "EUR"
+listing_urls = ["https://www.drim.es/personaje_pokemon"]
+product_link_pattern = 're:^/(?=[a-z0-9-]*pokemon)(?=[a-z0-9-]*(tcg|caja|sobre|booster|blister|elite|entrenador|cartas|lata|tin|coleccion))[a-z0-9-]+-\d{4,}-\d+/p$'
+products_per_cycle = 4
+interval_seconds = 300
+channel = "coleccionables"
+
+[[monitor]]
+name = "toysrus-pokemon"
+ships_es = "sí"
+type = "jsonld"
+store = "Toys\"R\"Us"
+country = "ES"
+region = "eu"
+base_url = "https://www.toysrus.es"
+currency = "EUR"
+listing_urls = ["https://www.toysrus.es/Pokemon/c/Pokemon"]
+product_link_pattern = 're:^/[^/]+/p/K\d+[A-Z]?$'
+products_per_cycle = 4
+interval_seconds = 300
+page_adapter = "hybris"
+channel = "coleccionables"   # LEGO Pokémon, juegos y figuras; la muestra no incluía sobres/cajas TCG
+
 # ---------------------------------------------------------------- PINGS PERSONALES (filtros)
 # Cada regla re-publica en "pings" las alertas que cumplen TODO lo que indiques, mencionando un rol.
 # Campos: keywords (todas; "*" = cualquiera), exclude_keywords, brands, sizes (EU), regions (eu/uk/us/au),

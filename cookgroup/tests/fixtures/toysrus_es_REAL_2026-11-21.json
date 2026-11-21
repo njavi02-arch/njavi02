@@ -1,0 +1,33 @@
+{
+ "_source": "CAPTURA REAL 21-nov-2026 ~20:30 sin cookies: 12 fichas de https://www.toysrus.es/Pokemon/c/Pokemon (todas inStock; aquí 4). Campos: <h1>, meta itemprop price/priceCurrency, input#stockLevelStatus. Nombres de los LEGO completados del enlace (salida truncada a 40).",
+ "products": [
+  {
+   "pid": "K1104491",
+   "url": "/LEGO-Pokémon---Eevee---72151/p/K1104491",
+   "name": "LEGO Pokémon - Eevee - 72151",
+   "price": 59.99,
+   "stock": "inStock"
+  },
+  {
+   "pid": "K1104515",
+   "url": "/LEGO-Pokémon---Pikachu-y-Poké-Ball---72152/p/K1104515",
+   "name": "LEGO Pokémon - Pikachu y Poké Ball - 72152",
+   "price": 199.99,
+   "stock": "inStock"
+  },
+  {
+   "pid": "K1107464",
+   "url": "/LEGO-Pokémon---Arcanine---72160/p/K1107464",
+   "name": "LEGO Pokémon - Arcanine - 72160",
+   "price": 99.99,
+   "stock": "inStock"
+  },
+  {
+   "pid": "K1102907",
+   "url": "/¿Quién-es-Quién?-Pokémon/p/K1102907",
+   "name": "¿Quién es Quién? Pokémon",
+   "price": 21.99,
+   "stock": "inStock"
+  }
+ ]
+}

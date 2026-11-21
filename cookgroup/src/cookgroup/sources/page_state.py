@@ -198,4 +198,25 @@ def parse_asos_state(html: str, *, url: str, store: str, default_currency: str =
                    url=url, currency=currency, variants=tuple(variants))
 
 
-ADAPTERS = {"footlocker": parse_footlocker_state, "asics": parse_asics_state, "asos": parse_asos_state}
+def parse_hybris_page(html: str, *, url: str, store: str, default_currency: str = "EUR") -> Product | None:
+    """Toys"R"Us ES (SAP Hybris), verificado el 21-nov-2026 en 12 fichas de /Pokemon/c/Pokemon: sin JSON-LD; precio en
+    <meta itemprop="price"> y estado en <input id="stockLevelStatus" value="inStock|lowStock|outOfStock">.
+    LIMITACIÓN: en la muestra todas estaban «inStock»; «outOfStock»/«lowStock» son los valores estándar de Hybris y se
+    tratan así, pero no se ha visto una ficha agotada real. Cualquier otro valor = «desconocido»."""
+    st = re.search(r'id="stockLevelStatus"[^>]*value="([^"]*)"', html)
+    pr = re.search(r'itemprop="price"\s+content="([^"]+)"', html)
+    if not st or not pr:
+        return None
+    cur = re.search(r'itemprop="priceCurrency"\s+content="([^"]+)"', html)
+    h1 = re.search(r"<h1[^>]*>(.*?)</h1>", html, re.S)
+    name = re.sub(r"<[^>]+>", "", h1.group(1)).strip() if h1 else url
+    val = st.group(1).strip()
+    scope = "online" if val in ("inStock", "lowStock") else "agotada" if val == "outOfStock" else "desconocido"
+    pid = url.rstrip("/").rsplit("/", 1)[-1]
+    v = Variant(pid, "Única", _cents(pr.group(1)) or 0, scope == "online", pid, known=scope != "desconocido", stock_scope=scope)
+    return Product(store=store, product_id=pid, title=name, url=url, currency=(cur.group(1) if cur else default_currency),
+                   variants=(v,))
+
+
+ADAPTERS = {"footlocker": parse_footlocker_state, "asics": parse_asics_state, "asos": parse_asos_state,
+            "hybris": parse_hybris_page}
