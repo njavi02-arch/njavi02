@@ -63,7 +63,7 @@ def test_install_is_idempotent_and_keeps_existing(tmp_path):
     before = len(fake.calls)
     r2 = apply(d, DiscordAPI("t", "1", fake), env, log=lambda *_: None)
     assert r2["plan"].empty and len(fake.calls) == before          # segunda vez: nada que crear
-    assert r1["cards_pinned"] == 170 and r2["cards_pinned"] == 0    # tarjeta fijada una sola vez por tienda del lote
+    assert r1["cards_pinned"] == _lote_cards() and r2["cards_pinned"] == 0    # tarjeta fijada una sola vez por tienda del lote
     assert (tmp_path / "data/canales_ids.json").exists()
     assert not any(c[0] != "POST" for c in fake.calls)             # nunca borra ni edita
     names = [c["name"] for c in fake.chans]
@@ -74,3 +74,11 @@ def test_plan_counts():
     d = load_design(ROOT / "config/servidor.toml")
     p = make_plan(d, [], [], set())
     assert len(p.roles) == 4 + 10 + 14 + 5 + 29 and len(p.categories) == 18
+
+
+def _lote_cards():
+    """Una tarjeta fijada por tienda de los lotes (config/lote*_tiendas.toml): crece al integrar tiendas."""
+    import pathlib
+    import tomllib
+    cfg = pathlib.Path(__file__).parents[1] / "config"
+    return sum(len(tomllib.loads(f.read_text(encoding="utf-8")).get("tienda", [])) for f in cfg.glob("lote*_tiendas.toml"))

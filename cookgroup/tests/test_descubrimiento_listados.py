@@ -50,3 +50,16 @@ def test_js_challenge_is_reported_not_read_as_empty_listing():
                        product_link_pattern="/es/pd/", session=S())
     with pytest.raises(SourceError, match="anti-bot"):
         src.fetch()
+
+
+def test_game_pokemon_listing_keeps_only_tcg():
+    m = MON["game-es"]
+    real = ["/sobre-de-cartas-pokemon-m2-mega-inferno-x-booster-japones/252158",          # paths reales de game.es/pokemon
+            "/sobre-de-refuerzo-pokemon-tcg-sv9-juntos-de-aventuras-castellano/241279",
+            "/figura-pokemon-con-vitrina-surtido/229114", "/pop-premium-pokemon-pikachu/244735",
+            "/pokemon-escarlata-nintendo-switch/200227", "/lampara-led-pokemon-pikachu-durmiendo-de-25-cm/158902",
+            "/asus-vivobook-16-amd-ryzen-5-15016gb512gb-16oled-wifi-6e-bt-54-w11-home-plata-portatil/268054"]
+    html = "".join(f'<a href="{p}">x</a>' for p in real)
+    got = extract_links(html, base_url=m.base_url, pattern=m.product_link_pattern)
+    assert got == [m.base_url + p for p in real[:2]]
+    assert len(m.watch_urls) == 3

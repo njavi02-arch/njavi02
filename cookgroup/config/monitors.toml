@@ -742,6 +742,28 @@ products_per_cycle = 4
 interval_seconds = 300
 channel = "sneakers"        # raffles de SVD: solo en su app (sin fuente web pública)
 
+# v1.6 · lote 3: GAME (Pokémon TCG). Fichas reales comprobadas el 21-nov (las tres AGOTADAS) + descubrimiento en /pokemon.
+# Para vigilar otra ficha de GAME: añade su URL a watch_urls (una por línea) y reinicia el bot. Ver docs/v12/GAME_SEGUIMIENTO.md
+[[monitor]]
+name = "game-es"
+ships_es = "sí"
+type = "jsonld"
+store = "GAME"
+country = "ES"
+region = "eu"
+base_url = "https://www.game.es"
+currency = "EUR"
+listing_urls = ["https://www.game.es/pokemon"]
+product_link_pattern = 're:^/(?=[a-z0-9-]*pokemon)(?=[a-z0-9-]*(sobre|caja|tin|booster|blister|elite|entrenador|cartas|tcg|jcc|coleccion))[a-z0-9-]+/\d{5,6}$'
+watch_urls = [
+  "https://www.game.es/sobre-de-cartas-pokemon-m2-mega-inferno-x-booster-japones/252158",
+  "https://www.game.es/sobre-de-cartas-pokemon-scarlet-violet-expansion-pack-stellar-miracle-booster-japones/251944",
+  "https://www.game.es/sobre-de-refuerzo-pokemon-tcg-sv9-juntos-de-aventuras-castellano/241279",
+]
+products_per_cycle = 4
+interval_seconds = 300
+channel = "game"
+
 # ---------------------------------------------------------------- PINGS PERSONALES (filtros)
 # Cada regla re-publica en "pings" las alertas que cumplen TODO lo que indiques, mencionando un rol.
 # Campos: keywords (todas; "*" = cualquiera), exclude_keywords, brands, sizes (EU), regions (eu/uk/us/au),

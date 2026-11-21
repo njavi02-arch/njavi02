@@ -229,3 +229,20 @@ tallas = "sí (JSON-LD por talla)"
 prueba_restock = "test_tiendas_fase2[www.sivasdescalzo.com] · captura real 21-nov"
 prueba_rebaja = "test_tiendas_fase2[www.sivasdescalzo.com] · captura real 21-nov"
 lote = 7
+
+[[tienda]]
+nombre = "GAME"
+canal = "game"
+pais = "ES"
+web = "https://www.game.es/pokemon"
+envio_es = "sí (tienda española)"
+raffle_es = "—"
+monitores = ["game-es"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+tallas = "no aplica"
+prueba_restock = "test_tiendas_fase2[www.game.es] · 3 capturas reales 21-nov (agotadas)"
+prueba_rebaja = "test_tiendas_fase2[www.game.es] · captura real 21-nov"
+lote = 7

@@ -2480,14 +2480,15 @@ palabras = []
 [[categoria.canal]]
 nombre = "game"
 clase = "tienda"
-pais = ""
+pais = "ES"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_game"
 estado = "pendiente"
 equivalente_de = "game"
 falta = "GAME España: probar JSON-LD → sin fuente aún"
-monitores = []
+senales = "RESTOCK, REBAJA"
+monitores = ["game-es"]
 palabras = []
 [[categoria.canal]]
 nombre = "game-instore"
