@@ -386,6 +386,10 @@ def run_launch_cycle(cfg, defaults: dict, source, store, senders: dict[str, Call
                 sent += len([d for d in done if d != "registrado"])
         if base:
             raffle_board.mark_baselined(cfg.store, now_ts)
+            try:
+                raffle_board.refresh_lists(now_ts)         # v1.6: la lista fijada ya muestra lo abierto antes del arranque
+            except Exception as e:                         # noqa: BLE001 — la lista se reintenta en el siguiente evento
+                log.warning("no se pudo actualizar la lista fijada de raffles: %s", type(e).__name__)
         try:
             sent += len(raffle_board.tick(now_ts))
         except DeliveryPending as e:

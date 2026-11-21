@@ -2,6 +2,7 @@
 
 **¿Dónde miro?**
 - 🎟️ **Raffles**: #raffles (todas las tiendas) · #raffles-bstn · #raffles-cierran-hoy (cierres de hoy, hora de Madrid)
+  - **¿Acabas de entrar?** El mensaje fijado «🎟️ Raffles abiertos» de #raffles lista TODOS los que siguen abiertos (también los publicados antes de que llegaras), con cierre en hora de Madrid, «España: sí / España sin confirmar» y enlace de inscripción. Se edita solo; si no hay ninguno, lo dice.
 - 🏪 **Una tienda concreta**: categoría TIENDAS. Cada canal se llama como su tienda (#bstn, #footdistrict, #zalando-es…) y tiene fijada una tarjeta con país, web, envío a España y qué avisa
 - 🏷️ **Cada aviso lleva su etiqueta**: RAFFLE · LANZAMIENTO · RESTOCK · REBAJA
 - 📅 **Lanzamientos**: #próximos-7-días y un hilo por modelo en #lanzamientos

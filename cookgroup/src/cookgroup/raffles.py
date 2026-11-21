@@ -125,10 +125,20 @@ class RaffleBoard:
 
     def list_payload(self, now: int) -> dict:
         rs = self.open_list(now)
-        lines = [f"• **{r.store}** — {r.product} · cierra {mad(r.closes_ts)} · " + (f"[inscribirse]({r.link})" if r.link else "según la tienda")
-                 for r in rs] or ["No hay raffles abiertos ahora mismo."]
-        return {"embeds": [{"title": f"🎟️ Raffles abiertos ({len(rs)})", "description": "\n".join(lines)[:4000], "color": 0xEB459E,
-                            "footer": {"text": f"Actualizado {mad(now)}"}}], "allowed_mentions": {"parse": []}}
+        es = {True: "España: sí", False: "España: no", None: "España sin confirmar"}
+        lines = [f"• **{r.store}** — {r.product} · cierra {mad(r.closes_ts)} · {es[r.eligible_es]} · "
+                 + (f"[inscribirse]({r.link})" if r.link else "según la tienda") for r in rs] or [
+            "No hay raffles abiertos ahora mismo.",
+            "Cuando abra uno, aparecerá aquí y en #raffles con su enlace y la hora de cierre (hora de Madrid).",
+            "Para que te avisen: #elige-tus-avisos."]
+        return {"embeds": [{"title": f"🎟️ Raffles abiertos ({len(rs)}) — hora de Madrid", "description": "\n".join(lines)[:4000],
+                            "color": 0xEB459E, "footer": {"text": f"Actualizado {mad(now)} · se edita sola, sin repetir avisos"}}],
+                "allowed_mentions": {"parse": []}}
+
+    def refresh_lists(self, now: int) -> None:
+        """v1.6: rehace las listas fijadas (abiertos / cierran hoy). Se llama tras la línea base del primer arranque,
+        para que un miembro nuevo vea los raffles que ya estaban abiertos sin que se envíe el histórico como avisos."""
+        self._lists(now)
 
     def ingest(self, r: Raffle, now: int, *, baseline: bool = False) -> list[str]:
         """baseline=True: primer arranque, se guarda sin avisar (no se inunda el canal con el catálogo existente)."""
