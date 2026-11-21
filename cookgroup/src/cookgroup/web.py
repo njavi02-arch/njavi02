@@ -148,8 +148,22 @@ se usa una identidad de prueba.</p><form method=post action=/alta><p><input name
 
     def admin(self, pin: str) -> str:
         from .owner_panel import render_owner
+        expected = sorted(k[len("DISCORD_WEBHOOK_"):].lower() for k in self.env if k.startswith("DISCORD_WEBHOOK_")
+                          and k not in ("DISCORD_WEBHOOK_DEFAULT", "DISCORD_WEBHOOK_PRUEBAS", "DISCORD_WEBHOOK_REGISTRO") and self.env.get(k))
+        support = None
+        if hasattr(self.roles, "support_threads") and self.env.get("DISCORD_SOPORTE_CHANNEL_ID"):
+            staff = {x.strip() for x in self.env.get("DISCORD_STAFF_IDS", "").split(",") if x.strip()}
+            support = lambda: self.roles.support_threads(self.env["DISCORD_SOPORTE_CHANNEL_ID"], staff)  # noqa: E731
+        health = intervals = None
+        try:
+            health = self.b.s.health()
+            from .config import load_config
+            intervals = {m.name: m.interval_seconds for m in load_config("config/monitors.toml").monitors}
+        except Exception:   # noqa: BLE001
+            pass
         return self.page("Panel del dueño", render_owner(self.b, self.roles, now=self.now(), tasks_file=self.tasks_file,
-                                                         live=True, pin=pin))
+                                                         live=True, pin=pin, channels_expected=expected or None,
+                                                         support=support, store_health=health, intervals=intervals))
 
 
 def make_handler(app: App, pin: str):
@@ -246,7 +260,25 @@ def serve(app: App, pin: str, port: int = 8765) -> ThreadingHTTPServer:
 
 def auto_reconcile_once(app: App) -> list[dict]:
     """Pasada automática: concede accesos pendientes y retira los vencidos (la lanza `cookgroup web` cada 5 min)."""
-    return app.b.reconcile(app.roles, now=app.now(), actor="sistema (pasada automática)")
+    out = app.b.reconcile(app.roles, now=app.now(), actor="sistema (pasada automática)")
+    update_counter(app)
+    return out
+
+
+def update_counter(app: App) -> int | None:
+    """Contador de miembros de pago en el canal de voz «Miembros» (como mucho una vez por hora)."""
+    cid = app.env.get("DISCORD_CONTADOR_CHANNEL_ID")
+    if not cid or not hasattr(app.roles, "rename_counter"):
+        return None
+    if time.time() - getattr(app, "_counter_at", 0) < 3600:
+        return None
+    n = app.b.paying_members(app.now())
+    try:
+        app.roles.rename_counter(cid, n)
+        app._counter_at = time.time()
+    except Exception:   # noqa: BLE001
+        return None
+    return n
 
 
 def start_auto_reconcile(app: App, every: int = 300):

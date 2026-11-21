@@ -105,12 +105,12 @@ class Store:
 
     @_locked
     def outbox_done(self, key: str, message_id: str | None) -> None:
-        row = self.db.execute("SELECT event_type, store, product_key FROM outbox WHERE dedupe_key=?", (key,)).fetchone()
+        row = self.db.execute("SELECT event_type, store, product_key, channel FROM outbox WHERE dedupe_key=?", (key,)).fetchone()
         if not row:
             return
         with self.db:
-            self.db.execute("INSERT OR REPLACE INTO alerts(dedupe_key, event_type, store, product_key, sent_at, message_id) "
-                            "VALUES (?,?,?,?,?,?)", (key, row[0], row[1], row[2], now_iso(), message_id))
+            self.db.execute("INSERT OR REPLACE INTO alerts(dedupe_key, event_type, store, product_key, sent_at, message_id, channel) "
+                            "VALUES (?,?,?,?,?,?,?)", (key, row[0], row[1], row[2], now_iso(), message_id, row[3]))
             self.db.execute("DELETE FROM outbox WHERE dedupe_key=?", (key,))
 
     @_locked
@@ -151,6 +151,12 @@ class Store:
         return cur.rowcount == 1
 
     @_locked
+    def channel_activity(self) -> list[tuple]:
+        """(canal, último aviso entregado, nº de avisos en 7 días) por canal."""
+        return self.db.execute("SELECT channel, MAX(sent_at), SUM(sent_at >= datetime('now','-7 days')) FROM alerts "
+                               "WHERE channel IS NOT NULL AND message_id IS NOT NULL GROUP BY channel ORDER BY 2 DESC").fetchall()
+
+    @_locked
     def alert_message_id(self, dedupe_key: str) -> str | None:
         r = self.db.execute("SELECT message_id FROM alerts WHERE dedupe_key=?", (dedupe_key,)).fetchone()
         return r[0] if r and r[0] not in (None, "", "None") else None
@@ -162,8 +168,8 @@ class Store:
     @_locked
     def record_alert(self, dedupe_key: str, event_type: str, store: str, product_key: str, message_id: str | None) -> None:
         with self.db:
-            self.db.execute("INSERT OR REPLACE INTO alerts VALUES (?,?,?,?,?,?)",
-                            (dedupe_key, event_type, store, product_key, now_iso(), message_id))
+            self.db.execute("INSERT OR REPLACE INTO alerts(dedupe_key, event_type, store, product_key, sent_at, message_id) "
+                            "VALUES (?,?,?,?,?,?)", (dedupe_key, event_type, store, product_key, now_iso(), message_id))
 
     # ------------------------------------------------------------ lanzamientos
     @_locked

@@ -184,6 +184,9 @@ class Billing:
                 out.append({"discord_id": did, "accion": "pendiente", "estado": "pendiente", "motivo": str(e)})
         return out
 
+    def paying_members(self, now: float | None = None) -> int:
+        return sum(1 for (d,) in self._q("SELECT discord_id FROM members") if self.entitled(d, now)[0])
+
     # --- cifras para el panel
     def summary(self, now: float | None = None, period_days: int = 30) -> dict:
         now = now or time.time()
@@ -277,6 +280,23 @@ class DiscordRoles:
         if r.status_code == 404:
             return False
         return self.r in self._ok(r).json().get("roles", [])
+
+    def support_threads(self, soporte_channel_id: str, staff_ids: set[str]) -> list[dict]:
+        """Tickets = hilos privados activos de #soporte. «Necesita respuesta» si el último mensaje no es del equipo."""
+        th = self._ok(self.http.get(f"{self.API}/guilds/{self.g}/threads/active", headers=self.h)).json().get("threads", [])
+        out = []
+        for t in th:
+            if str(t.get("parent_id")) != str(soporte_channel_id):
+                continue
+            last = self._ok(self.http.get(f"{self.API}/channels/{t['id']}/messages", headers=self.h, params={"limit": 1})).json()
+            author = str(last[0]["author"]["id"]) if last else str(t.get("owner_id"))
+            out.append({"id": t["id"], "name": t.get("name", ""), "owner": str(t.get("owner_id")), "last_at": last[0]["timestamp"] if last else None,
+                        "needs_reply": author not in staff_ids})
+        return out
+
+    def rename_counter(self, channel_id: str, n: int):
+        """Canal de voz contador: «Miembros: N» (Discord limita los renombres a 2 cada 10 min: se llama cada hora)."""
+        self._ok(self.http.patch(f"{self.API}/channels/{channel_id}", headers=self.h, json={"name": f"Miembros: {n}"}))
 
     def welcome(self, uid):
         ch = self._ok(self.http.post(f"{self.API}/users/@me/channels", headers=self.h, json={"recipient_id": uid})).json()

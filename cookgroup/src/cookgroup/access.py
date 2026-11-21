@@ -11,15 +11,16 @@ from dataclasses import dataclass, field
 VIEW, SEND, MANAGE_MESSAGES, MANAGE_THREADS = 1 << 10, 1 << 11, 1 << 13, 1 << 34
 CREATE_PUBLIC_THREADS, CREATE_PRIVATE_THREADS, SEND_IN_THREADS = 1 << 35, 1 << 36, 1 << 38
 READ_HISTORY, ADD_REACTIONS, MODERATE_MEMBERS, ADMIN, MANAGE_ROLES = 1 << 16, 1 << 6, 1 << 40, 1 << 3, 1 << 28
+CONNECT, SPEAK, MUTE_MEMBERS, MOVE_MEMBERS = 1 << 20, 1 << 21, 1 << 22, 1 << 24
 EVERYONE = "@everyone"
 SUB, MOD, STAFF, OWNER = "Suscriptor activo", "Moderador", "Staff", "Propietario"
 
 # Permisos de servidor por rol (lo que el instalador pone en cada rol)
 GUILD_PERMS = {
-    EVERYONE: VIEW | READ_HISTORY | ADD_REACTIONS,    # el visitante ve lo público; los canales de pago lo deniegan
+    EVERYONE: VIEW | READ_HISTORY | ADD_REACTIONS | CONNECT | SPEAK,   # base de Discord; los canales lo restringen
     SUB: 0,                                           # el acceso lo dan las sobrescrituras de cada canal
-    MOD: MANAGE_MESSAGES | MANAGE_THREADS | MODERATE_MEMBERS,
-    STAFF: MANAGE_MESSAGES | MANAGE_THREADS | MODERATE_MEMBERS,
+    MOD: MANAGE_MESSAGES | MANAGE_THREADS | MODERATE_MEMBERS | MUTE_MEMBERS | MOVE_MEMBERS,
+    STAFF: MANAGE_MESSAGES | MANAGE_THREADS | MODERATE_MEMBERS | MUTE_MEMBERS | MOVE_MEMBERS,
     OWNER: ADMIN,                                     # además, tu cuenta es la dueña del servidor
 }
 TEAM = (OWNER, STAFF, MOD)
@@ -30,6 +31,15 @@ def channel_overwrites(audiencia: str, acceso: str) -> dict[str, tuple[int, int]
     ow: dict[str, tuple[int, int]] = {}
     no_write = SEND | SEND_IN_THREADS | CREATE_PUBLIC_THREADS | CREATE_PRIVATE_THREADS
     team = (VIEW | SEND | SEND_IN_THREADS, 0)
+    if acceso == "contador":           # canal de voz que solo muestra «Miembros: N»: se ve, nadie entra
+        ow[EVERYONE] = (VIEW, CONNECT | SPEAK)
+        return ow
+    if acceso == "voz":                # voz: suscriptores entran y hablan; visitantes ni lo ven
+        ow[EVERYONE] = (0, VIEW | CONNECT | SPEAK)
+        ow[SUB] = (VIEW | CONNECT | SPEAK, 0)
+        for r in TEAM:
+            ow[r] = (VIEW | CONNECT | SPEAK | MUTE_MEMBERS | MOVE_MEMBERS, 0)
+        return ow
     if acceso == "tickets":            # todos ven el canal y solo pueden abrir hilos PRIVADOS
         ow[EVERYONE] = (VIEW | CREATE_PRIVATE_THREADS | SEND_IN_THREADS, SEND | CREATE_PUBLIC_THREADS)
     elif audiencia == "todos":
@@ -97,6 +107,8 @@ def matrix(design: dict) -> list[dict]:
                 p = effective(idn.roles, ow)
                 if not can(p, VIEW):
                     row[idn.name] = "—"
+                elif ch["tipo"] == "voz":
+                    row[idn.name] = ("ve, entra y habla" + (" · puede silenciar" if can(p, MUTE_MEMBERS) else "")) if can(p, CONNECT) and can(p, SPEAK) else "solo lo ve"
                 elif can(p, SEND):
                     row[idn.name] = "ve y escribe"
                 elif can(p, CREATE_PRIVATE_THREADS):

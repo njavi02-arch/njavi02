@@ -1,0 +1,213 @@
+# Recorrido de los 209 canales que en v0.9 solo constaban como «vistos en la barra lateral».
+# 20-nov-2026 13:40–13:58 (Madrid), solo lectura, últimos mensajes cargados por canal.
+# Campos: id|canal|mensajes cargados|fecha del último|mensajes de bot|embeds|nombres de campo de los embeds|tema del canal|V=voz
+# No se guarda contenido de miembros ni nombres de usuario: solo la ESTRUCTURA de lo que publica cada canal.
+942162697091416136|The Zesty Chefs: 490|0||0|0|||V
+1161967427479928913|THE ZESTY CHEFS ~ SPANISH COOKGROUP: 5.0|0||0|0|||V
+956267291237052496|Total de miembros: 326|0||0|0|||V
+1073329370879492246|1⃣-bienvenido|1|2025-01-15|1|1|||
+1569773321539813376|📲posts-redes|10|2026-11-19|4|8|||
+1329120929674170368|✅checklist|2|2025-10-15|1|1|||
+1524044399598764093|📲zestyapp|3|2026-10-21|1|1|||
+1158843286547595335|🎥vídeo-guías|1|2025-03-11|1|1|||
+930464644617887825|📚guías|1|2024-04-21|1|1|||
+1194330635892961300|📳notificaciones|2|2024-01-09|1|1|||
+1244627017383546921|⚙comandos|2|2025-06-12|2|2|||
+1327693759806312609|💰recompensas|1|2025-01-11|1|1|||
+1327693898151104653|📃transparencia|30|2026-11-05|0|0|||
+1327694057207500900|📋reglas|1|2025-01-17|1|1|||
+1327694309201285221|📑registro-faltas|30|2026-10-01|11|12|||
+1106857910132289556|📯anuncios-extensión|10|2025-03-03|1|1|||
+1104324153596710982|📚guías-extensión|1|2025-03-03|0|1|||
+1103441884577271808|🤖zesty-extension-updates|10|2026-11-05|4|4|||
+1103442772708573235|🤖extensión-success|10|2026-11-17|4|9|Usuario/Tienda/Producto/Link de Producto||
+1105177335768023122|💭extensión-chat|10|2026-11-11|0|0|||
+1133469411848769696|🔊-pings|10|2026-11-20|7|10|Ping de/Canal/Mensaje/Rol||
+838000104899477554|🔴anuncios|10|2026-10-21|2|2|Candidatos - Mejor Helper/Candidatos - Mejor Pinger/Cierre||
+1329131995061555251|🔔importante|10|2026-11-05|0|1|||
+942188715382562876|🔛updates|10|2026-11-12|0|0|||
+958482010396041278|📈weekly-drops|10|2026-11-15|10|11|||
+1315378074191269910|📈monthly-drops|10|2026-06-01|10|11|||
+927545721840893992|🔌links|10|2026-11-18|1|5|Reason/Price/Region Links/Useful Links|no es un chat: compartir enlace e info|
+1328283642677428224|✅brick-links-autorizados|10|2026-09-17|1|7|Release Date/Price/Color/Region/Plus Only/Sizes/PIDs||
+958673691741413416|🧱brick-links|10|2026-11-13|0|5||no es un chat: compartir enlace e info|
+1291100313423712379|⚠risky-calls|10|2025-10-02|0|1|||
+940306948941840394|🏪instore-info|10|2026-11-19|0|1||no es un chat: compartir info instore|
+838000202299605034|🤑success|10|2026-11-20|0|0||no es un chat: compartir successes y reaccionar|
+1324801036002791604|💰success-otros|10|2026-11-20|0|0|||
+1094716728224788590|💸success-ventas|10|2026-11-19|5|5||no es un chat: compartir successes|
+930911639128121355|❓sugerencias|10|2026-11-15|7|6|Suggestion||
+1531937047651160074|📲sugerencias-app|10|2026-11-05|3|3|Suggestion||
+1096172172726259743|📢-sugerencias-pings|10|2026-11-08|0|1|||
+890284073614970890|🎉giveaways|10|2026-11-18|6|2|||
+935896977986711602|🤝groupbuys|10|2026-10-09|5|6|Supported sites/New sites/Features/Special Offer/Media||
+958648447177752586|🔜leaks|10|2026-11-19|0|0||no es un chat: compartir foto o enlace|
+838023336759656478|📩tickets|1|2025-06-05|1|1|||
+1153375125794721873|✅❌cop-or-drop|10|2026-11-19|6|10|||
+1395304663699554374|🟢nikecraft-mars-yard-shoe-30-tom-sachs|10|2025-09-27|1|3|Release Date/Price/Size/Pid/Stock/Useful Links||
+1052152906993901639|📊nike-stock-daily|10|2025-10-04|4|10||Stock lanzamientos diarios|
+1176966547047202877|📊nike-stock-cargado|10|2026-01-02|10|10|Price/Color/Region/Site/Sizes/Stock/Useful Links|Stock Nike/Snkrs cargado para futuros lanzamientos|
+1195482932391972965|nike-instore-holanda|10|2026-11-20|8|10|Style code/Store/Stock/Region/Type/Size - Stock - Last change||
+1195483671591931985|nike-instore-polonia|10|2026-11-20|7|10|Style code/Store/Stock/Region/Type/Size - Stock - Last change||
+1195485338777436201|nike-instore-austria|10|2026-11-20|8|10|Style code/Store/Stock/Region/Type/Size - Stock - Last change||
+1199087939058147358|nike-instore-bélgica|11|2026-11-20|1|11|Status/Style code/Exclusive/Max quantity/Promo excluded||
+1217507687558942882|nike-instore-irlanda|10|2026-11-18|6|10|Style code/Store/Stock/Region/Type/Size - Stock - Last change||
+1319952298792980543|nike-instore-dinamarca|10|2026-11-19|8|10|Style code/Store/Stock/Region/Type/Size - Stock - Last change||
+1327215587000188949|nike-instore-portugal|10|2026-11-20|7|10|SKU/Tienda/Región/Tipo/Talla – Nivel – Última modificación||
+1518655716901126325|amazon-hasta-30|10|2026-11-05|4|10|Precio actual/Precio anterior/Descuento/Vendedor/Marca|HASTA 30% DE DESCUENTO|
+1518655953501950143|amazon-31-50|10|2026-11-05|7|10|Precio actual/Precio anterior/Descuento/Vendedor|DE 31% A 50% DE DESCUENTO|
+1518656101560619118|amazon-51-70|10|2026-11-05|10|10|Precio actual/Precio anterior/Descuento/Vendedor/Marca|DE 51% A 70% DE DESCUENTO|
+1518656259778416800|amazon-más-70|10|2026-11-05|9|10|Precio actual/Precio anterior/Descuento/Vendedor/Marca|MÁS DEL 70% DE DESCUENTO|
+1251229303278932019|adonis-nike|10|2026-06-23|5|10|Store/Mode/Payment Method/Price/Size/Checkout Time||
+1346810692992503849|alpine-monitor|10|2026-11-20|2|10|Site/Product/Size/Variant/Price/Quantity/Mode||
+1391475620722245754|antares-monitor|10|2026-05-14|3|10|Site/Price/Payment Method/Quicktask/Quantity||
+1204874974297464892|caspian-monitor|10|2026-11-20|1|10|Store/Mode/Product Name/Price/Speed/Quantity/QuickTask Url||
+1202008624470433832|cyber-monitor|10|2026-11-20|10|10|Store/Size/Query/Mode/Restock Monitoring/Payment/Trigger||
+1295077171978567723|dislord-monitor|10|2026-09-23|6|10|Site/Mode/Product/Size/Price/Url||
+1204875240631439370|nsb-monitor|10|2026-11-20|4|10|Product/Site/Region/Mode/Input/Price/Checkout||
+1202009259727130645|pan-aio-monitor|10|2026-11-20|3|10|Store/Product/Method/Price/Mode/Quantity/Quicktask||
+1295076079655981136|restocks-aio-monitor|10|2026-11-20|9|10|Site/Sell Time||
+1346810942419111956|tsb-monitor|10|2026-11-20|1|10|Style Color/Size/Region/Mode||
+960434444957806612|🤟🏽chat-general|10|2026-11-20|0|0|||
+1093487626750804068|💬chat-invest|30|2026-11-20|0|0|||
+1153015024718200852|🗨chat-ayuda|10|2026-11-19|0|0|||
+950873272134815784|💬off-topic|10|2026-11-20|0|0|||
+993438247969620008|🤖chat-bots|30|2026-11-11|0|0|||
+942134502900240445|📈hold-or-sell-o-cop-or-drop|10|2026-11-17|8|9|Product|comando /cop-hold|
+938886992249364590|➗discount-codes|30|2026-11-19|0|0|||
+938762191815995423|📸wdywt-wdyht-food|10|2026-11-18|0|0||compartir outfits, música, comida|
+1153374256097398895|📳comparte-tus-redes|10|2026-11-05|0|4|||
+1029822079392038922|🏦scrapers|10|2026-11-11|10|9|Store/Product/Price/Color/Sizes/Stock/Last updated||
+942152678094540902|🚮spam|10|2026-11-20|9|3|Información/Consejos||
+948316452191084544|🔈chat-de-voz|10|2026-11-19|0|0|||
+933111687970713663|🔊charlando|0||0|0|||V
+1225509606214598666|📚primeros-pasos-outlet|1|2026-05-27|1|2|||
+1225476823782260799|🔊avisos-outlets|10|2026-11-10|0|0|||
+1225477813692403722|✌calls-outlets|30|2026-11-15|0|0||no es un chat: compartir info|
+1283147789739622481|🏪tiendas-outlets|4|2026-05-29|2|4|||
+1391891311090470962|💵tendencias-compraventa|10|2025-09-04|5|10|||
+1391889033138798763|💵adidas-rangos-compraventa|10|2025-07-09|2|10|||
+1338457616459890744|💵asics-rangos-compraventa|9|2025-07-16|3|9|||
+1391890425647730739|💵converse-rangos-compraventa|8|2025-07-09|2|8|||
+1391888502626717756|💵jordan-rangos-compraventa|10|2025-09-04|3|10|||
+1391889654436986900|💵new-balance-rangos-compraventa|10|2025-07-15|3|10|||
+1225476548388323469|💵nike-rangos-compraventa|10|2025-11-03|4|10|||
+1391891041140998317|💵puma-rangos-compraventa|6|2025-07-07|2|6|||
+1391889969668296794|💵salomon-rangos-compraventa|3|2025-07-09|1|3|||
+1391890724567519252|💵vans-rangos-compraventa|6|2025-07-09|2|6|||
+1391889349305696430|💵yeezy-rangos-compraventa|9|2025-07-09|3|9|||
+1342549818459029666|📊outlet-scraper|10|2026-11-19|10|10|Store/Price/Color/Sizes/Stock/Last updated/Useful Links||
+1342550700168581191|✅👕random-cop-or-drop|10|2026-11-18|0|0||solo fotos y reacciones|
+1225475664682025032|✅❌cop-or-drop-outlet|10|2026-11-20|5|5||solo fotos y reacciones|
+1252211864176300112|🗯chat-outlet|10|2026-11-19|0|0|||
+1430946415676489759|🔊pings-pokemon|10|2026-11-20|10|10|Ping de/Canal/Rol/Mensaje||
+1567936129531904113|📢importante-pokémon|26|2026-11-17|1|1|||
+1422635963083128923|🔜leaks-pokemon|10|2026-11-19|0|1|||
+1422636325256958165|🏪instore-pokemon|10|2026-11-19|1|0|||
+1422636581692375161|🔌links-pokemon|10|2026-11-20|0|3|||
+1441379040106909748|🤑poke-steals|10|2026-10-01|0|1|||
+1422637552829206529|📈invest-pokemon|10|2026-09-16|0|0|||
+1422659753624080455|💣poke-flex|10|2026-11-19|0|0|||
+1442444171616063498|🤝wtb-kai-collect|10|2026-10-26|0|0|||
+1431319447402053662|📦wtb-wts-pokemon|10|2026-11-19|0|0|||
+1415058733192450170|pokemon-custom-aio|10|2026-11-20|2|10|Precio/Estado/Stock/Categoría/Links/SKU/EAN||
+1332456240537665697|pokemon-aio|10|2026-11-20|2|10|Price/Region/Type/Links/ATC-QT-Size||
+1438829271043801148|pokemon-aio-uk|10|2026-11-20|5|10|Price/ATC-QT-Size/Links/Product link||
+1415592609287639091|pokemon-custom-shopify|10|2026-11-20|4|12|Añadir al carrito/Quicktasks/Tallas disponibles||
+1347496315558301758|pokemon-amazon|10|2026-11-20|7|10|Price/Pays/Lien Principal/Liens ATC/Lien Alternatif||
+1332455632996929657|pokemon-prismatic|10|2026-11-20|10|10|Price/Region/Type/Links/ATC-QT-Size||
+1419948169088733205|twitter-pokemon|10|2026-11-20|5|10|||
+1432329725153382440|game|10|2026-11-19|7|9|Precio/Status/Region/Cambio/Quicktasks/Price/Type||
+1448233199183335485|game-instore|10|2026-11-20|2|10|||
+1545144871243743293|carrefour|10|2026-11-20|7|8|Tipo/Canal/Vendido por/Precio catálogo/Estado online/Recogida||
+1557061706566471750|carrefour-instore|10|2026-11-20|8|9|Tipo/Canal/Vendido por/Precio catálogo/Disponibilidad/SKU/EAN||
+1564645894781935686|drim|10|2026-11-20|6|10|Tipo de notificación/Precio/Categoría/SKU/Tiendas||
+1565125603504422942|toysrus|10|2026-11-18|5|10|Precio/Estado/SKU/Juego/Links/Marca/Total en tiendas||
+1555309669612785684|alcampo|10|2026-10-20|3|10|Disponibilidad/Precio||
+1569800088660746370|darizard|10|2026-11-20|8|10|||
+1454576815782760712|📯calls-componentes|10|2026-03-29|6|14|Finales 2024/Actual||
+1093487913519546429|👥member-invest|10|2026-11-10|0|3|Añadir al carrito/Quicktasks||
+1544635423840796712|🔜random-leaks|10|2026-11-13|0|0|||
+1454905244634054896|aio-componentes|10|2026-11-18|2|10|Region/Type/Links||
+1359564173486587914|aio-random|10|2026-11-20|8|13|Añadir al carrito/Quicktasks/Tallas disponibles||
+1169388350650712244|amazon-es|10|2026-11-19|9|10|Price/ASIN/Seller/ATC Links/Region/Type/OfferId||
+1422672759800205462|amazon-eu|10|2026-11-20|9|10|Price/ASIN/Seller/ATC Links/Region/Type/OfferId||
+1551985948856811620|amazon-custom|10|2026-09-26|2|20|Precio/Descuento/Estado/Vendedor/Valoraciones/ASIN||
+1454905502373773452|amazon-ram|10|2026-11-05|8|10|ASIN/Seller/ATC Links/Region/Type/OfferId/Links||
+1377177178717949972|aliexpress-labubu|10|2025-12-04|7|10|Price/Stock/ATC/Regions/Sku/Region/Type||
+1456605963502092491|deals-ram|10|2026-11-20|9|10|||
+1480977317013491772|elcorteingles|10|2026-11-20|7|8|Precio/Marca/Estado/Referencia/Quicktasks/Otra tienda||
+966083422328090724|fnac|10|2026-11-17|10|7|Seller/Region/Type/Links||
+1435539778375258172|otros-tcg|10|2026-11-20|5|14|Precio/Estado/SKU/EAN/Categoría/Links/Quicktasks||
+1492195849302704128|mattel|10|2026-11-19|9|10|||
+1548241973494681671|playstation|10|2026-11-19|9|8|Precio/Tipo/PID||
+1419399486769463397|sephora|10|2026-10-28|1|10|Canal/Precio/Estado/Tienda/Dirección||
+1449828904926838805|finalmouse|4|2026-10-30|4|6|Estado/Tallas Disponibles/Añadir al Carrito/Quicktasks||
+1459256770215149741|funko|10|2026-11-20|6|10|Tipo de notificación/Precio/Categoría/SKU/Tiendas||
+1501260228576936006|milfshakes|10|2026-11-16|8|15|Precio/Estado/S/M/L/XL/Tallas disponibles||
+1501616929553645858|hym|10|2026-11-13|4|10|Precio/Color/SKU/Barcelona/Madrid/Tallas disponibles online||
+1309228612024799343|zara|10|2026-10-28|6|10|Precio/Product ID/Ref/Color/Restock/Tallas disponibles||
+1507091554324582611|zara-instore|10|2026-06-12|5|10|Precio/Product ID/Ref/Color/Ubicación/Restock||
+1529075700936609933|shop-app|10|2026-10-01|4|10|Precio/Tienda/Add to cart|avisa que pueden saltar muchas webs|
+1530113938715574382|steiff|10|2026-11-20|2|10|Stock/Precio/SKU/Product ID/Regiones||
+1533073601488617472|relojes|10|2026-09-22|4|10|Tipo/SKU/Precio/Marca/Stock||
+1548644730387169350|uniqlo|10|2026-11-20|10|10|Status/Colour/Price/tiendas de Madrid y Barcelona por nombre||
+1551980505283567746|esa-pokemon|10|2026-11-19|10|10|Añadir al carrito/Quicktasks/Tallas disponibles||
+1554174383734526032|ikea|10|2026-11-20|8|10|Tiendas||
+1011920052649467994|raffles-info|10|2026-05-17|0|2|Price/ATC-QT-Size/Links||
+1004076070888276089|raffles-stock|10|2026-03-27|10|9|Release Date/Price/Color/Region/Total Stock/Sizes/Stock||
+1049771683042562048|raffles-links|10|2026-10-05|0|6|||
+1278386583569043508|📚qué-son|2|2024-08-29|2|2|||
+1278391713018282038|💰igraal|1|2024-08-28|1|1|||
+1278399268901621820|💰lety-shops|1|2024-08-28|1|1|||
+1278618506371272766|💰soleback|1|2024-08-29|1|1|||
+1133483629964705812|💰neobancos|1|2024-11-12|1|1|||
+1263784604997910619|📊excel-inventario|2|2024-07-28|1|1|||
+1279884954381062275|🛠zesty-tools|2|2024-09-01|1|1|||
+862006803100991518|👟cuentas-nike|1|2024-10-17|1|1|||
+1460224097853374611|🛠️early-access-checker|7|2026-09-24|0|0|||
+1490444963035484221|📒guía-ebay|8|2026-04-22|0|0|||
+1517074665921708162|📚guía-vinted|10|2026-07-01|0|0|||
+1305481073966448640|monkey-invest|10|2025-12-01|0|0|||
+1305481161648377856|hold-monkey-invest|6|2025-01-09|0|0|||
+1309198403372187658|sell-monkey-invest|10|2025-06-23|4|4|||
+1313448543989661776|reviews-monkey-invest|10|2024-12-26|0|0|||
+928627432955711549|🤝2captcha|1|2022-02-12|1|1|||
+1248003957427798159|🤝boiling-proxies|1|2024-08-18|1|1|||
+1097173402701283419|🤝wolves-proxies|10|2026-11-03|10|10|Group Buy Request||
+1470370246635425879|🤝byte-proxies|10|2026-11-20|10|8|Useful Links||
+1329537332919009300|🤝bird-proxies|10|2026-11-18|10|10|ofertas de proxies||
+1383045455235256380|🤝zhub|1|2025-10-16|0|0|||
+1424703106196963368|🤝proxy-vps-partner|10|2026-11-18|10|4|||
+1431314141401845871|🤝seamless-proxies|10|2026-11-19|10|0|||
+1177709461322874900|🛍wtb-pierogi|10|2026-10-24|5|31|Name/SKU/Size/Quantity/Claim Pair/Full WTB||
+1213979860607701112|🛍select-store|10|2026-08-25|0|0|||
+1295649301908815932|🛍nextstep|10|2026-11-01|0|1|||
+1295775180353699974|🛍plug-game|10|2026-03-24|0|0|||
+1349348035427176479|🛍saturday-concept|10|2026-06-15|0|0|||
+1372874552333439026|🛍zneakerz|10|2026-03-19|0|0|||
+1410890716569141311|🛍aura-the-club|10|2026-01-05|0|0|||
+1469781737990131987|🛍kickzcaviar|0||0|0|||
+1550153577010302986|🛍brutalzapas|2|2026-09-24|0|0|||
+1379416894507061258|🛍kickzbyortiz|10|2026-11-13|0|0|||
+1471568052616171621|🛍doggysneakers|10|2026-11-18|0|0|||
+1511040456732180652|🛍jefa-sneakers|6|2026-08-08|0|0|||
+1402187943568740443|🖼️gen-wtb-wts|10|2026-11-19|10|10|Productos procesados/Imágenes generadas/Tema utilizado|guía de uso en mensaje fijado|
+927545162488479765|📥wtb-wtt|10|2026-11-20|0|0|||
+1084897995536998440|📤wts-retail|10|2026-11-17|0|0||precio obligatorio|
+942168196071432263|📤wts-wtb-clothes-accessories|10|2026-10-31|0|0|||
+1215377496128622664|📤wtb-wts-used|10|2026-11-12|0|0|||
+1375073205869613126|📥wtb-wts-random|10|2026-11-20|0|0|||
+1031139126470258739|💻wts-wtb-sl07s|10|2026-11-13|0|0|||
+1215378459623292928|👼pares-td-ps|10|2026-06-12|0|5|Price/ATC-QT-Size/Links||
+1151805940476170261|👟accesorios-sneakers|10|2026-03-30|0|7|||
+945810506348916746|⭐feedback|10|2026-11-17|0|0|||
+1410298505095807046|🟢30-08-jordan-5-retro-x-awake-ny-black|9|2025-08-30|2|2|Release Date/Price/Total Stock/Size/Pid/Stock/Useful Links||
+1398969099698049024|🟢02-08-jordan-4-retro-og-sp-undefeated|0||0|0|||
+1394618478723465227|🟢18-7-nike-kobe-6-protro-total-orange|7|2025-07-17|0|0|||
+1396883048469102819|🟠26-07-adidas-gazelle-indoor-bad-bunny-|6|2025-07-25|1|2|||
+1389651538577985736|🟢11-07-nike-air-max-95-levis|10|2025-07-10|1|1|||
+1375119625464840252|🟢snkrs-restock-27-28-05|8|2025-05-22|0|0|||
+1372647551689293844|🟢🟠jordan-3-retro-seoul-20|10|2025-05-17|1|6|Region/Total Stock/Sizes/Stock/Useful Links||
+1398980310472851456|🟠fc-barcelona-x-kobe|10|2025-08-19|4|4|||
+1372647725497323631|🔴🟠jordan-4-retro-white-cement|10|2025-05-23|1|1|Price/Color/Region/Total Stock/Sizes/Stock/Useful Links||

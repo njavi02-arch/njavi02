@@ -1,0 +1,29 @@
+{
+ "funciones_comprobadas": [
+  129,
+  339
+ ],
+ "equivalente_supera_prueba": [
+  112,
+  339
+ ],
+ "equivalente_solo_enrutado": [
+  28,
+  339
+ ],
+ "propios_probados_localmente": [
+  25,
+  99
+ ],
+ "propios_instalados": [
+  0,
+  99
+ ],
+ "propios_verificados_discord": [
+  0,
+  99
+ ],
+ "monitores_activos": 261,
+ "fuentes_unicas": 261,
+ "entregas_reales_confirmadas": 0
+}

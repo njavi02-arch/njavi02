@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 API = "https://discord.com/api/v10"
-TYPES = {"texto": 0, "categoria": 4, "anuncios": 5, "foro": 15}
+TYPES = {"texto": 0, "voz": 2, "categoria": 4, "anuncios": 5, "foro": 15}
 VIEW, SEND, SEND_THREADS, CREATE_PUB_THREADS, ADD_REACTIONS = 1 << 10, 1 << 11, 1 << 38, 1 << 35, 1 << 6
 
 
@@ -81,9 +81,13 @@ def make_plan(design: dict, existing_roles: list[dict], existing_channels: list[
         if c["type"] != 4:
             plan.kept.append(c["name"])
     for cat in design["categoria"]:
+        if all(ch.get("instalar") is False for ch in cat["canal"]):
+            continue                                      # categoría entera pendiente de tu decisión (MARKET)
         if _norm(cat["nombre"]) not in cats and cat["nombre"] not in plan.categories:
             plan.categories.append(cat["nombre"])
         for ch in cat["canal"]:
+            if ch.get("instalar") is False:
+                continue                                  # p. ej. MARKET: solo si el dueño lo aprueba
             if _norm(ch["nombre"]) not in by_name and all(_norm(ch["nombre"]) != _norm(n) for _, n, _ in plan.channels):
                 plan.channels.append((cat["nombre"], ch["nombre"], ch["tipo"]))
             k = webhook_key(ch["fuente"])
@@ -143,12 +147,14 @@ def apply(design: dict, api: DiscordAPI, env_path: Path, log=print) -> dict:
     ch_ids = {_norm(c["name"]): c["id"] for c in chans if c["type"] != 4}
     notes = []
     for cat in design["categoria"]:
+        if all(ch.get("instalar") is False for ch in cat["canal"]):
+            continue
         if _norm(cat["nombre"]) not in cat_ids:
             body = {"name": cat["nombre"], "type": 4,
                     "permission_overwrites": overwrites(cat.get("audiencia", "suscriptores"), "lectura", api.g, role_ids)}
             cat_ids[_norm(cat["nombre"])] = api.create_channel(body)["id"]
         for ch in cat["canal"]:
-            if _norm(ch["nombre"]) in ch_ids:
+            if _norm(ch["nombre"]) in ch_ids or ch.get("instalar") is False:
                 continue
             body = {"name": ch["nombre"], "type": TYPES[ch["tipo"]], "parent_id": cat_ids[_norm(cat["nombre"])],
                     "topic": ch.get("finalidad", "")[:1024],

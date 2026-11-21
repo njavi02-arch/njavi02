@@ -21,3 +21,17 @@ def test_signature_scheme():
         verify(body, h, "whsec_otro", now=1100)
     with pytest.raises(BadSignature):
         verify(body, h, "whsec_x", now=5000)          # repetición tardía
+
+
+def test_member_counter_renames_hourly(tmp_path):
+    from cookgroup.billing import Billing, load_plans
+    from cookgroup.store import Store
+    from cookgroup.web import App, update_counter
+
+    class R:
+        names = []
+        def rename_counter(self, cid, n): self.names.append((cid, n))
+    b = Billing(Store(str(tmp_path / "x.db")), load_plans())
+    app = App(b, R(), env={"SESSION_SECRET": "x", "DISCORD_CONTADOR_CHANNEL_ID": "55"})
+    assert update_counter(app) == 0 and R.names == [("55", 0)]
+    assert update_counter(app) is None                 # no más de una vez por hora

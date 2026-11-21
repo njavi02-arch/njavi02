@@ -12,7 +12,7 @@ M = {r["canal"]: r for r in matrix(D)}
 
 def test_visitor_sees_only_public():
     vis = {c for c, r in M.items() if r["visitante"] != "—"}
-    assert vis == {"bienvenida", "normas", "elige-tus-avisos", "guía-de-avisos", "anuncios", "planes", "muestra-gratis", "soporte"}
+    assert vis == {"Miembros", "bienvenida", "normas", "elige-tus-avisos", "guía-de-avisos", "anuncios", "planes", "muestra-gratis", "soporte"}
     assert M["soporte"]["visitante"] == "ve y abre ticket privado"
 
 
@@ -50,3 +50,17 @@ def test_preferences_only_personalize_for_entitled():
     assert not ex.entitled and "sin suscripción" in decide(ex, ev, channel="sneakers", family="Sneakers", ships_es="sí").reason
     assert sub.entitled and decide(sub, ev, channel="sneakers", family="Sneakers", ships_es="sí").notify
     assert is_entitled({MOD}) and not is_entitled({"Nike"})
+
+
+def test_voice_who_can_join_and_speak():
+    assert M["charla"]["visitante"] == "—" and M["charla"]["ex-suscriptor"] == "—"
+    assert M["charla"]["suscriptor"] == "ve, entra y habla"
+    assert M["charla"]["moderador"] == "ve, entra y habla · puede silenciar"
+    assert M["Miembros"]["visitante"] == "solo lo ve" and M["Miembros"]["suscriptor"] == "solo lo ve"
+
+
+def test_market_not_installed_without_owner_decision():
+    from cookgroup.server_setup import make_plan
+    plan = make_plan(D, [], [], set())
+    assert not any(n in ("vendo-compro", "legit-check", "valoraciones", "lista-negra") for _, n, _ in plan.channels)
+    assert not any("MARKET" in c for c in plan.categories)

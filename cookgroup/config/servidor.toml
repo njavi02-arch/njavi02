@@ -37,6 +37,14 @@ tallas_eu = ["35", "35,5", "36", "36,5", "37", "37,5", "38", "38,5", "39", "39,5
 nombre = "👋 EMPIEZA AQUÍ"
 audiencia = "todos"
 [[categoria.canal]]
+nombre = "Miembros"
+tipo = "voz"
+acceso = "contador"
+fuente = "bot:contador"
+estado = "construido"
+finalidad = "Muestra el número de miembros (equivale a los contadores de la referencia)"
+regla = "El bot renombra el canal cada hora («Miembros: N»); nadie entra"
+[[categoria.canal]]
 nombre = "bienvenida"
 tipo = "texto"
 acceso = "lectura"
@@ -312,6 +320,55 @@ fuente = "miembros"
 estado = "moderacion-humana"
 finalidad = "Los miembros comparten lo que consiguieron"
 regla = "Sin datos personales de pedidos; el staff revisa"
+[[categoria.canal]]
+nombre = "charla"
+tipo = "voz"
+acceso = "voz"
+fuente = "miembros"
+estado = "construido"
+finalidad = "Canal de voz de la comunidad (equivale a #charlando)"
+regla = "Entran y hablan los suscriptores; el equipo puede silenciar y mover"
+
+[[categoria]]
+nombre = "🛒 MARKET (pendiente de tu decisión)"
+audiencia = "suscriptores"
+[[categoria.canal]]
+nombre = "vendo-compro"
+tipo = "foro"
+acceso = "miembros"
+fuente = "miembros"
+estado = "moderacion-humana"
+instalar = false
+finalidad = "Anuncios de compraventa entre miembros (un hilo por anuncio con talla, precio y estado)"
+regla = "Plantilla obligatoria (docs/v10/PLANTILLAS.md); el moderador revisa a diario"
+[[categoria.canal]]
+nombre = "legit-check"
+tipo = "foro"
+acceso = "miembros"
+fuente = "miembros"
+estado = "moderacion-humana"
+instalar = false
+finalidad = "Pedir opinión de autenticidad con fotos"
+regla = "Opinión orientativa; el staff no garantiza autenticidad"
+[[categoria.canal]]
+nombre = "valoraciones"
+tipo = "texto"
+acceso = "miembros"
+fuente = "miembros"
+estado = "moderacion-humana"
+instalar = false
+finalidad = "Reputación tras una compraventa"
+regla = "Una valoración por operación, con referencia al hilo"
+[[categoria.canal]]
+nombre = "lista-negra"
+tipo = "texto"
+acceso = "lectura"
+fuente = "staff"
+estado = "moderacion-humana"
+instalar = false
+finalidad = "Usuarios con fraude comprobado"
+regla = "Solo el staff publica, con pruebas revisadas"
+
 [[categoria]]
 nombre = "🔒 STAFF"
 audiencia = "equipo"

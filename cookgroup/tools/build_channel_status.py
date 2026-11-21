@@ -30,15 +30,18 @@ EV = {
     "raffles": ("bot (BSTN) + staff", "ficha completa de raffle", "lote2 pasos 6, 8, 9, 11", "lote2 pasos 7, 10, 12"),
     "restocks": ("bot (monitores)", "«VUELVE LA EU 44»", "lote2 paso 13 + lote1 paso 2", "lote2 paso 14 y lote1 paso 3 (otra talla)"),
     "sneakers-eu": ("bot (132 tiendas)", "aviso Footdistrict real con mención", "piloto v0.7 + lote1 paso 2", "lote1 pasos 3–8"),
-    "sneakers-mundo": ("bot (7 tiendas)", "mismo motor que sneakers-eu", "mismo motor (probado con Footdistrict)", "mismo motor"),
-    "baloncesto": ("bot", "mismo motor", "mismo motor", "mismo motor"),
-    "skate": ("bot", "mismo motor", "mismo motor", "mismo motor"),
+    "sneakers-mundo": ("bot (7 tiendas)", "Undefeated real: vuelve la talla M", "tests/test_familias::sneakers_mundo", "sin cambios = silencio; talla de zapatilla no aplica a ropa"),
+    "baloncesto": ("bot", "Baskèts real: vuelve la «44 1/2»", "tests/test_familias::baloncesto", "el miembro de la 43 no recibe mención"),
+    "skate": ("bot", "Flatspot real: vuelve la UK 9,5", "tests/test_familias::skate", "miembro solo con talla EU: no se le menciona (tienda en UK)"),
     "rebajas-30": ("bot (rutas de descuento)", "bajada 280→224 con origen de precios", "lote2 paso 15", "una sola mención aunque salga en dos canales (lote1 paso 4)"),
     "rebajas-60": ("bot (rutas de descuento)", "igual que rebajas-30", "tests de rutas de descuento", "una sola mención (lote1 paso 4)"),
     "chollos": ("bot (feeds Pepper)", "chollo real de Chollometro", "piloto v0.7 (lectura real)", "feed sin novedades = silencio (diagnóstico)"),
-    "outlet": ("bot", "mismo motor", "mismo motor", "mismo motor"),
-    "streetwear": ("bot (32 tiendas)", "mismo motor", "mismo motor", "mismo motor"),
-    "pokémon-tcg": ("bot (65 tiendas)", "mismo motor (sin tallas)", "mismo motor", "«vuelve a stock» sin talla (lote2 paso 14)"),
+    "outlet": ("bot", "ASOS Sample Sale real: talla de ropa XXL", "tests/test_familias::outlet", "«EU 44» de ropa no menciona a quien eligió EU 44 de zapatilla"),
+    "streetwear": ("bot (32 tiendas)", "Goodhood real en GBP", "tests/test_familias::streetwear", "nunca presenta libras como euros"),
+    "pokémon-tcg": ("bot (65 tiendas)", "Red Goblin real: Ditto vuelve a stock (RON)", "tests/test_familias::pokemon", "el miembro solo de sneakers no recibe mención; sin talla inventada"),
+    "Miembros": ("bot (contador)", "«Miembros: N»", "tests/test_membresias::counter + test_access (voz)", "nadie puede entrar ni hablar"),
+    "charla": ("comunidad (Moderador modera)", "canal de voz", "tests/test_access::voice: suscriptor entra y habla", "visitante y ex-suscriptor no lo ven"),
+    "alertas-personales": ("bot (perfil de cada miembro)", "mención solo a quien encaja", "tests/test_e2e_runner + lote1", "una mención por señal; ex-suscriptor no recibe"),
     "lego": ("pendiente de fuente autorizada", "", "", ""),
     "electrónica": ("pendiente de fuente autorizada", "", "", ""),
     "madrid-tiendas": ("pendiente de fuente autorizada", "", "", ""),
@@ -51,11 +54,12 @@ EV = {
     "registro-bot": ("bot", "", "", ""),
     "moderación": ("Staff", "", "", ""),
 }
-SAME_ENGINE = {"sneakers-mundo", "baloncesto", "skate", "outlet", "streetwear", "pokémon-tcg"}
+SAME_ENGINE: set = set()
 
 
 def main():
-    design = tomllib.loads((ROOT / "config/servidor.toml").read_text(encoding="utf-8"))
+    from cookgroup.server_setup import load_design
+    design = load_design(ROOT / "config/servidor.toml")
     perms = {r["canal"]: r for r in matrix(design)}
     real = set()
     p = ROOT / "docs/v09/ENTREGAS_REALES.csv"
@@ -65,9 +69,21 @@ def main():
     for cat in design["categoria"]:
         for ch in cat["canal"]:
             n = ch["nombre"]
+            if ch.get("instalar") is False:
+                continue                      # MARKET: pendiente de tu decisión (no cuenta en el total instalable)
             who, ex, pos, sil = EV.get(n, ("", "", "", ""))
+            if ch.get("clase") in ("tienda", "región", "tema") and ch.get("estado") == "construido":
+                who = ", ".join(ch.get("monitores", [])) or ("palabras: " + ", ".join(ch.get("palabras", [])) if ch.get("palabras") else f"país {ch.get('pais')}")
+                ex, pos, sil = ("mismo aviso que el agregado, en el canal propio", "tests/test_dedicated (enrutado)",
+                                "otra tienda/país/tema no entra; mención única (tests/test_e2e_runner)")
+            elif ch.get("clase"):
+                who = who or ch.get("falta", "")
             if n in real:
                 st = "entrega real confirmada"
+            elif ch.get("clase") in ("tienda", "región", "tema") and ch.get("estado") == "construido":
+                st = "enrutado probado (lectura de la fuente en tu PC)" if n != "footdistrict" else "probado localmente"
+            elif ch.get("clase") and ch.get("estado") != "construido":
+                st = "pendiente: " + (ch.get("falta") or "fuente")
             elif pos and sil and ex and n not in SAME_ENGINE and ch["estado"] == "construido":
                 st = "probado localmente"
             elif n in SAME_ENGINE:
@@ -79,10 +95,11 @@ def main():
             if n == "reventa":
                 st = "pendiente: vacío hasta cargar ventas cerradas"
             pm = perms[n]
-            rows.append({"categoria": cat["nombre"], "canal": n, "finalidad": ch["finalidad"], "fuente_o_responsable": who or ch["fuente"],
-                         "regla": ch["regla"], "visitante": pm["visitante"], "suscriptor": pm["suscriptor"], "ex_suscriptor": pm["ex-suscriptor"],
+            rows.append({"categoria": cat["nombre"], "canal": n, "finalidad": ch.get("finalidad") or f"Seguir por separado lo que en la referencia es {ch.get('equivalente_de', '')}", "fuente_o_responsable": who or ch["fuente"],
+                         "regla": ch.get("regla") or "Misma señal que el agregado; mención única por miembro", "visitante": pm["visitante"], "suscriptor": pm["suscriptor"], "ex_suscriptor": pm["ex-suscriptor"],
                          "moderador": pm["moderador"], "ejemplo": ex, "prueba_positiva": pos, "caso_silencio": sil,
-                         "estado": st, "instalado_en_mi_discord": "no (falta token del bot)"})
+                         "estado": st, "instalado_en_mi_discord": "no (falta token del bot)",
+                         "equivalente_de": ch.get("equivalente_de", "")})
     out = ROOT / "docs/v09/CANALES_MI_SERVIDOR.csv"
     with open(out, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0]))
