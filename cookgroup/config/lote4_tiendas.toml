@@ -180,3 +180,35 @@ rebaja = "por-probar"
 tallas = "sí (v1.6): por color, talla EU con su US; «pedible online»"
 prueba_restock = "test_tallas_por_color[asics] · captura real 21-nov (2 colores)"
 lote = 6
+
+[[tienda]]
+nombre = "ASOS ES"
+canal = "asos-es"
+pais = "ES"
+web = "https://www.asos.com/es/"
+envio_es = "sí (tienda española)"
+raffle_es = "—"
+monitores = ["asos-es"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "por-probar"
+tallas = "sí (v1.6): talla EU por color, precio por talla"
+prueba_restock = "test_tiendas_lote3[asos] · captura real 21-nov"
+lote = 7
+
+[[tienda]]
+nombre = "About You ES"
+canal = "aboutyou-yoox"
+pais = "ES"
+web = "https://www.aboutyou.es/"
+envio_es = "sí (tienda española)"
+raffle_es = "—"
+monitores = ["aboutyou-es"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "por-probar"
+tallas = "sí (v1.6): tallas del color de la ficha (JSON-LD)"
+prueba_restock = "test_tiendas_lote3[aboutyou] · captura real 21-nov"
+lote = 7

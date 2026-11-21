@@ -1,0 +1,144 @@
+{
+ "_source": "CAPTURA REAL 21-nov-2026 ~19:45 Madrid desde el navegador del dueño (solo lectura), sin cookies: ficha ASOS /es/adidas-originals/zapatillas-de-deporte-marrones-y-blancas-con-suela-de-goma-handball-spezial-de-adidas-originals/prd/205774480 · window.asos.pdp.config.stockPriceResponse (isInStock y precio por variante) + mapa variantId→talla/color de la misma página.",
+ "url": "/es/adidas-originals/zapatillas-de-deporte-marrones-y-blancas-con-suela-de-goma-handball-spezial-de-adidas-originals/prd/205774480",
+ "productId": 205774480,
+ "name": "Zapatillas de deporte marrones y blancas con suela de goma Handball Spezial de adidas Originals",
+ "colour": "MULTICOLOR",
+ "colourWayId": 205774481,
+ "currency": "EUR",
+ "base": 89.99,
+ "variants": [
+  {
+   "id": 205774482,
+   "size": "EU 42 2/3",
+   "inStock": true,
+   "price": 110.0
+  },
+  {
+   "id": 205774483,
+   "size": "EU 39 1/3",
+   "inStock": true,
+   "price": 89.99
+  },
+  {
+   "id": 205774484,
+   "size": "EU 37 1/3",
+   "inStock": true,
+   "price": 89.99
+  },
+  {
+   "id": 205774485,
+   "size": "EU 43 1/3",
+   "inStock": true,
+   "price": 89.99
+  },
+  {
+   "id": 205774486,
+   "size": "EU 40",
+   "inStock": true,
+   "price": 89.99
+  },
+  {
+   "id": 205774487,
+   "size": "EU 38 2/3",
+   "inStock": true,
+   "price": 89.99
+  },
+  {
+   "id": 205774488,
+   "size": "EU 40 2/3",
+   "inStock": true,
+   "price": 89.99
+  },
+  {
+   "id": 205774489,
+   "size": "EU 42",
+   "inStock": true,
+   "price": 89.99
+  },
+  {
+   "id": 205774490,
+   "size": "EU 36",
+   "inStock": true,
+   "price": 89.99
+  },
+  {
+   "id": 205774491,
+   "size": "EU 38",
+   "inStock": true,
+   "price": 89.99
+  },
+  {
+   "id": 205774492,
+   "size": "EU 36 2/3",
+   "inStock": true,
+   "price": 89.99
+  },
+  {
+   "id": 205774493,
+   "size": "EU 41 1/3",
+   "inStock": true,
+   "price": 110.0
+  },
+  {
+   "id": 206675555,
+   "size": "EU 35 1/3",
+   "inStock": true,
+   "price": 110.0
+  },
+  {
+   "id": 206675556,
+   "size": "EU 46 2/3",
+   "inStock": true,
+   "price": 110.0
+  },
+  {
+   "id": 206675557,
+   "size": "EU 45 1/3",
+   "inStock": true,
+   "price": 110.0
+  },
+  {
+   "id": 206675558,
+   "size": "EU 48",
+   "inStock": true,
+   "price": 89.99
+  },
+  {
+   "id": 206675559,
+   "size": "EU 44",
+   "inStock": true,
+   "price": 110.0
+  },
+  {
+   "id": 206675560,
+   "size": "EU 44 2/3",
+   "inStock": true,
+   "price": 110.0
+  },
+  {
+   "id": 206675561,
+   "size": "EU 47 1/3",
+   "inStock": true,
+   "price": 110.0
+  },
+  {
+   "id": 206675562,
+   "size": "EU 49 1/3",
+   "inStock": false,
+   "price": 110.0
+  },
+  {
+   "id": 206675563,
+   "size": "EU 46",
+   "inStock": true,
+   "price": 110.0
+  },
+  {
+   "id": 206675564,
+   "size": "EU 48 2/3",
+   "inStock": true,
+   "price": 89.99
+  }
+ ]
+}

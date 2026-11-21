@@ -66,8 +66,8 @@ Stocks,📊stock-otros-releases,texto,Ver cuánto stock hubo,bot de la referenci
 🤖Monitores,adidas-es,texto,Avisos de una tienda concreta,bot (monitores),tienda,#adidas-es,adidas-es,,1
 🤖Monitores,adidas-eu,texto,Avisos de una tienda concreta,bot (monitores),tienda,#adidas-eu,,adidas.es/.eu sin API pública de stock (probar JSON-LD de fichas) → sin fuente aún,5
 🤖Monitores,asics,texto,Avisos de una tienda concreta,bot (monitores),tienda,#asics,asics-es,,1
-🤖Monitores,asos,texto,Avisos de una tienda concreta,bot (monitores),tienda,#asos,,ASOS: afiliados → sin fuente aún,1
-🤖Monitores,asos-es,texto,Avisos de una tienda concreta,bot (monitores),tienda,#asos-es,,ASOS: afiliados → sin fuente aún,1
+🤖Monitores,asos,texto,Avisos de una tienda concreta,bot (monitores),tienda,#asos,asos-es,,1
+🤖Monitores,asos-es,texto,Avisos de una tienda concreta,bot (monitores),tienda,#asos-es,asos-es,,1
 🤖Monitores,basket-shops,texto,Avisos de una tienda concreta,bot (monitores),agregado,#baloncesto,monitores de su familia (0 de sus 8 tiendas coinciden),ninguna de sus tiendas tiene monitor,8
 🤖Monitores,basketballemotion,texto,Avisos de una tienda concreta,bot (monitores),tienda,#basketballemotion,,listado cargado con JavaScript → sin fuente aún,1
 🤖Monitores,basket4ballers,texto,Avisos de una tienda concreta,bot (monitores),tienda,#basket4ballers,basket4ballers,,1

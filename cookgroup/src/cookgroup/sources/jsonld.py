@@ -87,6 +87,8 @@ def parse_product_page(html: str, *, url: str, store: str, default_currency: str
         image = image.get("url")
     sku = str(main.get("sku") or main.get("mpn") or main.get("productGroupID") or "") or None
     variants: list[Variant] = []
+    colors: set[str] = set()
+    vcolor: list[str] = []
     currency = default_currency
     # 1) variantes explícitas (ProductGroup.hasVariant) o varios Product con talla
     candidates = [p for p in prods if p is not main] or [main]
@@ -103,10 +105,23 @@ def parse_product_page(html: str, *, url: str, store: str, default_currency: str
             av = _available(o.get("availability"))
             price = _cents(o.get("price") or o.get("lowPrice"))
             scope = "color" if (p is not main and not p.get("size") and not o.get("name") and p.get("color")) else None
-            variants.append(Variant(vid, str(size or "Única"), price, bool(av), vsku, stock_scope=scope))
+            if av is None:
+                scope = "desconocido"           # v1.6: disponibilidad no publicada/no reconocida → ni disponible ni agotada
+            colors.add(str(p.get("color") or "")) if p is not main else None
+            variants.append(Variant(vid, str(size or "Única"), price, bool(av), vsku, known=av is not None, stock_scope=scope,
+                                    alt_sizes=None))
+            vcolor.append(str(p.get("color") or "") if p is not main else "")
     if not variants:
         return None
+    if len(colors - {""}) > 1 and all(v.stock_scope != "color" for v in variants):
+        # v1.6: un grupo con varios colores y tallas → la talla lleva su color (una talla por color, sin mezclarlas)
+        from dataclasses import replace as _rep
+        variants = [_rep(v, title=f"{v.title} / {c}") if c else v for v, c in zip(variants, vcolor)]
     pid = sku or hashlib.sha1(url.encode()).hexdigest()[:16]
+    if "productgroup" in _types(main) and any(not p.get("offers") for p in candidates if p is not main):
+        # v1.6 (About You): cada ficha de color repite el MISMO productGroupID y solo trae ofertas de su color →
+        # la clave incluye la ficha para que dos colores no se pisen (falsas reposiciones/agotados).
+        pid = f"{pid}@{urlparse(url).path.rstrip('/').rsplit('/', 1)[-1]}"
     return Product(store=store, product_id=pid, title=name or pid, url=url, currency=currency,
                    variants=tuple(variants), vendor=vendor, image_url=image if isinstance(image, str) else None)
 

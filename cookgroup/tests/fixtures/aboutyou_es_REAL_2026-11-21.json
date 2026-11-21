@@ -1,0 +1,60 @@
+{
+ "_source": "CAPTURA REAL 21-nov-2026 ~19:50 Madrid, sin cookies: ficha About You /p/puma/zapatillas-deportivas-bajas-suede-bloom-32191359 · JSON-LD ProductGroup PUMliff-130 con 58 variantes: 12 del color de la ficha (rosa) con oferta InStock a 66,41 € y 46 de otros colores SIN oferta. El estado interno publica además unidades por talla (quantity), guardadas aquí como referencia.",
+ "url": "/p/puma/zapatillas-deportivas-bajas-suede-bloom-32191359",
+ "group": "PUMliff-130",
+ "name": "Zapatillas deportivas bajas 'Suede Bloom'",
+ "brand": "PUMA",
+ "color": "rosa",
+ "price": 66.41,
+ "sizes": [
+  {
+   "size": "35,5",
+   "quantity": 4
+  },
+  {
+   "size": "36",
+   "quantity": 5
+  },
+  {
+   "size": "37",
+   "quantity": 6
+  },
+  {
+   "size": "37,5",
+   "quantity": 13
+  },
+  {
+   "size": "38",
+   "quantity": 17
+  },
+  {
+   "size": "38,5",
+   "quantity": 12
+  },
+  {
+   "size": "39",
+   "quantity": 11
+  },
+  {
+   "size": "40",
+   "quantity": 7
+  },
+  {
+   "size": "40,5",
+   "quantity": 10
+  },
+  {
+   "size": "41",
+   "quantity": 2
+  },
+  {
+   "size": "42",
+   "quantity": 2
+  },
+  {
+   "size": "42,5",
+   "quantity": 4
+  }
+ ],
+ "other_color_variants_without_offer": 46
+}

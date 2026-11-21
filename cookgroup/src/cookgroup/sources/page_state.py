@@ -148,4 +148,54 @@ def parse_asics_state(html: str, *, url: str, store: str, default_currency: str 
                    url=url, currency=currency, variants=tuple(variants), vendor="ASICS")
 
 
-ADAPTERS = {"footlocker": parse_footlocker_state, "asics": parse_asics_state}
+_ASOS_SIZE = re.compile(r'"variantId":(\d+),"size":"([^"]+)","brandSize":"([^"]*)"[^}]*?"colour":"([^"]*)","colourWayId":(\d+)')
+
+
+def parse_asos_state(html: str, *, url: str, store: str, default_currency: str = "EUR") -> Product | None:
+    """ASOS (ES), verificado el 21-nov-2026: `window.asos.pdp.config.stockPriceResponse = '[…]'` trae, por variante,
+    isInStock y su precio (puede variar por talla); el mapa variantId → talla («EU 42 2/3») y color está en la
+    definición del producto de la misma página. Cada ficha (/prd/<id>) es UN color."""
+    k = html.find("window.asos.pdp.config.stockPriceResponse")
+    if k < 0:
+        return None
+    a = html.find("'", k) + 1
+    b = html.find("';", a)
+    try:
+        stock = json.loads(html[a:b].replace('\\"', '"').replace("\\\\", "\\"))
+    except ValueError:
+        return None
+    sizes = {m.group(1): (m.group(2), m.group(4)) for m in _ASOS_SIZE.finditer(html)}
+    name = None
+    for raw in re.findall(r'<script[^>]+application/ld\+json[^>]*>(.*?)</script>', html, re.S):
+        try:
+            j = json.loads(raw)
+        except ValueError:
+            continue
+        for n in (j.get("@graph") or [j]) if isinstance(j, dict) else []:
+            if isinstance(n, dict) and n.get("@type") in ("ProductGroup", "Product"):
+                name = name or n.get("name")
+    if not stock:
+        return None
+    prod = stock[0]
+    pr = prod.get("productPrice") or {}
+    currency = pr.get("currency") or default_currency
+    base = ((pr.get("current") or {}).get("value"))
+    variants, color = [], ""
+    for v in prod.get("variants") or []:
+        vid = str(v.get("id"))
+        size, color = sizes.get(vid, (None, color))
+        ins = v.get("isInStock")
+        scope = "online" if ins is True else "agotada" if ins is False else "desconocido"
+        if size is None:
+            scope = "desconocido"                       # sin talla publicada para esa variante: no se anuncia
+        price = _cents(((v.get("price") or {}).get("current") or {}).get("value") or base) or 0
+        variants.append(Variant(vid, size or f"variante {vid}", price, scope == "online", vid,
+                                known=scope != "desconocido", stock_scope=scope))
+    if not variants:
+        return None
+    title = (name or f"ASOS {prod.get('productId')}").strip()
+    return Product(store=store, product_id=str(prod.get("productId")), title=f"{title} · {color}" if color else title,
+                   url=url, currency=currency, variants=tuple(variants))
+
+
+ADAPTERS = {"footlocker": parse_footlocker_state, "asics": parse_asics_state, "asos": parse_asos_state}
