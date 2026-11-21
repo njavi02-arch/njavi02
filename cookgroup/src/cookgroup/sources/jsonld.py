@@ -111,12 +111,23 @@ def parse_product_page(html: str, *, url: str, store: str, default_currency: str
                    variants=tuple(variants), vendor=vendor, image_url=image if isinstance(image, str) else None)
 
 
+def link_matcher(pattern: str):
+    """v1.6: `pattern` es un fragmento del enlace o, con el prefijo «re:», una expresión regular sobre la RUTA.
+    La regex permite exigir la forma exacta de una ficha (p. ej. el código de artículo) y descartar ayuda/FAQ,
+    categorías y campañas que también terminan en .html."""
+    if pattern.startswith("re:"):
+        rx = re.compile(pattern[3:])
+        return lambda u: bool(rx.search(urlparse(u).path))
+    return lambda u: pattern in u
+
+
 def extract_links(html: str, *, base_url: str, pattern: str) -> list[str]:
     host = urlparse(base_url).hostname
+    ok = link_matcher(pattern)
     out, seen = [], set()
     for href in _HREF.findall(html or ""):
-        u = urljoin(base_url + "/", href).split("?")[0]
-        if urlparse(u).hostname == host and pattern in u and u not in seen:
+        u = urljoin(base_url + "/", href.replace("&amp;", "&")).split("?")[0].split("#")[0]   # sin parámetros de seguimiento
+        if urlparse(u).hostname == host and ok(u) and u not in seen:
             seen.add(u)
             out.append(u)
     return out
@@ -156,7 +167,8 @@ class JsonLdSource:
             raise SourceError(f"{self.store}: HTTP {r.status_code}")
         if len(r.content) > MAX_BYTES:
             raise SourceError(f"{self.store}: página demasiado grande")
-        if re.search(r"captcha|cf-chl|px-captcha|access denied", r.text[:5000], re.I):
+        if re.search(r"captcha|cf-chl|px-captcha|access denied|powered and protected by", r.text[:5000], re.I):
+            # v1.6: «Powered and protected by …» = desafío JS (adidas ES ficha, New Balance ES listado) sin cookies
             raise SourceError(f"{self.store}: la tienda pide verificación anti-bot; no se elude")
         return r.text
 

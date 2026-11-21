@@ -1,0 +1,43 @@
+{
+ "_source": "CAPTURA REAL 21-nov-2026 ~19:30 Madrid: enlaces de https://www.zalando.es/zapatillas-hombre/ en la página renderizada (692 rutas únicas; 96 .html: 84 fichas + 12 /faq/). Aquí: 16 fichas, las 12 FAQ, 6 categorías/campañas. En el HTML del servidor (lo que recibe el bot) hay 24 fichas.",
+ "products": [
+  "/puma-court-classic-clean-sneakers-zapatillas-white-black-pu135l000-a13.html",
+  "/puma-rebound-v6-unisex-zapatillas-whitecool-light-gray-pu115o0nm-a13.html",
+  "/puma-ca-match-zapatillas-puma-white-puma-black-zzo32y928-q00.html",
+  "/nike-sportswear-air-force-1-07-zapatillas-white-ni112n022-a11.html",
+  "/adidas-originals-zapatillas-maroon-almost-yellow-preloved-brown-ad111a2ks-o11.html",
+  "/nike-sportswear-p-6000-zapatillas-black-ni112o08p-q11.html",
+  "/adidas-originals-samba-zapatillas-ad115o03m-a11.html",
+  "/nike-sportswear-air-force-1-zapatillas-whiteblack-ni112o0h3-a11.html",
+  "/tommy-hilfiger-court-core-zapatillas-white-to112p01y-a11.html",
+  "/new-balance-mr530-zapatillas-white-ne215o04g-a11.html",
+  "/adidas-originals-handball-zapatillas-ad115o07w-k11.html",
+  "/nike-sportswear-v5-rnr-zapatillas-photon-dustdark-smoke-greysmoke-greylight-smoke-greysail-ni112p06s-c12.html",
+  "/puma-zapatillas-whiteblackvapor-gray-pu115p06w-a11.html",
+  "/nike-sb-delta-force-unisex-zapatillas-vast-greyobsidianblack-ns412p00c-a14.html",
+  "/vans-old-skool-zapatillas-va215b000-q12.html",
+  "/new-balance-u740-unisex-zapatillas-navy-ne215p015-b11.html"
+ ],
+ "faq": [
+  "/faq/how-can-I-return-my-order.html",
+  "/faq/how-can-i-return-a-zalando-partner-item.html",
+  "/faq/where-is-my-parcel.html",
+  "/faq/how-do-i-place-an-order.html",
+  "/faq/what-delivery-options-are-available.html",
+  "/faq/how-to-redeem-a-gift-card.html",
+  "/faq/how-do-i-pay-by-credit-card.html",
+  "/faq/how-do-pay-by-paypal.html",
+  "/faq/how-do-i-pay-by-cash-on-delivery.html",
+  "/faq/how-do-i-pay-by-klarna.html",
+  "/faq/Payments/how-do-i-pay-by-apple-pay.html",
+  "/faq/what-is-your-return-policy.html"
+ ],
+ "categories": [
+  "/zapatillas-hombre/",
+  "/hombre-rebajas/",
+  "/hombre-sneakers-tendencias/",
+  "/zapatillas-bajas-hombre/",
+  "/seleccion-de-temporada-hombre/",
+  "/vende-con-nosotros/"
+ ]
+}

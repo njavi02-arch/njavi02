@@ -2,7 +2,7 @@
 # Tiendas VERIFICADAS el 19-nov-2026: /products.json público responde (200, JSON) y robots.txt no lo prohíbe
 # (solo bloquean /recommendations/products). Revisa igualmente las condiciones de uso de cada tienda.
 # Descartada: shop-eu.doverstreetmarket.com (no permite la consulta).
-#
+
 # Webhooks: DISCORD_WEBHOOK_<CANAL> en .env. Para probar todo en UN canal, pon solo DISCORD_WEBHOOK_DEFAULT.
 # Intervalos conservadores: 13 fuentes ≈ 4-5 peticiones/min en total.
 
@@ -476,7 +476,7 @@ region = "eu"
 base_url = "https://www.footlocker.es"
 currency = "EUR"
 listing_urls = ["https://www.footlocker.es/es/category/hombre/zapatillas.html"]
-product_link_pattern = "/es/product/"
+product_link_pattern = 're:^/es/product/[^~/][^/]*/\d+\.html$'   # v1.6: excluye la tarjeta regalo (/product/~/)
 products_per_cycle = 4
 interval_seconds = 300          # v1.3: mínimo para JSON-LD
 page_adapter = "footlocker"      # v1.6: tallas EU/UK/US + stock online/tienda desde el estado público de la ficha
@@ -544,7 +544,7 @@ country = "FR"
 region = "eu"
 base_url = "https://www.basket4ballers.com"
 currency = "EUR"
-listing_urls = ["https://www.basket4ballers.com/es/novedades"]
+listing_urls = ["https://www.basket4ballers.com/es/"]   # v1.6: /es/novedades da 404 y las categorías 403 sin cookies; la portada enlaza las novedades
 product_link_pattern = "/es/novedades/"
 products_per_cycle = 4
 interval_seconds = 300
@@ -577,7 +577,7 @@ region = "eu"
 base_url = "https://www.zalando.es"
 currency = "EUR"
 listing_urls = ["https://www.zalando.es/zapatillas-hombre/"]
-product_link_pattern = ".html"          # v1.5: era "-a13.html" (demasiado estrecho; FR/IT/DE usan -o11/-a11/-q11)
+product_link_pattern = 're:-[a-z0-9]{9}-[a-z0-9]{3}\.html$'   # v1.6: código de artículo Zalando; descarta /faq/*.html y categorías
 products_per_cycle = 4
 interval_seconds = 300
 channel = "sneakers"
@@ -593,7 +593,7 @@ region = "eu"
 base_url = "https://www.adidas.es"
 currency = "EUR"
 listing_urls = ["https://www.adidas.es/zapatillas-hombre"]
-product_link_pattern = ".html"
+product_link_pattern = 're:/[A-Z0-9]{6}\.html$'   # v1.6: código de artículo adidas
 products_per_cycle = 4
 interval_seconds = 300
 channel = "sneakers"
@@ -610,7 +610,7 @@ region = "eu"
 base_url = "https://www.zalando.fr"
 currency = "EUR"
 listing_urls = ["https://www.zalando.fr/baskets-homme/"]
-product_link_pattern = ".html"
+product_link_pattern = 're:-[a-z0-9]{9}-[a-z0-9]{3}\.html$'   # v1.6: código de artículo Zalando; descarta /faq/*.html y categorías
 products_per_cycle = 4
 interval_seconds = 300
 channel = "sneakers"
@@ -625,7 +625,7 @@ region = "eu"
 base_url = "https://www.zalando.it"
 currency = "EUR"
 listing_urls = ["https://www.zalando.it/sneakers-uomo/"]
-product_link_pattern = ".html"
+product_link_pattern = 're:-[a-z0-9]{9}-[a-z0-9]{3}\.html$'   # v1.6: código de artículo Zalando; descarta /faq/*.html y categorías
 products_per_cycle = 4
 interval_seconds = 300
 channel = "sneakers"
@@ -640,7 +640,7 @@ region = "eu"
 base_url = "https://www.footlocker.de"
 currency = "EUR"
 listing_urls = ["https://www.footlocker.de/de/category/herren/schuhe.html"]
-product_link_pattern = "/de/product/"
+product_link_pattern = 're:^/de/product/[^~/][^/]*/\d+\.html$'   # v1.6: excluye la tarjeta regalo (/product/~/)
 products_per_cycle = 4
 interval_seconds = 300
 page_adapter = "footlocker"      # v1.6: mismo estado verificado en la ficha New Balance 9060 (21-nov)
@@ -656,9 +656,10 @@ region = "eu"
 base_url = "https://www.footlocker.it"
 currency = "EUR"
 listing_urls = ["https://www.footlocker.it/it/category/uomo/scarpe.html"]
-product_link_pattern = "/it/product/"
+product_link_pattern = 're:^/it/product/[^~/][^/]*/\d+\.html$'   # v1.6: excluye la tarjeta regalo (/product/~/)
 products_per_cycle = 4
 interval_seconds = 300
+page_adapter = "footlocker"      # v1.6: estado con tallas verificado en 3 fichas (21-nov)
 channel = "sneakers"
 
 # v1.6 · tallas por color verificadas el 21-nov (estado público de la ficha)
@@ -672,7 +673,7 @@ region = "eu"
 base_url = "https://www.asics.com"
 currency = "EUR"
 listing_urls = ["https://www.asics.com/es/es-es/mens-running-shoes/c/as10201000/"]
-product_link_pattern = "/es/es-es/"
+product_link_pattern = 're:/p/[0-9A-Z]+-[0-9A-Z]{3}\.html$'   # v1.6: ficha de color ASICS
 products_per_cycle = 4
 interval_seconds = 300
 page_adapter = "asics"
@@ -688,7 +689,7 @@ region = "eu"
 base_url = "https://www.footlocker.fr"
 currency = "EUR"
 listing_urls = ["https://www.footlocker.fr/fr/category/homme/chaussures.html"]
-product_link_pattern = "/fr/product/"
+product_link_pattern = 're:^/fr/product/[^~/][^/]*/\d+\.html$'   # v1.6: excluye la tarjeta regalo (/product/~/)
 products_per_cycle = 4
 interval_seconds = 300
 page_adapter = "footlocker"
