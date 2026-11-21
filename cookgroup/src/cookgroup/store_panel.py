@@ -50,6 +50,15 @@ def state_of(bot_up: bool, health: tuple | None, interval: int, now: float, rece
     return ("AL DÍA · con avisos" if recent_events else "AL DÍA · sin novedades"), "ok"
 
 
+def observed_interval(store, monitor: str, n: int = 7) -> int | None:
+    """v1.6: segundos REALES entre dos lecturas seguidas de un monitor (mediana de las últimas n), a partir de
+    monitor_runs. Incluye lo que tarda el ciclo y las esperas por dominio: es lo que de verdad ve un miembro."""
+    rows = store.db.execute("SELECT ts FROM monitor_runs WHERE monitor=? ORDER BY ts DESC LIMIT ?", (monitor, n)).fetchall()
+    ts = sorted(datetime.fromisoformat(r[0]).timestamp() for r in rows)
+    gaps = sorted(b - a for a, b in zip(ts, ts[1:]))
+    return round(gaps[len(gaps) // 2]) if gaps else None
+
+
 def collect(store, cfg, *, now: float | None = None, env=None, heartbeat=None) -> dict:
     import os
     from .diagnostics import process_state
@@ -84,11 +93,14 @@ def collect(store, cfg, *, now: float | None = None, env=None, heartbeat=None) -
         recent = sum(1 for a in alerts if (a[0] == t["nombre"]) and a[2] and
                      now - datetime.fromisoformat(a[2]).timestamp() < 86400)
         st, cls = state_of(bot_up, h, interval or 600, now, recent)
+        observed = observed_interval(store, m0.name) if m0 else None
+        pend = store.db.execute("SELECT COUNT(*), COALESCE(SUM(last_error LIKE 'incierto%'), 0) FROM outbox WHERE store=?",
+                                (t["nombre"],)).fetchone()
         cid = ids.get(t["canal"])
         stores.append({"nombre": t["nombre"], "pais": t["pais"], "canal": t["canal"],
                        "canal_url": f"https://discord.com/channels/{guild}/{cid}" if guild and cid else None,
                        "instalado": bool(cid) or bool(env.get(f"DISCORD_WEBHOOK_{ch_key.upper()}")),
-                       "intervalo_s": interval, "ultima_ok": h[1] if h else None, "errores": h[2] if h else None,
+                       "intervalo_s": interval, "observado_s": observed, "pendientes": pend[0], "inciertos": pend[1], "ultima_ok": h[1] if h else None, "errores": h[2] if h else None,
                        "ultimo_error": h[3] if h else None, "proximo": sc.get("next_at"), "motivo_espera": sc.get("reason"),
                        "senales": {s: t.get(s, "sin-fuente") for s in SIGNALS},
                        "ultimo_raffle": raffle, "ultimo_aviso": last, "estado": st, "clase": cls, "envio_es": t.get("envio_es")})
@@ -148,8 +160,8 @@ def render(d: dict, *, refresh: int = 30) -> str:
              "".join(f"<option>{E(x)}</option>" for x in countries) + "</select><select id=fs onchange=flt()><option value=''>Todas las señales</option>" +
              "".join(f"<option value={s}>{s.upper()}</option>" for s in SIGNALS) +
              "</select><input id=fq placeholder='Buscar tienda' oninput=flt()></div>")
-    o.append(f"<h2>Tiendas con canal propio ({len(d['stores'])})</h2><table><tr><th>Tienda</th><th>Estado</th><th>Ritmo</th>"
-             "<th>Última lectura buena</th><th>Próximo intento</th><th>Último raffle / aviso</th><th>Señales</th><th>Canal</th></tr>")
+    o.append(f"<h2>Tiendas con canal propio ({len(d['stores'])})</h2><table><tr><th>Tienda</th><th>Estado</th><th>Ritmo (configurado / observado)</th>"
+             "<th>Última lectura buena</th><th>Próximo intento</th><th>Última entrega confirmada</th><th>Señales</th><th>Canal</th></tr>")
     for s in d["stores"]:
         sig = " ".join(k for k, v in s["senales"].items() if v == "probado")
         rf = s["ultimo_raffle"]
@@ -164,8 +176,8 @@ def render(d: dict, *, refresh: int = 30) -> str:
                 f"#{E(s['canal'])} <span class=muted>({'webhook listo' if s['instalado'] else 'sin instalar'})</span>")
         o.append(f"<tr data-pais='{E(s['pais'])}' data-senales='{sig}'><td><b>{FLAGS.get(s['pais'], '')} {E(s['nombre'])}</b><br>"
                  f"<span class=muted>envío ES: {E(s['envio_es'] or '—')}</span></td><td><span class='tag {s['clase']}'>{E(s['estado'])}</span>{err}</td>"
-                 f"<td>cada {s['intervalo_s']} s</td><td>{_mad(s['ultima_ok'])}<br><span class=muted>{_ago(s['ultima_ok'], now)}</span></td>"
-                 f"<td>{nxt}</td><td>{last}</td><td>" + " ".join(f"<span class=s-{v}>{k[:4].upper()}</span>" for k, v in s["senales"].items())
+                 f"<td>configurado {s['intervalo_s']} s<br><span class=muted>observado {str(s['observado_s']) + ' s' if s['observado_s'] else '— (aún sin 2 lecturas)'}</span></td><td>{_mad(s['ultima_ok'])}<br><span class=muted>{_ago(s['ultima_ok'], now)}</span></td>"
+                 f"<td>{nxt}</td><td>{last}" + (f"<br><span class=muted>⏳ {s['pendientes']} pendiente(s) de entrega" + (f" · {s['inciertos']} incierto(s)" if s['inciertos'] else "") + "</span>" if s['pendientes'] else "") + f"</td><td>" + " ".join(f"<span class=s-{v}>{k[:4].upper()}</span>" for k, v in s["senales"].items())
                  + f"</td><td>{chan}</td></tr>")
     o.append("</table><p class=muted>Señales: verde = activa (probada con datos reales) · amarillo = en prueba, no se publica · gris = la tienda "
              "no lo ofrece por una vía pública. El ritmo real puede variar ±10 % y se alarga si la tienda pide esperar.</p>")

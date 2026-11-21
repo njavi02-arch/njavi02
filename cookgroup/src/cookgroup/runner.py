@@ -100,6 +100,12 @@ def next_wait(mcfg, res: dict, failures: int, cap: int, rnd=None) -> tuple[float
     return wait * (0.9 + 0.2 * r()), "error, espera creciente"
 
 
+def start_to_start(wait: float, elapsed: float, ok: bool, min_gap: float = 5.0) -> float:
+    """v1.6: el intervalo configurado se cuenta de INICIO a INICIO de lectura (antes, tras terminar el ciclo, y BSTN a
+    «60 s» salía a ~65 s). Tras un error se mantiene la espera completa (no se acelera sobre una tienda que falla)."""
+    return max(wait - elapsed, min_gap) if ok else wait
+
+
 def _launch_loop(mcfg, cfg: Config, store: Store, stop: threading.Event):
     from datetime import datetime, timezone
     from zoneinfo import ZoneInfo
@@ -122,6 +128,7 @@ def _launch_loop(mcfg, cfg: Config, store: Store, stop: threading.Event):
     failures = 0
     digest_at = cfg.defaults.get("launch_digest_time", "09:00")
     while not stop.is_set():
+        t0 = time.monotonic()
         try:
             res = run_launch_cycle(mcfg, cfg.defaults, source, store, senders, ping_rules=cfg.ping_rules,
                                    forum=forum, raffle_board=board)
@@ -141,6 +148,7 @@ def _launch_loop(mcfg, cfg: Config, store: Store, stop: threading.Event):
                 store.record_alert(key, "launch_digest", mcfg.store, "-", send(dg))
         failures = 0 if res["ok"] else failures + 1
         wait, why = next_wait(mcfg, res, failures, 3600)
+        wait = start_to_start(wait, time.monotonic() - t0, res["ok"])
         store.set_schedule(mcfg.name, mcfg.interval_seconds, wait, why)
         if not res["ok"]:
             log.warning("monitor=%s error=%s próximo intento en %ss", mcfg.name, res.get("error"), wait)
@@ -199,6 +207,7 @@ def _loop(mcfg, cfg: Config, store: Store, market, stop: threading.Event, forum=
             SAMPLE.offer(p, time.time())
             return mid
     while not stop.is_set():
+        t0 = time.monotonic()
         try:
             res = run_cycle(mcfg, cfg.defaults, source, store, market, send,
                             ping_rules=cfg.ping_rules, channel_senders=channel_senders, profiles=profiles,
@@ -216,6 +225,7 @@ def _loop(mcfg, cfg: Config, store: Store, market, stop: threading.Event, forum=
             if failures == 3:
                 _registro(f"⚠️ {mcfg.name}: 3 fallos seguidos · {str(res.get('error'))[:300]}")
         wait, why = next_wait(mcfg, res, failures, 1800)
+        wait = start_to_start(wait, time.monotonic() - t0, res["ok"])
         store.set_schedule(mcfg.name, mcfg.interval_seconds, wait, why)
         if not res["ok"]:
             log.warning("monitor=%s error=%s próximo intento en %ss", mcfg.name, res.get("error"), wait)

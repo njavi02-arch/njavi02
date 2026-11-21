@@ -169,3 +169,10 @@ def test_uncertain_send_is_marked_and_resent_once(tmp_path):
     assert row and row[0].startswith("incierto")
     deliver_outbox(st, {"a": w.send})                                  # siguiente ciclo: se reenvía una vez
     assert st.outbox_pending() == []
+
+
+def test_interval_counts_start_to_start():
+    from cookgroup.runner import start_to_start
+    assert start_to_start(60, 3.5, True) == 56.5          # BSTN: 60 s de inicio a inicio
+    assert start_to_start(60, 80, True) == 5.0            # un ciclo más largo que el intervalo: mínimo 5 s de respiro
+    assert start_to_start(120, 3.5, False) == 120         # tras un error, la espera completa
