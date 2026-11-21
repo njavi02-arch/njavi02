@@ -246,3 +246,20 @@ tallas = "no aplica"
 prueba_restock = "test_tiendas_fase2[www.game.es] · 3 capturas reales 21-nov (agotadas)"
 prueba_rebaja = "test_tiendas_fase2[www.game.es] · captura real 21-nov"
 lote = 7
+
+[[tienda]]
+nombre = "El Corte Inglés · Pokémon"
+canal = "elcorteingles-pokemon"
+pais = "ES"
+web = "https://www.elcorteingles.es/marcas/pokemon/juguetes/kidults/"
+envio_es = "sí (tienda española)"
+raffle_es = "—"
+monitores = ["elcorteingles-pokemon"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+tallas = "no aplica"
+prueba_restock = "test_tiendas_fase2[www.elcorteingles.es] · 5 capturas reales 21-nov (2 agotadas)"
+prueba_rebaja = "test_tiendas_fase2[www.elcorteingles.es] · captura real 21-nov"
+lote = 7

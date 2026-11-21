@@ -59,7 +59,7 @@ Stocks,📊nike-stock-cargado,texto,Ver cuánto stock hubo,bot de la referencia,
 Stocks,📊stock-otros-releases,texto,Ver cuánto stock hubo,bot de la referencia,ver tabla v0.9,—,,,2
 🤖Monitores,aio-custom,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-eu,monitores de su familia (2 de sus 29 tiendas coinciden),,29
 🤖Monitores,aio-custom-2,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-eu,monitores de su familia (2 de sus 5 tiendas coinciden),,5
-🤖Monitores,aio-eu,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-eu,monitores de su familia (0 de sus 12 tiendas coinciden),ninguna de sus tiendas tiene monitor,12
+🤖Monitores,aio-eu,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-eu,monitores de su familia (1 de sus 12 tiendas coinciden),,12
 🤖Monitores,aio-eu-2,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-eu,monitores de su familia (0 de sus 3 tiendas coinciden),ninguna de sus tiendas tiene monitor,3
 🤖Monitores,aio-world,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-mundo,monitores de su familia (0 de sus 9 tiendas coinciden),ninguna de sus tiendas tiene monitor,9
 🤖Monitores,aboutyou-yoox,texto,Avisos de una tienda concreta,bot (monitores),tienda,#aboutyou-yoox,,About You: afiliados → sin fuente aún,4

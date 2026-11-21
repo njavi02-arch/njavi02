@@ -762,7 +762,22 @@ watch_urls = [
 ]
 products_per_cycle = 4
 interval_seconds = 300
-channel = "game"
+channel = "coleccionables"   # familia Pokémon-TCG; el canal #game recibe la copia con etiqueta
+
+[[monitor]]
+name = "elcorteingles-pokemon"
+ships_es = "sí"
+type = "jsonld"
+store = "El Corte Inglés"
+country = "ES"
+region = "eu"
+base_url = "https://www.elcorteingles.es"
+currency = "EUR"
+listing_urls = ["https://www.elcorteingles.es/marcas/pokemon/juguetes/kidults/"]
+product_link_pattern = 're:^/juguetes/A\d{9}-[a-z0-9-]*pokemon[a-z0-9-]*/$'
+products_per_cycle = 4
+interval_seconds = 300
+channel = "coleccionables"   # familia Pokémon-TCG (+ canal propio de la tienda)
 
 # ---------------------------------------------------------------- PINGS PERSONALES (filtros)
 # Cada regla re-publica en "pings" las alertas que cumplen TODO lo que indiques, mencionando un rol.

@@ -2345,6 +2345,19 @@ falta = ""
 senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:pampamlondon.com"]
 palabras = []
+[[categoria.canal]]
+nombre = "elcorteingles-pokemon"
+clase = "tienda"
+pais = "ES"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:tienda_elcorteingles_pokemon"
+estado = "construido"
+equivalente_de = "(lote 1 propio)"
+falta = ""
+senales = "RESTOCK, REBAJA"
+monitores = ["elcorteingles-pokemon"]
+palabras = []
 
 [[categoria]]
 nombre = "🏷️ TEMAS"

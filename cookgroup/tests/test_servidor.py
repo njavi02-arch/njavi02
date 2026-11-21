@@ -57,7 +57,7 @@ def test_install_is_idempotent_and_keeps_existing(tmp_path):
     d = load_design(ROOT / "config/servidor.toml")
     fake, env = FakeDiscord(), tmp_path / ".env"
     r1 = apply(d, DiscordAPI("t", "1", fake), env, log=lambda *_: None)
-    assert len(r1["plan"].channels) == 38 + 203 and {"general", "juegos", "música"} <= set(r1["plan"].kept)
+    assert len(r1["plan"].channels) == 38 + 204 and {"general", "juegos", "música"} <= set(r1["plan"].kept)
     assert r1["webhooks_added"] >= 15 and "SECRETO" in env.read_text()
     assert any("Comunidad" in n for n in r1["notes"])            # foros → texto + aviso
     before = len(fake.calls)
