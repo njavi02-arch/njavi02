@@ -140,6 +140,8 @@ def deliver_outbox(store: Store, senders: dict[str, Callable[[dict], str | None]
             mid = snd(_json.loads(payload))
         except Exception as e:   # Discord caído, 429 persistente, red…
             err = f"{type(e).__name__}: {e}"[:200]
+            if type(e).__name__ == "UncertainDelivery":
+                err = "incierto · " + err             # v1.6: puede haberse publicado; se reenvía una vez (al menos una vez)
             store.outbox_fail(key, err)
             log.warning("entrega pendiente (%s): %s", key[:60], err)
             break
@@ -175,7 +177,10 @@ def run_cycle(cfg: MonitorConfig, defaults: dict, source, store: Store, market: 
         return {"ok": False, "error": str(e), "sent": d["by_type"].get("main", 0), "pending": d["pending"]}
 
     products, dropped = _prepare(raw, cfg)
-    old = store.load_snapshot(cfg.store)
+    # v1.6: las tiendas JSON-LD guardan su estado POR MONITOR: un mercado nuevo de una tienda ya vigilada (Zalando FR
+    # tras ES, Foot Locker IT tras ES) arranca con su propia línea base en silencio y no pisa el estado de otro país.
+    snap_ns = cfg.name if cfg.type == "jsonld" else cfg.store
+    old = store.load_snapshot(snap_ns)
     events = diff_products(old, products, min_drop_pct=defaults.get("min_drop_pct", 10))
     events, pe_notes = _upgrade_price_errors(events, store, defaults)
     routes = defaults.get("discount_routes", [])
@@ -230,7 +235,7 @@ def run_cycle(cfg: MonitorConfig, defaults: dict, source, store: Store, market: 
                 store.outbox_add(f"ping|{rule.name}|{akey}", "ping", cfg.store, ev.product.key, rule.channel,
                                  build_ping(rule, ev, payload))
     # 2) solo ahora se guarda la instantánea (los avisos ya están a salvo en la bandeja)
-    store.save_snapshot(cfg.store, products)
+    store.save_snapshot(snap_ns, products)
     if hasattr(source, "watch") and cfg.type == "shopify":
         source.watch = watch_handles({**(old or {}), **{p.key: p for p in products}}, cfg, defaults)
     # 3) ENTREGAR lo pendiente de esta tienda (incluidos fallos de ciclos anteriores)

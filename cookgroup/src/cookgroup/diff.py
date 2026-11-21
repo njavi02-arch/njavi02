@@ -40,10 +40,15 @@ def diff_products(old: dict[str, Product] | None, new: list[Product], *, min_dro
         if was_any_available and not p.available_variants and all(v.known for v in p.variants):
             events.append(Event(EventType.SOLD_OUT, p, (), detected_at=ts))
 
-        old_min, new_min = prev.min_price_cents, p.min_price_cents
-        if old_min and new_min and new_min < old_min and p.available_variants:
-            drop = (old_min - new_min) * 100 / old_min
-            if drop >= min_drop_pct:
-                events.append(Event(EventType.PRICE_DROP, p, p.available_variants,
+        # v1.6: bajada de precio POR VARIANTE (talla/color) frente a su propio precio anterior. Antes se comparaba el
+        # mínimo de todo el producto: si el color barato volvía a stock, el mínimo bajaba sin que nada se abaratara.
+        prev_price = {v.variant_id: v.price_cents for v in prev.variants if v.price_cents}
+        cheaper = tuple(v for v in p.variants if v.available and v.price_cents and v.variant_id in prev_price
+                        and (prev_price[v.variant_id] - v.price_cents) * 100 / prev_price[v.variant_id] >= min_drop_pct)
+        if cheaper:
+            old_min = min(prev_price[v.variant_id] for v in cheaper)
+            new_min = min(v.price_cents for v in cheaper)
+            if new_min < old_min:
+                events.append(Event(EventType.PRICE_DROP, p, cheaper,
                                     old_price_cents=old_min, new_price_cents=new_min, detected_at=ts))
     return events

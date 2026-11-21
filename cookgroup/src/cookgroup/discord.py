@@ -179,6 +179,10 @@ def build_embed(ev: Event, opp: Opportunity | None = None, market_note: str | No
     return payload
 
 
+class UncertainDelivery(RuntimeError):
+    """El envío pudo llegar o no (se cortó la conexión después de enviarlo)."""
+
+
 class WebhookSender:
     def __init__(self, url: str, session: requests.Session | None = None, max_retries: int = 3):
         self.url, self.session, self.max_retries = url, session or requests.Session(), max_retries
@@ -192,6 +196,10 @@ class WebhookSender:
         for attempt in range(self.max_retries):
             try:
                 r = self.session.post(self.url, params={"wait": "true"}, json=payload, timeout=15)
+            except (requests.ReadTimeout, requests.exceptions.ChunkedEncodingError) as e:
+                # v1.6: la petición SALIÓ y no sabemos si Discord la publicó. No se reintenta aquí (evita duplicados en
+                # ráfaga); el aviso queda en la bandeja como «incierto» y se reenvía UNA vez en el siguiente ciclo.
+                raise UncertainDelivery(f"Discord: resultado incierto ({type(e).__name__})") from None
             except requests.RequestException as e:   # el mensaje de requests incluye la URL (con token): no se propaga
                 if attempt == self.max_retries - 1:
                     raise RuntimeError(f"Discord: error de conexión ({type(e).__name__})") from None

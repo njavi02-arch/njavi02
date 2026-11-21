@@ -160,6 +160,7 @@ class JsonLdSource:
     timeout: float = 20.0
     session: requests.Session | None = None
     adapter: str = ""                    # v1.6: "footlocker" | "asics" → tallas desde el estado público de la ficha
+    market: str = ""                     # v1.6: país del monitor; separa ES/FR/DE/IT de una misma tienda (mismo código)
 
     def __post_init__(self):
         self.session = self.session or requests.Session()
@@ -216,6 +217,9 @@ class JsonLdSource:
                 errors += 1
                 continue
             if p:
+                if self.market:
+                    from dataclasses import replace as _rep
+                    p = _rep(p, product_id=f"{self.market}:{p.product_id}")
                 out.append(p)
         if targets and errors == len(targets):
             # v1.3: si no se pudo leer NINGUNA ficha, el ciclo falla (no se interpreta como «todo agotado/retirado»)
