@@ -97,7 +97,7 @@ def parse_product_page(html: str, *, url: str, store: str, default_currency: str
             offers = offers[0]["offers"] if isinstance(offers[0]["offers"], list) else [offers[0]["offers"]]
         for i, o in enumerate(o for o in offers if isinstance(o, dict)):
             currency = o.get("priceCurrency") or currency
-            size = p.get("size") or o.get("name") if p is not main else (o.get("name") or o.get("size"))
+            size = (p.get("size") or o.get("name") or p.get("color")) if p is not main else (o.get("name") or o.get("size"))  # Foot Locker DE/IT: variantes por color
             vsku = str(o.get("sku") or p.get("sku") or "") or None
             vid = vsku or hashlib.sha1(f"{url}|{size}|{i}".encode()).hexdigest()[:12]
             av = _available(o.get("availability"))

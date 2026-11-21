@@ -576,7 +576,7 @@ region = "eu"
 base_url = "https://www.zalando.es"
 currency = "EUR"
 listing_urls = ["https://www.zalando.es/zapatillas-hombre/"]
-product_link_pattern = "-a13.html"
+product_link_pattern = ".html"          # v1.5: era "-a13.html" (demasiado estrecho; FR/IT/DE usan -o11/-a11/-q11)
 products_per_cycle = 4
 interval_seconds = 300
 channel = "sneakers"
@@ -597,6 +597,67 @@ products_per_cycle = 4
 interval_seconds = 300
 channel = "sneakers"
 skip_kids_sizes = true
+
+# v1.5 · mercados UE verificados el 21-nov desde el navegador del dueño (JSON-LD con precio y stock)
+[[monitor]]
+name = "zalando-fr"
+ships_es = "por confirmar"
+type = "jsonld"
+store = "Zalando"
+country = "FR"
+region = "eu"
+base_url = "https://www.zalando.fr"
+currency = "EUR"
+listing_urls = ["https://www.zalando.fr/baskets-homme/"]
+product_link_pattern = ".html"
+products_per_cycle = 4
+interval_seconds = 300
+channel = "sneakers"
+
+[[monitor]]
+name = "zalando-it"
+ships_es = "por confirmar"
+type = "jsonld"
+store = "Zalando"
+country = "IT"
+region = "eu"
+base_url = "https://www.zalando.it"
+currency = "EUR"
+listing_urls = ["https://www.zalando.it/sneakers-uomo/"]
+product_link_pattern = ".html"
+products_per_cycle = 4
+interval_seconds = 300
+channel = "sneakers"
+
+[[monitor]]
+name = "footlocker-de"
+ships_es = "por confirmar"
+type = "jsonld"
+store = "Foot Locker"
+country = "DE"
+region = "eu"
+base_url = "https://www.footlocker.de"
+currency = "EUR"
+listing_urls = ["https://www.footlocker.de/de/category/herren/schuhe.html"]
+product_link_pattern = "/de/product/"
+products_per_cycle = 4
+interval_seconds = 300
+channel = "sneakers"
+
+[[monitor]]
+name = "footlocker-it"
+ships_es = "por confirmar"
+type = "jsonld"
+store = "Foot Locker"
+country = "IT"
+region = "eu"
+base_url = "https://www.footlocker.it"
+currency = "EUR"
+listing_urls = ["https://www.footlocker.it/it/category/uomo/scarpe.html"]
+product_link_pattern = "/it/product/"
+products_per_cycle = 4
+interval_seconds = 300
+channel = "sneakers"
 
 # ---------------------------------------------------------------- PINGS PERSONALES (filtros)
 # Cada regla re-publica en "pings" las alertas que cumplen TODO lo que indiques, mencionando un rol.

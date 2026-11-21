@@ -130,14 +130,15 @@ palabras = []
 [[categoria.canal]]
 nombre = "footlocker-eu"
 clase = "tienda"
-pais = ""
+pais = "DE/IT"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_footlocker_eu"
-estado = "pendiente"
+estado = "construido"
 equivalente_de = "footlocker-eu"
-falta = "Foot Locker: JSON-LD sin tallas → sin fuente aún"
-monitores = []
+falta = ""
+senales = "RESTOCK, REBAJA"
+monitores = ["footlocker-de", "footlocker-it"]
 palabras = []
 [[categoria.canal]]
 nombre = "footlocker-es"
@@ -267,14 +268,15 @@ palabras = []
 [[categoria.canal]]
 nombre = "zalando-eu"
 clase = "tienda"
-pais = ""
+pais = "FR/IT"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_zalando_eu"
-estado = "pendiente"
+estado = "construido"
 equivalente_de = "web-naranja-eu"
-falta = "Zalando: programa de afiliados/partner → sin fuente aún"
-monitores = []
+falta = ""
+senales = "RESTOCK, REBAJA"
+monitores = ["zalando-fr", "zalando-it"]
 palabras = []
 [[categoria.canal]]
 nombre = "43einhalb"

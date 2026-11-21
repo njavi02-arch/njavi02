@@ -73,7 +73,7 @@ Stocks,📊stock-otros-releases,texto,Ver cuánto stock hubo,bot de la referenci
 🤖Monitores,basket4ballers,texto,Avisos de una tienda concreta,bot (monitores),tienda,#basket4ballers,basket4ballers,,1
 🤖Monitores,bstn,texto,Avisos de una tienda concreta,bot (monitores),tienda,#bstn,bstn-eu,,1
 🤖Monitores,end,texto,Avisos de una tienda concreta,bot (monitores),tienda,#end,end-launches,,1
-🤖Monitores,footlocker-eu,texto,Avisos de una tienda concreta,bot (monitores),tienda,#footlocker-eu,,Foot Locker: JSON-LD sin tallas → sin fuente aún,5
+🤖Monitores,footlocker-eu,texto,Avisos de una tienda concreta,bot (monitores),tienda,#footlocker-eu,footlocker-de,,5
 🤖Monitores,footlocker-es,texto,Avisos de una tienda concreta,bot (monitores),tienda,#footlocker-es,footlocker-es,,1
 🤖Monitores,footshop,texto,Avisos de una tienda concreta,bot (monitores),tienda,#footshop,,probar JSON-LD → sin fuente aún,2
 🤖Monitores,luisaviaroma,texto,Avisos de una tienda concreta,bot (monitores),tienda,#luisaviaroma,,probar JSON-LD → sin fuente aún,1
@@ -91,7 +91,7 @@ Stocks,📊stock-otros-releases,texto,Ver cuánto stock hubo,bot de la referenci
 🤖Monitores,uk,texto,Ver avisos de muchas tiendas juntas,bot (monitores),región,#reino-unido,monitores con país GB: 26,,5
 🤖Monitores,yeezy-especial-monitor,texto,Avisos de una tienda concreta,bot (monitores),tema,#yeezy,"cualquier monitor, palabras clave: yeezy",,8
 🤖Monitores,web-naranja-españa,texto,Avisos de una tienda concreta,bot (monitores),tienda,#web-naranja-españa,zalando-es,,1
-🤖Monitores,web-naranja-eu,texto,Avisos de una tienda concreta,bot (monitores),tienda,#web-naranja-eu,,Zalando: programa de afiliados/partner → sin fuente aún,5
+🤖Monitores,web-naranja-eu,texto,Avisos de una tienda concreta,bot (monitores),tienda,#web-naranja-eu,"zalando-fr, zalando-it",,5
 🤖Monitores,43einhalb,texto,Avisos de una tienda concreta,bot (monitores),tienda,#43einhalb,43einhalb,,1
 🤖Monitores,timberland,texto,Avisos de una tienda concreta,bot (monitores),tema,#timberland,"cualquier monitor, palabras clave: timberland",,1
 🤖Monitores,vans,texto,Avisos de una tienda concreta,bot (monitores),tema,#vans,"cualquier monitor, palabras clave: vans",,1

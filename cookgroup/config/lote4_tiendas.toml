@@ -127,3 +127,38 @@ rebaja = "probado"
 prueba_restock = "test_tiendas_fase2[www.footlocker.es] · captura real 21-nov"
 prueba_rebaja = "test_tiendas_fase2[www.footlocker.es] · captura real 21-nov"
 lote = 4
+
+# v1.5 · mercados UE verificados el 21-nov (JSON-LD real con precio y stock). adidas DE/FR: sin offers en JSON-LD → no integrado.
+[[tienda]]
+nombre = "Zalando FR · IT"
+canal = "zalando-eu"
+pais = "FR/IT"
+web = "https://www.zalando.fr/"
+envio_es = "no (cada mercado envía a su país)"
+raffle_es = "—"
+monitores = ["zalando-fr", "zalando-it"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+tallas = "sí (variantes por talla)"
+prueba_restock = "test_tiendas_fase2[www.zalando.fr|www.zalando.it] · captura real 21-nov"
+prueba_rebaja = "test_tiendas_fase2[www.zalando.fr|www.zalando.it] · captura real 21-nov"
+lote = 5
+
+[[tienda]]
+nombre = "Foot Locker DE · IT"
+canal = "footlocker-eu"
+pais = "DE/IT"
+web = "https://www.footlocker.de/"
+envio_es = "no (cada mercado envía a su país)"
+raffle_es = "—"
+monitores = ["footlocker-de", "footlocker-it"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+tallas = "no (variantes por color: stock general por color)"
+prueba_restock = "test_tiendas_fase2[www.footlocker.de|www.footlocker.it] · captura real 21-nov"
+prueba_rebaja = "test_tiendas_fase2[www.footlocker.de|www.footlocker.it] · captura real 21-nov"
+lote = 5

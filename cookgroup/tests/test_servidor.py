@@ -63,7 +63,7 @@ def test_install_is_idempotent_and_keeps_existing(tmp_path):
     before = len(fake.calls)
     r2 = apply(d, DiscordAPI("t", "1", fake), env, log=lambda *_: None)
     assert r2["plan"].empty and len(fake.calls) == before          # segunda vez: nada que crear
-    assert r1["cards_pinned"] == 164 and r2["cards_pinned"] == 0    # tarjeta fijada una sola vez por tienda del lote
+    assert r1["cards_pinned"] == 166 and r2["cards_pinned"] == 0    # tarjeta fijada una sola vez por tienda del lote
     assert (tmp_path / "data/canales_ids.json").exists()
     assert not any(c[0] != "POST" for c in fake.calls)             # nunca borra ni edita
     names = [c["name"] for c in fake.chans]

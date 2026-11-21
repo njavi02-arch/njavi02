@@ -16,7 +16,8 @@ from cookgroup.store import Store
 
 CAP = Path(__file__).parents[1] / "docs/v12/capturas_tiendas_2026-11-21.jsonl"
 PATTERN = {"www.kickz.com": "/p/", "www.43einhalb.com": "/en/p/", "www.skatedeluxe.com": "/es/p/",
-           "www.basket4ballers.com": "/es/novedades/", "www.newbalance.es": "/es/pd/", "www.zalando.es": "-a13.html",
+           "www.basket4ballers.com": "/es/novedades/", "www.newbalance.es": "/es/pd/", "www.zalando.es": ".html", "www.zalando.fr": ".html", "www.zalando.it": ".html",
+           "www.footlocker.de": "/de/product/", "www.footlocker.it": "/it/product/",
            "www.adidas.es": ".html", "www.footlocker.es": "/es/product/", "www.game.es": None}
 
 
@@ -82,3 +83,43 @@ def test_real_jsonld_store_events(cap, tmp_path):
     assert len(got) == 2, f"{cap['h']}: bajada de precio no detectada"
     run_cycle(cfg, {"min_drop_pct": 5}, src, st, mk, send)                              # sin repetir
     assert len(got) == 2
+
+
+@pytest.mark.parametrize("cap", [c for c in caps() if PATTERN[c["h"]]], ids=[c["h"] for c in caps() if PATTERN[c["h"]]])
+def test_listing_discovers_new_product_url(cap, tmp_path):
+    """v1.5 · descubrimiento: tras la línea base, una ficha NUEVA que aparece en el listado se anuncia una vez."""
+    site = Site(cap)
+    new_url = site.url.replace(".html", "-nuevo.html") if site.url.endswith(".html") else site.url.rstrip("/") + "-nuevo/"
+    new_ld = copy.deepcopy(site.ld)
+    new_ld["url"] = new_url
+    for k in ("sku", "productGroupID"):
+        if k in new_ld:
+            new_ld[k] = str(new_ld[k]) + "-N"
+    for v in new_ld.get("hasVariant", []):
+        v["sku"] = str(v.get("sku", "")) + "-N"
+    pages = {site.url: site.ld}
+
+    def get(url, **kw):
+        u = url.split("?")[0]
+        if u in pages:
+            body = f'<html><script type="application/ld+json">{json.dumps(pages[u])}</script></html>'
+        else:
+            body = "".join(f'<a href="{p.replace(site.base, "")}">x</a>' for p in pages)
+
+        class R:
+            status_code, headers, text, content = 200, {}, body, body.encode()
+        return R()
+    site.get = get
+    src = JsonLdSource(cap["h"], site.base, listing_urls=[site.base + cap.get("listing", "/")],
+                       product_link_pattern=PATTERN[cap["h"]], session=site)
+    cfg = MonitorConfig(cap["h"], "jsonld", cap["h"], site.base, channel="sneakers", skip_kids_sizes=True)
+    st, mk, got = Store(tmp_path / "s.db"), FileMarketProvider(tmp_path / "m.json"), []
+    send = lambda p: got.append(p) or f"m{len(got)}"                                   # noqa: E731
+    run_cycle(cfg, {}, src, st, mk, send)
+    assert got == []
+    pages[new_url] = new_ld                                                             # aparece en el listado
+    run_cycle(cfg, {}, src, st, mk, send)
+    assert len(got) == 1, f"{cap['h']}: ficha nueva no descubierta"
+    assert new_url in json.dumps(got[0])
+    run_cycle(cfg, {}, src, st, mk, send)
+    assert len(got) == 1
