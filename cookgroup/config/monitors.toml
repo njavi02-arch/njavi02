@@ -479,6 +479,7 @@ listing_urls = ["https://www.footlocker.es/es/category/hombre/zapatillas.html"]
 product_link_pattern = "/es/product/"
 products_per_cycle = 4
 interval_seconds = 300          # v1.3: mínimo para JSON-LD
+page_adapter = "footlocker"      # v1.6: tallas EU/UK/US + stock online/tienda desde el estado público de la ficha
 channel = "sneakers"
 skip_kids_sizes = true
 
@@ -642,6 +643,7 @@ listing_urls = ["https://www.footlocker.de/de/category/herren/schuhe.html"]
 product_link_pattern = "/de/product/"
 products_per_cycle = 4
 interval_seconds = 300
+page_adapter = "footlocker"      # v1.6: mismo estado verificado en la ficha New Balance 9060 (21-nov)
 channel = "sneakers"
 
 [[monitor]]
@@ -657,6 +659,39 @@ listing_urls = ["https://www.footlocker.it/it/category/uomo/scarpe.html"]
 product_link_pattern = "/it/product/"
 products_per_cycle = 4
 interval_seconds = 300
+channel = "sneakers"
+
+# v1.6 · tallas por color verificadas el 21-nov (estado público de la ficha)
+[[monitor]]
+name = "asics-es"
+ships_es = "sí"
+type = "jsonld"
+store = "ASICS"
+country = "ES"
+region = "eu"
+base_url = "https://www.asics.com"
+currency = "EUR"
+listing_urls = ["https://www.asics.com/es/es-es/mens-running-shoes/c/as10201000/"]
+product_link_pattern = "/es/es-es/"
+products_per_cycle = 4
+interval_seconds = 300
+page_adapter = "asics"
+channel = "sneakers"
+
+[[monitor]]
+name = "footlocker-fr"
+ships_es = "por confirmar"
+type = "jsonld"
+store = "Foot Locker"
+country = "FR"
+region = "eu"
+base_url = "https://www.footlocker.fr"
+currency = "EUR"
+listing_urls = ["https://www.footlocker.fr/fr/category/homme/chaussures.html"]
+product_link_pattern = "/fr/product/"
+products_per_cycle = 4
+interval_seconds = 300
+page_adapter = "footlocker"
 channel = "sneakers"
 
 # ---------------------------------------------------------------- PINGS PERSONALES (filtros)

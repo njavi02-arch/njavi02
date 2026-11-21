@@ -26,17 +26,18 @@ def diff_products(old: dict[str, Product] | None, new: list[Product], *, min_dro
             if p.available_variants:
                 events.append(Event(EventType.NEW_PRODUCT, p, p.available_variants, detected_at=ts))
             continue
-        prev_v = {v.variant_id: v for v in prev.variants}
+        prev_v = {v.variant_id: v for v in prev.variants if v.known}     # v1.6: lo «desconocido» no es referencia
         was_any_available = bool(prev.available_variants)
 
         back = tuple(v for v in p.variants if v.available and (v.variant_id in prev_v) and not prev_v[v.variant_id].available)
-        added = tuple(v for v in p.variants if v.available and v.variant_id not in prev_v)
+        known_before = {v.variant_id for v in prev.variants}
+        added = tuple(v for v in p.variants if v.available and v.variant_id not in known_before)
         if back and not was_any_available:
             events.append(Event(EventType.RESTOCK, p, back, detected_at=ts))
         elif back or added:
             events.append(Event(EventType.NEW_SIZE, p, back + added, detected_at=ts))
 
-        if was_any_available and not p.available_variants:
+        if was_any_available and not p.available_variants and all(v.known for v in p.variants):
             events.append(Event(EventType.SOLD_OUT, p, (), detected_at=ts))
 
         old_min, new_min = prev.min_price_cents, p.min_price_cents

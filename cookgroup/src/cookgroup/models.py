@@ -22,6 +22,9 @@ class Variant:
     available: bool
     sku: str | None = None
     compare_at_cents: int | None = None  # precio tachado que publica la tienda (no se usa como referencia fiable)
+    known: bool = True                   # v1.6: False = la tienda no publica el estado → ni disponible ni agotada
+    alt_sizes: str | None = None         # v1.6: la misma talla en otros sistemas, tal cual la publica la tienda ("UK 9.5 · US 10.5")
+    stock_scope: str | None = None       # v1.6: "online" | "solo_tienda" | "agotada" | "desconocido" | "color"
 
 
 @dataclass(frozen=True)

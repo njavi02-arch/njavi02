@@ -113,7 +113,18 @@ def build_embed(ev: Event, opp: Opportunity | None = None, market_note: str | No
         fields.append({"name": "Temperatura", "value": f"{temp}°", "inline": True})
     if sizes:
         fields.append({"name": "Tallas" if ev.type in (EventType.NEW_SIZE, EventType.RESTOCK) else "Tallas disponibles",
-                       "value": ", ".join(size_label(v.title) for v in ev.variants if v.title != "Oferta")[:1000], "inline": False})
+                       "value": ", ".join(size_label(v.title) + (f" ({v.alt_sizes})" if v.alt_sizes else "")
+                                          for v in ev.variants if v.title != "Oferta")[:1000], "inline": False})
+    scopes = {v.stock_scope for v in ev.variants if v.stock_scope}
+    if scopes == {"color"}:
+        fields.append({"name": "Disponibilidad", "value": "La tienda solo publica stock **por color**; no indica qué "
+                                                          "tallas hay. Comprueba tu talla en la ficha.", "inline": False})
+    elif "online" in scopes:
+        others = [v for v in p.variants if v.stock_scope == "solo_tienda"]
+        txt = "Stock **online** confirmado por la ficha para las tallas indicadas."
+        if others:
+            txt += f" Solo en tienda física (no se puede pedir online): {', '.join(v.title for v in others[:8])}."
+        fields.append({"name": "Disponibilidad", "value": txt[:1000], "inline": False})
     if launch_collection:
         fields.append({"name": "Fecha", "value": "La tienda no la publica en su catálogo: consúltala en el enlace", "inline": False})
     buyable = {normalize_size(v.title) for v in ev.variants if v.available}
@@ -139,7 +150,12 @@ def build_embed(ev: Event, opp: Opportunity | None = None, market_note: str | No
     one = [v for v in ev.variants if v.title != "Oferta"]
     size_title = None
     sized = [v for v in one if normalize_size(v.title) not in (None, "Única")]
-    if ev.type in (EventType.NEW_SIZE, EventType.RESTOCK) and not is_deal and not sized:
+    by_color = bool(one) and all(v.stock_scope == "color" for v in one)
+    if ev.type in (EventType.NEW_SIZE, EventType.RESTOCK) and not is_deal and by_color:
+        # v1.6: la fuente solo confirma stock por COLOR → el aviso dice exactamente eso
+        size_title = (f"🔄 VUELVE A STOCK EL COLOR {one[0].title.upper()} (sin dato de tallas)" if len(one) == 1
+                      else f"🔄 VUELVEN A STOCK {len(one)} COLORES (sin dato de tallas)")
+    elif ev.type in (EventType.NEW_SIZE, EventType.RESTOCK) and not is_deal and not sized:
         size_title = "🔄 VUELVE A STOCK (la tienda no indica tallas)"     # v0.9: sin stock por talla no se anuncia una talla
     elif ev.type in (EventType.NEW_SIZE, EventType.RESTOCK) and not is_deal:
         size_title = f"🔄 VUELVE LA {size_label(one[0].title).upper()}" if len(one) == 1 else (

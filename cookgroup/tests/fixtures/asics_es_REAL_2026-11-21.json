@@ -1,0 +1,207 @@
+{
+ "_source": "CAPTURA REAL 21-nov-2026 ~19:05 Madrid desde el navegador del dueño (solo lectura): asics.com/es/es-es, <script id='mobify-data'> de dos fichas (un color cada una) del GEL-KAYANO 32 (masterId 1011C052). size.values[*] = {value: talla US, name: talla EU, orderable}.",
+ "products": [
+  {
+   "url": "/es/es-es/gel-kayano-32/p/1011C052-001.html",
+   "title": "GEL-KAYANO 32",
+   "master": "1011C052",
+   "color": "1011C052.001",
+   "colorName": "Black/Graphite Grey",
+   "price": 140,
+   "list": 200,
+   "sizes": [
+    {
+     "us": "6",
+     "eu": "39",
+     "orderable": false
+    },
+    {
+     "us": "6.5",
+     "eu": "39.5",
+     "orderable": false
+    },
+    {
+     "us": "7",
+     "eu": "40",
+     "orderable": true
+    },
+    {
+     "us": "7.5",
+     "eu": "40.5",
+     "orderable": true
+    },
+    {
+     "us": "8",
+     "eu": "41.5",
+     "orderable": true
+    },
+    {
+     "us": "8.5",
+     "eu": "42",
+     "orderable": true
+    },
+    {
+     "us": "9",
+     "eu": "42.5",
+     "orderable": true
+    },
+    {
+     "us": "9.5",
+     "eu": "43.5",
+     "orderable": true
+    },
+    {
+     "us": "10",
+     "eu": "44",
+     "orderable": true
+    },
+    {
+     "us": "10.5",
+     "eu": "44.5",
+     "orderable": true
+    },
+    {
+     "us": "11",
+     "eu": "45",
+     "orderable": true
+    },
+    {
+     "us": "11.5",
+     "eu": "46",
+     "orderable": false
+    },
+    {
+     "us": "12",
+     "eu": "46.5",
+     "orderable": false
+    },
+    {
+     "us": "12.5",
+     "eu": "47",
+     "orderable": false
+    },
+    {
+     "us": "13",
+     "eu": "48",
+     "orderable": false
+    },
+    {
+     "us": "14",
+     "eu": "49",
+     "orderable": false
+    },
+    {
+     "us": "15",
+     "eu": "50.5",
+     "orderable": false
+    },
+    {
+     "us": "16",
+     "eu": "51.5",
+     "orderable": false
+    }
+   ]
+  },
+  {
+   "url": "/es/es-es/gel-kayano-32/p/1011C052-404.html",
+   "title": "GEL-KAYANO 32",
+   "master": "1011C052",
+   "color": "1011C052.404",
+   "colorName": "Twilight Blue/Anzu",
+   "price": 140,
+   "list": 200,
+   "sizes": [
+    {
+     "us": "6",
+     "eu": "39",
+     "orderable": true
+    },
+    {
+     "us": "6.5",
+     "eu": "39.5",
+     "orderable": true
+    },
+    {
+     "us": "7",
+     "eu": "40",
+     "orderable": true
+    },
+    {
+     "us": "7.5",
+     "eu": "40.5",
+     "orderable": true
+    },
+    {
+     "us": "8",
+     "eu": "41.5",
+     "orderable": true
+    },
+    {
+     "us": "8.5",
+     "eu": "42",
+     "orderable": true
+    },
+    {
+     "us": "9",
+     "eu": "42.5",
+     "orderable": true
+    },
+    {
+     "us": "9.5",
+     "eu": "43.5",
+     "orderable": true
+    },
+    {
+     "us": "10",
+     "eu": "44",
+     "orderable": true
+    },
+    {
+     "us": "10.5",
+     "eu": "44.5",
+     "orderable": true
+    },
+    {
+     "us": "11",
+     "eu": "45",
+     "orderable": true
+    },
+    {
+     "us": "11.5",
+     "eu": "46",
+     "orderable": true
+    },
+    {
+     "us": "12",
+     "eu": "46.5",
+     "orderable": true
+    },
+    {
+     "us": "12.5",
+     "eu": "47",
+     "orderable": true
+    },
+    {
+     "us": "13",
+     "eu": "48",
+     "orderable": true
+    },
+    {
+     "us": "14",
+     "eu": "49",
+     "orderable": true
+    },
+    {
+     "us": "15",
+     "eu": "50.5",
+     "orderable": false
+    },
+    {
+     "us": "16",
+     "eu": "51.5",
+     "orderable": false
+    }
+   ]
+  }
+ ]
+}

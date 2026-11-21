@@ -1,0 +1,357 @@
+{
+ "_source": "CAPTURA REAL 21-nov-2026 ~19:00 Madrid desde el navegador del dueño (solo lectura): footlocker.es, estado público window.footlocker.STATE_FROM_SERVER de cada ficha (api.productDetails.getDetails.data). Se guardan solo los campos usados. uk/us = null cuando no se llegaron a leer (salida truncada). 'btn' = lo que muestra el selector visible.",
+ "products": [
+  {
+   "url": "/es/product/nike-mind-001-hombre-zapatillas/314627099204.html",
+   "model": "Nike Mind 001 - Hombre Zapatillas",
+   "sku": "314627099204",
+   "color": "Work Blue-Hydrogen Blue-Lt Lemon Twist",
+   "price": 89.99,
+   "sizes": [
+    {
+     "eu": "40",
+     "online": true,
+     "store": true,
+     "any": true,
+     "uk": "6 (EU 40)",
+     "us": "7",
+     "suf": "070"
+    },
+    {
+     "eu": "41",
+     "online": true,
+     "store": true,
+     "any": true,
+     "uk": "7",
+     "us": "8",
+     "suf": "080"
+    },
+    {
+     "eu": "42.5",
+     "online": true,
+     "store": true,
+     "any": true,
+     "uk": "8",
+     "us": "9",
+     "suf": "090"
+    },
+    {
+     "eu": "44",
+     "online": true,
+     "store": true,
+     "any": true,
+     "uk": "9",
+     "us": "10",
+     "suf": "100"
+    },
+    {
+     "eu": "45",
+     "online": false,
+     "store": false,
+     "any": false,
+     "uk": "10",
+     "us": "11",
+     "suf": "110"
+    },
+    {
+     "eu": "46",
+     "online": false,
+     "store": false,
+     "any": false,
+     "uk": "11",
+     "us": "12",
+     "suf": "120"
+    },
+    {
+     "eu": "47.5",
+     "online": false,
+     "store": false,
+     "any": false,
+     "uk": "12",
+     "us": "13",
+     "suf": "130"
+    }
+   ]
+  },
+  {
+   "url": "/es/product/jordan-1-low-se-magic-ball-hombre-zapatillas/314110019404.html",
+   "model": "Jordan 1 Low Se Magic Ball - Hombre Zapatillas",
+   "sku": "314110019404",
+   "color": "Metallic Silver-Action Green-Black",
+   "price": 139.99,
+   "sizes": [
+    {
+     "eu": "40",
+     "online": true,
+     "store": true,
+     "any": true,
+     "uk": "6",
+     "us": "7",
+     "suf": "070"
+    },
+    {
+     "eu": "40.5",
+     "online": false,
+     "store": true,
+     "any": true,
+     "uk": "6.5",
+     "us": "7.5",
+     "suf": "075"
+    },
+    {
+     "eu": "41",
+     "online": false,
+     "store": true,
+     "any": true,
+     "uk": "7",
+     "us": "8",
+     "suf": "080"
+    },
+    {
+     "eu": "42",
+     "online": false,
+     "store": true,
+     "any": true,
+     "uk": "7.5",
+     "us": "8.5",
+     "suf": "085"
+    },
+    {
+     "eu": "42.5",
+     "online": false,
+     "store": true,
+     "any": true,
+     "uk": "8",
+     "us": "9",
+     "suf": "090"
+    },
+    {
+     "eu": "43",
+     "online": false,
+     "store": true,
+     "any": true,
+     "uk": "8.5",
+     "us": "9.5",
+     "suf": "095"
+    },
+    {
+     "eu": "44",
+     "online": false,
+     "store": true,
+     "any": true,
+     "uk": "9",
+     "us": "10",
+     "suf": "100"
+    },
+    {
+     "eu": "44.5",
+     "online": false,
+     "store": true,
+     "any": true,
+     "uk": "9.5",
+     "us": "10.5",
+     "suf": "105"
+    },
+    {
+     "eu": "45",
+     "online": false,
+     "store": true,
+     "any": true,
+     "uk": "10",
+     "us": "11",
+     "suf": "110"
+    },
+    {
+     "eu": "46",
+     "online": false,
+     "store": true,
+     "any": true,
+     "uk": "11",
+     "us": "12",
+     "suf": "120"
+    },
+    {
+     "eu": "47.5",
+     "online": false,
+     "store": false,
+     "any": false,
+     "uk": "12",
+     "us": "13",
+     "suf": "130"
+    }
+   ]
+  },
+  {
+   "url": "/es/product/nike-air-force-1-low-hombre-zapatillas/314101996404.html",
+   "model": "Nike Air Force 1 Low - Hombre Zapatillas",
+   "sku": "314101996404",
+   "color": "White-White",
+   "price": 119.99,
+   "sizes": [
+    {
+     "eu": "38.5",
+     "online": true,
+     "store": true,
+     "any": true,
+     "uk": "5.5",
+     "us": "6",
+     "suf": "060"
+    },
+    {
+     "eu": "39",
+     "online": true,
+     "store": true,
+     "any": true,
+     "uk": "6 (EU 39)",
+     "us": "6.5",
+     "suf": "065"
+    },
+    {
+     "eu": "40",
+     "online": true,
+     "store": true,
+     "any": true,
+     "uk": "6 (EU 40)",
+     "us": "7",
+     "suf": "070"
+    },
+    {
+     "eu": "40.5",
+     "online": true,
+     "store": true,
+     "any": true,
+     "uk": "6.5",
+     "us": "7.5",
+     "suf": "075"
+    },
+    {
+     "eu": "41",
+     "online": true,
+     "store": true,
+     "any": true,
+     "uk": "7",
+     "us": "8",
+     "suf": "080"
+    },
+    {
+     "eu": "42",
+     "online": false,
+     "store": true,
+     "any": true,
+     "uk": "7.5",
+     "us": "8.5",
+     "suf": "085"
+    },
+    {
+     "eu": "42.5",
+     "online": true,
+     "store": true,
+     "any": true,
+     "uk": "8",
+     "us": "9",
+     "suf": "090"
+    },
+    {
+     "eu": "43",
+     "online": false,
+     "store": true,
+     "any": true,
+     "uk": "8.5",
+     "us": "9.5",
+     "suf": "095"
+    },
+    {
+     "eu": "44",
+     "online": true,
+     "store": true,
+     "any": true,
+     "uk": "9",
+     "us": "10",
+     "suf": "100"
+    },
+    {
+     "eu": "44.5",
+     "online": true,
+     "store": true,
+     "any": true,
+     "uk": "9.5",
+     "us": "10.5",
+     "suf": "105"
+    },
+    {
+     "eu": "45",
+     "online": true,
+     "store": true,
+     "any": true,
+     "uk": null,
+     "us": null,
+     "suf": null
+    },
+    {
+     "eu": "45.5",
+     "online": true,
+     "store": true,
+     "any": true,
+     "uk": null,
+     "us": null,
+     "suf": null
+    },
+    {
+     "eu": "46",
+     "online": true,
+     "store": true,
+     "any": true,
+     "uk": null,
+     "us": null,
+     "suf": null
+    },
+    {
+     "eu": "47",
+     "online": false,
+     "store": false,
+     "any": true,
+     "uk": null,
+     "us": null,
+     "suf": null
+    },
+    {
+     "eu": "47.5",
+     "online": false,
+     "store": true,
+     "any": true,
+     "uk": null,
+     "us": null,
+     "suf": null
+    },
+    {
+     "eu": "48.5",
+     "online": true,
+     "store": true,
+     "any": true,
+     "uk": null,
+     "us": null,
+     "suf": null
+    },
+    {
+     "eu": "49.5",
+     "online": true,
+     "store": true,
+     "any": true,
+     "uk": null,
+     "us": null,
+     "suf": null
+    },
+    {
+     "eu": "50.5",
+     "online": true,
+     "store": false,
+     "any": true,
+     "uk": null,
+     "us": null,
+     "suf": null
+    }
+   ]
+  }
+ ],
+ "selector_vs_inventario": "El selector visible muestra 'Agotadas' solo cuando inventoryAvailable=false; una talla con stock solo en tienda (Jordan 40.5–46) aparece elegible. Por eso el selector NO prueba stock online."
+}

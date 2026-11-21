@@ -126,6 +126,8 @@ restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_fase2[www.footlocker.es] · captura real 21-nov"
 prueba_rebaja = "test_tiendas_fase2[www.footlocker.es] · captura real 21-nov"
+tallas = "sí (v1.6): EU con UK/US; stock online separado de «solo tienda»"
+prueba_tallas = "test_tallas_por_color · capturas reales 21-nov (3 fichas)"
 lote = 4
 
 # v1.5 · mercados UE verificados el 21-nov (JSON-LD real con precio y stock). adidas DE/FR: sin offers en JSON-LD → no integrado.
@@ -147,18 +149,34 @@ prueba_rebaja = "test_tiendas_fase2[www.zalando.fr|www.zalando.it] · captura re
 lote = 5
 
 [[tienda]]
-nombre = "Foot Locker DE · IT"
+nombre = "Foot Locker DE · IT · FR"
 canal = "footlocker-eu"
-pais = "DE/IT"
+pais = "DE/IT/FR"
 web = "https://www.footlocker.de/"
 envio_es = "no (cada mercado envía a su país)"
 raffle_es = "—"
-monitores = ["footlocker-de", "footlocker-it"]
+monitores = ["footlocker-de", "footlocker-it", "footlocker-fr"]
 raffle = "sin-fuente"
 lanzamiento = "por-probar"
 restock = "probado"
 rebaja = "probado"
-tallas = "no (variantes por color: stock general por color)"
+tallas = "FR y DE: sí (estado de la ficha, v1.6); IT: solo stock por color (JSON-LD)"
 prueba_restock = "test_tiendas_fase2[www.footlocker.de|www.footlocker.it] · captura real 21-nov"
 prueba_rebaja = "test_tiendas_fase2[www.footlocker.de|www.footlocker.it] · captura real 21-nov"
 lote = 5
+
+[[tienda]]
+nombre = "ASICS ES"
+canal = "asics"
+pais = "ES"
+web = "https://www.asics.com/es/es-es/"
+envio_es = "sí (tienda española)"
+raffle_es = "—"
+monitores = ["asics-es"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "por-probar"
+tallas = "sí (v1.6): por color, talla EU con su US; «pedible online»"
+prueba_restock = "test_tallas_por_color[asics] · captura real 21-nov (2 colores)"
+lote = 6

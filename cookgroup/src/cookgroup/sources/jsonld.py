@@ -102,7 +102,8 @@ def parse_product_page(html: str, *, url: str, store: str, default_currency: str
             vid = vsku or hashlib.sha1(f"{url}|{size}|{i}".encode()).hexdigest()[:12]
             av = _available(o.get("availability"))
             price = _cents(o.get("price") or o.get("lowPrice"))
-            variants.append(Variant(vid, str(size or "Única"), price, bool(av), vsku))
+            scope = "color" if (p is not main and not p.get("size") and not o.get("name") and p.get("color")) else None
+            variants.append(Variant(vid, str(size or "Única"), price, bool(av), vsku, stock_scope=scope))
     if not variants:
         return None
     pid = sku or hashlib.sha1(url.encode()).hexdigest()[:16]
@@ -132,6 +133,7 @@ class JsonLdSource:
     products_per_cycle: int = 6
     timeout: float = 20.0
     session: requests.Session | None = None
+    adapter: str = ""                    # v1.6: "footlocker" | "asics" → tallas desde el estado público de la ficha
 
     def __post_init__(self):
         self.session = self.session or requests.Session()
@@ -175,7 +177,12 @@ class JsonLdSource:
         out, errors = [], 0
         for u in targets:
             try:
-                p = parse_product_page(self._get(u), url=u, store=self.store, default_currency=self.currency)
+                html = self._get(u)
+                if self.adapter:
+                    from .page_state import ADAPTERS
+                    p = ADAPTERS[self.adapter](html, url=u, store=self.store, default_currency=self.currency)
+                else:
+                    p = parse_product_page(html, url=u, store=self.store, default_currency=self.currency)
             except SourceError as e:
                 if "anti-bot" in str(e) or "denegado" in str(e):
                     raise

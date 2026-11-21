@@ -27,7 +27,7 @@ def make_source(mcfg):
         from .sources.jsonld import JsonLdSource
         return JsonLdSource(mcfg.store, mcfg.base_url, mcfg.currency, listing_urls=mcfg.listing_urls,
                             product_link_pattern=mcfg.product_link_pattern, watch_urls=mcfg.watch_urls,
-                            products_per_cycle=mcfg.products_per_cycle)
+                            products_per_cycle=mcfg.products_per_cycle, adapter=mcfg.page_adapter)
     if mcfg.type == "rss":
         return RssSource(mcfg.store, mcfg.base_url, mcfg.currency)
     raise ValueError(f"tipo de fuente desconocido: {mcfg.type}")

@@ -46,6 +46,7 @@ class MonitorConfig:
     product_link_pattern: str = "/p/"
     watch_urls: list[str] = field(default_factory=list)
     products_per_cycle: int = 6      # misma tienda con varios dominios (.fr/.eu) → una sola alerta
+    page_adapter: str = ""           # v1.6: "footlocker" | "asics" (tallas desde el estado público de la ficha)
 
 
 @dataclass

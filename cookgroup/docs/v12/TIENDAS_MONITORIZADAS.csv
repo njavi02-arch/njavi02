@@ -41,6 +41,8 @@ zalando-fr,Zalando,FR,jsonld,producto nuevo · reposición (por talla si la fich
 zalando-it,Zalando,IT,jsonld,producto nuevo · reposición (por talla si la ficha la da) · bajada de precio,300,#zalando-eu,sí (21-nov),probado localmente,no (falta token)
 footlocker-de,Foot Locker,DE,jsonld,producto nuevo · reposición (por talla si la ficha la da) · bajada de precio,300,#footlocker-eu,sí (21-nov),probado localmente,no (falta token)
 footlocker-it,Foot Locker,IT,jsonld,producto nuevo · reposición (por talla si la ficha la da) · bajada de precio,300,#footlocker-eu,sí (21-nov),probado localmente,no (falta token)
+asics-es,ASICS,ES,jsonld,producto nuevo · reposición (por talla si la ficha la da) · bajada de precio,300,#asics,sí (21-nov),probado localmente,no (falta token)
+footlocker-fr,Foot Locker,FR,jsonld,producto nuevo · reposición (por talla si la ficha la da) · bajada de precio,300,#footlocker-eu,sí (21-nov),probado localmente,no (falta token)
 shop:plaza.dk,Plaza Dk,DK,shopify,producto nuevo · reposición por talla · bajada de precio,60,#plaza,sí (21-nov),probado localmente,no (falta token)
 shop:blackboxstore.com,blackboxstore.com,IT,shopify,producto nuevo · reposición por talla · bajada de precio,60,#blackbox,sí (21-nov),probado localmente,no (falta token)
 shop:shop.rfef.es,shop.rfef.es,ES,shopify,producto nuevo · reposición por talla · bajada de precio,60,#rfef,sí (21-nov),probado localmente,no (falta token)

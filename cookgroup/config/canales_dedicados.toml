@@ -43,14 +43,15 @@ palabras = []
 [[categoria.canal]]
 nombre = "asics"
 clase = "tienda"
-pais = ""
+pais = "ES"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_asics"
-estado = "pendiente"
+estado = "construido"
 equivalente_de = "asics"
-falta = "asics.com: probar JSON-LD → sin fuente aún"
-monitores = []
+falta = ""
+senales = "RESTOCK"
+monitores = ["asics-es"]
 palabras = []
 [[categoria.canal]]
 nombre = "asos"
@@ -130,7 +131,7 @@ palabras = []
 [[categoria.canal]]
 nombre = "footlocker-eu"
 clase = "tienda"
-pais = "DE/IT"
+pais = "DE/IT/FR"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_footlocker_eu"
@@ -138,7 +139,7 @@ estado = "construido"
 equivalente_de = "footlocker-eu"
 falta = ""
 senales = "RESTOCK, REBAJA"
-monitores = ["footlocker-de", "footlocker-it"]
+monitores = ["footlocker-de", "footlocker-fr", "footlocker-it"]
 palabras = []
 [[categoria.canal]]
 nombre = "footlocker-es"
