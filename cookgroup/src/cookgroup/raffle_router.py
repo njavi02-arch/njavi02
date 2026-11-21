@@ -19,7 +19,11 @@ LABEL = "RAFFLE"
 SCHEMA = """CREATE TABLE IF NOT EXISTS delivery_times (
   id INTEGER PRIMARY KEY AUTOINCREMENT, raffle_key TEXT, kind TEXT, channel TEXT, store TEXT,
   published_ts REAL, detected_ts REAL, sent_ts REAL, discord_ts REAL,
-  message_id TEXT, channel_id TEXT, guild_id TEXT, prueba INTEGER DEFAULT 0)"""
+  message_id TEXT, channel_id TEXT, guild_id TEXT, prueba INTEGER DEFAULT 0, error TEXT)"""
+
+
+class DeliveryPending(RuntimeError):
+    """Algún canal no confirmó el envío: el aviso queda pendiente y se reintenta SOLO en esos canales."""
 
 
 @dataclass
@@ -69,14 +73,19 @@ class RaffleRouter:
         self.detected_ts: float | None = None
         with store._lock:
             store.db.execute(SCHEMA)
+            cols = {r[1] for r in store.db.execute("PRAGMA table_info(delivery_times)")}
+            if "error" not in cols:
+                store.db.execute("ALTER TABLE delivery_times ADD COLUMN error TEXT")
             store.db.commit()
 
     # ------------------------------------------------------------------ envío
     def emit(self, kind: str, r, payload: dict) -> list[dict]:
         detected = self.detected_ts or self.clock()
         users = list(self.wants(r)) if (self.wants and kind in ("apertura", "recordatorio")) else []
-        out = []
+        out, failed = [], []
         for t in self.targets:
+            if self._delivered(r.key, kind, t.channel):
+                continue                                   # reintento: este canal ya lo confirmó
             p = _label(payload, LABEL) if t.labelled else copy.deepcopy(payload)
             if self.prueba:
                 p = _label(p, "PRUEBA")
@@ -88,26 +97,37 @@ class RaffleRouter:
                 p["allowed_mentions"] = {"parse": []}
             old = self._card(r.key, t.channel) if kind in ("cambio de plazo", "cierre", "cierre por plazo") else None
             sent = self.clock()
-            m = t.sender.send_full(p) or {}
+            try:
+                m = t.sender.send_full(p) or {}
+            except Exception as e:  # noqa: BLE001 — Discord caído o rechazo: queda pendiente, se reintenta
+                self._record(r, kind, t.channel, detected, sent, {}, error=str(e)[:200])
+                failed.append(t.channel)
+                continue
             if old and kind != "recordatorio" and getattr(r, "_card_payload", None):
                 try:   # la ficha original refleja el nuevo plazo / el cierre
                     t.sender.edit(old, _label(r._card_payload, LABEL) if t.labelled else r._card_payload)
                 except Exception:   # noqa: BLE001 — editar es una mejora; el aviso nuevo ya ha salido
                     pass
-            row = self._record(r, kind, t.channel, detected, sent, m)
-            out.append(row)
+            out.append(self._record(r, kind, t.channel, detected, sent, m))
+        if failed:
+            raise DeliveryPending(f"{r.key} {kind}: pendiente en {', '.join(failed)}")
         return out
 
+    def _delivered(self, key, kind, channel) -> bool:
+        with self.s._lock:
+            return self.s.db.execute("SELECT 1 FROM delivery_times WHERE raffle_key=? AND kind=? AND channel=? AND message_id "
+                                     "IS NOT NULL", (key, kind, channel)).fetchone() is not None
+
     # ------------------------------------------------------------------ registro
-    def _record(self, r, kind, channel, detected, sent, m) -> dict:
+    def _record(self, r, kind, channel, detected, sent, m, error=None) -> dict:
         mid, cid = (str(m.get("id")) if m.get("id") else None), (str(m.get("channel_id")) if m.get("channel_id") else None)
         row = {"raffle_key": r.key, "kind": kind, "channel": channel, "store": r.store,
                "published_ts": getattr(r, "published_ts", None), "detected_ts": detected, "sent_ts": sent,
                "discord_ts": _discord_ts(m), "message_id": mid, "channel_id": cid, "guild_id": self.guild,
-               "prueba": int(self.prueba)}
+               "prueba": int(self.prueba), "error": error}
         with self.s._lock:
             self.s.db.execute("INSERT INTO delivery_times(raffle_key, kind, channel, store, published_ts, detected_ts, sent_ts, "
-                              "discord_ts, message_id, channel_id, guild_id, prueba) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+                              "discord_ts, message_id, channel_id, guild_id, prueba, error) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
                               tuple(row.values()))
             if mid:   # también cuenta como entrega del canal (actividad, último mensaje)
                 key = f"raffle|{channel}|{r.key}|{kind}|{sent:.3f}"
@@ -161,3 +181,16 @@ def raffle_wants(profiles):
                 continue
             yield p.member_id
     return f
+
+
+def pending(store) -> list[dict]:
+    """Avisos de raffle que fallaron en algún canal y aún no se han confirmado (para el panel y ESTADO)."""
+    with store._lock:
+        try:
+            cur = store.db.execute(
+                "SELECT d.raffle_key, d.kind, d.channel, MAX(d.sent_ts), d.error FROM delivery_times d WHERE d.error IS NOT NULL "
+                "AND NOT EXISTS (SELECT 1 FROM delivery_times o WHERE o.raffle_key=d.raffle_key AND o.kind=d.kind "
+                "AND o.channel=d.channel AND o.message_id IS NOT NULL) GROUP BY d.raffle_key, d.kind, d.channel")
+        except Exception:   # noqa: BLE001
+            return []
+        return [dict(zip(("raffle_key", "kind", "channel", "last_try_ts", "error"), x)) for x in cur.fetchall()]

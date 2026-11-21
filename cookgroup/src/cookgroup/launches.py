@@ -373,13 +373,24 @@ def run_launch_cycle(cfg, defaults: dict, source, store, senders: dict[str, Call
     if raffle_board is not None:
         from .raffles import from_bstn
         base = not raffle_board.baselined(cfg.store)     # primer arranque: el catálogo existente se registra en silencio
+        from .raffle_router import DeliveryPending
+        pending = 0
         for it in items:
             if it.raffle:
-                done = raffle_board.ingest(from_bstn(it, now_ts), now_ts, baseline=base)
+                try:
+                    done = raffle_board.ingest(from_bstn(it, now_ts), now_ts, baseline=base)
+                except DeliveryPending as e:      # Discord falló: no se guarda el estado → se reintenta el próximo ciclo
+                    log.warning("raffle pendiente de entrega: %s", e)
+                    pending += 1
+                    continue
                 sent += len([d for d in done if d != "registrado"])
         if base:
             raffle_board.mark_baselined(cfg.store, now_ts)
-        sent += len(raffle_board.tick(now_ts))
+        try:
+            sent += len(raffle_board.tick(now_ts))
+        except DeliveryPending as e:
+            log.warning("recordatorio pendiente de entrega: %s", e)
+            pending += 1
     if first_run:
         dg = build_launch_digest(states, now, title=f"Resumen inicial — {cfg.store}: raffles abiertos y próximos lanzamientos")
         send = senders.get("digest") or senders.get("launch")

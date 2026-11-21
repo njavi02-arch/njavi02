@@ -1,0 +1,205 @@
+{
+ "_source": "https://www.bstn.com/eu_es/men/upcoming — __NEXT_DATA__ capturado 2026-11-21 ~18:15 Europe/Madrid vía el Chrome del dueño. Las 2 fichas de raffle (Cactus Jack x GTA VI AF1 Black/White) copiadas con sus valores reales de ese momento (campos que usa el monitor; precio de la White no leído). El resto de productos se conserva de la captura del 19-nov para mantener el tamaño del listado.",
+ "page": "/[gender]/[level2]/[level3]",
+ "props": {
+  "pageProps": {
+   "serverState": {
+    "initialResults": {
+     "magento2_eu_products": {
+      "results": [
+       {
+        "index": "magento2_eu_products",
+        "nbHits": 14,
+        "hitsPerPage": 96,
+        "hits": [
+         {
+          "article_number": "JJ7604-001",
+          "name": "X CACTUS JACK X GTA VI AIR FORCE 1 ‚Black‘",
+          "brand": "Nike",
+          "url": "",
+          "raffle_url": "nike-x-cactus-jack-x-gta-vi-air-force-1-black-jj7604-001-0368004",
+          "image_url": "",
+          "release_date_row": 0,
+          "release_date": "",
+          "raffleends": "20. Nov | 15:00 CET",
+          "coming_soon": "No",
+          "raffle": "Yes",
+          "raffle_is_active": "No",
+          "raffle_is_expired": "Yes",
+          "app_only": false,
+          "instore_only": false,
+          "discount.EUR.default": 0,
+          "price.EUR.default": 139.99
+         },
+         {
+          "article_number": "JJ7602-100",
+          "name": "X CACTUS JACK X GTA VI AIR FORCE 1 ‚White‘ ",
+          "brand": "Nike",
+          "url": "",
+          "raffle_url": "nike-x-cactus-jack-x-gta-vi-air-force-1-white-jj7602-100-0368003",
+          "image_url": "",
+          "release_date_row": 0,
+          "release_date": "",
+          "raffleends": "20. Nov | 15:00 CET",
+          "coming_soon": "No",
+          "raffle": "Yes",
+          "raffle_is_active": "No",
+          "raffle_is_expired": "Yes",
+          "app_only": false,
+          "instore_only": false,
+          "discount.EUR.default": 0
+         },
+         {
+          "article_number": "1203B194-200",
+          "brand": "asics",
+          "name": "x STORY MFG. GEL-TRANSCEND FJ",
+          "url": "p/asics-x-story-mfg-gel-transcend-fj-1203b194-200-0358320",
+          "raffle_url": "",
+          "image_url": "https://img.bstn.com/card-default/asics/asics-x-story-mfg-gel-transcend-fj-1203b194-200-0358320/1203B194-200/1203B194-200-01.jpg",
+          "coming_soon": "Yes",
+          "release_date": "20. Nov | 0:00 CET",
+          "release_date_row": 1795129200,
+          "first_release_date": "2026-11-19 23:00:00",
+          "raffle": "No",
+          "raffle_is_active": "No",
+          "raffle_is_expired": "No",
+          "app_only": false,
+          "instore_only": false,
+          "price.EUR.default": 179.99,
+          "discount.EUR.default": 0,
+          "sizefootwear_conf": {
+           "level0": [
+            "EU"
+           ],
+           "level1": [
+            "EU /// 36",
+            "EU /// 37",
+            "EU /// 38",
+            "EU /// 39",
+            "EU /// 40",
+            "EU /// 41",
+            "EU /// 42",
+            "EU /// 43",
+            "EU /// 44",
+            "EU /// 45",
+            "EU /// 46",
+            "EU /// 48"
+           ]
+          }
+         },
+         {
+          "article_number": "IW6306-001",
+          "brand": "Nike",
+          "name": "x Carhartt WIP Air Max Goadome Low",
+          "url": "r/nike-x-carhartt-wip-air-max-goadome-low-iw6306-001-0365606",
+          "raffle_url": "",
+          "image_url": "https://img.bstn.com/card-default/nike/nike-x-carhartt-wip-air-max-goadome-low-iw6306-001-0365606/IW6306-001/IW6306-001-01.jpg",
+          "coming_soon": "Yes",
+          "release_date": "20. Nov | 9:00 CET",
+          "release_date_row": 1795161600,
+          "first_release_date": "2026-11-20 08:00:00",
+          "raffle": "No",
+          "raffle_is_active": "No",
+          "raffle_is_expired": "No",
+          "app_only": false,
+          "instore_only": false,
+          "price.EUR.default": 189.99,
+          "discount.EUR.default": 0,
+          "sizefootwear_conf": {
+           "level0": [
+            "EU"
+           ],
+           "level1": [
+            "EU /// 40",
+            "EU /// 41",
+            "EU /// 42",
+            "EU /// 43",
+            "EU /// 44",
+            "EU /// 45",
+            "EU /// 46",
+            "EU /// 47",
+            "EU /// 48"
+           ]
+          }
+         },
+         {
+          "article_number": "IF4396-001",
+          "brand": "Jordan",
+          "name": "AIR JORDAN 3 RETRO OG 'NOT NICE'",
+          "url": "r/jordan-air-jordan-3-retro-og-if4396-001-0361223",
+          "raffle_url": "",
+          "image_url": "https://img.bstn.com/card-default/jordan/jordan-air-jordan-3-retro-og-if4396-001-0361223/IF4396-001/IF4396-001-01.jpg",
+          "coming_soon": "Yes",
+          "release_date": "21. Nov | 9:00 CET",
+          "release_date_row": 1795248000,
+          "first_release_date": "2026-11-21 08:00:00",
+          "raffle": "No",
+          "raffle_is_active": "No",
+          "raffle_is_expired": "No",
+          "app_only": false,
+          "instore_only": false,
+          "price.EUR.default": 209.99,
+          "discount.EUR.default": 0,
+          "sizefootwear_conf": {
+           "level0": [
+            "EU"
+           ],
+           "level1": [
+            "EU /// 40",
+            "EU /// 41",
+            "EU /// 42",
+            "EU /// 43",
+            "EU /// 44",
+            "EU /// 45",
+            "EU /// 46",
+            "EU /// 47",
+            "EU /// 48",
+            "EU /// 49"
+           ]
+          }
+         },
+         {
+          "article_number": "VN000E8VKIG1",
+          "brand": "Vans",
+          "name": "LX OLD SKOOL 36 PEARLIZED",
+          "url": "r/vans-lx-old-skool-36-pearlized-vn000e8vkig1-0362268",
+          "raffle_url": "",
+          "image_url": "https://img.bstn.com/card-default/vans/vans-lx-old-skool-36-pearlized-vn000e8vkig1-0362268/VN000E8VKIG1/VN000E8VKIG1-01.jpg",
+          "coming_soon": "Yes",
+          "release_date": "27. Nov | 0:00 CET",
+          "release_date_row": 1795734000,
+          "first_release_date": "2026-09-21 07:05:58",
+          "raffle": "No",
+          "raffle_is_active": "No",
+          "raffle_is_expired": "No",
+          "app_only": false,
+          "instore_only": false,
+          "price.EUR.default": 129.99,
+          "discount.EUR.default": 0,
+          "sizefootwear_conf": {
+           "level0": [
+            "EU"
+           ],
+           "level1": [
+            "EU /// 35",
+            "EU /// 36",
+            "EU /// 37",
+            "EU /// 38",
+            "EU /// 39",
+            "EU /// 40",
+            "EU /// 43",
+            "EU /// 44",
+            "EU /// 45",
+            "EU /// 47"
+           ]
+          }
+         }
+        ]
+       }
+      ]
+     }
+    }
+   }
+  }
+ }
+}

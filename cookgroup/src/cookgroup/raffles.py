@@ -47,7 +47,7 @@ def from_bstn(l, now: int) -> Raffle:
 
 def card(r: Raffle, title: str) -> dict:
     el = {True: "✅ sí", False: "❌ no", None: "❓ sin confirmar"}[r.eligible_es]
-    return {"embeds": [{"title": f"{title} — {r.store}", "description": f"**{r.product}**", "color": 0xEB459E, "fields": [
+    return {"embeds": [{"title": f"{title} — {r.store}", "url": r.link or None, "description": f"**{r.product}**", "color": 0xEB459E, "fields": [
         {"name": "Qué se sortea", "value": r.prize, "inline": False},
         {"name": "Precio", "value": eur(r.price_cents, r.currency), "inline": True},
         {"name": "Cierre", "value": mad(r.closes_ts), "inline": True},
