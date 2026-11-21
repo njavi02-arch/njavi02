@@ -126,6 +126,10 @@ class DiscordAPI:
     def create_channel(self, body): return self._ok(self.http.post(f"{API}/guilds/{self.g}/channels", headers=self.h, json=body))
     def create_webhook(self, channel_id, name): return self._ok(self.http.post(f"{API}/channels/{channel_id}/webhooks",
                                                                              headers=self.h, json={"name": name}))
+    def post_message(self, channel_id, body): return self._ok(self.http.post(f"{API}/channels/{channel_id}/messages",
+                                                                             headers=self.h, json=body))
+    def pin(self, channel_id, message_id): return self._ok(self.http.put(f"{API}/channels/{channel_id}/pins/{message_id}",
+                                                                         headers=self.h))
     def put_onboarding(self, body): return self._ok(self.http.put(f"{API}/guilds/{self.g}/onboarding", headers=self.h, json=body))
 
 
@@ -175,6 +179,13 @@ def apply(design: dict, api: DiscordAPI, env_path: Path, log=print) -> dict:
     if new_env:
         with open(env_path, "a", encoding="utf-8") as f:
             f.write("\n# Añadido por INSTALAR_SERVIDOR (no compartir)\n" + "\n".join(new_env) + "\n")
+    # v1.1: mapa nombre → id de canal (no es secreto) para que el panel y el directorio abran cada canal en Discord
+    import json as _json
+    ids_path = env_path.parent / "data" / "canales_ids.json"
+    ids_path.parent.mkdir(parents=True, exist_ok=True)
+    ids_path.write_text(_json.dumps({"guild_id": api.g, "canales": {k: v for k, v in ch_ids.items()}}, ensure_ascii=False, indent=1),
+                        encoding="utf-8")
+    pinned = pin_store_cards(api, ch_ids, env_path.parent / "data" / "tarjetas_fijadas.json", notes)
     prompts = []
     for i, q in enumerate(design.get("pregunta", [])):
         names = design["roles"][q["roles"]] if q["roles"] != "tallas_eu" else [f"EU {t}" for t in design["roles"]["tallas_eu"]]
@@ -189,4 +200,26 @@ def apply(design: dict, api: DiscordAPI, env_path: Path, log=print) -> dict:
     log(render_plan(plan))
     for n in notes:
         log("NOTA: " + n)
-    return {"plan": plan, "notes": notes, "webhooks_added": len(new_env)}
+    return {"plan": plan, "notes": notes, "webhooks_added": len(new_env), "cards_pinned": pinned}
+
+
+def pin_store_cards(api, ch_ids: dict, done_path: Path, notes: list, lote_path: Path = Path("config/lote_tiendas.toml")) -> int:
+    """Publica y fija UNA vez la tarjeta de cada tienda del lote en su canal (país, web, envío a España, señales)."""
+    import json as _json
+    from .store_directory import load_lote, store_card
+    done = _json.loads(done_path.read_text(encoding="utf-8")) if done_path.exists() else {}
+    n = 0
+    for t in load_lote(lote_path):
+        cid = ch_ids.get(_norm(t["canal"]))
+        if not cid or t["canal"] in done:
+            continue
+        try:
+            m = api.post_message(cid, store_card(t))
+            api.pin(cid, m["id"])
+            done[t["canal"]] = m["id"]
+            n += 1
+        except (RuntimeError, KeyError) as e:
+            notes.append(f"Tarjeta de #{t['canal']} no fijada ({e})")
+    done_path.parent.mkdir(parents=True, exist_ok=True)
+    done_path.write_text(_json.dumps(done, indent=1), encoding="utf-8")
+    return n

@@ -32,6 +32,7 @@ class Raffle:
     verified_ts: int | None = None
     status: str = "abierto"       # abierto / cerrado
     reminded: bool = False
+    published_ts: float | None = None   # hora de publicación según la tienda (solo si la fuente la da)
 
 
 def from_bstn(l, now: int) -> Raffle:
@@ -60,12 +61,51 @@ def card(r: Raffle, title: str) -> dict:
 
 
 class RaffleBoard:
-    def __init__(self, store, send, edit_list=None):
-        """send(payload) publica en #raffles; edit_list(payload) actualiza el mensaje fijado «Raffles abiertos»."""
+    def __init__(self, store, send=None, edit_list=None, *, router=None, edit_today=None, clock=None):
+        """send(payload) publica en #raffles; edit_list(payload) actualiza el mensaje fijado «Raffles abiertos».
+        router (RaffleRouter) reparte cada aviso a varios canales y mide tiempos; edit_today(payload) mantiene la lista
+        fijada de #raffles-cierran-hoy."""
+        import time as _t
         self.s, self.send, self.edit_list = store, send, edit_list or (lambda p: None)
+        self.router, self.edit_today, self.clock = router, edit_today or (lambda p: None), clock or _t.time
         with store._lock:
             store.db.execute("CREATE TABLE IF NOT EXISTS raffles (key TEXT PRIMARY KEY, data TEXT)")
+            store.db.execute("CREATE TABLE IF NOT EXISTS raffle_baseline (store TEXT PRIMARY KEY, at INTEGER)")
             store.db.commit()
+
+    # --- primer arranque: el catálogo existente se registra sin avisar
+    def baselined(self, store_name: str) -> bool:
+        with self.s._lock:
+            return self.s.db.execute("SELECT 1 FROM raffle_baseline WHERE store=?", (store_name,)).fetchone() is not None
+
+    def mark_baselined(self, store_name: str, now: int) -> None:
+        with self.s._lock:
+            self.s.db.execute("INSERT OR IGNORE INTO raffle_baseline VALUES (?,?)", (store_name, now))
+            self.s.db.commit()
+
+    def _emit(self, kind: str, r: Raffle, payload: dict) -> None:
+        if self.router is not None:
+            self.router.emit(kind, r, payload)
+        elif self.send is not None:
+            self.send(payload)
+
+    def today_list(self, now: int) -> list[Raffle]:
+        from datetime import datetime
+        from zoneinfo import ZoneInfo
+        d = datetime.fromtimestamp(now, ZoneInfo("Europe/Madrid")).date()
+        return [r for r in self.open_list(now) if r.closes_ts and datetime.fromtimestamp(r.closes_ts, ZoneInfo("Europe/Madrid")).date() == d]
+
+    def today_payload(self, now: int) -> dict:
+        rs = self.today_list(now)
+        lines = [f"• **{mad(r.closes_ts)}** · {r.store} — {r.product} · " + (f"[inscribirse]({r.link})" if r.link else "según la tienda")
+                 for r in rs] or ["Hoy no cierra ningún raffle abierto."]
+        return {"embeds": [{"title": f"⏰ Raffles que cierran HOY ({len(rs)}) — hora de Madrid", "description": "\n".join(lines)[:4000],
+                            "color": 0xE67E22, "footer": {"text": f"Actualizado {mad(now)}"}}], "allowed_mentions": {"parse": []}}
+
+    def _lists(self, now: int) -> None:
+        self._today_sig = tuple(r.key for r in self.today_list(now))
+        self.edit_list(self.list_payload(now))
+        self.edit_today(self.today_payload(now))
 
     def _get(self, key):
         with self.s._lock:
@@ -90,29 +130,38 @@ class RaffleBoard:
         return {"embeds": [{"title": f"🎟️ Raffles abiertos ({len(rs)})", "description": "\n".join(lines)[:4000], "color": 0xEB459E,
                             "footer": {"text": f"Actualizado {mad(now)}"}}], "allowed_mentions": {"parse": []}}
 
-    def ingest(self, r: Raffle, now: int) -> list[str]:
+    def ingest(self, r: Raffle, now: int, *, baseline: bool = False) -> list[str]:
+        """baseline=True: primer arranque, se guarda sin avisar (no se inunda el canal con el catálogo existente)."""
+        if self.router is not None:
+            self.router.detected_ts = self.clock()
         old, done = self._get(r.key), []
+        if old is None and baseline:
+            self._save(r)
+            return ["registrado"]
         if old is None:
             if r.status != "abierto":
                 return []                               # silencio: raffle ya cerrado cuando lo vemos por primera vez
-            self.send(card(r, "🎟️ RAFFLE ABIERTO"))
+            r._card_payload = card(r, "🎟️ RAFFLE ABIERTO")
+            self._emit("apertura", r, r._card_payload)
             done.append("apertura")
         else:
             r.reminded = old.reminded
             if old.status == "cerrado":
                 return []                               # silencio: un raffle cerrado no vuelve a avisar
             if r.closes_ts and old.closes_ts and r.closes_ts != old.closes_ts:
-                self.send({"content": f"⏰ **Cambio de plazo en {r.store}** ({r.product}): {mad(old.closes_ts)} → **{mad(r.closes_ts)}**",
+                r._card_payload = card(r, "🎟️ RAFFLE ABIERTO")
+                self._emit("cambio de plazo", r, {"content": f"⏰ **Cambio de plazo en {r.store}** ({r.product}): {mad(old.closes_ts)} → **{mad(r.closes_ts)}**",
                            "allowed_mentions": {"parse": []}})
                 r.reminded = False
                 done.append("cambio de plazo")
             if r.status == "cerrado":
-                self.send({"content": f"🔒 **Raffle cerrado** en {r.store}: {r.product}", "allowed_mentions": {"parse": []}})
+                r._card_payload = card(r, "🔒 RAFFLE CERRADO")
+                self._emit("cierre", r, {"content": f"🔒 **Raffle cerrado** en {r.store}: {r.product}", "allowed_mentions": {"parse": []}})
                 done.append("cierre")
         self._save(r)
         done += self.tick(now, only=r.key)
         if done:
-            self.edit_list(self.list_payload(now))
+            self._lists(now)
         return done
 
     def tick(self, now: int, only: str | None = None) -> list[str]:
@@ -126,15 +175,21 @@ class RaffleBoard:
                 continue
             if now >= r.closes_ts:
                 r.status = "cerrado"
-                self.send({"content": f"🔒 **Raffle cerrado** en {r.store}: {r.product} (plazo vencido)", "allowed_mentions": {"parse": []}})
+                r._card_payload = card(r, "🔒 RAFFLE CERRADO")
+                self._emit("cierre por plazo", r, {"content": f"🔒 **Raffle cerrado** en {r.store}: {r.product} (plazo vencido)", "allowed_mentions": {"parse": []}})
                 done.append("cierre por plazo")
             elif not r.reminded and now >= r.closes_ts - REMINDER_BEFORE:
                 r.reminded = True
-                self.send(card(r, "⏳ CIERRA EN MENOS DE 3 H"))
+                self._emit("recordatorio", r, card(r, "⏳ CIERRA EN MENOS DE 3 H"))
                 done.append("recordatorio")
             else:
                 continue
             self._save(r)
         if done and not only:
-            self.edit_list(self.list_payload(now))
+            self._lists(now)
+        elif not only:                                   # cambio de día: la lista de «cierran hoy» se renueva sola
+            sig = tuple(r.key for r in self.today_list(now))
+            if sig != getattr(self, "_today_sig", None):
+                self._today_sig = sig
+                self.edit_today(self.today_payload(now))
         return done

@@ -236,15 +236,26 @@ class BstnSource:
 
     def __post_init__(self):
         self.session = self.session or requests.Session()
+        self._cache: dict[str, tuple[str | None, str | None, str]] = {}   # url → (ETag, Last-Modified, cuerpo)
+        self.not_modified = 0                                            # lecturas resueltas con 304 (sin descargar)
 
     def _get(self, url: str) -> str:
         if re.search(r"/(raffle|api)/|//raffle\.", url):
             raise SourceError(f"BSTN: {url} excluido por robots.txt; no se consulta")
         wait_turn(url)
+        h = {"User-Agent": USER_AGENT, "Accept": "text/html", "Accept-Encoding": "gzip, deflate"}
+        etag, lm, body = self._cache.get(url, (None, None, None))
+        if etag:
+            h["If-None-Match"] = etag
+        if lm:
+            h["If-Modified-Since"] = lm
         try:
-            r = self.session.get(url, headers={"User-Agent": USER_AGENT, "Accept": "text/html"}, timeout=self.timeout)
+            r = self.session.get(url, headers=h, timeout=self.timeout)
         except requests.RequestException as e:
             raise SourceError(f"BSTN: error de conexión: {e}") from e
+        if r.status_code == 304 and body is not None:     # sin cambios: no se descarga de nuevo
+            self.not_modified += 1
+            return body
         if r.status_code == 429:
             raise RateLimited(float(r.headers.get("Retry-After", 300)))
         if r.status_code in (401, 403):
@@ -255,6 +266,9 @@ class BstnSource:
             raise SourceError(f"BSTN: HTTP {r.status_code}")
         if len(r.content) > MAX_BYTES:
             raise SourceError("BSTN: respuesta demasiado grande")
+        rh = getattr(r, "headers", {}) or {}
+        if rh.get("ETag") or rh.get("Last-Modified"):
+            self._cache[url] = (rh.get("ETag"), rh.get("Last-Modified"), r.text)
         return r.text
 
     def fetch_launches(self, now: datetime) -> list[Launch]:

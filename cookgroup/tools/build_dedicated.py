@@ -116,6 +116,21 @@ def main():
         rows.append({**{k: r[k] for k in ("categoria", "canal", "tipo", "para_que", "quien_alimenta")},
                      "tipo_equivalente": kind or "ver tabla v0.9", "equivalente_dedicado": f"#{eq}" if eq else r["equivalente"],
                      "fuente_o_responsable": src, "hueco": gap, "tiendas_ref": r["n_tiendas"]})
+    # v1.1: tiendas del lote (config/lote_tiendas.toml) que aún no tienen canal propio
+    import tomllib
+    lote = tomllib.loads((ROOT / "config/lote_tiendas.toml").read_text(encoding="utf-8")).get("tienda", [])
+    have = {c["nombre"] for chans in dedicated.values() for c in chans}
+    for t in lote:
+        sig = ", ".join(k.upper() for k in ("raffle", "lanzamiento", "restock", "rebaja") if t.get(k) == "probado")
+        if t["canal"] in have:
+            c = next(c for chans in dedicated.values() for c in chans if c["nombre"] == t["canal"])
+            c["monitores"] = sorted(set(c["monitores"]) | set(t["monitores"]))
+            c["pais"], c["senales"] = t["pais"], sig
+            continue
+        dedicated["🏪 TIENDAS"].append({"nombre": t["canal"], "clase": "tienda", "pais": t["pais"], "tipo": "texto", "acceso": "lectura",
+                                       "fuente": f"bot:tienda_{keyname(t['canal'])}", "estado": "construido",
+                                       "equivalente_de": "(lote 1 propio)", "monitores": t["monitores"], "palabras": [],
+                                       "falta": "", "senales": sig})
     # TOML para el instalador (categorías extra, máximo 50 canales por categoría)
     out = ["# GENERADO por tools/build_dedicated.py — canales dedicados (tiendas, regiones, temas, foros). No editar a mano.", ""]
     for cat, chans in dedicated.items():

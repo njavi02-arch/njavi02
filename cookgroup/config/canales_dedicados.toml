@@ -102,13 +102,14 @@ palabras = []
 [[categoria.canal]]
 nombre = "bstn"
 clase = "tienda"
-pais = ""
+pais = "DE"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_bstn"
 estado = "construido"
 equivalente_de = "bstn"
 falta = ""
+senales = "RAFFLE, LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["bstn-eu"]
 palabras = []
 [[categoria.canal]]
@@ -282,13 +283,14 @@ palabras = []
 [[categoria.canal]]
 nombre = "asphaltgold"
 clase = "tienda"
-pais = ""
+pais = "DE"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_asphaltgold"
 estado = "construido"
 equivalente_de = "asphaltgold"
 falta = ""
+senales = ""
 monitores = ["asphaltgold"]
 palabras = []
 [[categoria.canal]]
@@ -306,13 +308,14 @@ palabras = []
 [[categoria.canal]]
 nombre = "footdistrict"
 clase = "tienda"
-pais = ""
+pais = "ES"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_footdistrict"
 estado = "construido"
 equivalente_de = "footdistrict"
 falta = ""
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["footdistrict"]
 palabras = []
 [[categoria.canal]]
@@ -414,13 +417,14 @@ palabras = []
 [[categoria.canal]]
 nombre = "goodhood"
 clase = "tienda"
-pais = ""
+pais = "GB"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_goodhood"
 estado = "construido"
 equivalente_de = "goodhood"
 falta = ""
+senales = "RESTOCK, REBAJA"
 monitores = ["goodhood", "shop:us.goodhoodstore.com"]
 palabras = []
 [[categoria.canal]]
@@ -474,26 +478,80 @@ palabras = []
 [[categoria.canal]]
 nombre = "solebox"
 clase = "tienda"
-pais = ""
+pais = "DE"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_solebox"
 estado = "construido"
 equivalente_de = "solebox, solebox-custom"
 falta = ""
+senales = ""
 monitores = ["solebox-eu"]
 palabras = []
 [[categoria.canal]]
 nombre = "snipes"
 clase = "tienda"
-pais = ""
+pais = "DE"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_snipes"
 estado = "construido"
 equivalente_de = "snipes, snipes-custom"
 falta = ""
+senales = "RESTOCK"
 monitores = ["snipes-es"]
+palabras = []
+[[categoria.canal]]
+nombre = "baskets-store"
+clase = "tienda"
+pais = "FR"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:tienda_baskets_store"
+estado = "construido"
+equivalente_de = "(lote 1 propio)"
+falta = ""
+senales = "RESTOCK, REBAJA"
+monitores = ["shop:baskets-store.com"]
+palabras = []
+[[categoria.canal]]
+nombre = "flatspot"
+clase = "tienda"
+pais = "GB"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:tienda_flatspot"
+estado = "construido"
+equivalente_de = "(lote 1 propio)"
+falta = ""
+senales = "RESTOCK, REBAJA"
+monitores = ["shop:flatspot.com"]
+palabras = []
+[[categoria.canal]]
+nombre = "asos-sample"
+clase = "tienda"
+pais = "GB"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:tienda_asos_sample"
+estado = "construido"
+equivalente_de = "(lote 1 propio)"
+falta = ""
+senales = "RESTOCK, REBAJA"
+monitores = ["shop:eu.asossamplesale.com"]
+palabras = []
+[[categoria.canal]]
+nombre = "redgoblin"
+clase = "tienda"
+pais = "RO"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:tienda_redgoblin"
+estado = "construido"
+equivalente_de = "(lote 1 propio)"
+falta = ""
+senales = "RESTOCK, REBAJA"
+monitores = ["shop:redgoblin.ro"]
 palabras = []
 
 [[categoria]]

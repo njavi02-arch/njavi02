@@ -195,6 +195,10 @@ def make_handler(app: App, pin: str):
             u = urlparse(self.path)
             q = parse_qs(u.query)
             did = app.who(self.headers.get("Cookie"))
+            if u.path == "/admin/tiendas" and self._admin_ok(q):      # v1.1: panel de tiendas en directo
+                from .config import load_config
+                from .store_panel import collect, render
+                return self._send(200, render(collect(app.b.s, load_config("config/monitors.toml")), refresh=15))
             if u.path == "/":
                 return self._send(200, app.sales())
             if u.path == "/alta":

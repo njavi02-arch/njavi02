@@ -16,6 +16,12 @@ class Dedicated:
     by_monitor: dict[str, list[str]] = field(default_factory=dict)   # monitor → claves de canal de tienda
     by_country: dict[str, list[str]] = field(default_factory=dict)   # país → claves de canal de región
     topics: list[tuple[str, list[str]]] = field(default_factory=list)  # (clave, palabras)
+    signals: dict[str, set[str]] = field(default_factory=dict)       # v1.1: canal de tienda → señales PROBADAS
+
+    def allows(self, channel_key: str, signal: str) -> bool:
+        """Un canal de tienda del lote solo publica las señales probadas con datos reales (sin lista = todas)."""
+        s = self.signals.get(channel_key)
+        return s is None or signal in s
 
     def channels_for(self, monitor_name: str, country: str | None, text: str) -> list[str]:
         out = list(self.by_monitor.get(monitor_name, []))
@@ -36,6 +42,8 @@ def load_dedicated(path: str | Path = "config/canales_dedicados.toml") -> Dedica
             if not k or c.get("estado") != "construido":
                 continue
             if c.get("clase") == "tienda":
+                if c.get("senales") is not None:
+                    d.signals[k] = {x.strip() for x in c["senales"].split(",") if x.strip()}
                 for m in c.get("monitores", []):
                     d.by_monitor.setdefault(m, []).append(k)
             elif c.get("clase") == "región" and c.get("pais"):
@@ -43,3 +51,17 @@ def load_dedicated(path: str | Path = "config/canales_dedicados.toml") -> Dedica
             elif c.get("clase") == "tema" and c.get("palabras"):
                 d.topics.append((k, [w.lower() for w in c["palabras"]]))
     return d
+
+
+SIGNAL_OF = {"new_product": "LANZAMIENTO", "restock": "RESTOCK", "new_size": "RESTOCK", "price_drop": "REBAJA",
+             "price_error": "REBAJA"}
+
+
+def labelled(payload: dict, signal: str) -> dict:
+    """Etiqueta visible en el canal de la tienda: «RESTOCK · …», «REBAJA · …», «LANZAMIENTO · …», «RAFFLE · …»."""
+    import copy
+    p = copy.deepcopy(payload)
+    for e in p.get("embeds", [])[:1]:
+        if e.get("title") and not e["title"].startswith(signal):
+            e["title"] = f"{signal} · {e['title']}"[:256]
+    return p

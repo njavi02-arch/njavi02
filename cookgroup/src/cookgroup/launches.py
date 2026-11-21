@@ -372,9 +372,13 @@ def run_launch_cycle(cfg, defaults: dict, source, store, senders: dict[str, Call
             sent += len(forum.ingest(it))
     if raffle_board is not None:
         from .raffles import from_bstn
+        base = not raffle_board.baselined(cfg.store)     # primer arranque: el catálogo existente se registra en silencio
         for it in items:
             if it.raffle:
-                sent += len(raffle_board.ingest(from_bstn(it, now_ts), now_ts))
+                done = raffle_board.ingest(from_bstn(it, now_ts), now_ts, baseline=base)
+                sent += len([d for d in done if d != "registrado"])
+        if base:
+            raffle_board.mark_baselined(cfg.store, now_ts)
         sent += len(raffle_board.tick(now_ts))
     if first_run:
         dg = build_launch_digest(states, now, title=f"Resumen inicial — {cfg.store}: raffles abiertos y próximos lanzamientos")

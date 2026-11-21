@@ -204,11 +204,15 @@ def run_cycle(cfg: MonitorConfig, defaults: dict, source, store: Store, market: 
         extras = list(extra_channels)
         if dedicated is not None:
             extras += dedicated.channels_for(cfg.name, cfg.country, f"{ev.product.vendor or ''} {ev.product.title}")
+        from .dedicated import SIGNAL_OF, labelled
+        sig = SIGNAL_OF.get(ev.type.value, "")
         for ch in dict.fromkeys(extras):
+            if dedicated is not None and not dedicated.allows(ch, sig):
+                continue                                   # señal aún sin probar en esta tienda: no se publica
             if ch in senders:
-                pl = payload
+                pl = labelled(payload, sig) if ch.startswith("tienda_") and sig else payload
                 if profiles:
-                    pl, _ = personalize(payload, ev, profiles, store, channel=ch, family=fam, ships_es=cfg.ships_es,
+                    pl, _ = personalize(pl, ev, profiles, store, channel=ch, family=fam, ships_es=cfg.ships_es,
                                         size_stock=cfg.type != "jsonld")
                 store.outbox_add(f"tienda|{ch}|{akey}", "tienda", cfg.store, ev.product.key, ch, pl)
         if profiles:

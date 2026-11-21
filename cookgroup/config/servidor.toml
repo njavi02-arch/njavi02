@@ -144,6 +144,22 @@ fuente = "bot:raffles"
 estado = "construido"
 finalidad = "Sorteos abiertos con cierre, requisitos, envío o recogida"
 regla = "Apertura, recordatorio, cambio de plazo y cierre; los vencidos desaparecen de la lista"
+[[categoria.canal]]
+nombre = "raffles-bstn"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:raffles_bstn"
+estado = "construido"
+finalidad = "Raffles de BSTN en cuanto el bot los detecta: modelo, SKU, enlace oficial, cierre (hora de Madrid) y si se puede desde España"
+regla = "Una ficha por raffle; si cambia el plazo o cierra, se edita la misma ficha"
+[[categoria.canal]]
+nombre = "raffles-cierran-hoy"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:raffles_cierran_hoy"
+estado = "construido"
+finalidad = "Lista fijada de los raffles que cierran HOY (hora de Madrid), de todas las tiendas; se edita sola"
+regla = "Un único mensaje que se actualiza; sin menciones"
 
 [[categoria]]
 nombre = "🔔 MIS ALERTAS"

@@ -119,13 +119,23 @@ def load_config(path: str | Path) -> Config:
             raise ValueError(f"{m.name}: deep_pages debe estar entre 1 y 40")
         if not 1 <= m.pages <= 4:
             raise ValueError(f"{m.name}: pages debe estar entre 1 y 4")
-        min_iv = 300 if m.type in ("rss", "bstn", "jsonld") else 30
+        # v1.1: BSTN a 60 s (lectura condicional ETag/304, compresión, espera de 2 s entre páginas, respeta 429)
+        min_iv = 60 if m.type == "bstn" else 300 if m.type in ("rss", "jsonld") else 30
         if m.interval_seconds < min_iv:
             raise ValueError(f"{m.name}: interval_seconds < {min_iv} no permitido para {m.type} (respeto a la fuente)")
     for r in raw.get("defaults", {}).get("discount_routes", []):
         if not (0 < float(r.get("min_pct", 0)) < 100) or not r.get("channel"):
             raise ValueError("discount_routes: cada ruta necesita min_pct (0-100) y channel")
     mons += load_store_list(raw.get("defaults", {}), base_dir=Path(path).parent, existing={m.name for m in mons})
+    # v1.1: las tiendas del lote con canal propio se leen cada `intervalo_lote_s` (Shopify y BSTN; JSON-LD mantiene su mínimo)
+    lp = Path(path).parent / "lote_tiendas.toml"
+    if lp.exists():
+        lote = tomllib.loads(lp.read_text(encoding="utf-8"))
+        iv = int(lote.get("intervalo_lote_s", 0))
+        names_lote = {n for t in lote.get("tienda", []) for n in t.get("monitores", [])}
+        for m in mons:
+            if iv and m.name in names_lote and m.type in ("shopify", "bstn"):
+                m.interval_seconds = max(iv, 60 if m.type == "bstn" else 30)
     rules = [PingRule.from_dict(r) for r in raw.get("ping_rule", [])]
     if len({r.name for r in rules}) != len(rules):
         raise ValueError("Nombres de ping_rule duplicados")

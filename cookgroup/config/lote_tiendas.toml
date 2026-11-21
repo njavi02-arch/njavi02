@@ -1,0 +1,156 @@
+# Lote 1 de tiendas con canal propio (v1.1). Cada señal se activa SOLO si está probada con datos reales de la tienda.
+#   probado     → test con una captura real de la tienda que pasa (la prueba se nombra en `prueba_*`)
+#   por-probar  → la fuente lo permite, falta captura real que lo demuestre: el canal NO lo publica todavía
+#   sin-fuente  → la tienda no lo ofrece por una vía pública/autorizada (p. ej. raffles de tiendas Shopify)
+# Niveles de la tienda: descubierta (en inventario) → piloto (fuente validada y probada en local) → operativa (canal
+# instalado en Discord y una entrega verificada). «operativa» la marca el panel a partir de las entregas, no este fichero.
+
+intervalo_lote_s = 60   # lectura cada minuto (±10 %, escalonada); si una tienda pide esperar (429/Retry-After) se respeta
+
+[[tienda]]
+nombre = "BSTN"
+canal = "bstn"
+pais = "DE"
+web = "https://www.bstn.com/eu_es/"
+envio_es = "sí"
+raffle_es = "sí (escaparate eu_es)"
+monitores = ["bstn-eu"]
+raffle = "probado"
+lanzamiento = "probado"
+restock = "probado"
+rebaja = "probado"
+prueba_raffle = "test_bstn::test_announced_date_changed_raffle_open_and_no_duplicates · test_bstn_e2e"
+prueba_lanzamiento = "test_bstn::test_parse_real_listing"
+prueba_restock = "test_bstn::test_live_then_size_restock_then_real_restock_later"
+prueba_rebaja = "test_bstn::test_price_drop_from_product_page"
+
+[[tienda]]
+nombre = "Footdistrict"
+canal = "footdistrict"
+pais = "ES"
+web = "https://footdistrict.com/"
+envio_es = "sí"
+raffle_es = "—"
+monitores = ["footdistrict"]
+raffle = "sin-fuente"
+lanzamiento = "probado"
+restock = "probado"
+rebaja = "probado"
+prueba_lanzamiento = "fixture footdistrict_REAL_2026-11-20 (producto nuevo en colección)"
+prueba_restock = "fixture footdistrict_REAL_2026-11-20 · footdistrict_nb_asics_REAL"
+prueba_rebaja = "fixture footdistrict_REAL_2026-11-20 (compare_at_price)"
+
+[[tienda]]
+nombre = "Snipes"
+canal = "snipes"
+pais = "DE"
+web = "https://www.snipes.com/es-es/"
+envio_es = "sí"
+raffle_es = "—"
+monitores = ["snipes-es"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "por-probar"
+prueba_restock = "test_jsonld::test_real_snipes_product_page (sin tallas: «vuelve a stock»)"
+
+[[tienda]]
+nombre = "Solebox"
+canal = "solebox"
+pais = "DE"
+web = "https://www.solebox.com/"
+envio_es = "por confirmar"
+raffle_es = "—"
+monitores = ["solebox-eu"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "por-probar"
+rebaja = "por-probar"
+
+[[tienda]]
+nombre = "Asphaltgold"
+canal = "asphaltgold"
+pais = "DE"
+web = "https://www.asphaltgold.com/"
+envio_es = "por confirmar"
+raffle_es = "—"
+monitores = ["asphaltgold"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "por-probar"
+rebaja = "por-probar"
+
+[[tienda]]
+nombre = "Baskèts"
+canal = "baskets-store"
+pais = "FR"
+web = "https://baskets-store.com/"
+envio_es = "por confirmar"
+raffle_es = "—"
+monitores = ["shop:baskets-store.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_familias::test_baloncesto_baskets_half_sizes"
+prueba_rebaja = "test_familias::test_baloncesto_baskets_half_sizes"
+
+[[tienda]]
+nombre = "Flatspot"
+canal = "flatspot"
+pais = "GB"
+web = "https://www.flatspot.com/"
+envio_es = "por confirmar"
+raffle_es = "—"
+monitores = ["shop:flatspot.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_familias::test_skate_flatspot_uk_sizes"
+prueba_rebaja = "test_familias::test_skate_flatspot_uk_sizes"
+
+[[tienda]]
+nombre = "Goodhood"
+canal = "goodhood"
+pais = "GB"
+web = "https://goodhoodstore.com/"
+envio_es = "por confirmar"
+raffle_es = "—"
+monitores = ["goodhood", "shop:us.goodhoodstore.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_familias::test_streetwear_goodhood_keeps_store_currency"
+prueba_rebaja = "test_familias::test_streetwear_goodhood_keeps_store_currency"
+
+[[tienda]]
+nombre = "ASOS Sample Sale"
+canal = "asos-sample"
+pais = "GB"
+web = "https://eu.asossamplesale.com/"
+envio_es = "por confirmar"
+raffle_es = "—"
+monitores = ["shop:eu.asossamplesale.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_familias::test_outlet_asos_sample_apparel_never_matches_shoe_size"
+prueba_rebaja = "test_familias::test_outlet_asos_sample_apparel_never_matches_shoe_size"
+
+[[tienda]]
+nombre = "Red Goblin"
+canal = "redgoblin"
+pais = "RO"
+web = "https://redgoblin.ro/"
+envio_es = "por confirmar"
+raffle_es = "—"
+monitores = ["shop:redgoblin.ro"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_familias::test_pokemon_tcg_redgoblin_no_size_claim"
+prueba_rebaja = "test_familias::test_pokemon_tcg_redgoblin_no_size_claim"

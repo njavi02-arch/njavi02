@@ -39,7 +39,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(prog="cookgroup")
     ap.add_argument("--config", default="config/monitors.toml")
     ap.add_argument("--db", default=os.environ.get("COOKGROUP_DB", "cookgroup.db"))
-    ap.add_argument("command", choices=["run", "check-config", "check-releases", "probe", "test-webhook", "preview", "status", "servidor", "miembros", "web", "cuenta"])
+    ap.add_argument("command", choices=["run", "check-config", "check-releases", "probe", "test-webhook", "preview", "status", "servidor", "miembros", "web", "cuenta", "prueba-raffle", "panel-tiendas"])
     ap.add_argument("--channel", default="default", help="test-webhook: canal cuyo webhook probar")
     ap.add_argument("--out", default="preview.html", help="preview: fichero HTML de salida")
     ap.add_argument("--solo", help="probe: monitores o dominios separados por comas")
@@ -49,6 +49,7 @@ def main(argv=None):
     ap.add_argument("--reintentar", help="cuenta: reintentar la sincronización del rol de este miembro (id de Discord)")
     ap.add_argument("--puerto", type=int, default=8765, help="web: puerto local")
     ap.add_argument("--aplicar", action="store_true", help="servidor: crear en Discord lo que falte (si no, solo muestra el plan)")
+    ap.add_argument("--simulado", action="store_true", help="prueba-raffle: contra un Discord falso (sin .env)")
     ap.add_argument("--sincronizar", action="store_true", help="miembros: leer los roles elegidos y escribir config/miembros.toml")
     a = ap.parse_args(argv)
     load_dotenv()
@@ -96,6 +97,28 @@ def main(argv=None):
                 det += f" · retraso medido {delay}s"
             print(f"{src:<22} {st:<10} {lag:<14} {ago(age):<13} {since:<16} {cycles or 0:>6}  {det}")
         print(f"\nResumen: {ok} OK · {att} con aviso · {bad} necesitan atención (sin ciclo correcto en la última hora o ≥3 errores seguidos)")
+        return 0
+    if a.command == "prueba-raffle":
+        from .prueba_raffle import run
+        from .real_delivery import Refused
+        from .store import Store
+        try:
+            r = run(Store(a.db), simulated=a.simulado)
+        except Refused as e:
+            print(f"NO SE HA ENVIADO NADA: {e}\nPara verlo en local sin Discord: PRUEBA_RAFFLE.bat --simulado")
+            return 1
+        print(f"PRUEBA de raffle BSTN ({r['modo']}) publicada en #pruebas-bot")
+        print(f"  Mensaje: {r['enlace'] or r['message_id']}")
+        print(f"  Detección → envío: {r['deteccion_a_envio_ms']} ms · detección → Discord: {r['deteccion_a_discord_ms']} ms")
+        if r["confirmado_en_pruebas_bot"] is not None:
+            print(f"  Confirmado releyendo el mensaje en #pruebas-bot: {'sí' if r['confirmado_en_pruebas_bot'] else 'NO'}")
+        print(f"  Reinicio simulado: {r['repetidos_tras_reinicio']} avisos repetidos (debe ser 0)")
+        print("  Registrado en docs/v11/PRUEBAS_RAFFLE.csv")
+        return 0 if r["repetidos_tras_reinicio"] == 0 else 2
+    if a.command == "panel-tiendas":
+        from .store_panel import write_store_panel
+        from .store import Store
+        print(f"Panel de tiendas escrito en {write_store_panel(Store(a.db), cfg, a.out if a.out != 'preview.html' else 'docs/v11/PANEL_TIENDAS.html').resolve()}")
         return 0
     if a.command == "preview":
         from .preview import write_preview

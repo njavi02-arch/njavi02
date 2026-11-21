@@ -195,6 +195,23 @@ class Store:
                     (uid, store, data, int(d.get("present", True)), ts, ts))
 
     @_locked
+    def set_schedule(self, source: str, interval_s: int, wait_s: float, reason: str) -> None:
+        """Ritmo efectivo de una fuente: intervalo configurado, próxima lectura y por qué (normal / espera pedida / error)."""
+        import time as _t
+        self.db.execute("CREATE TABLE IF NOT EXISTS schedule (source TEXT PRIMARY KEY, interval_s INTEGER, next_at REAL, "
+                        "reason TEXT, updated_at REAL)")
+        self.db.execute("INSERT OR REPLACE INTO schedule VALUES (?,?,?,?,?)", (source, interval_s, _t.time() + wait_s, reason, _t.time()))
+        self.db.commit()
+
+    @_locked
+    def schedules(self) -> dict:
+        try:
+            return {r[0]: {"interval_s": r[1], "next_at": r[2], "reason": r[3], "updated_at": r[4]}
+                    for r in self.db.execute("SELECT * FROM schedule").fetchall()}
+        except Exception:   # noqa: BLE001
+            return {}
+
+    @_locked
     def record_health(self, source: str, ok: bool, *, items: int | None = None, duration_ms: int | None = None,
                       error: str | None = None, delay_s: int | None = None) -> None:
         ts = now_iso()

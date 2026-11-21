@@ -33,27 +33,70 @@ def make_source(mcfg):
     raise ValueError(f"tipo de fuente desconocido: {mcfg.type}")
 
 
+def _edit_in_place(store, sender, key):
+    """Devuelve edit(payload): edita el mensaje fijado `key` o lo crea la primera vez."""
+    def edit(payload):
+        mid = store.alert_message_id(key)
+        try:
+            if mid:
+                return sender.edit(mid, payload)
+        except RuntimeError:
+            pass
+        store.record_alert(key, "raffle_list", "-", "-", sender.send(payload))
+    return edit
+
+
+def raffle_targets(env, store_name: str):
+    """Canales de un raffle de `store_name`, en orden: #raffles-<tienda> (las menciones van aquí), #<tienda> con
+    etiqueta RAFFLE y el agregado #raffles. Solo los que tienen webhook propio en .env."""
+    from .raffle_router import Target, keyname
+    k = keyname(store_name).upper()
+    out = []
+    for ch, key, lab in ((f"raffles_{k.lower()}", f"DISCORD_WEBHOOK_RAFFLES_{k}", False),
+                         (f"tienda_{k.lower()}", f"DISCORD_WEBHOOK_TIENDA_{k}", True),
+                         ("raffles", "DISCORD_WEBHOOK_RAFFLES", False)):
+        if env.get(key):
+            out.append(Target(ch, WebhookSender(env[key]), lab))
+    return out
+
+
 def build_forum_and_raffles(cfg: Config, store: Store, mcfg=None):
     """Foro de lanzamientos y tablón de raffles si existen sus webhooks propios (no se usa el general para un foro)."""
     import os
     from .forum import Forum, WebhookForum
+    from .members import load_profiles
+    from .raffle_router import RaffleRouter, raffle_wants
     from .raffles import RaffleBoard
     forum = board = None
     if (u := os.environ.get("DISCORD_WEBHOOK_LANZAMIENTOS")):
         forum = Forum(store, WebhookForum(u))
-    if (u := os.environ.get("DISCORD_WEBHOOK_RAFFLES")):
-        snd = WebhookSender(u)
-
-        def edit_list(payload, _s=snd):
-            mid = store.alert_message_id("raffles-lista")
-            try:
-                if mid:
-                    return _s.edit(mid, payload)
-            except RuntimeError:
-                pass
-            store.record_alert("raffles-lista", "raffle_list", "-", "-", _s.send(payload))
-        board = RaffleBoard(store, snd.send, edit_list)
+    targets = raffle_targets(os.environ, getattr(mcfg, "store", "") or "")
+    if targets:
+        try:
+            wants = raffle_wants(load_profiles(cfg.defaults.get("members_file", "config/miembros.toml")))
+        except Exception:   # noqa: BLE001 — sin perfiles: los avisos salen sin mencionar a nadie
+            wants = None
+        router = RaffleRouter(store, targets, guild_id=os.environ.get("DISCORD_GUILD_ID"), wants=wants)
+        agg = os.environ.get("DISCORD_WEBHOOK_RAFFLES")
+        hoy = os.environ.get("DISCORD_WEBHOOK_RAFFLES_CIERRAN_HOY")
+        board = RaffleBoard(store, router=router,
+                            edit_list=_edit_in_place(store, WebhookSender(agg), "raffles-lista") if agg else None,
+                            edit_today=_edit_in_place(store, WebhookSender(hoy), "raffles-cierran-hoy") if hoy else None)
     return forum, board
+
+
+def next_wait(mcfg, res: dict, failures: int, cap: int, rnd=None) -> tuple[float, str]:
+    """Espera hasta la próxima lectura: el intervalo con ±10 % de variación (las tiendas no reciben peticiones en el
+    mismo segundo); tras errores, espera creciente; si la tienda pide frenar (429 / Retry-After), se respeta."""
+    import random
+    r = rnd or random.random
+    base = mcfg.interval_seconds
+    if res.get("ok"):
+        return base * (0.9 + 0.2 * r()), "normal"
+    wait = min(base * 2 ** failures, cap)
+    if res.get("backoff", 0) > wait:
+        return float(res["backoff"]), "la tienda pidió esperar"
+    return wait * (0.9 + 0.2 * r()), "error, espera creciente"
 
 
 def _launch_loop(mcfg, cfg: Config, store: Store, stop: threading.Event):
@@ -73,6 +116,8 @@ def _launch_loop(mcfg, cfg: Config, store: Store, stop: threading.Event):
         return
     forum, board = build_forum_and_raffles(cfg, store, mcfg)
     source = make_source(mcfg)
+    import zlib
+    stop.wait(zlib.crc32(mcfg.name.encode()) % min(30, mcfg.interval_seconds))   # arranque escalonado
     failures = 0
     digest_at = cfg.defaults.get("launch_digest_time", "09:00")
     while not stop.is_set():
@@ -93,12 +138,10 @@ def _launch_loop(mcfg, cfg: Config, store: Store, stop: threading.Event):
             if dg:
                 send = senders.get("digest") or senders["launch"]
                 store.record_alert(key, "launch_digest", mcfg.store, "-", send(dg))
-        if res["ok"]:
-            failures = 0
-            wait = mcfg.interval_seconds
-        else:
-            failures += 1
-            wait = max(res.get("backoff", 0), min(mcfg.interval_seconds * 2 ** failures, 3600))
+        failures = 0 if res["ok"] else failures + 1
+        wait, why = next_wait(mcfg, res, failures, 3600)
+        store.set_schedule(mcfg.name, mcfg.interval_seconds, wait, why)
+        if not res["ok"]:
             log.warning("monitor=%s error=%s próximo intento en %ss", mcfg.name, res.get("error"), wait)
         log.info("monitor=%s %s", mcfg.name, res)
         stop.wait(wait)
@@ -167,12 +210,13 @@ def _loop(mcfg, cfg: Config, store: Store, market, stop: threading.Event, forum=
             if failures >= 3:
                 _registro(f"✅ {mcfg.name} vuelve a leer correctamente")
             failures = 0
-            wait = mcfg.interval_seconds
         else:
             failures += 1
             if failures == 3:
                 _registro(f"⚠️ {mcfg.name}: 3 fallos seguidos · {str(res.get('error'))[:300]}")
-            wait = max(res.get("backoff", 0), min(mcfg.interval_seconds * 2 ** failures, 1800))
+        wait, why = next_wait(mcfg, res, failures, 1800)
+        store.set_schedule(mcfg.name, mcfg.interval_seconds, wait, why)
+        if not res["ok"]:
             log.warning("monitor=%s error=%s próximo intento en %ss", mcfg.name, res.get("error"), wait)
         log.info("monitor=%s %s", mcfg.name, res)
         stop.wait(wait)
@@ -234,6 +278,11 @@ def run_all(cfg: Config, db_path: str = "cookgroup.db"):
                     write_heartbeat(len(threads), sum(t.is_alive() for t in threads))
                 except OSError:
                     pass
+                try:                            # v1.1: panel de tiendas en directo (la página se recarga sola)
+                    from .store_panel import write_store_panel
+                    write_store_panel(store, cfg)
+                except Exception:   # noqa: BLE001 — el panel nunca debe parar el bot
+                    log.exception("panel de tiendas")
                 beat = time.monotonic()
             time.sleep(1)
     except KeyboardInterrupt:

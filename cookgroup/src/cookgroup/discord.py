@@ -168,6 +168,11 @@ class WebhookSender:
         self.url, self.session, self.max_retries = url, session or requests.Session(), max_retries
 
     def send(self, payload: dict) -> str | None:
+        m = self.send_full(payload)
+        return str(m.get("id")) if m else None
+
+    def send_full(self, payload: dict) -> dict:
+        """Publica y devuelve el mensaje que confirma Discord (id, channel_id, timestamp)."""
         for attempt in range(self.max_retries):
             try:
                 r = self.session.post(self.url, params={"wait": "true"}, json=payload, timeout=15)
@@ -184,7 +189,7 @@ class WebhookSender:
                 continue
             if r.status_code >= 400:
                 raise RuntimeError(f"Discord rechazó el mensaje: HTTP {r.status_code} {r.text[:200]}")
-            return str(r.json().get("id"))
+            return r.json()
         raise RuntimeError("Discord: reintentos agotados")
 
     def edit(self, message_id: str, payload: dict) -> None:

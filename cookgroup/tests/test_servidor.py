@@ -40,11 +40,16 @@ class FakeDiscord:
             r = {"id": self._id(), "name": json["name"]}; self.roles.append(r); return Resp(200, r)
         if url.endswith("/webhooks"):
             return Resp(200, {"id": self._id(), "token": "SECRETO"})
+        if url.endswith("/messages"):
+            self.pinned_cards = getattr(self, "pinned_cards", 0) + 1
+            return Resp(200, {"id": self._id()})
         if json.get("type") in (5, 15) and not self.community:
             return Resp(400, {"message": "requiere Comunidad"})
         c = {"id": self._id(), **json}; self.chans.append(c); return Resp(200, c)
 
     def put(self, url, headers=None, json=None):
+        if "/pins/" in url:
+            return Resp(204, {})
         return Resp(200, {}) if self.community else Resp(400, {"message": "requiere Comunidad"})
 
 
@@ -52,12 +57,14 @@ def test_install_is_idempotent_and_keeps_existing(tmp_path):
     d = load_design(ROOT / "config/servidor.toml")
     fake, env = FakeDiscord(), tmp_path / ".env"
     r1 = apply(d, DiscordAPI("t", "1", fake), env, log=lambda *_: None)
-    assert len(r1["plan"].channels) == 35 + 64 and {"general", "juegos", "música"} <= set(r1["plan"].kept)
+    assert len(r1["plan"].channels) == 37 + 68 and {"general", "juegos", "música"} <= set(r1["plan"].kept)
     assert r1["webhooks_added"] >= 15 and "SECRETO" in env.read_text()
     assert any("Comunidad" in n for n in r1["notes"])            # foros → texto + aviso
     before = len(fake.calls)
     r2 = apply(d, DiscordAPI("t", "1", fake), env, log=lambda *_: None)
     assert r2["plan"].empty and len(fake.calls) == before          # segunda vez: nada que crear
+    assert r1["cards_pinned"] == 10 and r2["cards_pinned"] == 0    # tarjeta fijada una sola vez por tienda del lote
+    assert (tmp_path / "data/canales_ids.json").exists()
     assert not any(c[0] != "POST" for c in fake.calls)             # nunca borra ni edita
     names = [c["name"] for c in fake.chans]
     assert len(names) == len(set(names))                           # sin duplicados

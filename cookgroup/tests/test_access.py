@@ -64,3 +64,9 @@ def test_market_not_installed_without_owner_decision():
     plan = make_plan(D, [], [], set())
     assert not any(n in ("vendo-compro", "legit-check", "valoraciones", "lista-negra") for _, n, _ in plan.channels)
     assert not any("MARKET" in c for c in plan.categories)
+
+
+def test_bstn_raffle_channels_visible_to_subscriber_read_only_and_hidden_from_visitor():
+    for c in ("raffles-bstn", "raffles-cierran-hoy", "raffles"):
+        assert M[c]["suscriptor"] == "ve", c                 # lo sigue desde el móvil, no puede escribir
+        assert M[c]["visitante"] == "—" and M[c]["ex-suscriptor"] == "—"
