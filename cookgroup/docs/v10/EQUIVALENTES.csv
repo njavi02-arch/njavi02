@@ -81,7 +81,7 @@ Stocks,📊stock-otros-releases,texto,Ver cuánto stock hubo,bot de la referenci
 🤖Monitores,mesh-frontend,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-eu,monitores de su familia (2 de sus 6 tiendas coinciden),,6
 🤖Monitores,mesh-backend,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-eu,monitores de su familia (1 de sus 10 tiendas coinciden),,10
 🤖Monitores,new-balance,texto,Avisos de una tienda concreta,bot (monitores),tienda,#new-balance,,newbalance.com: probar JSON-LD → sin fuente aún,1
-🤖Monitores,sivasdescalzo,texto,Avisos de una tienda concreta,bot (monitores),tienda,#sivasdescalzo,,SVD: permiso de lectura en Chrome pendiente → sin fuente aún,1
+🤖Monitores,sivasdescalzo,texto,Avisos de una tienda concreta,bot (monitores),tienda,#sivasdescalzo,sivasdescalzo-es,,1
 🤖Monitores,sports-direct,texto,Avisos de una tienda concreta,bot (monitores),tienda,#sports-direct,,sportsdirect: probar JSON-LD → sin fuente aún,3
 🤖Monitores,skateshops,texto,Avisos de una tienda concreta,bot (monitores),agregado,#skate,monitores de su familia (5 de sus 26 tiendas coinciden),,26
 🤖Monitores,skatedeluxe,texto,Avisos de una tienda concreta,bot (monitores),tienda,#skatedeluxe,skatedeluxe,,1

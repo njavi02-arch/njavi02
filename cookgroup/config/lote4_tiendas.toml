@@ -212,3 +212,20 @@ rebaja = "por-probar"
 tallas = "sí (v1.6): tallas del color de la ficha (JSON-LD)"
 prueba_restock = "test_tiendas_lote3[aboutyou] · captura real 21-nov"
 lote = 7
+
+[[tienda]]
+nombre = "Sivasdescalzo"
+canal = "sivasdescalzo"
+pais = "ES"
+web = "https://www.sivasdescalzo.com/es/"
+envio_es = "sí (tienda española)"
+raffle_es = "solo en la app de SVD (sin fuente web)"
+monitores = ["sivasdescalzo-es"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+tallas = "sí (JSON-LD por talla)"
+prueba_restock = "test_tiendas_fase2[www.sivasdescalzo.com] · captura real 21-nov"
+prueba_rebaja = "test_tiendas_fase2[www.sivasdescalzo.com] · captura real 21-nov"
+lote = 7

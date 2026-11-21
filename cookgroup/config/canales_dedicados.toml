@@ -209,14 +209,15 @@ palabras = []
 [[categoria.canal]]
 nombre = "sivasdescalzo"
 clase = "tienda"
-pais = ""
+pais = "ES"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_sivasdescalzo"
-estado = "pendiente"
+estado = "construido"
 equivalente_de = "sivasdescalzo"
-falta = "SVD: permiso de lectura en Chrome pendiente → sin fuente aún"
-monitores = []
+falta = ""
+senales = "RESTOCK, REBAJA"
+monitores = ["sivasdescalzo-es"]
 palabras = []
 [[categoria.canal]]
 nombre = "sports-direct"

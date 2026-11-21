@@ -17,7 +17,7 @@ from cookgroup.store import Store
 CAP = Path(__file__).parents[1] / "docs/v12/capturas_tiendas_2026-11-21.jsonl"
 PATTERN = {"www.kickz.com": "/p/", "www.43einhalb.com": "/en/p/", "www.skatedeluxe.com": "/es/p/",
            "www.basket4ballers.com": "/es/novedades/", "www.newbalance.es": "/es/pd/", "www.zalando.es": ".html", "www.zalando.fr": ".html", "www.zalando.it": ".html",
-           "www.footlocker.de": "/de/product/", "www.footlocker.it": "/it/product/",
+           "www.footlocker.de": "/de/product/", "www.sivasdescalzo.com": "re:^/es/p/[a-z0-9-]+$", "www.footlocker.it": "/it/product/",
            "www.adidas.es": ".html", "www.footlocker.es": "/es/product/", "www.game.es": None}
 
 
@@ -89,7 +89,7 @@ def test_real_jsonld_store_events(cap, tmp_path):
 def test_listing_discovers_new_product_url(cap, tmp_path):
     """v1.5 · descubrimiento: tras la línea base, una ficha NUEVA que aparece en el listado se anuncia una vez."""
     site = Site(cap)
-    new_url = site.url.replace(".html", "-nuevo.html") if site.url.endswith(".html") else site.url.rstrip("/") + "-nuevo/"
+    new_url = site.url.replace(".html", "-nuevo.html") if site.url.endswith(".html") else site.url.rstrip("/") + "-nuevo"
     new_ld = copy.deepcopy(site.ld)
     new_ld["url"] = new_url
     for k in ("sku", "productGroupID"):

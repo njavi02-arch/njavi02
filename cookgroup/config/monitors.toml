@@ -727,6 +727,21 @@ products_per_cycle = 4
 interval_seconds = 300
 channel = "sneakers"
 
+[[monitor]]
+name = "sivasdescalzo-es"
+ships_es = "sí"
+type = "jsonld"
+store = "Sivasdescalzo"
+country = "ES"
+region = "eu"
+base_url = "https://www.sivasdescalzo.com"
+currency = "EUR"
+listing_urls = ["https://www.sivasdescalzo.com/es/novedades", "https://www.sivasdescalzo.com/es/calzado/zapatillas/limited-edition"]
+product_link_pattern = 're:^/es/p/[a-z0-9-]+$'
+products_per_cycle = 4
+interval_seconds = 300
+channel = "sneakers"        # raffles de SVD: solo en su app (sin fuente web pública)
+
 # ---------------------------------------------------------------- PINGS PERSONALES (filtros)
 # Cada regla re-publica en "pings" las alertas que cumplen TODO lo que indiques, mencionando un rol.
 # Campos: keywords (todas; "*" = cualquiera), exclude_keywords, brands, sizes (EU), regions (eu/uk/us/au),
