@@ -5,11 +5,7 @@
 - **Recuperación**: si una tienda falla, espera cada vez más; si pide esperar (429/Retry-After), lo respeta; avisa en #registro-bot tras 3 fallos seguidos y cuando se recupera.
 - **Salud**: latido cada 30 s; `ESTADO.bat` y `PANEL_TIENDAS.bat` muestran si el bot va, qué tienda falla y desde cuándo.
 
-**Arranque automático en tu PC con Windows** (ejecútalo una vez, en una terminal abierta en la carpeta del cookgroup):
-
-```
-schtasks /Create /TN "Cookgroup" /TR "\"%CD%\ARRANCAR.bat\"" /SC ONLOGON /RL LIMITED /F
-```
+**Arranque automático en tu PC con Windows**: doble clic en `INSTALAR_AUTOARRANQUE.bat` (ya existe en el proyecto; `QUITAR_AUTOARRANQUE.bat` lo deshace).
 
 Así arranca solo al iniciar sesión en Windows. Para que no se pare:
 1. En Inicio → Configuración → Sistema → Energía, pon «Suspender: nunca» cuando esté enchufado.
