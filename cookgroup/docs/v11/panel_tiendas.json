@@ -1,5 +1,5 @@
 {
- "now": 1795223274.252042,
+ "now": 1795223628.9371605,
  "bot": [
   "PARADO",
   "no hay latido: el bot no se ha arrancado nunca en esta carpeta"
@@ -25,13 +25,7 @@
     "rebaja": "probado"
    },
    "ultimo_raffle": null,
-   "ultimo_aviso": [
-    "BSTN",
-    "pruebas",
-    "2026-11-21T01:07:54+00:00",
-    "local17952232740841",
-    1
-   ],
+   "ultimo_aviso": null,
    "estado": "BOT PARADO",
    "clase": "bad",
    "envio_es": "sí"
@@ -42,7 +36,7 @@
    "canal": "footdistrict",
    "canal_url": null,
    "instalado": false,
-   "intervalo_s": 180,
+   "intervalo_s": 60,
    "ultima_ok": null,
    "errores": null,
    "ultimo_error": null,
@@ -114,7 +108,7 @@
    "canal": "asphaltgold",
    "canal_url": null,
    "instalado": false,
-   "intervalo_s": 180,
+   "intervalo_s": 60,
    "ultima_ok": null,
    "errores": null,
    "ultimo_error": null,
@@ -138,7 +132,7 @@
    "canal": "baskets-store",
    "canal_url": null,
    "instalado": false,
-   "intervalo_s": 600,
+   "intervalo_s": 60,
    "ultima_ok": null,
    "errores": null,
    "ultimo_error": null,
@@ -162,7 +156,7 @@
    "canal": "flatspot",
    "canal_url": null,
    "instalado": false,
-   "intervalo_s": 900,
+   "intervalo_s": 60,
    "ultima_ok": null,
    "errores": null,
    "ultimo_error": null,
@@ -186,7 +180,7 @@
    "canal": "goodhood",
    "canal_url": null,
    "instalado": false,
-   "intervalo_s": 240,
+   "intervalo_s": 60,
    "ultima_ok": null,
    "errores": null,
    "ultimo_error": null,
@@ -210,7 +204,7 @@
    "canal": "asos-sample",
    "canal_url": null,
    "instalado": false,
-   "intervalo_s": 900,
+   "intervalo_s": 60,
    "ultima_ok": null,
    "errores": null,
    "ultimo_error": null,
@@ -234,7 +228,7 @@
    "canal": "redgoblin",
    "canal_url": null,
    "instalado": false,
-   "intervalo_s": 900,
+   "intervalo_s": 60,
    "ultima_ok": null,
    "errores": null,
    "ultimo_error": null,
@@ -259,26 +253,7 @@
   "instaladas": 0,
   "entrega_verificada": 0
  },
- "pruebas": [
-  {
-   "id": 1,
-   "raffle_key": "PRUEBA|BSTN|1795223274",
-   "kind": "apertura",
-   "channel": "pruebas",
-   "store": "BSTN",
-   "published_ts": null,
-   "detected_ts": 1795223274.0846148,
-   "sent_ts": 1795223274.0847638,
-   "discord_ts": 1795223274.084768,
-   "message_id": "local17952232740841",
-   "channel_id": "pruebas-bot-local",
-   "guild_id": null,
-   "prueba": 1,
-   "jump_url": null,
-   "detect_to_send_ms": 0.1,
-   "detect_to_discord_ms": 0.2
-  }
- ],
+ "pruebas": [],
  "guild": null,
  "ids": {}
 }

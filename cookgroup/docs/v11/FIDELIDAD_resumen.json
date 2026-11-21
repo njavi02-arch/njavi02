@@ -1,0 +1,30 @@
+{
+ "total": {
+  "investigado": 147,
+  "desarrollado": 81,
+  "probado en local": 111
+ },
+ "grupos": {
+  "47 → #sneakers-eu": {
+   "total": 47,
+   "investigado": 20,
+   "probado en local": 9,
+   "desarrollado": 18,
+   "resueltos_con_canal": 47
+  },
+  "28 → #pokémon-tcg": {
+   "total": 28,
+   "probado en local": 15,
+   "investigado": 11,
+   "desarrollado": 2,
+   "resueltos_con_canal": 28
+  },
+  "112 sin equivalente": {
+   "total": 112,
+   "investigado": 86,
+   "probado en local": 1,
+   "desarrollado": 25,
+   "resueltos_con_canal": 31
+  }
+ }
+}

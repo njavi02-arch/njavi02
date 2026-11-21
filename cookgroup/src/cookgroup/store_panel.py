@@ -126,7 +126,7 @@ def render(d: dict, *, refresh: int = 30) -> str:
     c = d["counts"]
     o = [f"<!doctype html><html lang=es><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'>"
          f"<meta http-equiv=refresh content={refresh}><title>Panel de tiendas · cookgroup</title><style>{CSS}</style><main>",
-         "<h1>Panel de tiendas</h1>", f"<p class=muted>Actualizado {_mad(now)} (Madrid) · se recarga solo cada {refresh} s</p>"]
+         "<h1>Panel de tiendas</h1>", "<p><a href='FIDELIDAD.html'>→ Fidelidad con la referencia, por categoría (339 canales)</a></p>", f"<p class=muted>Actualizado {_mad(now)} (Madrid) · se recarga solo cada {refresh} s</p>"]
     if d["demo"]:
         o.append("<div class='banner demo'>DEMO · el bot aún no ha leído ninguna tienda desde esta carpeta y el servidor no está "
                  "instalado. Lo que ves sale de las pruebas locales con datos reales capturados; los estados en directo aparecen al "
