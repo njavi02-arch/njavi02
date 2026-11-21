@@ -67,10 +67,10 @@ def main():
             nombre = nombre.title()
         out += ["[[tienda]]", f'nombre = "{nombre}"', f'canal = "{canal}"', f'pais = "{c}"', f'web = "https://{d}/"',
                 f'envio_es = "{"sí" if es == "s" else "no" if es == "n" else "por confirmar"} (ships_to_countries, 21-nov)"',
-                'raffle_es = "—"', "monitores = [" + ", ".join(f'"{x}"' for x in dict.fromkeys([mon] + siblings.get(k, []))) + "]", 'raffle = "sin-fuente"', 'lanzamiento = "por-probar"',
+                'raffle_es = "—"', "monitores = [" + ", ".join(f'"{x}"' for x in dict.fromkeys([mon] + siblings.get(k, []))) + "]", 'raffle = "sin-fuente"', 'lanzamiento = "probado"',
                 'restock = "probado"', 'rebaja = "probado"',
                 f'prueba_restock = "test_tiendas_lote2[{d}] · muestra real 21-nov"',
-                f'prueba_rebaja = "test_tiendas_lote2[{d}] · muestra real 21-nov"', 'lote = 2', ""]
+                f'prueba_rebaja = "test_tiendas_lote2[{d}] · muestra real 21-nov"', f'prueba_lanzamiento = "test_tiendas_lote2[{d}] · producto nuevo («New add» en la referencia)"', 'lote = 2', ""]
     out += [f"# Candidatas pendientes de otra muestra: {' '.join(cand) or '—'}"]
     (ROOT / "config/lote2_tiendas.toml").write_text("\n".join(out), encoding="utf-8")
     print(f"lote 2: {len(used)} tiendas con canal · candidatas pendientes: {cand}")

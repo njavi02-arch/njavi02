@@ -1,0 +1,183 @@
+# Recorrido de solo lectura en ZESTY CREW, 21-nov-2026 03:30–03:40 (Madrid), sesión de 5 h. Últimos mensajes cargados por canal.
+# canal|mensajes cargados|último mensaje (AAMMDD)|señal observada (Type/Reason)|quién publica (bot/servicio; personas anonimizadas)|nota
+# 0 mensajes = foro (los hilos no se cargan como mensajes) o canal vacío. Datos personales de miembros NO se guardan.
+📯anuncios-extensión|10|2025-03-03||persona (staff o miembro)||
+📚guías-extensión|1|2025-03-03||persona (staff o miembro)||
+🤖zesty-extension-updates|10|2026-11-05||persona (staff o miembro)||
+🤖extensión-success|10|2026-11-17||persona (staff o miembro)||
+💭extensión-chat|30|2026-11-11||persona (staff o miembro)||
+🎉giveaways|10|2026-11-18||GiveawayBot||
+🤝groupbuys|10|2026-10-09||persona (staff o miembro)||
+📊adidas-stock|10|2026-10-23||The Zesty Chef||
+📊nike-stock-drops|10|2026-11-20||zesty||
+📊nike-stock-daily|10|2025-10-04||NIKE STOCK||
+📊nike-stock-cargado|10|2026-01-02||zesty||
+📊stock-otros-releases|10|2026-11-20||ZestyMod||
+aboutyou-yoox|10|2026-11-20|New add|Size [stock]||
+adidas-es|10|2026-11-21|Restock|www.adidas.es||
+adidas-eu|10|2026-11-21|Restock|www.adidas.be||
+asics|10|2026-11-04|Restock|www.asics.com||
+asos|10|2026-11-21|Restock/New add|Size||
+asos-es|10|2026-11-21|Restock|www.asos.com||
+basket-shops|10|2026-11-20|Price Change/Restock|24segons.es||
+basketballemotion|10|2026-11-20|Restock|www.basketball||
+basket4ballers|10|2026-11-20|New add/Restock/Price Ch|Basket4Ballers||
+bstn|10|2026-11-20|Restock|www.bstn.com||
+end|10|2026-11-20|New|www.endclothin||
+footlocker-eu|10|2026-11-21|Restock|www.footlocker||
+footlocker-es|10|2026-11-20|Restock|www.footlocker||
+footshop|10|2026-11-17|Restock/New/Price Change|www.footshop.e||
+luisaviaroma|10|2026-03-28|Restock|LuisaViaRoma||
+kickz|10|2026-11-20|Restock/New|www.kickz.com||
+new-balance|10|2026-11-20|New add|Size||
+sivasdescalzo|10|2026-11-20|New add/Price Change/Res|SivasDeScalzo||
+sports-direct|10|2026-11-20|Restock/New add|www.sportsdire||
+skateshops|10|2026-11-20|Restock|QT||
+skatedeluxe|10|2026-11-21|Restock/New add|SkateDeluxe||
+socials-monitors|10|2026-10-20|New|www.instagram.||
+ugg|10|2026-11-20|Restock|www.ugg.com||
+ugg-all-special|10|2026-11-21|Restock|Size [stock]||
+yeezy-especial-monitor|10|2026-11-21|Restock|QT||
+web-naranja-españa|10|2026-11-21|Restock|Size [stock]||
+web-naranja-eu|10|2026-11-21|Restock|www.zalando.be||
+43einhalb|10|2026-11-20|Restock/Price Change|www.43einhalb.||
+timberland|10|2026-10-21|Restock|www.timberland||
+vans|10|2026-11-20|Restock|www.vans.com||
+asphaltgold|10|2026-11-21||QT||
+dsml|10|2026-11-20|Price Change|QT||
+footdistrict|10|2026-11-21||QT||
+kitheu|10|2026-11-20|New|QT||
+naked|10|2026-11-21|Price Change/Restock|QT||
+overkill-oneblockdown|10|2026-11-21|New/Restock|QT||
+slamjam|10|2026-11-20|New|QT||
+sneakersnstuff|10|2026-11-19|Price Change|QT||
+voostore|10|2026-07-02||Shopify Monito||
+starcow|10|2026-11-20||ZTYSHOPIFY||
+canary-yellow|10|2026-11-20|Cambio de Precios/Cambio|Zesty • Canary||
+goodhood|10|2026-11-20|Restock|QT||
+info|4|2026-02-14||persona (staff o miembro)||
+solebox|12|2026-11-21|Restock|Solebox||
+snipes|14|2026-11-21|Restock|Snipes||
+solebox-custom|10|2026-11-21|New/Restock/Price Change|www.solebox.co||
+snipes-custom|10|2026-11-18|Price Change/Restock|www.snipes.com||
+nike-inactive|10|2026-11-21|New add|Nike||
+nike-eu-active|10|2026-11-21|New add|Nike||
+snkrs-es|10|2026-11-21|New add|SNKRS||
+snkrs-eu|10|2026-11-21|New add|SNKRS||
+snkrs-eu-backup|10|2026-11-19|Restock|www.nike.com||
+snkrs-eu-inactive|10|2026-11-17|Restock|www.nike.com||
+snkrs-special-releases|10|2025-07-29|Restock|www.nike.com||
+nike-us|10|2026-11-21|New add|Nike||
+snkrs-launch-custom|10|2025-05-22|Restock|SNKRS launch c||
+adonis-monitor|10|2026-11-20||Adonis||
+adonis-nike|10|2026-06-23||Adonis nike||
+alpine-monitor|10|2026-11-21||Alpine||
+antares-monitor|10|2026-05-14||Antares||
+caspian-monitor|10|2026-11-21||Caspian checko||
+cyber-monitor|10|2026-11-21||cyber||
+dislord-monitor|10|2026-09-23||Dislord||
+nsb-monitor|10|2026-11-21|Launch|NSB checkouts||
+pan-aio-monitor|10|2026-11-21||Pan aio||
+restocks-aio-monitor|10|2026-11-21||Restocksaio||
+tsb-monitor|10|2026-11-21||Tsb||
+🔊pings-pokemon|10|2026-11-20||ZESTY BOT||
+📢importante-pokémon|10|2026-11-17||persona (staff o miembro)||
+📯calls-pokemon|0|||||foro o vacío
+📲-invitaciones-pokemon|0|||||foro o vacío
+📚guías-pokemon|0|||||foro o vacío
+🔜leaks-pokemon|10|2026-11-19||persona (staff o miembro)||
+🏪instore-pokemon|10|2026-11-19||persona (staff o miembro)||
+🔌links-pokemon|10|2026-11-20||persona (staff o miembro)||
+🤑poke-steals|10|2026-10-01||persona (staff o miembro)||
+📈invest-pokemon|10|2026-09-16||persona (staff o miembro)||
+💣poke-flex|10|2026-11-19||persona (staff o miembro)||
+🤝wtb-kai-collect|10|2026-10-26||persona (staff o miembro)||
+📦wtb-wts-pokemon|30|2026-11-19||persona (staff o miembro)||
+pokemon-custom-aio|10|2026-11-20||Zesty||
+pokemon-aio|10|2026-11-21|New add|QT||
+pokemon-aio-uk|10|2026-11-20|New add|QT||
+pokemon-custom-shopify|10|2026-11-20||ZTYSHOPIFY||
+pokemon-amazon|10|2026-11-21||Pokemon Amazon||
+pokemon-prismatic|10|2026-11-20|New add|QT||
+twitter-pokemon|10|2026-11-20||ZESTY BOT||
+game|10|2026-11-21|Restock|Game ES Custom||
+game-instore|10|2026-11-21||Game Instore||
+carrefour|10|2026-11-20|Restock|Carrefour cust||
+carrefour-instore|10|2026-11-20|Restock|Carrefour cust||
+drim|10|2026-11-20||DRIM custom mo||
+toysrus|10|2026-11-18||Zesty||
+alcampo|10|2026-10-20||Alcampo custom||
+darizard|10|2026-11-20||Darizard Monit||
+📯calls-invest|0|||||foro o vacío
+📯calls-mattel|0|||||foro o vacío
+📯calls-funko|0|||||foro o vacío
+📯calls-tcg|0|||||foro o vacío
+👥member-invest|10|2026-11-20||persona (staff o miembro)||
+🔜random-leaks|10|2026-11-13||persona (staff o miembro)||
+aio-random|10|2026-11-20||ZTYSHOPIFY||
+amazon-es|10|2026-11-19|New add|Amazon||
+amazon-eu|10|2026-11-21|New add|Amazon||
+amazon-custom|10|2026-09-26||Amazon custom||
+aliexpress-labubu|10|2025-12-04|New add|Aliexpress||
+elcorteingles|10|2026-11-20||Elcorteingles||
+fnac|10|2026-11-17|New add|Fnac||
+otros-tcg|10|2026-11-21||ZTYSHOPIFY||
+mattel|10|2026-11-19||Mattel||
+sephora|10|2026-10-28||Sephora||
+funko|10|2026-11-21||DRIM custom mo||
+milfshakes|10|2026-11-16||Milfshakes Mon||
+hym|10|2026-11-13||H&M||
+zara|10|2026-10-28||Zara||
+zara-instore|10|2026-06-12||Zara instore||
+shop-app|10|2026-10-01||Shopp app||
+steiff|10|2026-11-21||Steiff||
+relojes|10|2026-09-22|Nuevo producto/Restock|Adriano Gioiel||
+uniqlo|10|2026-11-20||Uniqlo Monitor||
+esa-pokemon|10|2026-11-20||ZTYSHOPIFY||
+ikea|10|2026-11-21||Ikea||
+📚qué-son|2|2024-08-29||¿Qué son los c||
+💰igraal|1|2024-08-28||iGraal cashbac||
+💰lety-shops|1|2024-08-28||Lety shops Cas||
+💰soleback|1|2024-08-29||Soleback Cashb||
+💰neobancos|1|2024-11-12||Neobancos||
+📊excel-inventario|2|2024-07-28||Excel inventar||
+🛠zesty-tools|2|2024-09-01||Zesty tools||
+👟cuentas-nike|1|2024-10-17||Cuentas nike||
+🛠️early-access-checker|7|2026-09-24||persona (staff o miembro)||
+📒guía-ebay|8|2026-04-22||persona (staff o miembro)||
+📚guía-vinted|10|2026-07-01||persona (staff o miembro)||
+monkey-invest|10|2025-12-01||persona (staff o miembro)||
+hold-monkey-invest|6|2025-01-09||persona (staff o miembro)||
+sell-monkey-invest|10|2025-06-23||persona (staff o miembro)||
+reviews-monkey-invest|10|2024-12-26||persona (staff o miembro)||
+🤝aycd-partnership|1|2022-03-29||aycd||
+🤝2captcha|1|2022-02-12||ZESTY BOT||
+🤝boiling-proxies|1|2024-08-18||Boiling proxie||
+🤝wolves-proxies|10|2026-11-20||Wolves Proxy||
+🤝byte-proxies|10|2026-11-20||Byte Proxies||
+🤝bird-proxies|10|2026-11-20||Birdproxies||
+🤝zhub|1|2025-10-16||persona (staff o miembro)||
+🤝proxy-vps-partner|10|2026-11-20||Netdash Partne||
+🤝seamless-proxies|10|2026-11-19||Seamless||
+🛍wtb-pierogi|10|2026-10-24||WTB- Pierogi||
+🛍select-store|10|2026-08-25||persona (staff o miembro)||
+🛍nextstep|10|2026-11-01||persona (staff o miembro)||
+🛍plug-game|10|2026-03-24||Pluggamestore||
+🛍saturday-concept|10|2026-06-15||Saturday Conce||
+🛍zneakerz|10|2026-03-19||ZNEAKERZ OFFIC||
+🛍aura-the-club|10|2026-01-05||persona (staff o miembro)||
+🛍kickzcaviar|0|||||foro o vacío
+🛍brutalzapas|2|2026-09-24||persona (staff o miembro)||
+🛍kickzbyortiz|10|2026-11-13||persona (staff o miembro)||
+🛍doggysneakers|10|2026-11-18||persona (staff o miembro)||
+🛍jefa-sneakers|6|2026-08-08||persona (staff o miembro)||
+🖼️gen-wtb-wts|10|2026-11-19||persona (staff o miembro)||
+📥wtb-wtt|10|2026-11-20||Pluggamestore||
+📤wts-retail|10|2026-11-17||persona (staff o miembro)||
+📤wts|10|2026-11-19||persona (staff o miembro)||
+📤wts-wtb-clothes-accessories|10|2026-10-31||persona (staff o miembro)||
+📤wtb-wts-used|10|2026-11-12||persona (staff o miembro)||
+📥wtb-wts-random|10|2026-11-20||persona (staff o miembro)||
+💻wts-wtb-sl07s|10|2026-11-13||persona (staff o miembro)||
+👼pares-td-ps|10|2026-06-12||QT||
+👟accesorios-sneakers|10|2026-03-30||persona (staff o miembro)||

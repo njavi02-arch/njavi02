@@ -8,3 +8,9 @@
 - Fallo real corregido: productos sin tallas (TCG «Default Title» con idioma, colores) se descartaban enteros → ahora se publican sin decir talla.
 - Pruebas: 368 pasan, 1 saltada (yellowshop).
 - Próxima tarea exacta: reconstruir panel/directorio con 98 tiendas, recalcular cifras, commit; después shopify-eu (41) y los 47/28/112 en Discord.
+
+## 03:45 · auditoría de los 47/28/112 + lote 3
+- Recorrido de solo lectura de 180 canales en ZESTY (los 47, 28 y 112): docs/v11/auditoria_187_2026-11-21.txt; último canal: #accesorios-sneakers. Fusionado en FIDELIDAD.csv (columna observado_21nov).
+- Diferencias convertidas en tareas: «New add» → LANZAMIENTO probado por tienda (test_tiendas_lote2); «Price Change» → REBAJA; «[stock]» por talla → la fuente pública de Shopify no da unidades (no se replica); QT/enlaces de bots → no (terceros), sí StockX/eBay.
+- Lote 3: 58 tiendas más → 156 tiendas con canal y tarjeta (146 de los lotes 2-3 con lanzamiento/restock/rebaja probados).
+- Próxima tarea exacta: Excel actualizado, panel publicado, informe final; con token: INSTALAR_SERVIDOR + PRUEBA_RAFFLE + ARRANCAR en el PC.

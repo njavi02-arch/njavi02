@@ -9,11 +9,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:welcomesk8.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[welcomesk8.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[welcomesk8.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[welcomesk8.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -25,11 +26,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:sunnystore.es"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[sunnystore.es] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[sunnystore.es] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[sunnystore.es] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -41,11 +43,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["noirfonce", "shop:noirfonce.fr", "shop:noirfonce.es"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[noirfonce.eu] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[noirfonce.eu] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[noirfonce.eu] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -57,11 +60,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:pukassurfshop.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[pukassurfshop.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[pukassurfshop.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[pukassurfshop.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -73,11 +77,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:blackvinylrecordsspain.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[blackvinylrecordsspain.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[blackvinylrecordsspain.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[blackvinylrecordsspain.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -89,11 +94,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:shop.rfef.es"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[shop.rfef.es] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[shop.rfef.es] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[shop.rfef.es] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -105,11 +111,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:capitansiroco.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[capitansiroco.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[capitansiroco.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[capitansiroco.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -121,11 +128,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:culturaurbanashop.es"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[culturaurbanashop.es] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[culturaurbanashop.es] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[culturaurbanashop.es] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -137,11 +145,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:delastore.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[delastore.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[delastore.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[delastore.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -153,11 +162,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:tradingcardsxxx.fr"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[tradingcardsxxx.fr] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[tradingcardsxxx.fr] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[tradingcardsxxx.fr] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -169,11 +179,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:gamesavenue.fr"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[gamesavenue.fr] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[gamesavenue.fr] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[gamesavenue.fr] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -185,11 +196,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:5pm.fr"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[5pm.fr] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[5pm.fr] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[5pm.fr] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -201,11 +213,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:pokemillon.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[pokemillon.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[pokemillon.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[pokemillon.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -217,11 +230,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:metamorphcenter.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[metamorphcenter.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[metamorphcenter.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[metamorphcenter.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -233,11 +247,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:lelabostore.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[lelabostore.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[lelabostore.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[lelabostore.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -249,11 +264,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["kith-eu", "shop:kith.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[eu.kith.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[eu.kith.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[eu.kith.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -265,11 +281,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:hikarudistribution.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[hikarudistribution.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[hikarudistribution.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[hikarudistribution.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -281,11 +298,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:distance-store.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[distance-store.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[distance-store.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[distance-store.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -297,11 +315,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:anatolia.fr"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[anatolia.fr] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[anatolia.fr] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[anatolia.fr] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -313,11 +332,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:olakala.de"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[olakala.de] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[olakala.de] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[olakala.de] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -329,11 +349,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:relictcg.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[relictcg.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[relictcg.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[relictcg.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -345,11 +366,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:pika-boutique.fr"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[pika-boutique.fr] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[pika-boutique.fr] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[pika-boutique.fr] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -361,11 +383,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:tascon.es"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[tascon.es] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[tascon.es] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[tascon.es] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -377,11 +400,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:en.afew-store.com", "shop:de.afew-store.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[en.afew-store.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[en.afew-store.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[en.afew-store.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -393,11 +417,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:mrjoshop.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[mrjoshop.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[mrjoshop.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[mrjoshop.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -409,11 +434,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:bravado.de"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[bravado.de] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[bravado.de] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[bravado.de] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -425,11 +451,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:play-maniac.de"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[play-maniac.de] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[play-maniac.de] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[play-maniac.de] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -441,11 +468,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:titus-shop.com", "shop:titus.de"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[titus-shop.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[titus-shop.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[titus-shop.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -457,11 +485,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:cardcosmos.de"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[cardcosmos.de] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[cardcosmos.de] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[cardcosmos.de] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -473,11 +502,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:stayonline.de"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[stayonline.de] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[stayonline.de] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[stayonline.de] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -489,11 +519,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:opcards.de"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[opcards.de] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[opcards.de] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[opcards.de] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -505,11 +536,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:schuhdealer.de"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[schuhdealer.de] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[schuhdealer.de] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[schuhdealer.de] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -521,11 +553,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:zupport.de"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[zupport.de] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[zupport.de] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[zupport.de] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -537,11 +570,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["starcow"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[starcowparis.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[starcowparis.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[starcowparis.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -553,11 +587,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:fantasiacards.de"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[fantasiacards.de] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[fantasiacards.de] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[fantasiacards.de] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -569,11 +604,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:gate194.berlin"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[gate194.berlin] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[gate194.berlin] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[gate194.berlin] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -585,11 +621,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:breakthecase.de"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[breakthecase.de] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[breakthecase.de] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[breakthecase.de] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -601,11 +638,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:ingla.de"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[ingla.de] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[ingla.de] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[ingla.de] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -617,11 +655,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:pokeprinz.de"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[pokeprinz.de] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[pokeprinz.de] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[pokeprinz.de] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -633,11 +672,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:yonko-tcg.de"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[yonko-tcg.de] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[yonko-tcg.de] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[yonko-tcg.de] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -649,11 +689,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:thomasipunkt.de"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[thomasipunkt.de] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[thomasipunkt.de] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[thomasipunkt.de] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -665,11 +706,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:newseum.de"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[newseum.de] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[newseum.de] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[newseum.de] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -681,11 +723,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:zebraclub.store"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[zebraclub.store] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[zebraclub.store] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[zebraclub.store] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -697,11 +740,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:tcgdojo.de"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[tcgdojo.de] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[tcgdojo.de] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[tcgdojo.de] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -713,11 +757,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:bonkers-shop.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[bonkers-shop.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[bonkers-shop.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[bonkers-shop.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -729,11 +774,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:gemcards.de"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[gemcards.de] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[gemcards.de] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[gemcards.de] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -745,11 +791,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:blackboxstore.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[blackboxstore.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[blackboxstore.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[blackboxstore.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -761,11 +808,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:dope-factory.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[dope-factory.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[dope-factory.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[dope-factory.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -777,11 +825,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:oneblockdown.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[oneblockdown.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[oneblockdown.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[oneblockdown.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -793,11 +842,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["family3-0"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[family3-0.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[family3-0.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[family3-0.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -809,11 +859,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:glueckstreter.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[glueckstreter.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[glueckstreter.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[glueckstreter.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -825,11 +876,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:the-wants.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[the-wants.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[the-wants.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[the-wants.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -841,11 +893,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:specialmilano.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[specialmilano.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[specialmilano.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[specialmilano.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -857,11 +910,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:antonia.it"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[antonia.it] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[antonia.it] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[antonia.it] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -873,11 +927,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:cardverse.it"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[cardverse.it] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[cardverse.it] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[cardverse.it] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -889,11 +944,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:nugnes1920.com", "shop:it.nugnes1920.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[nugnes1920.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[nugnes1920.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[nugnes1920.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -905,11 +961,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:pokecardsstore.it"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[pokecardsstore.it] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[pokecardsstore.it] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[pokecardsstore.it] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -921,11 +978,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:funside.it"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[funside.it] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[funside.it] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[funside.it] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -937,11 +995,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:collectorstorecards.it"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[collectorstorecards.it] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[collectorstorecards.it] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[collectorstorecards.it] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -953,11 +1012,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:tavernadelgargoyle.it"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[tavernadelgargoyle.it] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[tavernadelgargoyle.it] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[tavernadelgargoyle.it] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -969,11 +1029,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:fangostore.it"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[fangostore.it] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[fangostore.it] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[fangostore.it] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -985,11 +1046,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:magicnerd.it"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[magicnerd.it] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[magicnerd.it] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[magicnerd.it] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1001,11 +1063,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:bananabenz.it"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[bananabenz.it] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[bananabenz.it] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[bananabenz.it] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1017,11 +1080,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:urbanstaroma.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[urbanstaroma.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[urbanstaroma.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[urbanstaroma.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1033,11 +1097,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:littleamericastore.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[littleamericastore.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[littleamericastore.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[littleamericastore.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1049,11 +1114,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:viettishop.com", "shop:eu.viettishop.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[viettishop.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[viettishop.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[viettishop.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1065,11 +1131,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:vittoriocitro.it"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[vittoriocitro.it] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[vittoriocitro.it] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[vittoriocitro.it] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1081,11 +1148,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:en.152store.com", "shop:152store.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[en.152store.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[en.152store.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[en.152store.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1097,11 +1165,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:7hillsroma.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[7hillsroma.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[7hillsroma.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[7hillsroma.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1113,11 +1182,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:urbanjunglestore.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[urbanjunglestore.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[urbanjunglestore.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[urbanjunglestore.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1129,11 +1199,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:carmenboutique.it"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[carmenboutique.it] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[carmenboutique.it] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[carmenboutique.it] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1145,11 +1216,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:galleriagraffiti.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[galleriagraffiti.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[galleriagraffiti.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[galleriagraffiti.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1161,11 +1233,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:pauraclothing.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[pauraclothing.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[pauraclothing.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[pauraclothing.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1177,11 +1250,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["voostore"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[voostore.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[voostore.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[voostore.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1193,11 +1267,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:gamesalley.it"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[gamesalley.it] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[gamesalley.it] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[gamesalley.it] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1209,11 +1284,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:sabot.tv"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[sabot.tv] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[sabot.tv] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[sabot.tv] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1225,11 +1301,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:cappellettoshop.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[cappellettoshop.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[cappellettoshop.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[cappellettoshop.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1241,11 +1318,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:senpaimangashop.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[senpaimangashop.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[senpaimangashop.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[senpaimangashop.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1257,11 +1335,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:atipicishop.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[atipicishop.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[atipicishop.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[atipicishop.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1273,11 +1352,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:sergiofabbri.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[sergiofabbri.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[sergiofabbri.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[sergiofabbri.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1289,11 +1369,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:roa-hiking.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[roa-hiking.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[roa-hiking.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[roa-hiking.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1305,11 +1386,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:grifo210.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[grifo210.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[grifo210.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[grifo210.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1321,11 +1403,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:fuscoboutique.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[fuscoboutique.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[fuscoboutique.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[fuscoboutique.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1337,11 +1420,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:fravshop.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[fravshop.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[fravshop.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[fravshop.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1353,11 +1437,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:loggishop.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[loggishop.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[loggishop.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[loggishop.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1369,11 +1454,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:thronestoregaming.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[thronestoregaming.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[thronestoregaming.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[thronestoregaming.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1385,11 +1471,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:camdenrimini.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[camdenrimini.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[camdenrimini.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[camdenrimini.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1401,11 +1488,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["slamjam", "shop:drop.slamjam.com", "shop:it.slamjam.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[slamjam.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[slamjam.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[slamjam.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1417,11 +1505,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:kingcards.nl"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[kingcards.nl] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[kingcards.nl] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[kingcards.nl] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1433,11 +1522,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:maha-amsterdam.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[maha-amsterdam.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[maha-amsterdam.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[maha-amsterdam.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1449,11 +1539,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:sparkystore.nl"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[sparkystore.nl] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[sparkystore.nl] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[sparkystore.nl] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1465,11 +1556,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:pokefamily.nl"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[pokefamily.nl] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[pokefamily.nl] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[pokefamily.nl] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1481,11 +1573,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:wit-training.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[wit-training.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[wit-training.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[wit-training.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1497,11 +1590,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:stress95.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[stress95.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[stress95.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[stress95.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1513,11 +1607,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:monar.be"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[monar.be] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[monar.be] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[monar.be] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1529,11 +1624,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:eleganza.nl"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[eleganza.nl] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[eleganza.nl] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[eleganza.nl] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1545,11 +1641,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:patta.nl"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[patta.nl] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[patta.nl] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[patta.nl] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1561,11 +1658,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:thefootfactory.co.uk"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[thefootfactory.co.uk] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[thefootfactory.co.uk] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[thefootfactory.co.uk] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1577,11 +1675,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:thbx.nl"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[thbx.nl] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[thbx.nl] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[thbx.nl] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1593,11 +1692,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["end-launches"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[endclothing.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[endclothing.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[endclothing.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1609,11 +1709,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:routeone.co.uk", "shop:routeone.eu"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[routeone.co.uk] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[routeone.co.uk] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[routeone.co.uk] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1625,11 +1726,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["footpatrol-launches"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[footpatrol.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[footpatrol.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[footpatrol.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1641,11 +1743,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:ajogar.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[ajogar.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[ajogar.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[ajogar.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1657,11 +1760,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:landaustore.co.uk"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[landaustore.co.uk] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[landaustore.co.uk] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[landaustore.co.uk] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1673,11 +1777,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["size-launches"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[size.co.uk] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[size.co.uk] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[size.co.uk] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1689,11 +1794,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:palace-skateboards-eu.myshopify.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[palace-skateboards-eu.myshopify.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[palace-skateboards-eu.myshopify.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[palace-skateboards-eu.myshopify.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1705,11 +1811,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:crashrecords.co.uk"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[crashrecords.co.uk] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[crashrecords.co.uk] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[crashrecords.co.uk] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1721,11 +1828,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:boredofsouthsea.co.uk"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[boredofsouthsea.co.uk] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[boredofsouthsea.co.uk] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[boredofsouthsea.co.uk] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1737,11 +1845,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:remixcasuals.co.uk"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[remixcasuals.co.uk] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[remixcasuals.co.uk] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[remixcasuals.co.uk] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1753,11 +1862,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:kyoto.dk"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[kyoto.dk] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[kyoto.dk] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[kyoto.dk] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1769,11 +1879,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:loadeddice.uk"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[loadeddice.uk] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[loadeddice.uk] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[loadeddice.uk] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1785,11 +1896,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:thecardvault.co.uk"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[thecardvault.co.uk] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[thecardvault.co.uk] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[thecardvault.co.uk] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1801,11 +1913,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:deviceone.gr"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[deviceone.gr] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[deviceone.gr] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[deviceone.gr] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1817,11 +1930,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:cardyx.sk"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[cardyx.sk] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[cardyx.sk] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[cardyx.sk] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1833,11 +1947,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:kimskram.dk"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[kimskram.dk] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[kimskram.dk] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[kimskram.dk] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1849,11 +1964,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["sneakersnstuff"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[sneakersnstuff.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[sneakersnstuff.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[sneakersnstuff.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1865,11 +1981,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["naked"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[nakedcph.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[nakedcph.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[nakedcph.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1881,11 +1998,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:munkstore.dk", "shop:munkstore.com", "shop:munkstore.se"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[munkstore.dk] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[munkstore.dk] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[munkstore.dk] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1897,11 +2015,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:noteshop.co.uk"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[noteshop.co.uk] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[noteshop.co.uk] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[noteshop.co.uk] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1913,11 +2032,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:smets.lu"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[smets.lu] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[smets.lu] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[smets.lu] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1929,11 +2049,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:pharmabergen.no"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[pharmabergen.no] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[pharmabergen.no] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[pharmabergen.no] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1945,11 +2066,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:stitch.lu"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[stitch.lu] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[stitch.lu] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[stitch.lu] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1961,11 +2083,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:lvlupgaming.co.uk"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[lvlupgaming.co.uk] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[lvlupgaming.co.uk] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[lvlupgaming.co.uk] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1977,11 +2100,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:jeanstore.co.uk"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[jeanstore.co.uk] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[jeanstore.co.uk] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[jeanstore.co.uk] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -1993,11 +2117,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:logues.ie"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[logues.ie] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[logues.ie] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[logues.ie] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2009,11 +2134,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:plaza.dk"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[plaza.dk] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[plaza.dk] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[plaza.dk] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2025,11 +2151,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:pl-line.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[pl-line.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[pl-line.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[pl-line.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2041,11 +2168,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:eu.stussy.com", "shop:uk.stussy.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[eu.stussy.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[eu.stussy.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[eu.stussy.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2057,11 +2185,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:stil-laden.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[stil-laden.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[stil-laden.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[stil-laden.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2073,11 +2202,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:stoy.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[stoy.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[stoy.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[stoy.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2089,11 +2219,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:cybercafeskateshop.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[cybercafeskateshop.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[cybercafeskateshop.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[cybercafeskateshop.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2105,11 +2236,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:tres-bien.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[tres-bien.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[tres-bien.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[tres-bien.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2121,11 +2253,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:shop.doverstreetmarket.com", "shop:shop-us.doverstreetmarket.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[shop.doverstreetmarket.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[shop.doverstreetmarket.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[shop.doverstreetmarket.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2137,11 +2270,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:rezetstore.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[rezetstore.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[rezetstore.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[rezetstore.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2153,11 +2287,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:ceciliebahnsen.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[ceciliebahnsen.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[ceciliebahnsen.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[ceciliebahnsen.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2169,11 +2304,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:reservoir-store.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[reservoir-store.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[reservoir-store.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[reservoir-store.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2185,11 +2321,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:slamcity.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[slamcity.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[slamcity.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[slamcity.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2201,11 +2338,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:freshcotton.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[freshcotton.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[freshcotton.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[freshcotton.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2217,11 +2355,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:maharishistore.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[maharishistore.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[maharishistore.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[maharishistore.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2233,11 +2372,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:poke-power.eu"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[poke-power.eu] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[poke-power.eu] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[poke-power.eu] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2249,11 +2389,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:le-fix.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[le-fix.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[le-fix.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[le-fix.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2265,11 +2406,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:andpants.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[andpants.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[andpants.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[andpants.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2281,11 +2423,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:ukstore.thebeatles.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[ukstore.thebeatles.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[ukstore.thebeatles.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[ukstore.thebeatles.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2297,11 +2440,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:gs-gameon.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[gs-gameon.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[gs-gameon.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[gs-gameon.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2313,11 +2457,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:function18.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[function18.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[function18.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[function18.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 [[tienda]]
@@ -2329,11 +2474,12 @@ envio_es = "sí (ships_to_countries, 21-nov)"
 raffle_es = "—"
 monitores = ["shop:pampamlondon.com"]
 raffle = "sin-fuente"
-lanzamiento = "por-probar"
+lanzamiento = "probado"
 restock = "probado"
 rebaja = "probado"
 prueba_restock = "test_tiendas_lote2[pampamlondon.com] · muestra real 21-nov"
 prueba_rebaja = "test_tiendas_lote2[pampamlondon.com] · muestra real 21-nov"
+prueba_lanzamiento = "test_tiendas_lote2[pampamlondon.com] · producto nuevo («New add» en la referencia)"
 lote = 2
 
 # Candidatas pendientes de otra muestra: yellowshop.es childsplayclothing.co.uk

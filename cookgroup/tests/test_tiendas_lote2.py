@@ -1,5 +1,6 @@
 """v1.1 · lote 2 (90 tiendas europeas con envío a España): para CADA tienda, una muestra real fechada de su fuente
 (tests/fixtures/muestras_shopify_REAL_2026-11-21.txt) pasa por el mismo pipeline que en producción y se comprueba:
+  LANZAMIENTO → aparece un producto nuevo en la tienda (en ZESTY: «New add»)
   RESTOCK  → una talla agotada vuelve (o, si todas estaban disponibles, se agota una y vuelve)
   REBAJA   → el precio baja un 20 %
   y un ciclo idéntico no repite nada.
@@ -72,3 +73,11 @@ def test_store_restock_and_price_drop_from_real_sample(dom, cat, tmp_path):
     n = len(got)
     run_cycle(cfg, {"min_drop_pct": 5}, src, st, mk, send)                  # ciclo idéntico: sin repetir
     assert len(got) == n
+    import copy                                                             # LANZAMIENTO: producto nuevo en la tienda
+    new = copy.deepcopy(src.cat["products"][0])
+    new["id"], new["title"], new["handle"] = 2, new["title"] + " (nuevo color)", "muestra-nueva"
+    for i, v in enumerate(new["variants"]):
+        v["id"], v["available"] = 100 + i, True
+    src.cat["products"].append(new)
+    run_cycle(cfg, {"min_drop_pct": 5}, src, st, mk, send)
+    assert len(got) == n + 1, f"{dom}: producto nuevo no detectado"

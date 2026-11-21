@@ -122,7 +122,7 @@ fuente = "bot:tienda_end"
 estado = "construido"
 equivalente_de = "end"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["end-launches"]
 palabras = []
 [[categoria.canal]]
@@ -304,7 +304,7 @@ fuente = "bot:tienda_dsml"
 estado = "construido"
 equivalente_de = "dsml"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:shop-us.doverstreetmarket.com", "shop:shop.doverstreetmarket.com"]
 palabras = []
 [[categoria.canal]]
@@ -330,7 +330,7 @@ fuente = "bot:tienda_kitheu"
 estado = "construido"
 equivalente_de = "kitheu"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["kith-eu", "shop:kith.com"]
 palabras = []
 [[categoria.canal]]
@@ -343,7 +343,7 @@ fuente = "bot:tienda_naked"
 estado = "construido"
 equivalente_de = "naked"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["naked"]
 palabras = []
 [[categoria.canal]]
@@ -356,7 +356,7 @@ fuente = "bot:tienda_overkill_oneblockdown"
 estado = "construido"
 equivalente_de = "overkill-oneblockdown"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["overkill", "shop:oneblockdown.com"]
 palabras = []
 [[categoria.canal]]
@@ -369,7 +369,7 @@ fuente = "bot:tienda_slamjam"
 estado = "construido"
 equivalente_de = "slamjam"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:drop.slamjam.com", "shop:it.slamjam.com", "slamjam"]
 palabras = []
 [[categoria.canal]]
@@ -382,7 +382,7 @@ fuente = "bot:tienda_sneakersnstuff"
 estado = "construido"
 equivalente_de = "sneakersnstuff"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["sneakersnstuff"]
 palabras = []
 [[categoria.canal]]
@@ -395,7 +395,7 @@ fuente = "bot:tienda_voostore"
 estado = "construido"
 equivalente_de = "voostore"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["voostore"]
 palabras = []
 [[categoria.canal]]
@@ -408,7 +408,7 @@ fuente = "bot:tienda_starcow"
 estado = "construido"
 equivalente_de = "starcow"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["starcow"]
 palabras = []
 [[categoria.canal]]
@@ -470,7 +470,7 @@ fuente = "bot:tienda_stussy"
 estado = "construido"
 equivalente_de = "stussy"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:eu.stussy.com", "shop:uk.stussy.com"]
 palabras = []
 [[categoria.canal]]
@@ -483,7 +483,7 @@ fuente = "bot:tienda_palace"
 estado = "construido"
 equivalente_de = "palace"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:palace-skateboards-eu.myshopify.com"]
 palabras = []
 [[categoria.canal]]
@@ -574,7 +574,7 @@ fuente = "bot:tienda_welcomesk8"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:welcomesk8.com"]
 palabras = []
 [[categoria.canal]]
@@ -587,7 +587,7 @@ fuente = "bot:tienda_sunny"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:sunnystore.es"]
 palabras = []
 [[categoria.canal]]
@@ -600,7 +600,7 @@ fuente = "bot:tienda_noirfonce"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["noirfonce", "shop:noirfonce.fr", "shop:noirfonce.es"]
 palabras = []
 [[categoria.canal]]
@@ -613,7 +613,7 @@ fuente = "bot:tienda_pukassurf"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:pukassurfshop.com"]
 palabras = []
 [[categoria.canal]]
@@ -626,7 +626,7 @@ fuente = "bot:tienda_blackvinylrecordsspain"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:blackvinylrecordsspain.com"]
 palabras = []
 
@@ -643,7 +643,7 @@ fuente = "bot:tienda_rfef"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:shop.rfef.es"]
 palabras = []
 [[categoria.canal]]
@@ -656,7 +656,7 @@ fuente = "bot:tienda_capitansiroco"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:capitansiroco.com"]
 palabras = []
 [[categoria.canal]]
@@ -669,7 +669,7 @@ fuente = "bot:tienda_culturaurbana"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:culturaurbanashop.es"]
 palabras = []
 [[categoria.canal]]
@@ -682,7 +682,7 @@ fuente = "bot:tienda_dela"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:delastore.com"]
 palabras = []
 [[categoria.canal]]
@@ -695,7 +695,7 @@ fuente = "bot:tienda_tradingcardsxxx"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:tradingcardsxxx.fr"]
 palabras = []
 [[categoria.canal]]
@@ -708,7 +708,7 @@ fuente = "bot:tienda_gamesavenue"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:gamesavenue.fr"]
 palabras = []
 [[categoria.canal]]
@@ -721,7 +721,7 @@ fuente = "bot:tienda_5pm"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:5pm.fr"]
 palabras = []
 [[categoria.canal]]
@@ -734,7 +734,7 @@ fuente = "bot:tienda_pokemillon"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:pokemillon.com"]
 palabras = []
 [[categoria.canal]]
@@ -747,7 +747,7 @@ fuente = "bot:tienda_metamorphcenter"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:metamorphcenter.com"]
 palabras = []
 [[categoria.canal]]
@@ -760,7 +760,7 @@ fuente = "bot:tienda_lelabo"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:lelabostore.com"]
 palabras = []
 [[categoria.canal]]
@@ -773,7 +773,7 @@ fuente = "bot:tienda_hikarudistribution"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:hikarudistribution.com"]
 palabras = []
 [[categoria.canal]]
@@ -786,7 +786,7 @@ fuente = "bot:tienda_distance"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:distance-store.com"]
 palabras = []
 [[categoria.canal]]
@@ -799,7 +799,7 @@ fuente = "bot:tienda_anatolia"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:anatolia.fr"]
 palabras = []
 [[categoria.canal]]
@@ -812,7 +812,7 @@ fuente = "bot:tienda_olakala"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:olakala.de"]
 palabras = []
 [[categoria.canal]]
@@ -825,7 +825,7 @@ fuente = "bot:tienda_relictcg"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:relictcg.com"]
 palabras = []
 [[categoria.canal]]
@@ -838,7 +838,7 @@ fuente = "bot:tienda_pika_boutique"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:pika-boutique.fr"]
 palabras = []
 [[categoria.canal]]
@@ -851,7 +851,7 @@ fuente = "bot:tienda_tascon"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:tascon.es"]
 palabras = []
 [[categoria.canal]]
@@ -864,7 +864,7 @@ fuente = "bot:tienda_afew"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:en.afew-store.com", "shop:de.afew-store.com"]
 palabras = []
 [[categoria.canal]]
@@ -877,7 +877,7 @@ fuente = "bot:tienda_mrjo"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:mrjoshop.com"]
 palabras = []
 [[categoria.canal]]
@@ -890,7 +890,7 @@ fuente = "bot:tienda_bravado"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:bravado.de"]
 palabras = []
 [[categoria.canal]]
@@ -903,7 +903,7 @@ fuente = "bot:tienda_play_maniac"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:play-maniac.de"]
 palabras = []
 [[categoria.canal]]
@@ -916,7 +916,7 @@ fuente = "bot:tienda_titus"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:titus-shop.com", "shop:titus.de"]
 palabras = []
 [[categoria.canal]]
@@ -929,7 +929,7 @@ fuente = "bot:tienda_cardcosmos"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:cardcosmos.de"]
 palabras = []
 [[categoria.canal]]
@@ -942,7 +942,7 @@ fuente = "bot:tienda_stayonline"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:stayonline.de"]
 palabras = []
 [[categoria.canal]]
@@ -955,7 +955,7 @@ fuente = "bot:tienda_opcards"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:opcards.de"]
 palabras = []
 [[categoria.canal]]
@@ -968,7 +968,7 @@ fuente = "bot:tienda_schuhdealer"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:schuhdealer.de"]
 palabras = []
 [[categoria.canal]]
@@ -981,7 +981,7 @@ fuente = "bot:tienda_zupport"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:zupport.de"]
 palabras = []
 [[categoria.canal]]
@@ -994,7 +994,7 @@ fuente = "bot:tienda_fantasiacards"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:fantasiacards.de"]
 palabras = []
 [[categoria.canal]]
@@ -1007,7 +1007,7 @@ fuente = "bot:tienda_gate194"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:gate194.berlin"]
 palabras = []
 [[categoria.canal]]
@@ -1020,7 +1020,7 @@ fuente = "bot:tienda_breakthecase"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:breakthecase.de"]
 palabras = []
 [[categoria.canal]]
@@ -1033,7 +1033,7 @@ fuente = "bot:tienda_ingla"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:ingla.de"]
 palabras = []
 [[categoria.canal]]
@@ -1046,7 +1046,7 @@ fuente = "bot:tienda_pokeprinz"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:pokeprinz.de"]
 palabras = []
 [[categoria.canal]]
@@ -1059,7 +1059,7 @@ fuente = "bot:tienda_yonko_tcg"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:yonko-tcg.de"]
 palabras = []
 [[categoria.canal]]
@@ -1072,7 +1072,7 @@ fuente = "bot:tienda_thomasipunkt"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:thomasipunkt.de"]
 palabras = []
 [[categoria.canal]]
@@ -1085,7 +1085,7 @@ fuente = "bot:tienda_newseum"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:newseum.de"]
 palabras = []
 [[categoria.canal]]
@@ -1098,7 +1098,7 @@ fuente = "bot:tienda_zebraclub"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:zebraclub.store"]
 palabras = []
 [[categoria.canal]]
@@ -1111,7 +1111,7 @@ fuente = "bot:tienda_tcgdojo"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:tcgdojo.de"]
 palabras = []
 [[categoria.canal]]
@@ -1124,7 +1124,7 @@ fuente = "bot:tienda_bonkers"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:bonkers-shop.com"]
 palabras = []
 [[categoria.canal]]
@@ -1137,7 +1137,7 @@ fuente = "bot:tienda_gemcards"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:gemcards.de"]
 palabras = []
 [[categoria.canal]]
@@ -1150,7 +1150,7 @@ fuente = "bot:tienda_blackbox"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:blackboxstore.com"]
 palabras = []
 [[categoria.canal]]
@@ -1163,7 +1163,7 @@ fuente = "bot:tienda_dope_factory"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:dope-factory.com"]
 palabras = []
 [[categoria.canal]]
@@ -1176,7 +1176,7 @@ fuente = "bot:tienda_family3_0"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["family3-0"]
 palabras = []
 [[categoria.canal]]
@@ -1189,7 +1189,7 @@ fuente = "bot:tienda_glueckstreter"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:glueckstreter.com"]
 palabras = []
 [[categoria.canal]]
@@ -1202,7 +1202,7 @@ fuente = "bot:tienda_the_wants"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:the-wants.com"]
 palabras = []
 [[categoria.canal]]
@@ -1215,7 +1215,7 @@ fuente = "bot:tienda_specialmilano"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:specialmilano.com"]
 palabras = []
 [[categoria.canal]]
@@ -1228,7 +1228,7 @@ fuente = "bot:tienda_antonia"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:antonia.it"]
 palabras = []
 [[categoria.canal]]
@@ -1241,7 +1241,7 @@ fuente = "bot:tienda_cardverse"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:cardverse.it"]
 palabras = []
 [[categoria.canal]]
@@ -1254,7 +1254,7 @@ fuente = "bot:tienda_nugnes1920"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:nugnes1920.com", "shop:it.nugnes1920.com"]
 palabras = []
 [[categoria.canal]]
@@ -1267,7 +1267,7 @@ fuente = "bot:tienda_pokecards"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:pokecardsstore.it"]
 palabras = []
 [[categoria.canal]]
@@ -1280,7 +1280,7 @@ fuente = "bot:tienda_funside"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:funside.it"]
 palabras = []
 
@@ -1297,7 +1297,7 @@ fuente = "bot:tienda_collectorstorecards"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:collectorstorecards.it"]
 palabras = []
 [[categoria.canal]]
@@ -1310,7 +1310,7 @@ fuente = "bot:tienda_tavernadelgargoyle"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:tavernadelgargoyle.it"]
 palabras = []
 [[categoria.canal]]
@@ -1323,7 +1323,7 @@ fuente = "bot:tienda_fango"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:fangostore.it"]
 palabras = []
 [[categoria.canal]]
@@ -1336,7 +1336,7 @@ fuente = "bot:tienda_magicnerd"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:magicnerd.it"]
 palabras = []
 [[categoria.canal]]
@@ -1349,7 +1349,7 @@ fuente = "bot:tienda_bananabenz"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:bananabenz.it"]
 palabras = []
 [[categoria.canal]]
@@ -1362,7 +1362,7 @@ fuente = "bot:tienda_urbanstaroma"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:urbanstaroma.com"]
 palabras = []
 [[categoria.canal]]
@@ -1375,7 +1375,7 @@ fuente = "bot:tienda_littleamerica"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:littleamericastore.com"]
 palabras = []
 [[categoria.canal]]
@@ -1388,7 +1388,7 @@ fuente = "bot:tienda_vietti"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:viettishop.com", "shop:eu.viettishop.com"]
 palabras = []
 [[categoria.canal]]
@@ -1401,7 +1401,7 @@ fuente = "bot:tienda_vittoriocitro"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:vittoriocitro.it"]
 palabras = []
 [[categoria.canal]]
@@ -1414,7 +1414,7 @@ fuente = "bot:tienda_152"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:en.152store.com", "shop:152store.com"]
 palabras = []
 [[categoria.canal]]
@@ -1427,7 +1427,7 @@ fuente = "bot:tienda_7hillsroma"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:7hillsroma.com"]
 palabras = []
 [[categoria.canal]]
@@ -1440,7 +1440,7 @@ fuente = "bot:tienda_urbanjungle"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:urbanjunglestore.com"]
 palabras = []
 [[categoria.canal]]
@@ -1453,7 +1453,7 @@ fuente = "bot:tienda_carmenboutique"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:carmenboutique.it"]
 palabras = []
 [[categoria.canal]]
@@ -1466,7 +1466,7 @@ fuente = "bot:tienda_galleriagraffiti"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:galleriagraffiti.com"]
 palabras = []
 [[categoria.canal]]
@@ -1479,7 +1479,7 @@ fuente = "bot:tienda_pauraclothing"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:pauraclothing.com"]
 palabras = []
 [[categoria.canal]]
@@ -1492,7 +1492,7 @@ fuente = "bot:tienda_gamesalley"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:gamesalley.it"]
 palabras = []
 [[categoria.canal]]
@@ -1505,7 +1505,7 @@ fuente = "bot:tienda_sabot"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:sabot.tv"]
 palabras = []
 [[categoria.canal]]
@@ -1518,7 +1518,7 @@ fuente = "bot:tienda_cappelletto"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:cappellettoshop.com"]
 palabras = []
 [[categoria.canal]]
@@ -1531,7 +1531,7 @@ fuente = "bot:tienda_senpaimanga"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:senpaimangashop.com"]
 palabras = []
 [[categoria.canal]]
@@ -1544,7 +1544,7 @@ fuente = "bot:tienda_atipici"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:atipicishop.com"]
 palabras = []
 [[categoria.canal]]
@@ -1557,7 +1557,7 @@ fuente = "bot:tienda_sergiofabbri"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:sergiofabbri.com"]
 palabras = []
 [[categoria.canal]]
@@ -1570,7 +1570,7 @@ fuente = "bot:tienda_roa_hiking"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:roa-hiking.com"]
 palabras = []
 [[categoria.canal]]
@@ -1583,7 +1583,7 @@ fuente = "bot:tienda_grifo210"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:grifo210.com"]
 palabras = []
 [[categoria.canal]]
@@ -1596,7 +1596,7 @@ fuente = "bot:tienda_fuscoboutique"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:fuscoboutique.com"]
 palabras = []
 [[categoria.canal]]
@@ -1609,7 +1609,7 @@ fuente = "bot:tienda_frav"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:fravshop.com"]
 palabras = []
 [[categoria.canal]]
@@ -1622,7 +1622,7 @@ fuente = "bot:tienda_loggi"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:loggishop.com"]
 palabras = []
 [[categoria.canal]]
@@ -1635,7 +1635,7 @@ fuente = "bot:tienda_thronestoregaming"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:thronestoregaming.com"]
 palabras = []
 [[categoria.canal]]
@@ -1648,7 +1648,7 @@ fuente = "bot:tienda_camdenrimini"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:camdenrimini.com"]
 palabras = []
 [[categoria.canal]]
@@ -1661,7 +1661,7 @@ fuente = "bot:tienda_kingcards"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:kingcards.nl"]
 palabras = []
 [[categoria.canal]]
@@ -1674,7 +1674,7 @@ fuente = "bot:tienda_maha_amsterdam"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:maha-amsterdam.com"]
 palabras = []
 [[categoria.canal]]
@@ -1687,7 +1687,7 @@ fuente = "bot:tienda_sparky"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:sparkystore.nl"]
 palabras = []
 [[categoria.canal]]
@@ -1700,7 +1700,7 @@ fuente = "bot:tienda_pokefamily"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:pokefamily.nl"]
 palabras = []
 [[categoria.canal]]
@@ -1713,7 +1713,7 @@ fuente = "bot:tienda_wit_training"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:wit-training.com"]
 palabras = []
 [[categoria.canal]]
@@ -1726,7 +1726,7 @@ fuente = "bot:tienda_stress95"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:stress95.com"]
 palabras = []
 [[categoria.canal]]
@@ -1739,7 +1739,7 @@ fuente = "bot:tienda_monar"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:monar.be"]
 palabras = []
 [[categoria.canal]]
@@ -1752,7 +1752,7 @@ fuente = "bot:tienda_eleganza"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:eleganza.nl"]
 palabras = []
 [[categoria.canal]]
@@ -1765,7 +1765,7 @@ fuente = "bot:tienda_patta"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:patta.nl"]
 palabras = []
 [[categoria.canal]]
@@ -1778,7 +1778,7 @@ fuente = "bot:tienda_thefootfactory"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:thefootfactory.co.uk"]
 palabras = []
 [[categoria.canal]]
@@ -1791,7 +1791,7 @@ fuente = "bot:tienda_thbx"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:thbx.nl"]
 palabras = []
 [[categoria.canal]]
@@ -1804,7 +1804,7 @@ fuente = "bot:tienda_routeone"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:routeone.co.uk", "shop:routeone.eu"]
 palabras = []
 [[categoria.canal]]
@@ -1817,7 +1817,7 @@ fuente = "bot:tienda_footpatrol"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["footpatrol-launches"]
 palabras = []
 [[categoria.canal]]
@@ -1830,7 +1830,7 @@ fuente = "bot:tienda_ajogar"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:ajogar.com"]
 palabras = []
 [[categoria.canal]]
@@ -1843,7 +1843,7 @@ fuente = "bot:tienda_landau"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:landaustore.co.uk"]
 palabras = []
 [[categoria.canal]]
@@ -1856,7 +1856,7 @@ fuente = "bot:tienda_size"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["size-launches"]
 palabras = []
 [[categoria.canal]]
@@ -1869,7 +1869,7 @@ fuente = "bot:tienda_crashrecords"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:crashrecords.co.uk"]
 palabras = []
 [[categoria.canal]]
@@ -1882,7 +1882,7 @@ fuente = "bot:tienda_boredofsouthsea"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:boredofsouthsea.co.uk"]
 palabras = []
 [[categoria.canal]]
@@ -1895,7 +1895,7 @@ fuente = "bot:tienda_remixcasuals"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:remixcasuals.co.uk"]
 palabras = []
 [[categoria.canal]]
@@ -1908,7 +1908,7 @@ fuente = "bot:tienda_kyoto"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:kyoto.dk"]
 palabras = []
 [[categoria.canal]]
@@ -1921,7 +1921,7 @@ fuente = "bot:tienda_loadeddice"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:loadeddice.uk"]
 palabras = []
 [[categoria.canal]]
@@ -1934,7 +1934,7 @@ fuente = "bot:tienda_thecardvault"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:thecardvault.co.uk"]
 palabras = []
 
@@ -1951,7 +1951,7 @@ fuente = "bot:tienda_deviceone"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:deviceone.gr"]
 palabras = []
 [[categoria.canal]]
@@ -1964,7 +1964,7 @@ fuente = "bot:tienda_cardyx"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:cardyx.sk"]
 palabras = []
 [[categoria.canal]]
@@ -1977,7 +1977,7 @@ fuente = "bot:tienda_kimskram"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:kimskram.dk"]
 palabras = []
 [[categoria.canal]]
@@ -1990,7 +1990,7 @@ fuente = "bot:tienda_munk"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:munkstore.dk", "shop:munkstore.com", "shop:munkstore.se"]
 palabras = []
 [[categoria.canal]]
@@ -2003,7 +2003,7 @@ fuente = "bot:tienda_note"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:noteshop.co.uk"]
 palabras = []
 [[categoria.canal]]
@@ -2016,7 +2016,7 @@ fuente = "bot:tienda_smets"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:smets.lu"]
 palabras = []
 [[categoria.canal]]
@@ -2029,7 +2029,7 @@ fuente = "bot:tienda_pharmabergen"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:pharmabergen.no"]
 palabras = []
 [[categoria.canal]]
@@ -2042,7 +2042,7 @@ fuente = "bot:tienda_stitch"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:stitch.lu"]
 palabras = []
 [[categoria.canal]]
@@ -2055,7 +2055,7 @@ fuente = "bot:tienda_lvlupgaming"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:lvlupgaming.co.uk"]
 palabras = []
 [[categoria.canal]]
@@ -2068,7 +2068,7 @@ fuente = "bot:tienda_jean"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:jeanstore.co.uk"]
 palabras = []
 [[categoria.canal]]
@@ -2081,7 +2081,7 @@ fuente = "bot:tienda_logues"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:logues.ie"]
 palabras = []
 [[categoria.canal]]
@@ -2094,7 +2094,7 @@ fuente = "bot:tienda_plaza"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:plaza.dk"]
 palabras = []
 [[categoria.canal]]
@@ -2107,7 +2107,7 @@ fuente = "bot:tienda_pl_line"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:pl-line.com"]
 palabras = []
 [[categoria.canal]]
@@ -2120,7 +2120,7 @@ fuente = "bot:tienda_stil_laden"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:stil-laden.com"]
 palabras = []
 [[categoria.canal]]
@@ -2133,7 +2133,7 @@ fuente = "bot:tienda_stoy"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:stoy.com"]
 palabras = []
 [[categoria.canal]]
@@ -2146,7 +2146,7 @@ fuente = "bot:tienda_cybercafeskate"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:cybercafeskateshop.com"]
 palabras = []
 [[categoria.canal]]
@@ -2159,7 +2159,7 @@ fuente = "bot:tienda_tres_bien"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:tres-bien.com"]
 palabras = []
 [[categoria.canal]]
@@ -2172,7 +2172,7 @@ fuente = "bot:tienda_rezet"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:rezetstore.com"]
 palabras = []
 [[categoria.canal]]
@@ -2185,7 +2185,7 @@ fuente = "bot:tienda_ceciliebahnsen"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:ceciliebahnsen.com"]
 palabras = []
 [[categoria.canal]]
@@ -2198,7 +2198,7 @@ fuente = "bot:tienda_reservoir"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:reservoir-store.com"]
 palabras = []
 [[categoria.canal]]
@@ -2211,7 +2211,7 @@ fuente = "bot:tienda_slamcity"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:slamcity.com"]
 palabras = []
 [[categoria.canal]]
@@ -2224,7 +2224,7 @@ fuente = "bot:tienda_freshcotton"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:freshcotton.com"]
 palabras = []
 [[categoria.canal]]
@@ -2237,7 +2237,7 @@ fuente = "bot:tienda_maharishi"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:maharishistore.com"]
 palabras = []
 [[categoria.canal]]
@@ -2250,7 +2250,7 @@ fuente = "bot:tienda_poke_power"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:poke-power.eu"]
 palabras = []
 [[categoria.canal]]
@@ -2263,7 +2263,7 @@ fuente = "bot:tienda_le_fix"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:le-fix.com"]
 palabras = []
 [[categoria.canal]]
@@ -2276,7 +2276,7 @@ fuente = "bot:tienda_andpants"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:andpants.com"]
 palabras = []
 [[categoria.canal]]
@@ -2289,7 +2289,7 @@ fuente = "bot:tienda_thebeatles"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:ukstore.thebeatles.com"]
 palabras = []
 [[categoria.canal]]
@@ -2302,7 +2302,7 @@ fuente = "bot:tienda_gs_gameon"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:gs-gameon.com"]
 palabras = []
 [[categoria.canal]]
@@ -2315,7 +2315,7 @@ fuente = "bot:tienda_function18"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:function18.com"]
 palabras = []
 [[categoria.canal]]
@@ -2328,7 +2328,7 @@ fuente = "bot:tienda_pampamlondon"
 estado = "construido"
 equivalente_de = "(lote 1 propio)"
 falta = ""
-senales = "RESTOCK, REBAJA"
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:pampamlondon.com"]
 palabras = []
 

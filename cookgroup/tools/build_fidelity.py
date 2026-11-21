@@ -94,6 +94,13 @@ def main():
         except sqlite3.Error:
             pass
 
+    audit = {}                                              # recorrido del 21-nov (sesión de 5 h): solo lectura
+    ap = ROOT / "docs/v11/auditoria_187_2026-11-21.txt"
+    if ap.exists():
+        for ln in ap.read_text(encoding="utf-8").splitlines():
+            if ln and not ln.startswith("#"):
+                f = (ln.split("|") + [""] * 8)[:8]
+                audit[f[0]] = f
     rows = []
     for r in csv.DictReader(open(ROOT / "docs/v08/canales.csv", encoding="utf-8")):
         plain = re.sub(r"^[^\w]+", "", r["canal"])
@@ -148,7 +155,13 @@ def main():
             key = (c.get("fuente") or "").removeprefix("bot:")
             if key and key in delivered:
                 level = "verificado"
-        rows.append({"categoria": r["categoria"], "canal_referencia": r["canal"], "que_hace": r["para_que"],
+        a = audit.get(r["canal"])
+        obs = ""
+        if a:
+            obs = (f"visto 21-nov: {a[1]} mensajes cargados, último {a[2] or 'sin fecha'}" + (f" · señal: {a[3]}" if a[3] else "")
+                   + (f" · publica: {a[4]}" if a[4] else "") + (f" · {a[6]}" if a[6] else ""))
+        rows.append({"categoria": r["categoria"], "canal_referencia": r["canal"], "id_referencia": r["id"],
+                     "observado_21nov": obs, "que_hace": r["para_que"],
                      "evidencia_referencia": r["nivel_evidencia"], "nuestro_canal": " ".join("#" + x for x in nuestros) or "—",
                      "fuente_o_responsable": fuente, "permisos": permisos, "prueba": prueba or weak, "estado": level, "nota": nota,
                      "enlace": f"https://discord.com/channels/{guild}/{ch_ids[main_ch]}" if guild and main_ch in ch_ids else ""})
@@ -197,7 +210,7 @@ def render(rows) -> str:
     for r in rows:
         ch = f"<a href='{E(r['enlace'])}'>{E(r['nuestro_canal'])}</a>" if r["enlace"] else E(r["nuestro_canal"])
         o.append(f"<tr data-c='{E(r['categoria'])}'><td>{E(r['canal_referencia'])}<br><span class=muted>{E(r['categoria'])}</span></td>"
-                 f"<td>{E(r['que_hace'])}</td><td>{ch}</td><td>{E(r['fuente_o_responsable'])}<br><span class=muted>{E(r['nota'])}</span></td>"
+                 f"<td>{E(r['que_hace'])}<br><span class=muted>{E(r.get('observado_21nov', ''))}</span></td><td>{ch}</td><td>{E(r['fuente_o_responsable'])}<br><span class=muted>{E(r['nota'])}</span></td>"
                  f"<td class=muted>{E(r['permisos'])}</td><td class=muted>{E(r['prueba'])}</td><td><span class='tag {cls[r['estado']]}'>{E(r['estado'])}</span></td></tr>")
     o.append("</table></main><script>function show(c){document.querySelectorAll('tr[data-c]').forEach(t=>t.style.display=(!c||t.dataset.c===c)?'':'none');"
              "document.querySelectorAll('.cats button').forEach(b=>b.classList.toggle('on',b.textContent.startsWith(c||'Todas')))}</script></html>")
