@@ -1,0 +1,1411 @@
+# GENERADO por tools/build_lote2.py — no editar a mano. Fuente: validación en vivo y muestras del 21-nov-2026.
+
+[[tienda]]
+nombre = "Welcomesk8"
+canal = "welcomesk8"
+pais = "ES"
+web = "https://welcomesk8.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:welcomesk8.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[welcomesk8.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[welcomesk8.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Sunnystore"
+canal = "sunny"
+pais = "ES"
+web = "https://sunnystore.es/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:sunnystore.es"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[sunnystore.es] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[sunnystore.es] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Noirfonce"
+canal = "noirfonce"
+pais = "ES"
+web = "https://noirfonce.eu/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["noirfonce"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[noirfonce.eu] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[noirfonce.eu] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Pukassurfshop"
+canal = "pukassurf"
+pais = "ES"
+web = "https://pukassurfshop.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:pukassurfshop.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[pukassurfshop.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[pukassurfshop.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Blackvinylrecordsspain"
+canal = "blackvinylrecordsspain"
+pais = "ES"
+web = "https://blackvinylrecordsspain.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:blackvinylrecordsspain.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[blackvinylrecordsspain.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[blackvinylrecordsspain.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Ztyshopify"
+canal = "rfef"
+pais = "ES"
+web = "https://shop.rfef.es/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:shop.rfef.es"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[shop.rfef.es] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[shop.rfef.es] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Capitansiroco"
+canal = "capitansiroco"
+pais = "ES"
+web = "https://capitansiroco.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:capitansiroco.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[capitansiroco.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[capitansiroco.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "culturaurbanashop.es"
+canal = "culturaurbana"
+pais = "ES"
+web = "https://culturaurbanashop.es/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:culturaurbanashop.es"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[culturaurbanashop.es] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[culturaurbanashop.es] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Dela Store"
+canal = "dela"
+pais = "ES"
+web = "https://delastore.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:delastore.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[delastore.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[delastore.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Tradingcardsxxx"
+canal = "tradingcardsxxx"
+pais = "FR"
+web = "https://tradingcardsxxx.fr/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:tradingcardsxxx.fr"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[tradingcardsxxx.fr] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[tradingcardsxxx.fr] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Games Avenue"
+canal = "gamesavenue"
+pais = "FR"
+web = "https://gamesavenue.fr/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:gamesavenue.fr"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[gamesavenue.fr] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[gamesavenue.fr] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "5 PM"
+canal = "5pm"
+pais = "FR"
+web = "https://5pm.fr/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:5pm.fr"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[5pm.fr] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[5pm.fr] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Pokemillon"
+canal = "pokemillon"
+pais = "ES"
+web = "https://pokemillon.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:pokemillon.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[pokemillon.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[pokemillon.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Metamorph Center"
+canal = "metamorphcenter"
+pais = "ES"
+web = "https://metamorphcenter.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:metamorphcenter.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[metamorphcenter.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[metamorphcenter.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Lelabostore"
+canal = "lelabo"
+pais = "FR"
+web = "https://lelabostore.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:lelabostore.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[lelabostore.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[lelabostore.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Kith EU"
+canal = "kitheu"
+pais = "FR"
+web = "https://eu.kith.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["kith-eu"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[eu.kith.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[eu.kith.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Hikaru Distribution"
+canal = "hikarudistribution"
+pais = "FR"
+web = "https://hikarudistribution.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:hikarudistribution.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[hikarudistribution.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[hikarudistribution.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Distance-Store"
+canal = "distance"
+pais = "FR"
+web = "https://distance-store.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:distance-store.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[distance-store.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[distance-store.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Anatolia"
+canal = "anatolia"
+pais = "FR"
+web = "https://anatolia.fr/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:anatolia.fr"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[anatolia.fr] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[anatolia.fr] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Olakala"
+canal = "olakala"
+pais = "DE"
+web = "https://olakala.de/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:olakala.de"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[olakala.de] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[olakala.de] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Relic Tcg"
+canal = "relictcg"
+pais = "FR"
+web = "https://relictcg.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:relictcg.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[relictcg.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[relictcg.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Pika-Boutique"
+canal = "pika-boutique"
+pais = "FR"
+web = "https://pika-boutique.fr/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:pika-boutique.fr"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[pika-boutique.fr] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[pika-boutique.fr] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Tascon"
+canal = "tascon"
+pais = "ES"
+web = "https://tascon.es/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:tascon.es"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[tascon.es] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[tascon.es] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Afewstore"
+canal = "afew"
+pais = "DE"
+web = "https://en.afew-store.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:en.afew-store.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[en.afew-store.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[en.afew-store.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Mrjoshop"
+canal = "mrjo"
+pais = "FR"
+web = "https://mrjoshop.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:mrjoshop.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[mrjoshop.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[mrjoshop.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Bravado"
+canal = "bravado"
+pais = "DE"
+web = "https://bravado.de/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:bravado.de"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[bravado.de] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[bravado.de] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Play-Maniac"
+canal = "play-maniac"
+pais = "DE"
+web = "https://play-maniac.de/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:play-maniac.de"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[play-maniac.de] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[play-maniac.de] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Titus-Shop"
+canal = "titus"
+pais = "DE"
+web = "https://titus-shop.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:titus-shop.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[titus-shop.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[titus-shop.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Cardcosmos"
+canal = "cardcosmos"
+pais = "DE"
+web = "https://cardcosmos.de/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:cardcosmos.de"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[cardcosmos.de] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[cardcosmos.de] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Stayonline"
+canal = "stayonline"
+pais = "DE"
+web = "https://stayonline.de/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:stayonline.de"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[stayonline.de] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[stayonline.de] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Opcards"
+canal = "opcards"
+pais = "DE"
+web = "https://opcards.de/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:opcards.de"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[opcards.de] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[opcards.de] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Schuhdealer"
+canal = "schuhdealer"
+pais = "DE"
+web = "https://schuhdealer.de/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:schuhdealer.de"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[schuhdealer.de] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[schuhdealer.de] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "zupport.de"
+canal = "zupport"
+pais = "DE"
+web = "https://zupport.de/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:zupport.de"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[zupport.de] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[zupport.de] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Starcow"
+canal = "starcow"
+pais = "FR"
+web = "https://starcowparis.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["starcow"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[starcowparis.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[starcowparis.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Fantasiacards"
+canal = "fantasiacards"
+pais = "DE"
+web = "https://fantasiacards.de/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:fantasiacards.de"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[fantasiacards.de] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[fantasiacards.de] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Gate194"
+canal = "gate194"
+pais = "DE"
+web = "https://gate194.berlin/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:gate194.berlin"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[gate194.berlin] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[gate194.berlin] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Breakthecase"
+canal = "breakthecase"
+pais = "DE"
+web = "https://breakthecase.de/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:breakthecase.de"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[breakthecase.de] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[breakthecase.de] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Ingla"
+canal = "ingla"
+pais = "DE"
+web = "https://ingla.de/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:ingla.de"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[ingla.de] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[ingla.de] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Pokeprinz"
+canal = "pokeprinz"
+pais = "DE"
+web = "https://pokeprinz.de/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:pokeprinz.de"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[pokeprinz.de] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[pokeprinz.de] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Yonko Tcg"
+canal = "yonko-tcg"
+pais = "DE"
+web = "https://yonko-tcg.de/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:yonko-tcg.de"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[yonko-tcg.de] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[yonko-tcg.de] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Thomasipunkt"
+canal = "thomasipunkt"
+pais = "DE"
+web = "https://thomasipunkt.de/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:thomasipunkt.de"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[thomasipunkt.de] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[thomasipunkt.de] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Newseum"
+canal = "newseum"
+pais = "DE"
+web = "https://newseum.de/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:newseum.de"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[newseum.de] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[newseum.de] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Zebraclub"
+canal = "zebraclub"
+pais = "DE"
+web = "https://zebraclub.store/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:zebraclub.store"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[zebraclub.store] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[zebraclub.store] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Tcg Dojo"
+canal = "tcgdojo"
+pais = "DE"
+web = "https://tcgdojo.de/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:tcgdojo.de"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[tcgdojo.de] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[tcgdojo.de] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Bonker"
+canal = "bonkers"
+pais = "DE"
+web = "https://bonkers-shop.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:bonkers-shop.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[bonkers-shop.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[bonkers-shop.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Gemcards"
+canal = "gemcards"
+pais = "DE"
+web = "https://gemcards.de/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:gemcards.de"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[gemcards.de] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[gemcards.de] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "blackboxstore.com"
+canal = "blackbox"
+pais = "IT"
+web = "https://blackboxstore.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:blackboxstore.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[blackboxstore.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[blackboxstore.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Dope Factory"
+canal = "dope-factory"
+pais = "IT"
+web = "https://dope-factory.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:dope-factory.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[dope-factory.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[dope-factory.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "oneblockdown.com"
+canal = "overkill-oneblockdown"
+pais = "IT"
+web = "https://oneblockdown.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:oneblockdown.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[oneblockdown.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[oneblockdown.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Family 3.0"
+canal = "family3-0"
+pais = "FR"
+web = "https://family3-0.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["family3-0"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[family3-0.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[family3-0.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Glueckstreter"
+canal = "glueckstreter"
+pais = "DE"
+web = "https://glueckstreter.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:glueckstreter.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[glueckstreter.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[glueckstreter.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "The-Wants"
+canal = "the-wants"
+pais = "DE"
+web = "https://the-wants.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:the-wants.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[the-wants.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[the-wants.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Special Milano"
+canal = "specialmilano"
+pais = "IT"
+web = "https://specialmilano.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:specialmilano.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[specialmilano.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[specialmilano.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "antonia.it"
+canal = "antonia"
+pais = "IT"
+web = "https://antonia.it/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:antonia.it"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[antonia.it] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[antonia.it] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Cardverse"
+canal = "cardverse"
+pais = "IT"
+web = "https://cardverse.it/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:cardverse.it"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[cardverse.it] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[cardverse.it] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Nugnes1920"
+canal = "nugnes1920"
+pais = "IT"
+web = "https://nugnes1920.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:nugnes1920.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[nugnes1920.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[nugnes1920.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Pokecardsstore"
+canal = "pokecards"
+pais = "IT"
+web = "https://pokecardsstore.it/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:pokecardsstore.it"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[pokecardsstore.it] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[pokecardsstore.it] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Funside"
+canal = "funside"
+pais = "IT"
+web = "https://funside.it/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:funside.it"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[funside.it] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[funside.it] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Collector Store Cards"
+canal = "collectorstorecards"
+pais = "IT"
+web = "https://collectorstorecards.it/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:collectorstorecards.it"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[collectorstorecards.it] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[collectorstorecards.it] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Taverna Del Gargoyle"
+canal = "tavernadelgargoyle"
+pais = "IT"
+web = "https://tavernadelgargoyle.it/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:tavernadelgargoyle.it"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[tavernadelgargoyle.it] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[tavernadelgargoyle.it] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Fangostore"
+canal = "fango"
+pais = "IT"
+web = "https://fangostore.it/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:fangostore.it"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[fangostore.it] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[fangostore.it] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Magicnerd"
+canal = "magicnerd"
+pais = "IT"
+web = "https://magicnerd.it/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:magicnerd.it"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[magicnerd.it] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[magicnerd.it] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Bananabenz"
+canal = "bananabenz"
+pais = "IT"
+web = "https://bananabenz.it/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:bananabenz.it"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[bananabenz.it] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[bananabenz.it] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Urbanstaroma"
+canal = "urbanstaroma"
+pais = "IT"
+web = "https://urbanstaroma.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:urbanstaroma.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[urbanstaroma.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[urbanstaroma.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Littleamericastore"
+canal = "littleamerica"
+pais = "IT"
+web = "https://littleamericastore.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:littleamericastore.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[littleamericastore.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[littleamericastore.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Viettishop"
+canal = "vietti"
+pais = "IT"
+web = "https://viettishop.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:viettishop.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[viettishop.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[viettishop.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Vittoriocitro"
+canal = "vittoriocitro"
+pais = "IT"
+web = "https://vittoriocitro.it/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:vittoriocitro.it"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[vittoriocitro.it] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[vittoriocitro.it] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "152Store"
+canal = "152"
+pais = "IT"
+web = "https://en.152store.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:en.152store.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[en.152store.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[en.152store.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "7Hillsroma"
+canal = "7hillsroma"
+pais = "IT"
+web = "https://7hillsroma.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:7hillsroma.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[7hillsroma.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[7hillsroma.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Urban Jungle"
+canal = "urbanjungle"
+pais = "IT"
+web = "https://urbanjunglestore.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:urbanjunglestore.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[urbanjunglestore.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[urbanjunglestore.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Carmenboutique"
+canal = "carmenboutique"
+pais = "IT"
+web = "https://carmenboutique.it/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:carmenboutique.it"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[carmenboutique.it] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[carmenboutique.it] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Galleriagraffiti"
+canal = "galleriagraffiti"
+pais = "IT"
+web = "https://galleriagraffiti.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:galleriagraffiti.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[galleriagraffiti.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[galleriagraffiti.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "pauraclothing.com"
+canal = "pauraclothing"
+pais = "IT"
+web = "https://pauraclothing.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:pauraclothing.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[pauraclothing.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[pauraclothing.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Voo Store"
+canal = "voostore"
+pais = "DE"
+web = "https://voostore.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["voostore"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[voostore.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[voostore.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Games Alley"
+canal = "gamesalley"
+pais = "IT"
+web = "https://gamesalley.it/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:gamesalley.it"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[gamesalley.it] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[gamesalley.it] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Sabot"
+canal = "sabot"
+pais = "IT"
+web = "https://sabot.tv/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:sabot.tv"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[sabot.tv] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[sabot.tv] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Cappellettoshop"
+canal = "cappelletto"
+pais = "IT"
+web = "https://cappellettoshop.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:cappellettoshop.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[cappellettoshop.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[cappellettoshop.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Senpai Manga Shop"
+canal = "senpaimanga"
+pais = "IT"
+web = "https://senpaimangashop.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:senpaimangashop.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[senpaimangashop.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[senpaimangashop.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Atipicishop"
+canal = "atipici"
+pais = "IT"
+web = "https://atipicishop.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:atipicishop.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[atipicishop.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[atipicishop.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Sergiofabbri"
+canal = "sergiofabbri"
+pais = "IT"
+web = "https://sergiofabbri.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:sergiofabbri.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[sergiofabbri.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[sergiofabbri.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Roa Hiking"
+canal = "roa-hiking"
+pais = "IT"
+web = "https://roa-hiking.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:roa-hiking.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[roa-hiking.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[roa-hiking.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "www.grifo210.com"
+canal = "grifo210"
+pais = "IT"
+web = "https://grifo210.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:grifo210.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[grifo210.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[grifo210.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Fusco Boutique"
+canal = "fuscoboutique"
+pais = "IT"
+web = "https://fuscoboutique.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:fuscoboutique.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[fuscoboutique.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[fuscoboutique.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Fravshop"
+canal = "frav"
+pais = "IT"
+web = "https://fravshop.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:fravshop.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[fravshop.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[fravshop.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Loggishop"
+canal = "loggi"
+pais = "IT"
+web = "https://loggishop.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:loggishop.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[loggishop.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[loggishop.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Throne Store Gaming"
+canal = "thronestoregaming"
+pais = "IT"
+web = "https://thronestoregaming.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:thronestoregaming.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[thronestoregaming.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[thronestoregaming.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "camdenrimini.com"
+canal = "camdenrimini"
+pais = "IT"
+web = "https://camdenrimini.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["shop:camdenrimini.com"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[camdenrimini.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[camdenrimini.com] · muestra real 21-nov"
+lote = 2
+
+[[tienda]]
+nombre = "Slam Jam"
+canal = "slamjam"
+pais = "IT"
+web = "https://slamjam.com/"
+envio_es = "sí (ships_to_countries, 21-nov)"
+raffle_es = "—"
+monitores = ["slamjam"]
+raffle = "sin-fuente"
+lanzamiento = "por-probar"
+restock = "probado"
+rebaja = "probado"
+prueba_restock = "test_tiendas_lote2[slamjam.com] · muestra real 21-nov"
+prueba_rebaja = "test_tiendas_lote2[slamjam.com] · muestra real 21-nov"
+lote = 2
+
+# Candidatas pendientes de otra muestra: yellowshop.es

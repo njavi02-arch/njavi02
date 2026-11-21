@@ -132,7 +132,8 @@ def load_config(path: str | Path) -> Config:
     if lp.exists():
         lote = tomllib.loads(lp.read_text(encoding="utf-8"))
         iv = int(lote.get("intervalo_lote_s", 0))
-        names_lote = {n for t in lote.get("tienda", []) for n in t.get("monitores", [])}
+        names_lote = {n for f in [lp] + sorted(lp.parent.glob("lote[0-9]*_tiendas.toml"))
+                      for t in tomllib.loads(f.read_text(encoding="utf-8")).get("tienda", []) for n in t.get("monitores", [])}
         for m in mons:
             if iv and m.name in names_lote and m.type in ("shopify", "bstn"):
                 m.interval_seconds = max(iv, 60 if m.type == "bstn" else 30)

@@ -117,16 +117,21 @@ def main():
                      "tipo_equivalente": kind or "ver tabla v0.9", "equivalente_dedicado": f"#{eq}" if eq else r["equivalente"],
                      "fuente_o_responsable": src, "hueco": gap, "tiendas_ref": r["n_tiendas"]})
     # v1.1: tiendas del lote (config/lote_tiendas.toml) que aún no tienen canal propio
-    import tomllib
-    lote = tomllib.loads((ROOT / "config/lote_tiendas.toml").read_text(encoding="utf-8")).get("tienda", [])
+    from cookgroup.store_directory import load_lote
+    lote = load_lote(ROOT / "config/lote_tiendas.toml")
     have = {c["nombre"] for chans in dedicated.values() for c in chans}
+    by_mon = {m: c["nombre"] for chans in dedicated.values() for c in chans if c["clase"] == "tienda" for m in c["monitores"]}
     for t in lote:
         sig = ", ".join(k.upper() for k in ("raffle", "lanzamiento", "restock", "rebaja") if t.get(k) == "probado")
+        same = next((by_mon[m] for m in t["monitores"] if m in by_mon), None)
+        if t["canal"] not in have and same:          # la tienda ya tiene canal (equivalente de la referencia): se reutiliza
+            t["canal"] = same
         if t["canal"] in have:
             c = next(c for chans in dedicated.values() for c in chans if c["nombre"] == t["canal"])
             c["monitores"] = sorted(set(c["monitores"]) | set(t["monitores"]))
             c["pais"], c["senales"] = t["pais"], sig
             continue
+        have.add(t["canal"])
         dedicated["🏪 TIENDAS"].append({"nombre": t["canal"], "clase": "tienda", "pais": t["pais"], "tipo": "texto", "acceso": "lectura",
                                        "fuente": f"bot:tienda_{keyname(t['canal'])}", "estado": "construido",
                                        "equivalente_de": "(lote 1 propio)", "monitores": t["monitores"], "palabras": [],

@@ -1,15 +1,15 @@
 {
  "total": {
   "investigado": 147,
-  "desarrollado": 81,
-  "probado en local": 111
+  "desarrollado": 76,
+  "probado en local": 116
  },
  "grupos": {
   "47 → #sneakers-eu": {
    "total": 47,
    "investigado": 20,
-   "probado en local": 9,
-   "desarrollado": 18,
+   "probado en local": 14,
+   "desarrollado": 13,
    "resueltos_con_canal": 47
   },
   "28 → #pokémon-tcg": {

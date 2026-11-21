@@ -57,13 +57,13 @@ def test_install_is_idempotent_and_keeps_existing(tmp_path):
     d = load_design(ROOT / "config/servidor.toml")
     fake, env = FakeDiscord(), tmp_path / ".env"
     r1 = apply(d, DiscordAPI("t", "1", fake), env, log=lambda *_: None)
-    assert len(r1["plan"].channels) == 37 + 68 and {"general", "juegos", "música"} <= set(r1["plan"].kept)
+    assert len(r1["plan"].channels) == 37 + 151 and {"general", "juegos", "música"} <= set(r1["plan"].kept)
     assert r1["webhooks_added"] >= 15 and "SECRETO" in env.read_text()
     assert any("Comunidad" in n for n in r1["notes"])            # foros → texto + aviso
     before = len(fake.calls)
     r2 = apply(d, DiscordAPI("t", "1", fake), env, log=lambda *_: None)
     assert r2["plan"].empty and len(fake.calls) == before          # segunda vez: nada que crear
-    assert r1["cards_pinned"] == 10 and r2["cards_pinned"] == 0    # tarjeta fijada una sola vez por tienda del lote
+    assert r1["cards_pinned"] == 98 and r2["cards_pinned"] == 0    # tarjeta fijada una sola vez por tienda del lote
     assert (tmp_path / "data/canales_ids.json").exists()
     assert not any(c[0] != "POST" for c in fake.calls)             # nunca borra ni edita
     names = [c["name"] for c in fake.chans]
@@ -73,4 +73,4 @@ def test_install_is_idempotent_and_keeps_existing(tmp_path):
 def test_plan_counts():
     d = load_design(ROOT / "config/servidor.toml")
     p = make_plan(d, [], [], set())
-    assert len(p.roles) == 4 + 10 + 14 + 5 + 29 and len(p.categories) == 15
+    assert len(p.roles) == 4 + 10 + 14 + 5 + 29 and len(p.categories) == 17

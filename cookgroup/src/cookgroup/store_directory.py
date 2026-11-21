@@ -41,8 +41,17 @@ def merchant_key(domain: str) -> str:
 
 
 def load_lote(path=Path("config/lote_tiendas.toml")) -> list[dict]:
+    """Tiendas con canal propio: lote 1 (a mano) y los lotes generados (config/lote2_tiendas.toml…), sin repetir canal."""
     p = Path(path)
-    return tomllib.loads(p.read_text(encoding="utf-8")).get("tienda", []) if p.exists() else []
+    out, seen = [], set()
+    for f in [p] + sorted(p.parent.glob("lote[0-9]*_tiendas.toml")):
+        if not f.exists():
+            continue
+        for t in tomllib.loads(f.read_text(encoding="utf-8")).get("tienda", []):
+            if t["canal"] not in seen:
+                seen.add(t["canal"])
+                out.append(t)
+    return out
 
 
 def tested(t: dict) -> list[str]:

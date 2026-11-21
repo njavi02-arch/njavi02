@@ -77,12 +77,15 @@ def clean_variants(p: Product, *, skip_kids: bool = False, require_size: bool = 
     if skip_kids and is_kids_product(p.title):
         return replace(p, variants=())
     out: list[Variant] = []
+    # v1.1: si NINGUNA variante es una talla (colores, idiomas de un sobre TCG, packs), el producto no se descarta:
+    # se publica con el nombre de la variante tal cual y sin decir talla. Solo se filtran las no-tallas cuando hay mezcla.
+    sized = any(normalize_size(v.title) is not None for v in p.variants)
     for v in p.variants:
         n = normalize_size(v.title)
         if n is None:
-            if require_size:
+            if require_size and sized:
                 continue
-            n = v.title
+            n = (v.title or "Única").strip()
         if skip_kids and is_kids_size(n):
             continue
         out.append(replace(v, title=n))

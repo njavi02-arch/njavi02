@@ -130,7 +130,8 @@ def test_store_channel_only_publishes_tested_signals_with_label(tmp_path):
     from cookgroup.dedicated import labelled, load_dedicated
     d = load_dedicated("config/canales_dedicados.toml")
     assert d.allows("tienda_bstn", "RAFFLE") and d.allows("tienda_footdistrict", "REBAJA")
-    assert not d.allows("tienda_snipes", "REBAJA") and d.allows("tienda_snipes", "RESTOCK")   # sin captura real: no sale
+    assert d.allows("tienda_snipes", "REBAJA") and d.allows("tienda_snipes", "RESTOCK")      # v1.1: probado (#snipes-custom)
+    assert not d.allows("tienda_solebox", "REBAJA")                                          # sin captura real: no sale
     assert "tienda_flatspot" in d.by_monitor["shop:flatspot.com"]
     p = labelled({"embeds": [{"title": "VUELVE LA EU 44"}]}, "RESTOCK")
     assert p["embeds"][0]["title"] == "RESTOCK · VUELVE LA EU 44"
