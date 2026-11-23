@@ -276,6 +276,19 @@ def run_all(cfg: Config, db_path: str = "cookgroup.db"):
         threading.Thread(target=_sample_loop, name="muestra", daemon=True).start()
     threads = [threading.Thread(target=_loop, args=(m, cfg, store, market, stop, forum), name=m.name, daemon=True)
                for m in cfg.monitors if m.enabled]
+    if (tok := os.environ.get("DISCORD_BOT_TOKEN")):      # v1.6: sorteos internos (se resuelven solos al cerrar)
+        def _sorteos_loop():
+            import requests
+            from .sorteos import Sorteos
+            s = Sorteos(db_path, requests.Session(), tok)
+            while not stop.is_set():
+                try:
+                    for r in s.resolver_vencidos():
+                        log.info("sorteo %s resuelto: %s participantes", r["id"], r["participantes"])
+                except Exception as e:   # noqa: BLE001 — se reintenta en la siguiente vuelta (no se marca resuelto)
+                    log.warning("sorteos: %s", e)
+                stop.wait(60)
+        threading.Thread(target=_sorteos_loop, name="sorteos", daemon=True).start()
     if (rf := cfg.defaults.get("releases_file")):
         threads.append(threading.Thread(target=_calendar_loop, args=(cfg, store, stop, rf), name="calendar", daemon=True))
     for t in threads:

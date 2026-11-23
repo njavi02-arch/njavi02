@@ -39,8 +39,11 @@ def main(argv=None):
     ap = argparse.ArgumentParser(prog="cookgroup")
     ap.add_argument("--config", default="config/monitors.toml")
     ap.add_argument("--db", default=os.environ.get("COOKGROUP_DB", "cookgroup.db"))
-    ap.add_argument("command", choices=["run", "check-config", "check-releases", "probe", "test-webhook", "preview", "status", "servidor", "miembros", "web", "cuenta", "prueba-raffle", "panel-tiendas", "verificar"])
+    ap.add_argument("command", choices=["run", "check-config", "check-releases", "probe", "test-webhook", "preview", "status", "servidor", "miembros", "web", "cuenta", "prueba-raffle", "panel-tiendas", "verificar", "sorteo"])
     ap.add_argument("que", nargs="?", help="verificar: tienda | discord | alerta")
+    ap.add_argument("--premio", help="sorteo: qué se sortea")
+    ap.add_argument("--minutos", type=int, default=1440, help="sorteo: duración (por defecto 24 h)")
+    ap.add_argument("--ganadores", type=int, default=1, help="sorteo: número de ganadores")
     ap.add_argument("--channel", default="default", help="test-webhook: canal cuyo webhook probar")
     ap.add_argument("--out", default="preview.html", help="preview: fichero HTML de salida")
     ap.add_argument("--solo", help="probe: monitores o dominios separados por comas")
@@ -124,6 +127,17 @@ def main(argv=None):
     if a.command == "preview":
         from .preview import write_preview
         print(f"Vista previa escrita en {write_preview(a.out).resolve()}")
+        return 0
+    if a.command == "sorteo":
+        import requests
+        from .sorteos import Sorteos
+        tok, ch = os.environ.get("DISCORD_BOT_TOKEN"), os.environ.get("DISCORD_SORTEOS_CHANNEL_ID")
+        if not (tok and ch and a.premio):
+            print("Uso: cookgroup sorteo --premio \"…\" [--minutos 1440] [--ganadores 1]  (necesita DISCORD_BOT_TOKEN y "
+                  "DISCORD_SORTEOS_CHANNEL_ID en .env)")
+            return 2
+        sid = Sorteos(a.db, requests.Session(), tok).crear(ch, a.premio, a.minutos, a.ganadores)
+        print(f"Sorteo {sid} publicado. El bot elegirá ganador al cerrar (debe estar en marcha).")
         return 0
     if a.command == "verificar":
         from .verificar import main as verificar

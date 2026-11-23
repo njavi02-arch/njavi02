@@ -1,6 +1,6 @@
 # Punto de reanudación — 23-nov-2026
 
-Rama `claude/cookgroup-v1.0`. Pruebas: **591 passed, 0 skipped**. Monitores configurados: 285 (198 con canal propio, 275 con fuente comprobada).
+Rama `claude/cookgroup-v1.0`. Pruebas: **605 passed, 0 skipped**. Monitores configurados: 285 (198 con canal propio, 275 con fuente comprobada).
 Inventario de referencia: 339 funciones (147 probadas en local, 87 construidas, 105 investigadas; 0 instaladas en Discord). El inventario lee ahora el estado de config/lote*_tiendas.toml y de las muestras Shopify, no de una tabla a mano.
 
 ## Lotes del brief del 23-nov
@@ -18,6 +18,11 @@ Inventario de referencia: 339 funciones (147 probadas en local, 87 construidas, 
 - Footshop: la ficha pedida sin navegador devolvió 400. Si el ciclo real lo repite, el panel lo marca en error y no hay avisos falsos.
 - adidas ES (ficha) y New Balance ES (listado) dan desafío anti-bot sin cookies.
 - `tools/medir_intervalos.py` en modo real: intervalo observado por tienda.
+
+## Punto 2 · monitores sin hacer (23-nov, en curso)
+- Hecho: Supreme EU, Mattel Creations, MilfShakes, Funko ES, contador «Miembros: N» (probado), sorteos internos (SORTEO.bat + resolución automática).
+- Bloqueados con motivo en el inventario: Zara, Uniqlo, H&M y Sephora (ficha con desafío), Pop Mart (permiso de la extensión), Steiff (sin tienda ES), Amazon (afiliado con ventas), X/Twitter (API de pago), Nike/stock en tienda/cifras de unidades (sin fuente pública a 0 €).
+- Siguiente: adaptador «solo listado» para H&M y Sephora (aviso de producto nuevo sin precio); 28 tiendas TCG sin muestra propia.
 
 ## Pendiente por decisión del dueño (23-nov 10:53)
 - Canales del staff y del mercado entre miembros (71 de las 87 funciones construidas): necesitan el servidor instalado y personas.

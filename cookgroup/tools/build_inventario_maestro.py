@@ -52,6 +52,24 @@ PENDIENTE_TIENDA = {  # solo lo que sigue sin integrar a 23-nov (lo integrado sa
     "sephora": "Sephora ES: listado legible pero la ficha devuelve desafío anti-bot (23-nov) → solo descubrimiento; adaptador de listado pendiente",
     "aliexpress-labubu": "Pop Mart ES: la extensión no tiene permiso en popmart.com → dar permiso al sitio para comprobarlo; AliExpress: sin fuente pública",
     "steiff": "steiff.com/es-es responde 404: sin tienda española; mercados DE/EN sin comprobar",
+    "otros-tcg": "28 de las 66 tiendas TCG aún sin muestra propia en las pruebas",
+    "pokemon-amazon": "Amazon: Creators API exige ser afiliado con ≥10 ventas en 30 días (docs/v12/POKEMON_RANDOM.md) → decisión del dueño",
+    "amazon-es": "Amazon: Creators API exige afiliado con ventas (docs/v12/POKEMON_RANDOM.md) → decisión del dueño",
+    "amazon-eu": "Amazon: Creators API exige afiliado con ventas (docs/v12/POKEMON_RANDOM.md) → decisión del dueño",
+    "amazon-custom": "Amazon: Creators API exige afiliado con ventas (docs/v12/POKEMON_RANDOM.md) → decisión del dueño",
+    "twitter-pokemon": "X/Twitter: la API de lectura es de pago → con 0 € no hay fuente; alternativa: canal editorial",
+    "game-instore": "stock en tienda física de GAME: sin fuente pública",
+    "carrefour": "Carrefour: desafío Cloudflare sin cookies (23-nov) → feed de afiliados o permiso",
+    "carrefour-instore": "stock en tienda física de Carrefour: sin fuente pública",
+    "darizard": "dominio de la tienda sin identificar → que el dueño confirme la URL",
+    "fnac": "Fnac: 403 sin cookies (23-nov) → feed de afiliados (Awin) o permiso",
+    "elcorteingles": "El Corte Inglés: integrado solo Pokémon JCC (#elcorteingles-pokemon); otras familias sin listado comprobado",
+    "ikea": "IKEA: sin comprobar (fuera de prioridad: poca reventa)",
+    "relojes": "relojes: sin tienda de referencia concreta en la referencia → definir qué tiendas",
+    "shop-app": "Shop app (Shopify): no tiene fuente pública propia; las tiendas Shopify ya se vigilan una a una",
+    "member-invest": "aportaciones de miembros → canal de comunidad (pendiente con lo del mercado)",
+    "random-leaks": "filtraciones → editorial (pendiente con los canales del staff)",
+    "aio-random": "la referencia lo tenía vacío (0 tiendas)",
     "asos": "ASOS ES integrada en #asos-es; otros mercados de ASOS sin auditar",
 }
 GUIAS = {"💰neobancos": "06-pagos-y-neobancos.md", "📊excel-inventario": "01-inventario-y-margen.md + inventario_margen.csv",
@@ -117,11 +135,30 @@ def main():
             tech = "construido" if tech == "investigado" else tech
             evid = (evid + " · " if evid else "") + "flujo editorial: docs/v12/EDITORIAL.md"
             nxt = nxt or "nombrar responsable (rol Pinger/Analista)"
+        if r["categoria"] == "Nike monitors" and tech == "investigado":
+            nxt = "Nike/SNKRS: sin fuente pública oficial para stock/lanzamientos automáticos (docs/v12/NIKE_FISICO_UNIDADES.md) → proveedor de pago, decisión del dueño"
+        if r["categoria"] == "instore monitors" and tech == "investigado":
+            nxt = "stock en tienda física: ninguna tienda lo publica de forma abierta (docs/v12/NIKE_FISICO_UNIDADES.md) → proveedor de pago, decisión del dueño"
+        if r["categoria"] == "Stocks" and tech == "investigado":
+            nxt = "cifras de unidades: las marcas no las publican; la referencia usa una fuente privada → sin equivalente a 0 €"
         if r["categoria"] == "bots checkouts":
             nxt = "decidir si se activa (docs/v12/BOTS_CHECKOUT.md)"
         if r["categoria"] in ACUERDO_CATS:
             nxt = "acuerdo pendiente (docs/v12/ACUERDOS.md)"
-        if r["categoria"] in ("the zesty chefs extension", "(arriba)"):
+        if plain == "giveaways":
+            tech, ours, fuente = "probado localmente", "sorteos del bot (SORTEO.bat)", "bot: anuncio + 🎉, ganador al cerrar"
+            evid, nxt = "test_sorteos · Discord simulado (150 participantes, reinicio, desierto)", "instalar en Discord (falta token)"
+        if plain == "groupbuys":
+            nxt = "compras en grupo: las gestiona el staff (pendiente con los canales del staff)"
+        if plain == "esa-pokemon":
+            nxt = "tienda «esa» sin identificar → que el dueño diga qué web es"
+        if plain == "otros-tcg":
+            tech, ours, fuente = "probado localmente", "#coleccionables", "66 tiendas TCG/coleccionables (Shopify) + GAME, ECI, DRIM, Alcampo, Funko"
+            evid = "test_tiendas_lote2 (38 tiendas TCG con muestra real) + test_tiendas_fase2"
+        if r["categoria"] == "(arriba)" and r["que_hace"].startswith("Contador"):
+            tech, ours, fuente = "probado localmente", "canal de voz «Miembros: N»", "bot (miembros de pago, cada hora)"
+            evid, nxt = "test_contador_miembros · Discord simulado", "instalar en Discord (falta token)"
+        elif r["categoria"] in ("the zesty chefs extension", "(arriba)"):
             nxt = "no se copia; alternativa propia en docs/v12/MARCA_ZESTY.md"
         if not nxt:
             nxt = {"investigado": "construir o decidir", "construido": "probar localmente",
