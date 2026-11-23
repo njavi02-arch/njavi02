@@ -1,6 +1,6 @@
 # Punto de reanudación — 23-nov-2026
 
-Rama `claude/cookgroup-v1.0`. Pruebas: **587 passed, 0 skipped**. Monitores configurados: 285 (198 con canal propio, 275 con fuente comprobada).
+Rama `claude/cookgroup-v1.0`. Pruebas: **591 passed, 0 skipped**. Monitores configurados: 285 (198 con canal propio, 275 con fuente comprobada).
 Inventario de referencia: 339 funciones (147 probadas en local, 87 construidas, 105 investigadas; 0 instaladas en Discord). El inventario lee ahora el estado de config/lote*_tiendas.toml y de las muestras Shopify, no de una tabla a mano.
 
 ## Lotes del brief del 23-nov
@@ -12,13 +12,16 @@ Inventario de referencia: 339 funciones (147 probadas en local, 87 construidas, 
 | 3 · Bloqueadas (desafío anti-bot sin cookies, no se tocó): Carrefour, Fnac, YOOX, LuisaViaRoma. Darizard sin dominio | registrado en docs/v12/TIENDAS_LOTE3.md | 2d80951 |
 | 4 · Fiabilidad (1 de 10 fichas caída, página incompleta, orden, dos colores, canal pendiente tras reinicio, envío incierto) y velocidad de inicio a inicio | hecho | 7cbb903, 4489881, 2cf123c |
 | Pruebas omitidas: Yellowshop (título = código → nombre desde el handle, muestra nueva del 23-nov) y Childsplay (tienda solo infantil → desactivada) | hecho | este commit |
-| 5 · Windows y Discord en el PC | **PENDIENTE por decisión del dueño (23-nov 10:33): primero los lotes** | — |
+| 5 · Windows: `VERIFICAR.bat` con pasos separados (tienda / Discord / alerta / arranque), guía docs/v12/VERIFICAR_EN_WINDOWS.md | hecho aquí con simulación; **falta ejecutarlo en el PC del dueño** | ver git log |
 
 ## Para verificar en el PC (no se puede desde aquí: la red del entorno solo llega a registros de paquetes)
 - Footshop: la ficha pedida sin navegador devolvió 400. Si el ciclo real lo repite, el panel lo marca en error y no hay avisos falsos.
 - adidas ES (ficha) y New Balance ES (listado) dan desafío anti-bot sin cookies.
 - `tools/medir_intervalos.py` en modo real: intervalo observado por tienda.
 
+## Pendiente por decisión del dueño (23-nov 10:53)
+- Canales del staff y del mercado entre miembros (71 de las 87 funciones construidas): necesitan el servidor instalado y personas.
+
 ## Siguiente acción exacta
 1. Pendientes del inventario con los accesos actuales: canales «construidos» sin prueba (docs/v12/INVENTARIO_MAESTRO.csv, estado_tecnico=construido), flujos editoriales, guías y permisos del mercado.
-2. Después, lote 5 (Windows): comprobaciones por separado (leer tienda / acceso a Discord / alerta a #pruebas-bot) con mensaje del paso exacto que falla.
+2. El dueño ejecuta en su PC: INSTALAR.bat → .env → VERIFICAR.bat → INSTALAR_SERVIDOR.bat → VERIFICAR.bat alerta → INSTALAR_AUTOARRANQUE.bat. Con el resultado de logs\verificar.txt, corregir lo que falle.

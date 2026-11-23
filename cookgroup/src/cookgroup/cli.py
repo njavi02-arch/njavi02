@@ -39,7 +39,8 @@ def main(argv=None):
     ap = argparse.ArgumentParser(prog="cookgroup")
     ap.add_argument("--config", default="config/monitors.toml")
     ap.add_argument("--db", default=os.environ.get("COOKGROUP_DB", "cookgroup.db"))
-    ap.add_argument("command", choices=["run", "check-config", "check-releases", "probe", "test-webhook", "preview", "status", "servidor", "miembros", "web", "cuenta", "prueba-raffle", "panel-tiendas"])
+    ap.add_argument("command", choices=["run", "check-config", "check-releases", "probe", "test-webhook", "preview", "status", "servidor", "miembros", "web", "cuenta", "prueba-raffle", "panel-tiendas", "verificar"])
+    ap.add_argument("que", nargs="?", help="verificar: tienda | discord | alerta")
     ap.add_argument("--channel", default="default", help="test-webhook: canal cuyo webhook probar")
     ap.add_argument("--out", default="preview.html", help="preview: fichero HTML de salida")
     ap.add_argument("--solo", help="probe: monitores o dominios separados por comas")
@@ -124,6 +125,9 @@ def main(argv=None):
         from .preview import write_preview
         print(f"Vista previa escrita en {write_preview(a.out).resolve()}")
         return 0
+    if a.command == "verificar":
+        from .verificar import main as verificar
+        return verificar(a.que or "", cfg, a.db)
     if a.command == "test-webhook":
         # v0.9: la prueba SOLO puede ir a #pruebas-bot (DISCORD_WEBHOOK_PRUEBAS); nunca al webhook general
         from .real_delivery import Refused, send_first_real
