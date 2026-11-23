@@ -69,7 +69,7 @@ Stocks,📊stock-otros-releases,texto,Ver cuánto stock hubo,bot de la referenci
 🤖Monitores,asos,texto,Avisos de una tienda concreta,bot (monitores),tienda,#asos,asos-es,,1
 🤖Monitores,asos-es,texto,Avisos de una tienda concreta,bot (monitores),tienda,#asos-es,asos-es,,1
 🤖Monitores,basket-shops,texto,Avisos de una tienda concreta,bot (monitores),agregado,#baloncesto,monitores de su familia (0 de sus 8 tiendas coinciden),ninguna de sus tiendas tiene monitor,8
-🤖Monitores,basketballemotion,texto,Avisos de una tienda concreta,bot (monitores),tienda,#basketballemotion,,listado cargado con JavaScript → sin fuente aún,1
+🤖Monitores,basketballemotion,texto,Avisos de una tienda concreta,bot (monitores),tienda,#basketballemotion,basketballemotion-es,,1
 🤖Monitores,basket4ballers,texto,Avisos de una tienda concreta,bot (monitores),tienda,#basket4ballers,basket4ballers,,1
 🤖Monitores,bstn,texto,Avisos de una tienda concreta,bot (monitores),tienda,#bstn,bstn-eu,,1
 🤖Monitores,end,texto,Avisos de una tienda concreta,bot (monitores),tienda,#end,end-launches,,1
@@ -82,13 +82,13 @@ Stocks,📊stock-otros-releases,texto,Ver cuánto stock hubo,bot de la referenci
 🤖Monitores,mesh-backend,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-eu,monitores de su familia (1 de sus 10 tiendas coinciden),,10
 🤖Monitores,new-balance,texto,Avisos de una tienda concreta,bot (monitores),tienda,#new-balance,,newbalance.com: probar JSON-LD → sin fuente aún,1
 🤖Monitores,sivasdescalzo,texto,Avisos de una tienda concreta,bot (monitores),tienda,#sivasdescalzo,sivasdescalzo-es,,1
-🤖Monitores,sports-direct,texto,Avisos de una tienda concreta,bot (monitores),tienda,#sports-direct,,sportsdirect: probar JSON-LD → sin fuente aún,3
+🤖Monitores,sports-direct,texto,Avisos de una tienda concreta,bot (monitores),tienda,#sports-direct,sportsdirect-uk,,3
 🤖Monitores,skateshops,texto,Avisos de una tienda concreta,bot (monitores),agregado,#skate,monitores de su familia (5 de sus 26 tiendas coinciden),,26
 🤖Monitores,skatedeluxe,texto,Avisos de una tienda concreta,bot (monitores),tienda,#skatedeluxe,skatedeluxe,,1
 🤖Monitores,socials-monitors,texto,Avisos de una tienda concreta,bot (monitores),ver tabla v0.9,#sneakers-eu (+ menciones por talla),,,0
-🤖Monitores,ugg,texto,Avisos de una tienda concreta,bot (monitores),tienda,#ugg-oficial,,sin monitor para sus tiendas → sin fuente aún,1
+🤖Monitores,ugg,texto,Avisos de una tienda concreta,bot (monitores),tienda,#ugg-oficial,ugg-es,,1
 🤖Monitores,ugg-all-special,texto,Avisos de una tienda concreta,bot (monitores),tema,#ugg,"cualquier monitor, palabras clave: ugg",,15
-🤖Monitores,uk,texto,Ver avisos de muchas tiendas juntas,bot (monitores),región,#reino-unido,monitores con país GB: 26,,5
+🤖Monitores,uk,texto,Ver avisos de muchas tiendas juntas,bot (monitores),región,#reino-unido,monitores con país GB: 27,,5
 🤖Monitores,yeezy-especial-monitor,texto,Avisos de una tienda concreta,bot (monitores),tema,#yeezy,"cualquier monitor, palabras clave: yeezy",,8
 🤖Monitores,web-naranja-españa,texto,Avisos de una tienda concreta,bot (monitores),tienda,#web-naranja-españa,zalando-es,,1
 🤖Monitores,web-naranja-eu,texto,Avisos de una tienda concreta,bot (monitores),tienda,#web-naranja-eu,"zalando-fr, zalando-it",,5
@@ -229,7 +229,7 @@ Pokemon,🤝wtb-kai-collect,texto,Comunidad Pokémon,staff + miembros,ver tabla 
 Pokemon,📦wtb-wts-pokemon,texto,Comunidad Pokémon,staff + miembros,ver tabla v0.9,#pokémon-tcg,,,0
 Pokemon,pokemon-custom-aio,texto,Avisos de Pokémon/TCG,bot,agregado,#pokémon-tcg,monitores de su familia (0 de sus 0 tiendas coinciden),,0
 Pokemon,pokemon-aio,texto,Avisos de Pokémon/TCG,bot,agregado,#pokémon-tcg,monitores de su familia (0 de sus 0 tiendas coinciden),,0
-Pokemon,pokemon-aio-uk,texto,Avisos de Pokémon/TCG,bot,región,#pokémon-uk,monitores con país GB: 26,,0
+Pokemon,pokemon-aio-uk,texto,Avisos de Pokémon/TCG,bot,región,#pokémon-uk,monitores con país GB: 27,,0
 Pokemon,pokemon-custom-shopify,texto,Avisos de Pokémon/TCG,bot,agregado,#pokémon-tcg,monitores de su familia (0 de sus 0 tiendas coinciden),,0
 Pokemon,pokemon-amazon,texto,Avisos de Pokémon/TCG,bot,tienda,#pokemon-amazon,,Amazon: programa de afiliados (PA-API) → sin fuente aún,0
 Pokemon,pokemon-prismatic,texto,Avisos de Pokémon/TCG,bot,tema,#pokémon-prismatic,"cualquier monitor, palabras clave: prismatic, prismátic, prismatische",,0

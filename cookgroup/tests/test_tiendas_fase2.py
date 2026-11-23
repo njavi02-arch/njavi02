@@ -20,7 +20,10 @@ PATTERN = {"www.kickz.com": "/p/", "www.43einhalb.com": "/en/p/", "www.skatedelu
            "www.footlocker.de": "/de/product/", "www.sivasdescalzo.com": "re:^/es/p/[a-z0-9-]+$",
            "www.drim.es": r"re:^/(?=[a-z0-9-]*pokemon)[a-z0-9-]+-\d{4,}-\d+/p$",
            "www.elcorteingles.es": r"re:^/juguetes/A\d{9}-[a-z0-9-]*pokemon[a-z0-9-]*/$", "www.footlocker.it": "/it/product/",
-           "www.adidas.es": ".html", "www.footlocker.es": "/es/product/", "www.game.es": None}
+           "www.adidas.es": ".html", "www.footlocker.es": "/es/product/", "www.game.es": None,
+           "www.ugg.com": r"re:^/eu/es/es/[a-z0-9-]+/\d{6,}[A-Z]?\.html$", "www.sportsdirect.com": r"re:^/[a-z0-9-]+-\d{6}$",
+           "www.compraonline.alcampo.es": "/products/", "www.basketballemotion.com": r"re:^/es/comprar/zapatillas/[a-z0-9-]+/[a-z0-9.-]+$",
+           "www.footshop.es": r"re:^/es/zapatillas[a-z-]*/\d+-[a-z0-9-]+\.html$"}
 
 
 def caps():
@@ -128,3 +131,19 @@ def test_listing_discovers_new_product_url(cap, tmp_path):
     assert new_url in json.dumps(got[0])
     run_cycle(cfg, {}, src, st, mk, send)
     assert len(got) == 1
+
+
+def test_alcampo_solo_tcg_pokemon():
+    """v1.6 lote 3f · enlaces REALES del listado de Alcampo (23-nov): ninguno es de cartas, así que no se lee ninguno;
+    una ficha de sobres/caja de Pokémon sí pasaría el filtro."""
+    import tomllib
+    from cookgroup.sources.jsonld import extract_links
+    mon = next(m for m in tomllib.loads((Path(__file__).parents[1] / "config/monitors.toml").read_text(encoding="utf-8"))["monitor"]
+               if m["name"] == "alcampo-pokemon")
+    reales = ["/products/kinder-calendario-pok%C3%A9mon-198-g/243555", "/products/pack-de-2-pokeballs-surtidas-mega-construx-pokemon-mattel/942601",
+              "/products/kellogg-s-cereales-de-chocolate-pok%C3%A9mon-350-g/823671", "/products/juego-de-mesa-monopoly-edici%C3%B3n-pok%C3%A9mon/644390",
+              "/products/puzzle-4d-201-piezas-pikachu-12-a%C3%B1os-pok%C3%A9mon/243046"]
+    tcg = "/products/pokemon-jcc-caja-de-entrenador-elite-escarlata-y-purpura/999001"
+    html = "".join(f'<a href="{u}">x</a>' for u in reales + [tcg])
+    got = extract_links(html, base_url=mon["base_url"], pattern=mon["product_link_pattern"])
+    assert got == [mon["base_url"] + tcg]

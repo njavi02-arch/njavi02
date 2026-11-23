@@ -82,14 +82,15 @@ palabras = []
 [[categoria.canal]]
 nombre = "basketballemotion"
 clase = "tienda"
-pais = ""
+pais = "ES"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_basketballemotion"
-estado = "pendiente"
+estado = "construido"
 equivalente_de = "basketballemotion"
-falta = "listado cargado con JavaScript → sin fuente aún"
-monitores = []
+falta = ""
+senales = "RESTOCK, REBAJA"
+monitores = ["basketballemotion-es"]
 palabras = []
 [[categoria.canal]]
 nombre = "basket4ballers"
@@ -159,14 +160,15 @@ palabras = []
 [[categoria.canal]]
 nombre = "footshop"
 clase = "tienda"
-pais = ""
+pais = "ES"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_footshop"
 estado = "pendiente"
 equivalente_de = "footshop"
 falta = "probar JSON-LD → sin fuente aún"
-monitores = []
+senales = "RESTOCK, REBAJA"
+monitores = ["footshop-es"]
 palabras = []
 [[categoria.canal]]
 nombre = "luisaviaroma"
@@ -222,14 +224,15 @@ palabras = []
 [[categoria.canal]]
 nombre = "sports-direct"
 clase = "tienda"
-pais = ""
+pais = "GB"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_sports_direct"
-estado = "pendiente"
+estado = "construido"
 equivalente_de = "sports-direct"
-falta = "sportsdirect: probar JSON-LD → sin fuente aún"
-monitores = []
+falta = ""
+senales = "RESTOCK, REBAJA"
+monitores = ["sportsdirect-uk"]
 palabras = []
 [[categoria.canal]]
 nombre = "skatedeluxe"
@@ -251,10 +254,10 @@ pais = ""
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_ugg_oficial"
-estado = "pendiente"
+estado = "construido"
 equivalente_de = "ugg"
-falta = "sin monitor para sus tiendas → sin fuente aún"
-monitores = []
+falta = ""
+monitores = ["ugg-es"]
 palabras = []
 [[categoria.canal]]
 nombre = "zalando-es"
@@ -2365,14 +2368,15 @@ audiencia = "suscriptores"
 [[categoria.canal]]
 nombre = "ugg"
 clase = "tema"
-pais = ""
+pais = "ES"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:ugg"
 estado = "construido"
 equivalente_de = "ugg-all-special"
 falta = ""
-monitores = ["extra-butter", "shop:dtlr.com", "shop:footlocker.co.il", "shop:odsdesignerclothing.com", "shop:sabot.tv", "shop:sergiofabbri.com", "shop:tascon.es", "shop:urbanstaroma.com", "snipes-es", "solebox-eu"]
+senales = "RESTOCK, REBAJA"
+monitores = ["extra-butter", "shop:dtlr.com", "shop:footlocker.co.il", "shop:odsdesignerclothing.com", "shop:sabot.tv", "shop:sergiofabbri.com", "shop:tascon.es", "shop:urbanstaroma.com", "snipes-es", "solebox-eu", "ugg-es"]
 palabras = ["ugg"]
 [[categoria.canal]]
 nombre = "yeezy"
@@ -2436,7 +2440,7 @@ fuente = "bot:reino_unido"
 estado = "construido"
 equivalente_de = "uk"
 falta = ""
-monitores = ["end-launches", "size-launches", "footpatrol-launches", "goodhood", "hotukdeals-hot", "shop:routeone.co.uk", "shop:flatspot.com", "shop:offcutsshoes.co.uk", "shop:gameon.games", "shop:thedarkslide.com", "shop:crtz.xyz", "shop:palace-skateboards-eu.myshopify.com", "shop:lvlupgaming.co.uk", "shop:us.goodhoodstore.com", "shop:boredofsouthsea.co.uk", "shop:remixcasuals.co.uk", "shop:thefootfactory.co.uk", "shop:elyswimbledon.co.uk", "shop:loadeddice.uk", "shop:landaustore.co.uk", "shop:childsplayclothing.co.uk", "shop:crashrecords.co.uk", "shop:noteshop.co.uk", "shop:thecardvault.co.uk", "shop:jeanstore.co.uk", "shop:hammerheadtcg.co.uk"]
+monitores = ["end-launches", "size-launches", "footpatrol-launches", "goodhood", "hotukdeals-hot", "sportsdirect-uk", "shop:routeone.co.uk", "shop:flatspot.com", "shop:offcutsshoes.co.uk", "shop:gameon.games", "shop:thedarkslide.com", "shop:crtz.xyz", "shop:palace-skateboards-eu.myshopify.com", "shop:lvlupgaming.co.uk", "shop:us.goodhoodstore.com", "shop:boredofsouthsea.co.uk", "shop:remixcasuals.co.uk", "shop:thefootfactory.co.uk", "shop:elyswimbledon.co.uk", "shop:loadeddice.uk", "shop:landaustore.co.uk", "shop:childsplayclothing.co.uk", "shop:crashrecords.co.uk", "shop:noteshop.co.uk", "shop:thecardvault.co.uk", "shop:jeanstore.co.uk", "shop:hammerheadtcg.co.uk"]
 palabras = []
 [[categoria.canal]]
 nombre = "pokémon-uk"
@@ -2568,14 +2572,15 @@ palabras = []
 [[categoria.canal]]
 nombre = "alcampo"
 clase = "tienda"
-pais = ""
+pais = "ES"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_alcampo"
 estado = "pendiente"
 equivalente_de = "alcampo"
 falta = "Alcampo: probar JSON-LD → sin fuente aún"
-monitores = []
+senales = "RESTOCK, REBAJA"
+monitores = ["alcampo-pokemon"]
 palabras = []
 [[categoria.canal]]
 nombre = "darizard"

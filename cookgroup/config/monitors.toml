@@ -810,6 +810,83 @@ interval_seconds = 300
 page_adapter = "hybris"
 channel = "coleccionables"   # LEGO Pokémon, juegos y figuras; la muestra no incluía sobres/cajas TCG
 
+# v1.6 · lote 3f (23-nov): comprobadas desde el navegador del dueño, sin cookies salvo donde se indica
+[[monitor]]
+name = "ugg-es"
+ships_es = "sí"
+type = "jsonld"
+store = "UGG"
+country = "ES"
+region = "eu"
+base_url = "https://www.ugg.com"
+currency = "EUR"
+listing_urls = ["https://www.ugg.com/eu/es/es/novedades-hombre-nuevos/"]
+product_link_pattern = 're:^/eu/es/es/[a-z0-9-]+/\d{6,}[A-Z]?\.html$'
+products_per_cycle = 4
+interval_seconds = 300
+channel = "sneakers"
+# mercado efectivo /eu/es/es/; una oferta por ficha (stock general, sin tallas)
+[[monitor]]
+name = "sportsdirect-uk"
+ships_es = "por confirmar"
+type = "jsonld"
+store = "Sports Direct"
+country = "GB"
+region = "uk"
+base_url = "https://www.sportsdirect.com"
+currency = "GBP"
+listing_urls = ["https://www.sportsdirect.com/mens/footwear/trainers"]
+product_link_pattern = 're:^/[a-z0-9-]+-\d{6}$'
+products_per_cycle = 4
+interval_seconds = 300
+channel = "sneakers"
+# stock por COLOR (sin tallas en JSON-LD); precios en GBP
+[[monitor]]
+name = "alcampo-pokemon"
+ships_es = "sí"
+type = "jsonld"
+store = "Alcampo"
+country = "ES"
+region = "eu"
+base_url = "https://www.compraonline.alcampo.es"
+currency = "EUR"
+listing_urls = ["https://www.compraonline.alcampo.es/search?q=pokemon"]
+product_link_pattern = 're:^/products/(?=[^/]*pok)(?=[^/]*(sobre|caja|tin|booster|blister|elite|cartas|tcg|jcc|coleccion|baraja))[^/]+/\d+$'
+products_per_cycle = 4
+interval_seconds = 300
+channel = "coleccionables"
+# solo fichas de TCG Pokémon; el 23-nov no había ninguna (16 productos Pokémon de otro tipo)
+[[monitor]]
+name = "basketballemotion-es"
+ships_es = "sí"
+type = "jsonld"
+store = "Basketball Emotion"
+country = "ES"
+region = "eu"
+base_url = "https://www.basketballemotion.com"
+currency = "EUR"
+listing_urls = ["https://www.basketballemotion.com/es/zapatillas"]
+product_link_pattern = 're:^/es/comprar/zapatillas/[a-z0-9-]+/[a-z0-9.-]+$'
+products_per_cycle = 4
+interval_seconds = 300
+channel = "sneakers"
+# una oferta por ficha (stock general)
+[[monitor]]
+name = "footshop-es"
+ships_es = "sí"
+type = "jsonld"
+store = "Footshop"
+country = "ES"
+region = "eu"
+base_url = "https://www.footshop.es"
+currency = "EUR"
+listing_urls = ["https://www.footshop.es/es/1770-sneakers"]
+product_link_pattern = 're:^/es/zapatillas[a-z-]*/\d+-[a-z0-9-]+\.html$'
+products_per_cycle = 4
+interval_seconds = 300
+channel = "sneakers"
+# tallas EUR por JSON-LD; la ficha pedida sin navegador dio 400 → verificar en el ciclo real del PC
+
 # ---------------------------------------------------------------- PINGS PERSONALES (filtros)
 # Cada regla re-publica en "pings" las alertas que cumplen TODO lo que indiques, mencionando un rol.
 # Campos: keywords (todas; "*" = cualquiera), exclude_keywords, brands, sizes (EU), regions (eu/uk/us/au),
