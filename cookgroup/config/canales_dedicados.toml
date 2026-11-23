@@ -2388,6 +2388,19 @@ falta = ""
 senales = "LANZAMIENTO, RESTOCK, REBAJA"
 monitores = ["shop:milfshakes.es"]
 palabras = []
+[[categoria.canal]]
+nombre = "funko-es"
+clase = "tienda"
+pais = "ES"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:tienda_funko_es"
+estado = "construido"
+equivalente_de = "(lote 1 propio)"
+falta = ""
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
+monitores = ["funko-es"]
+palabras = []
 
 [[categoria]]
 nombre = "🏷️ TEMAS"

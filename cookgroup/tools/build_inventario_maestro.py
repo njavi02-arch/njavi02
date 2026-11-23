@@ -45,6 +45,13 @@ PENDIENTE_TIENDA = {  # solo lo que sigue sin integrar a 23-nov (lo integrado sa
     "adidas-eu": "adidas DE/FR: JSON-LD con colores sin precio ni stock (21-nov) → no integrable por esta vía; adidas IT sin muestra agotada",
     "canary-yellow": "canary---yellow.com: /products.json responde pero el 23-nov solo había ropa infantil agotada; falta una muestra útil",
     "corteiz": "crtz.xyz: /products.json responde 401 (tienda cerrada con contraseña entre drops) → solo en drop abierto",
+    "zara": "Zara ES: el catálogo sin cookies es una página vacía de ~2 KB (23-nov) → sin fuente pública legible",
+    "zara-instore": "stock en tienda física de Zara: sin fuente pública",
+    "uniqlo": "Uniqlo ES: web que monta el catálogo en el navegador; sin cookies, página vacía de 2,7 KB (23-nov)",
+    "hym": "H&M ES: listado de novedades legible (49 fichas) pero la ficha devuelve desafío anti-bot (23-nov) → solo descubrimiento; adaptador de listado pendiente",
+    "sephora": "Sephora ES: listado legible pero la ficha devuelve desafío anti-bot (23-nov) → solo descubrimiento; adaptador de listado pendiente",
+    "aliexpress-labubu": "Pop Mart ES: la extensión no tiene permiso en popmart.com → dar permiso al sitio para comprobarlo; AliExpress: sin fuente pública",
+    "steiff": "steiff.com/es-es responde 404: sin tienda española; mercados DE/EN sin comprobar",
     "asos": "ASOS ES integrada en #asos-es; otros mercados de ASOS sin auditar",
 }
 GUIAS = {"💰neobancos": "06-pagos-y-neobancos.md", "📊excel-inventario": "01-inventario-y-margen.md + inventario_margen.csv",
@@ -70,7 +77,7 @@ def responsable(r) -> str:
 
 
 ALIAS = {"#ugg-oficial": "#ugg"}
-REF_CANAL = {"mattel": "#mattel-creations", "milfshakes": "#milfshakes"}   # canales de referencia sin equivalente previo   # la web oficial de UGG es la misma fuente que el monitor ugg-es
+REF_CANAL = {"funko": "#funko-es", "mattel": "#mattel-creations", "milfshakes": "#milfshakes"}   # canales de referencia sin equivalente previo   # la web oficial de UGG es la misma fuente que el monitor ugg-es
 
 
 def lote_probado() -> dict:

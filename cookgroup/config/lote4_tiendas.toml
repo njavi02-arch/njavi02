@@ -433,3 +433,21 @@ tallas = "sí (XS–XXL)"
 prueba_restock = "test_tiendas_lote2[milfshakes.es] · muestra real 23-nov"
 prueba_rebaja = "test_tiendas_lote2[milfshakes.es] · muestra real 23-nov"
 lote = 9
+
+[[tienda]]
+nombre = "Funko ES"
+canal = "funko-es"
+pais = "ES"
+web = "https://funko.com/es/new--featured/new-releases/"
+envio_es = "sí (tienda ES)"
+raffle_es = "—"
+monitores = ["funko-es"]
+raffle = "sin-fuente"
+lanzamiento = "probado"
+restock = "probado"
+rebaja = "probado"
+tallas = "no aplica"
+prueba_restock = "test_tiendas_fase2[funko.com] · captura real 23-nov"
+prueba_rebaja = "test_tiendas_fase2[funko.com] · captura real 23-nov"
+prueba_lanzamiento = "test_tiendas_fase2::test_listing_discovers_new_product_url[funko.com]"
+lote = 9

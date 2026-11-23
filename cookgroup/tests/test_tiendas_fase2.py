@@ -23,7 +23,7 @@ PATTERN = {"www.kickz.com": "/p/", "www.43einhalb.com": "/en/p/", "www.skatedelu
            "www.adidas.es": ".html", "www.footlocker.es": "/es/product/", "www.game.es": None,
            "www.ugg.com": r"re:^/eu/es/es/[a-z0-9-]+/\d{6,}[A-Z]?\.html$", "www.sportsdirect.com": r"re:^/[a-z0-9-]+-\d{6}$",
            "www.compraonline.alcampo.es": "/products/", "www.basketballemotion.com": r"re:^/es/comprar/zapatillas/[a-z0-9-]+/[a-z0-9.-]+$",
-           "www.footshop.es": r"re:^/es/zapatillas[a-z-]*/\d+-[a-z0-9-]+\.html$"}
+           "funko.com": r"re:^/es/[a-z0-9-]+/\d{5,6}\.html$", "www.footshop.es": r"re:^/es/zapatillas[a-z-]*/\d+-[a-z0-9-]+\.html$"}
 
 
 def caps():

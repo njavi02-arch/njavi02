@@ -904,6 +904,21 @@ interval_seconds = 300
 page_adapter = "supreme"
 channel = "streetwear"     # producto nuevo (drops) y «queda alguna talla»; sin tallas sueltas
 
+[[monitor]]
+name = "funko-es"
+ships_es = "sí"
+type = "jsonld"
+store = "Funko"
+country = "ES"
+region = "eu"
+base_url = "https://funko.com"
+currency = "EUR"
+listing_urls = ["https://funko.com/es/new--featured/new-releases/", "https://funko.com/es/new--featured/exclusives/", "https://funko.com/es/new--featured/pre-order/"]
+product_link_pattern = 're:^/es/[a-z0-9-]+/\d{5,6}\.html$'
+products_per_cycle = 4
+interval_seconds = 300
+channel = "coleccionables"   # novedades, exclusivas y preventas de Funko ES (stock general por ficha)
+
 # ---------------------------------------------------------------- PINGS PERSONALES (filtros)
 # Cada regla re-publica en "pings" las alertas que cumplen TODO lo que indiques, mencionando un rol.
 # Campos: keywords (todas; "*" = cualquiera), exclude_keywords, brands, sizes (EU), regions (eu/uk/us/au),

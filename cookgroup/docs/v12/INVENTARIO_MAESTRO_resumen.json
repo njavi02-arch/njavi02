@@ -1,9 +1,9 @@
 {
  "total": 339,
  "estado_tecnico": {
-  "investigado": 102,
+  "investigado": 101,
   "construido": 87,
-  "probado localmente": 150
+  "probado localmente": 151
  },
  "estado_discord": {
   "no instalado": 339
