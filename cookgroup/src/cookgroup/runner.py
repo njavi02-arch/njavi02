@@ -103,7 +103,7 @@ def next_wait(mcfg, res: dict, failures: int, cap: int, rnd=None) -> tuple[float
 def start_to_start(wait: float, elapsed: float, ok: bool, min_gap: float = 5.0) -> float:
     """v1.6: el intervalo configurado se cuenta de INICIO a INICIO de lectura (antes, tras terminar el ciclo, y BSTN a
     «60 s» salía a ~65 s). Tras un error se mantiene la espera completa (no se acelera sobre una tienda que falla)."""
-    return max(wait - elapsed, min_gap) if ok else wait
+    return max(wait - elapsed, min(min_gap, wait)) if ok else wait   # el hueco mínimo nunca supera el intervalo pedido
 
 
 def _launch_loop(mcfg, cfg: Config, store: Store, stop: threading.Event):
