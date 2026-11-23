@@ -18,18 +18,24 @@ from cookgroup.store import Store
 FIX = Path(__file__).parent / "fixtures/muestras_shopify_REAL_2026-11-21.txt"
 
 
-def samples():
+DISABLED = {r.split(",")[0] for r in (Path(__file__).parents[1] / "config/shopify_stores.csv").read_text(encoding="utf-8").splitlines()[1:]
+            if r.split(",")[5] == "0"}
+
+
+def samples(include_disabled=False):
     out = []
     for line in FIX.read_text(encoding="utf-8").splitlines():
         if not line or line.startswith("#"):
             continue
-        dom, title, updated, vs = line.split("|")
+        dom, title, updated, vs, *rest = line.split("|")       # 5.º campo opcional: handle real de la tienda
         variants = []
         for i, v in enumerate(vs.split(",")):
             t, price, cmp, av = v.split("~")
             variants.append({"id": i + 1, "title": t.strip() or "Default Title", "price": price,
                              "compare_at_price": cmp or None, "available": av == "1"})
-        out.append((dom, {"products": [{"id": 1, "title": title.strip() or dom, "handle": "muestra", "vendor": dom,
+        if dom in DISABLED and not include_disabled:
+            continue
+        out.append((dom, {"products": [{"id": 1, "title": title.strip() or dom, "handle": rest[0] if rest else "muestra", "vendor": dom,
                                         "product_type": "", "updated_at": updated, "tags": [], "images": [],
                                         "variants": variants}]}))
     return out
@@ -81,3 +87,20 @@ def test_store_restock_and_price_drop_from_real_sample(dom, cat, tmp_path):
     src.cat["products"].append(new)
     run_cycle(cfg, {"min_drop_pct": 5}, src, st, mk, send)
     assert len(got) == n + 1, f"{dom}: producto nuevo no detectado"
+
+
+def test_disabled_kids_only_store_would_never_publish():
+    """v1.6: childsplayclothing.co.uk vende solo ropa infantil (muestra real 21-nov y 5 productos del 23-nov, todo «Yrs/Mths»).
+    Con el filtro de tallas de niño no publicaría nunca: está desactivada en shopify_stores.csv y aquí se comprueba por qué."""
+    from cookgroup.normalize import clean_variants
+    assert "childsplayclothing.co.uk" in DISABLED
+    dom, cat = next(s for s in samples(include_disabled=True) if s[0] == "childsplayclothing.co.uk")
+    assert not clean_variants(Src(dom, cat).fetch()[0], skip_kids=True).variants
+
+
+def test_numeric_code_title_is_named_from_handle():
+    from cookgroup.sources.shopify import _title
+    assert _title({"title": "1000166040", "handle": "zapatillas-hogar-calvin-klein-hw0hw03214-hotel-slipper-satin-1000166040"}) \
+        == "Zapatillas Hogar Calvin Klein Hw0hw03214 Hotel Slipper Satin"
+    assert _title({"title": "Nike Dunk Low", "handle": "x-1"}) == "Nike Dunk Low"
+    assert _title({"title": "123", "handle": "123"}) == "123"

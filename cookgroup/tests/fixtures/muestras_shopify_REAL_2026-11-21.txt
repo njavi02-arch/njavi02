@@ -8,7 +8,9 @@ pukassurfshop.com|Lost Surfboards - STEP DRIVER |2026-11-21|Default Title~760.00
 blackvinylrecordsspain.com|Jethro Tull - Thick as a Brick|2026-11-21|Default Title~62.99~~1
 shop.rfef.es|Pantalón Corto Hombre Primera |2026-11-21|XS~65.00~~1,S~65.00~~1,M~65.00~~1
 capitansiroco.com|Salomon XT-PATHWAY GTX Grises |2026-11-21|MULTI / 362/3~150.00~0.00~1,MULTI / 371/3~150.00~0.00~1,MULTI / 402/3~150.00~0.00~1
-yellowshop.es|1000087720|2026-11-21|35.5~39.00~65.00~0,36~39.00~65.00~0,37~39.00~65.00~0
+# yellowshop.es: muestra del 21-nov sustituida el 23-nov (título solo código y todas las tallas agotadas). Nueva muestra REAL
+# leída de yellowshop.es/products.json el 23-nov-2026 10:42; título = el código que da la tienda; el bot lo nombra desde el handle
+yellowshop.es|1000166040|2026-11-23|36~29.99~49.90~0,37~29.99~49.90~0,38~29.99~49.90~1,39~29.99~49.90~1,40~29.99~49.90~1,41~29.99~49.90~0|zapatillas-hogar-calvin-klein-hw0hw03214-hotel-slipper-satin-1000166040
 culturaurbanashop.es|Carhartt WIP Chane|2026-11-21|XXS / Marrón~71.40~119.00~0,XS / Marrón~71.40~119.00~0,S / Marrón~71.40~119.00~0
 delastore.com|Pleated Track Pant Tweed Olive|2026-11-21|28~185.00~~0,30~185.00~~0,32~185.00~~0
 tradingcardsxxx.fr|One Piece - Double Pack Set DP|2026-11-21|Default Title~17.90~~1

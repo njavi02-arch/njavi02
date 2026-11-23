@@ -2440,7 +2440,7 @@ fuente = "bot:reino_unido"
 estado = "construido"
 equivalente_de = "uk"
 falta = ""
-monitores = ["end-launches", "size-launches", "footpatrol-launches", "goodhood", "hotukdeals-hot", "sportsdirect-uk", "shop:routeone.co.uk", "shop:flatspot.com", "shop:offcutsshoes.co.uk", "shop:gameon.games", "shop:thedarkslide.com", "shop:crtz.xyz", "shop:palace-skateboards-eu.myshopify.com", "shop:lvlupgaming.co.uk", "shop:us.goodhoodstore.com", "shop:boredofsouthsea.co.uk", "shop:remixcasuals.co.uk", "shop:thefootfactory.co.uk", "shop:elyswimbledon.co.uk", "shop:loadeddice.uk", "shop:landaustore.co.uk", "shop:childsplayclothing.co.uk", "shop:crashrecords.co.uk", "shop:noteshop.co.uk", "shop:thecardvault.co.uk", "shop:jeanstore.co.uk", "shop:hammerheadtcg.co.uk"]
+monitores = ["end-launches", "size-launches", "footpatrol-launches", "goodhood", "hotukdeals-hot", "sportsdirect-uk", "shop:routeone.co.uk", "shop:flatspot.com", "shop:offcutsshoes.co.uk", "shop:gameon.games", "shop:thedarkslide.com", "shop:crtz.xyz", "shop:palace-skateboards-eu.myshopify.com", "shop:lvlupgaming.co.uk", "shop:us.goodhoodstore.com", "shop:boredofsouthsea.co.uk", "shop:remixcasuals.co.uk", "shop:thefootfactory.co.uk", "shop:elyswimbledon.co.uk", "shop:loadeddice.uk", "shop:landaustore.co.uk", "shop:crashrecords.co.uk", "shop:noteshop.co.uk", "shop:thecardvault.co.uk", "shop:jeanstore.co.uk", "shop:hammerheadtcg.co.uk"]
 palabras = []
 [[categoria.canal]]
 nombre = "pokémon-uk"

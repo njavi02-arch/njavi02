@@ -88,7 +88,7 @@ Stocks,📊stock-otros-releases,texto,Ver cuánto stock hubo,bot de la referenci
 🤖Monitores,socials-monitors,texto,Avisos de una tienda concreta,bot (monitores),ver tabla v0.9,#sneakers-eu (+ menciones por talla),,,0
 🤖Monitores,ugg,texto,Avisos de una tienda concreta,bot (monitores),tienda,#ugg-oficial,ugg-es,,1
 🤖Monitores,ugg-all-special,texto,Avisos de una tienda concreta,bot (monitores),tema,#ugg,"cualquier monitor, palabras clave: ugg",,15
-🤖Monitores,uk,texto,Ver avisos de muchas tiendas juntas,bot (monitores),región,#reino-unido,monitores con país GB: 27,,5
+🤖Monitores,uk,texto,Ver avisos de muchas tiendas juntas,bot (monitores),región,#reino-unido,monitores con país GB: 26,,5
 🤖Monitores,yeezy-especial-monitor,texto,Avisos de una tienda concreta,bot (monitores),tema,#yeezy,"cualquier monitor, palabras clave: yeezy",,8
 🤖Monitores,web-naranja-españa,texto,Avisos de una tienda concreta,bot (monitores),tienda,#web-naranja-españa,zalando-es,,1
 🤖Monitores,web-naranja-eu,texto,Avisos de una tienda concreta,bot (monitores),tienda,#web-naranja-eu,"zalando-fr, zalando-it",,5
@@ -97,7 +97,7 @@ Stocks,📊stock-otros-releases,texto,Ver cuánto stock hubo,bot de la referenci
 🤖Monitores,vans,texto,Avisos de una tienda concreta,bot (monitores),tema,#vans,"cualquier monitor, palabras clave: vans",,1
 Shopify monitors,shopify-eu,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-eu,monitores de su familia (39 de sus 41 tiendas coinciden),,73
 Shopify monitors,shopify-eu-unfiltered,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-eu,monitores de su familia (40 de sus 41 tiendas coinciden),,56
-Shopify monitors,shopify-all,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-mundo,monitores de su familia (42 de sus 41 tiendas coinciden),,54
+Shopify monitors,shopify-all,texto,Ver avisos de muchas tiendas juntas,bot (monitores),agregado,#sneakers-mundo,monitores de su familia (41 de sus 41 tiendas coinciden),,54
 Shopify monitors,asphaltgold,texto,Avisos de una tienda concreta,bot (monitores),tienda,#asphaltgold,asphaltgold,,1
 Shopify monitors,dsml,texto,Avisos de una tienda concreta,bot (monitores),tienda,#dsml,shop:shop.doverstreetmarket.com,,1
 Shopify monitors,footdistrict,texto,Avisos de una tienda concreta,bot (monitores),tienda,#footdistrict,footdistrict,,1
@@ -229,7 +229,7 @@ Pokemon,🤝wtb-kai-collect,texto,Comunidad Pokémon,staff + miembros,ver tabla 
 Pokemon,📦wtb-wts-pokemon,texto,Comunidad Pokémon,staff + miembros,ver tabla v0.9,#pokémon-tcg,,,0
 Pokemon,pokemon-custom-aio,texto,Avisos de Pokémon/TCG,bot,agregado,#pokémon-tcg,monitores de su familia (0 de sus 0 tiendas coinciden),,0
 Pokemon,pokemon-aio,texto,Avisos de Pokémon/TCG,bot,agregado,#pokémon-tcg,monitores de su familia (0 de sus 0 tiendas coinciden),,0
-Pokemon,pokemon-aio-uk,texto,Avisos de Pokémon/TCG,bot,región,#pokémon-uk,monitores con país GB: 27,,0
+Pokemon,pokemon-aio-uk,texto,Avisos de Pokémon/TCG,bot,región,#pokémon-uk,monitores con país GB: 26,,0
 Pokemon,pokemon-custom-shopify,texto,Avisos de Pokémon/TCG,bot,agregado,#pokémon-tcg,monitores de su familia (0 de sus 0 tiendas coinciden),,0
 Pokemon,pokemon-amazon,texto,Avisos de Pokémon/TCG,bot,tienda,#pokemon-amazon,,Amazon: programa de afiliados (PA-API) → sin fuente aún,0
 Pokemon,pokemon-prismatic,texto,Avisos de Pokémon/TCG,bot,tema,#pokémon-prismatic,"cualquier monitor, palabras clave: prismatic, prismátic, prismatische",,0

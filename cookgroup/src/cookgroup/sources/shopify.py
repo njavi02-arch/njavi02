@@ -58,7 +58,7 @@ def parse_products(payload: dict, *, store: str, base_url: str, currency: str) -
             Product(
                 store=store,
                 product_id=str(p["id"]),
-                title=p.get("title", "").strip(),
+                title=_title(p),
                 url=f"{base_url.rstrip('/')}/products/{p['handle']}",
                 currency=currency,
                 variants=variants,
@@ -69,6 +69,22 @@ def parse_products(payload: dict, *, store: str, base_url: str, currency: str) -
             )
         )
     return out
+
+
+
+def _title(p: dict) -> str:
+    """v1.6: algunas tiendas (Yellowshop) publican como título solo un código interno («1000166040») y el nombre real
+    en el handle («zapatillas-hogar-calvin-klein-hw0hw03214-hotel-slipper-satin-1000166040»). Si el título es solo un
+    código, se usa el handle sin el código final; si el handle tampoco trae palabras, se deja el código."""
+    t = (p.get("title") or "").strip()
+    if t and not t.replace(" ", "").isdigit():
+        return t
+    words = [w for w in str(p.get("handle") or "").split("-") if w]
+    while words and words[-1].isdigit():
+        words.pop()
+    if sum(any(c.isalpha() for c in w) for w in words) < 2:
+        return t
+    return " ".join(w.upper() if len(w) <= 3 and not w.isalpha() else w.capitalize() for w in words)
 
 
 @dataclass

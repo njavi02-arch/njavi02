@@ -1,19 +1,24 @@
-# Punto de reanudación — 21-nov-2026
+# Punto de reanudación — 23-nov-2026
 
-Último lote cerrado: v1.5 lote 2a (commit 0aea1c5, rama claude/cookgroup-v1.0). Tests: 515 passed, 2 skipped.
+Rama `claude/cookgroup-v1.0`. Pruebas: **585 passed, 0 skipped**. Monitores configurados: 285 (198 con canal propio, 275 con fuente comprobada).
+Inventario de referencia: 339 funciones (130 probadas en local, 90 construidas, 119 investigadas; 0 instaladas en Discord).
 
-## Lo hecho en el lote 2a
-- Zalando FR (/baskets-homme/) e IT (/sneakers-uomo/): ProductGroup con una variante por talla, precio EUR y stock. Integrados (zalando-fr, zalando-it → canal zalando-eu).
-- Foot Locker DE e IT: ProductGroup con variantes por COLOR que traen precio y stock propios (no hay tallas). Integrados (footlocker-de, footlocker-it → canal footlocker-eu). El lector JSON-LD usa ahora el color como etiqueta cuando falta la talla.
-- zalando-es: patrón cambiado de "-a13.html" a ".html".
-- adidas DE/FR: el JSON-LD es un ProductGroup con variantes de color pero sin offers, así que no da precio ni stock. No se integra. adidas IT no se comprobó.
-- Foot Locker FR: el primer enlace del listado era una ficha "~" sin variantes. Queda pendiente de una segunda comprobación.
-- Test nuevo: test_listing_discovers_new_product_url. Una ficha nueva que aparece en el listado se anuncia una sola vez en las 13 tiendas JSON-LD.
+## Lotes del brief del 23-nov
+| Lote | Estado | Commits |
+|---|---|---|
+| 1 · Foot Locker ES/FR/DE y ASICS ES por talla y color; prueba 44,5 con reinicio | hecho | 5e8eb6c |
+| 2 · Descubrimiento comprobado en vivo por tienda; Zalando ES filtra /faq/ y parámetros; raffles abiertos visibles para un miembro nuevo | hecho | 6d4ccd8, 30f3424 |
+| 3 · ASOS, About You, Sivasdescalzo, GAME, El Corte Inglés, DRIM, Toys"R"Us, UGG, Sports Direct, Alcampo, Basketball Emotion y Footshop | hecho | 12cb84d…e03b325, 2d80951 |
+| 3 · Bloqueadas (desafío anti-bot sin cookies, no se tocó): Carrefour, Fnac, YOOX, LuisaViaRoma. Darizard sin dominio | registrado en docs/v12/TIENDAS_LOTE3.md | 2d80951 |
+| 4 · Fiabilidad (1 de 10 fichas caída, página incompleta, orden, dos colores, canal pendiente tras reinicio, envío incierto) y velocidad de inicio a inicio | hecho | 7cbb903, 4489881, 2cf123c |
+| Pruebas omitidas: Yellowshop (título = código → nombre desde el handle, muestra nueva del 23-nov) y Childsplay (tienda solo infantil → desactivada) | hecho | este commit |
+| 5 · Windows y Discord en el PC | **PENDIENTE por decisión del dueño (23-nov 10:33): primero los lotes** | — |
+
+## Para verificar en el PC (no se puede desde aquí: la red del entorno solo llega a registros de paquetes)
+- Footshop: la ficha pedida sin navegador devolvió 400. Si el ciclo real lo repite, el panel lo marca en error y no hay avisos falsos.
+- adidas ES (ficha) y New Balance ES (listado) dan desafío anti-bot sin cookies.
+- `tools/medir_intervalos.py` en modo real: intervalo observado por tienda.
 
 ## Siguiente acción exacta
-1. Foot Locker ES: adaptador de tallas. La ficha trae unas 53 claves "size" fuera del JSON-LD; buscar el bloque de estado embebido.
-2. ASICS: adaptador de tallas (en el JSON-LD la talla sale N/A).
-3. Lote 2b: About You, YOOX, Sports Direct, LuisaViaRoma, Basketball Emotion, UGG (mercado efectivo), Sivasdescalzo y ASOS.
-   Footshop: el permiso de JS en Chrome está denegado; probar otra ruta pública.
-4. Retail Pokémon: GAME (watchlist con URLs reales), Carrefour, DRIM, Toys"R"Us, Alcampo, Darizard, El Corte Inglés, Fnac.
-5. Fase 4: decisiones, fiabilidad (campos del panel) y la secuencia única de Windows.
+1. Pendientes del inventario con los accesos actuales: canales «construidos» sin prueba (docs/v12/INVENTARIO_MAESTRO.csv, estado_tecnico=construido), flujos editoriales, guías y permisos del mercado.
+2. Después, lote 5 (Windows): comprobaciones por separado (leer tienda / acceso a Discord / alerta a #pruebas-bot) con mensaje del paso exacto que falla.
