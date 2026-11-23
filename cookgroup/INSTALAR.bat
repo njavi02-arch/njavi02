@@ -13,8 +13,10 @@ call .venv\Scripts\python -m pip install --upgrade pip >nul
 call .venv\Scripts\pip install -e . || (echo Error instalando dependencias & pause & exit /b 1)
 if not exist .env copy .env.example .env >nul
 echo.
-echo Listo. Ahora se abre el fichero .env: pega la URL de tu webhook en DISCORD_WEBHOOK_DEFAULT= y guarda.
-echo (Discord: Ajustes del canal ^> Integraciones ^> Webhooks ^> Nuevo webhook ^> Copiar URL)
+echo Listo. Ahora se abre el fichero .env con el Bloc de notas.
+echo Rellena estas dos lineas y guarda (Ctrl+G o Archivo ^> Guardar):
+echo    DISCORD_BOT_TOKEN=  el token de tu bot ^(no lo pegues en ningun chat^)
+echo    DISCORD_GUILD_ID=1572928642999255120
 notepad .env
-echo Despues ejecuta PROBAR.bat
+echo Despues ejecuta VERIFICAR.bat
 pause
