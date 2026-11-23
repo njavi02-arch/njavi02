@@ -218,5 +218,31 @@ def parse_hybris_page(html: str, *, url: str, store: str, default_currency: str 
                    variants=(v,))
 
 
-ADAPTERS = {"footlocker": parse_footlocker_state, "asics": parse_asics_state, "asos": parse_asos_state,
+def parse_supreme_page(html: str, *, url: str, store: str, default_currency: str = "EUR") -> Product | None:
+    """Supreme EU (Shopify), verificado el 23-nov-2026: /products.json y /products/<h>.js devuelven 403, pero la ficha
+    (200 sin cookies) incrusta UN objeto {name, variant, sku, price, currency, available} de la variante seleccionada.
+    En Shopify la seleccionada es la primera DISPONIBLE, así que `available` significa «queda alguna talla»: el bot lo
+    publica como stock general del producto, nunca como una talla concreta. Sin ese objeto → None (no es un error)."""
+    m = None
+    for m in re.finditer(r'\{[^{}]*"available"\s*:\s*(?:true|false)[^{}]*\}', html):
+        try:
+            j = json.loads(m.group(0))
+        except ValueError:
+            continue
+        if j.get("sku") and j.get("price") is not None:
+            break
+    else:
+        return None
+    if not m:
+        return None
+    sku = str(j["sku"]).rsplit("-", 1)[0] if "-" in str(j["sku"]) else str(j["sku"])     # FW26J79-BLK-S → FW26J79-BLK
+    ok = j.get("available") is True
+    scope = "online" if ok else "agotada" if j.get("available") is False else "desconocido"
+    v = Variant(sku, "stock general (alguna talla)", _cents(j.get("price")) or 0, ok, sku, known=scope != "desconocido",
+                stock_scope=scope)
+    return Product(store=store, product_id=sku, title=str(j.get("name") or sku), url=url,
+                   currency=j.get("currency") or default_currency, variants=(v,))
+
+
+ADAPTERS = {"supreme": parse_supreme_page, "footlocker": parse_footlocker_state, "asics": parse_asics_state, "asos": parse_asos_state,
             "hybris": parse_hybris_page}

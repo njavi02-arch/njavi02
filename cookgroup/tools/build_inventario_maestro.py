@@ -69,7 +69,8 @@ def responsable(r) -> str:
     return "bot"
 
 
-ALIAS = {"#ugg-oficial": "#ugg"}   # la web oficial de UGG es la misma fuente que el monitor ugg-es
+ALIAS = {"#ugg-oficial": "#ugg"}
+REF_CANAL = {"mattel": "#mattel-creations", "milfshakes": "#milfshakes"}   # canales de referencia sin equivalente previo   # la web oficial de UGG es la misma fuente que el monitor ugg-es
 
 
 def lote_probado() -> dict:
@@ -89,6 +90,8 @@ def main():
         plain = re.sub(r"^[^\w]+", "", ref)
         tech = {"investigado": "investigado", "desarrollado": "construido", "probado en local": "probado localmente"}[r["estado"]]
         ours, fuente, evid, nxt = r["nuestro_canal"], r["fuente_o_responsable"], r["prueba"], ""
+        if plain in REF_CANAL and ours in ("", "—"):
+            ours = REF_CANAL[plain]
         if plain in FASE2:
             ours, mon, test = FASE2[plain]
             tech, fuente, evid = "probado localmente", f"monitor {mon} (JSON-LD público de la ficha)", test + " · captura 21-nov"

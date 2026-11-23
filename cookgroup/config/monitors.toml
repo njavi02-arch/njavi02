@@ -887,6 +887,23 @@ interval_seconds = 300
 channel = "sneakers"
 # tallas EUR por JSON-LD; la ficha pedida sin navegador dio 400 → verificar en el ciclo real del PC
 
+# v1.6 · Random invest / ropa hype (23-nov). Supreme EU: /products.json da 403; se lee la ficha pública (200 sin cookies)
+[[monitor]]
+name = "supreme-eu"
+ships_es = "sí"
+type = "jsonld"
+store = "Supreme"
+country = "EU"
+region = "eu"
+base_url = "https://eu.supreme.com"
+currency = "EUR"
+listing_urls = ["https://eu.supreme.com/collections/new"]
+product_link_pattern = 're:^/products/[a-z0-9-]+$'
+products_per_cycle = 4
+interval_seconds = 300
+page_adapter = "supreme"
+channel = "streetwear"     # producto nuevo (drops) y «queda alguna talla»; sin tallas sueltas
+
 # ---------------------------------------------------------------- PINGS PERSONALES (filtros)
 # Cada regla re-publica en "pings" las alertas que cumplen TODO lo que indiques, mencionando un rol.
 # Campos: keywords (todas; "*" = cualquiera), exclude_keywords, brands, sizes (EU), regions (eu/uk/us/au),

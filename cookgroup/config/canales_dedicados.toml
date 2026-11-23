@@ -468,14 +468,15 @@ palabras = []
 [[categoria.canal]]
 nombre = "supreme"
 clase = "tienda"
-pais = ""
+pais = "EU"
 tipo = "texto"
 acceso = "lectura"
 fuente = "bot:tienda_supreme"
-estado = "pendiente"
+estado = "construido"
 equivalente_de = "supreme"
-falta = "sin monitor para sus tiendas → sin fuente aún"
-monitores = []
+falta = ""
+senales = "LANZAMIENTO, RESTOCK"
+monitores = ["supreme-eu"]
 palabras = []
 [[categoria.canal]]
 nombre = "stussy"
@@ -2360,6 +2361,32 @@ equivalente_de = "(lote 1 propio)"
 falta = ""
 senales = "RESTOCK, REBAJA"
 monitores = ["elcorteingles-pokemon"]
+palabras = []
+[[categoria.canal]]
+nombre = "mattel-creations"
+clase = "tienda"
+pais = "US"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:tienda_mattel_creations"
+estado = "construido"
+equivalente_de = "(lote 1 propio)"
+falta = ""
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
+monitores = ["shop:creations.mattel.com"]
+palabras = []
+[[categoria.canal]]
+nombre = "milfshakes"
+clase = "tienda"
+pais = "ES"
+tipo = "texto"
+acceso = "lectura"
+fuente = "bot:tienda_milfshakes"
+estado = "construido"
+equivalente_de = "(lote 1 propio)"
+falta = ""
+senales = "LANZAMIENTO, RESTOCK, REBAJA"
+monitores = ["shop:milfshakes.es"]
 palabras = []
 
 [[categoria]]

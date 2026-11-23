@@ -157,3 +157,6 @@ pampamlondon.com|Clarks Womens Meare Walla Mapl|2026-11-21|3 / Maple Suede~92.95
 # 23-nov-2026 11:00 · muestras REALES nuevas leídas de /products.json desde el navegador del dueño (canales #yeezy y #ugg extra)
 gbny.com|Nike Air Force 1 Triple Black - Men's|2026-11-23|7.5 / Black~128.95~~0,8 / Black~128.95~~1,8.5 / Black~128.95~~1,9 / Black~128.95~~1,9.5 / Black~128.95~~1,10 / Black~128.95~~1,10.5 / Black~128.95~~1,11 / Black~128.95~~1,11.5 / Black~128.95~~1,12 / Black~128.95~~1|nike-air-force-1-triple-black-mens
 dtlr.com|Jordan Air Jordan 4 Retro 'Bred'|2026-11-23|7.5~230.00~~1,8~230.00~~1,8.5~230.00~~1,9~230.00~~1,9.5~230.00~~1,10~230.00~~1,10.5~230.00~~1,11~230.00~~1,11.5~230.00~~1,12~230.00~~1|jordan-air-jordan-4-retro-bred-mf-black-ix8180-001
+# 23-nov-2026 · «Random invest»: muestras REALES de /products.json (precios en la moneda de la tienda)
+creations.mattel.com|Elite 64 Premium Cars|2026-11-23|Hot Wheels Elite 64 ~22.00~~1,McLaren M6GT~8.00~20.00~0,BMW M3 Touring~22.00~~0,Porsche 963~8.80~22.00~0,1975 BMW 3.0 CSL Rac~8.80~22.00~1,Mod Shop 24 Jeep Gl~14.80~37.00~1|elite-64-premium-cars
+milfshakes.es|Red Sharingan Puffer|2026-11-23|XS~129.69~~0,S~129.69~~1,M~129.69~~1,L~129.69~~1,XL~129.69~~1,XXL~129.69~~1|red-sharingan-puffer

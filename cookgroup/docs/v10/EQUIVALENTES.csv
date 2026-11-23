@@ -111,7 +111,7 @@ Shopify monitors,starcow,texto,Avisos de una tienda concreta,bot (monitores),tie
 Shopify monitors,canary-yellow,texto,Avisos de una tienda concreta,bot (monitores),tienda,#canary-yellow,shop:canary---yellow.com,,1
 Shopify monitors,goodhood,texto,Avisos de una tienda concreta,bot (monitores),tienda,#goodhood,"goodhood, shop:us.goodhoodstore.com",,2
 Shopify clothes,corteiz,texto,Ropa de marcas hype,bot (monitores),tienda,#corteiz,shop:crtz.xyz,,1
-Shopify clothes,supreme,texto,Ropa de marcas hype,bot (monitores),tienda,#supreme,,sin monitor para sus tiendas → sin fuente aún,1
+Shopify clothes,supreme,texto,Ropa de marcas hype,bot (monitores),tienda,#supreme,supreme-eu,,1
 Shopify clothes,stussy,texto,Ropa de marcas hype,bot (monitores),tienda,#stussy,"shop:eu.stussy.com, shop:uk.stussy.com",,2
 Shopify clothes,palace,texto,Ropa de marcas hype,bot (monitores),tienda,#palace,shop:palace-skateboards-eu.myshopify.com,,1
 Demandware monitors,info,texto,Avisos de una tienda concreta,bot (monitores),ver tabla v0.9,#sneakers-eu (+ menciones por talla),,,0

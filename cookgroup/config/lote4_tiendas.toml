@@ -381,3 +381,55 @@ tallas = "sí (EUR por talla, 3 agotadas reales)"
 prueba_restock = "test_tiendas_fase2[www.footshop.es] · ficha renderizada 23-nov; ficha sin navegador = 400, verificar en el PC"
 prueba_rebaja = "test_tiendas_fase2[www.footshop.es] · ficha renderizada 23-nov; ficha sin navegador = 400, verificar en el PC"
 lote = 8
+
+# v1.6 · Random invest (23-nov)
+[[tienda]]
+nombre = "Supreme EU"
+canal = "supreme"
+pais = "EU"
+web = "https://eu.supreme.com/collections/new"
+envio_es = "sí (meta.json: ES)"
+raffle_es = "—"
+monitores = ["supreme-eu"]
+raffle = "sin-fuente"
+lanzamiento = "probado"
+restock = "probado"
+rebaja = "por-probar"
+tallas = "no (solo «queda alguna talla»)"
+prueba_restock = "test_random_invest::test_supreme_new_drop_and_back_in_stock · objeto real de la ficha 23-nov"
+prueba_lanzamiento = "test_random_invest::test_supreme_new_drop_and_back_in_stock"
+lote = 9
+
+[[tienda]]
+nombre = "Mattel Creations"
+canal = "mattel-creations"
+pais = "US"
+web = "https://creations.mattel.com/"
+envio_es = "sí (meta.json: ES) · precios en USD"
+raffle_es = "—"
+monitores = ["shop:creations.mattel.com"]
+raffle = "sin-fuente"
+lanzamiento = "probado"
+restock = "probado"
+rebaja = "probado"
+tallas = "no aplica (variantes = modelos)"
+prueba_restock = "test_tiendas_lote2[creations.mattel.com] · muestra real 23-nov"
+prueba_rebaja = "test_tiendas_lote2[creations.mattel.com] · muestra real 23-nov"
+lote = 9
+
+[[tienda]]
+nombre = "MilfShakes"
+canal = "milfshakes"
+pais = "ES"
+web = "https://milfshakes.es/"
+envio_es = "sí (tienda española)"
+raffle_es = "—"
+monitores = ["shop:milfshakes.es"]
+raffle = "sin-fuente"
+lanzamiento = "probado"
+restock = "probado"
+rebaja = "probado"
+tallas = "sí (XS–XXL)"
+prueba_restock = "test_tiendas_lote2[milfshakes.es] · muestra real 23-nov"
+prueba_rebaja = "test_tiendas_lote2[milfshakes.es] · muestra real 23-nov"
+lote = 9

@@ -55,6 +55,7 @@ sportsdirect-uk,Sports Direct,GB,jsonld,producto nuevo · reposición (por talla
 alcampo-pokemon,Alcampo,ES,jsonld,producto nuevo · reposición (por talla si la ficha la da) · bajada de precio,300,#alcampo,sí (21-nov),probado localmente,no (falta token)
 basketballemotion-es,Basketball Emotion,ES,jsonld,producto nuevo · reposición (por talla si la ficha la da) · bajada de precio,300,#basketballemotion,sí (21-nov),probado localmente,no (falta token)
 footshop-es,Footshop,ES,jsonld,producto nuevo · reposición (por talla si la ficha la da) · bajada de precio,300,#footshop,sí (21-nov),probado localmente,no (falta token)
+supreme-eu,Supreme,EU,jsonld,producto nuevo · reposición (por talla si la ficha la da) · bajada de precio,300,#supreme,sí (21-nov),probado localmente,no (falta token)
 shop:plaza.dk,Plaza Dk,DK,shopify,producto nuevo · reposición por talla · bajada de precio,60,#plaza,sí (21-nov),probado localmente,no (falta token)
 shop:blackboxstore.com,blackboxstore.com,IT,shopify,producto nuevo · reposición por talla · bajada de precio,60,#blackbox,sí (21-nov),probado localmente,no (falta token)
 shop:shop.rfef.es,shop.rfef.es,ES,shopify,producto nuevo · reposición por talla · bajada de precio,60,#rfef,sí (21-nov),probado localmente,no (falta token)
@@ -284,3 +285,5 @@ shop:thepokehive.com,Thepokehive,,shopify,producto nuevo · reposición por tall
 shop:pampamlondon.com,Pampamlondon,,shopify,producto nuevo · reposición por talla · bajada de precio,60,#pampamlondon,sí (21-nov),probado localmente,no (falta token)
 shop:it.slamjam.com,Slamjam,IT,shopify,producto nuevo · reposición por talla · bajada de precio,60,#slamjam,sí (21-nov),probado localmente,no (falta token)
 shop:uk.stussy.com,Stussy Uk,US,shopify,producto nuevo · reposición por talla · bajada de precio,60,#stussy,sí (21-nov),probado localmente,no (falta token)
+shop:creations.mattel.com,Mattel Creations,US,shopify,producto nuevo · reposición por talla · bajada de precio,60,#mattel-creations,sí (21-nov),probado localmente,no (falta token)
+shop:milfshakes.es,MilfShakes,ES,shopify,producto nuevo · reposición por talla · bajada de precio,60,#milfshakes,sí (21-nov),probado localmente,no (falta token)
