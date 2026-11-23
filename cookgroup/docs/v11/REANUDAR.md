@@ -1,7 +1,7 @@
 # Punto de reanudación — 23-nov-2026
 
-Rama `claude/cookgroup-v1.0`. Pruebas: **585 passed, 0 skipped**. Monitores configurados: 285 (198 con canal propio, 275 con fuente comprobada).
-Inventario de referencia: 339 funciones (130 probadas en local, 90 construidas, 119 investigadas; 0 instaladas en Discord).
+Rama `claude/cookgroup-v1.0`. Pruebas: **587 passed, 0 skipped**. Monitores configurados: 285 (198 con canal propio, 275 con fuente comprobada).
+Inventario de referencia: 339 funciones (147 probadas en local, 87 construidas, 105 investigadas; 0 instaladas en Discord). El inventario lee ahora el estado de config/lote*_tiendas.toml y de las muestras Shopify, no de una tabla a mano.
 
 ## Lotes del brief del 23-nov
 | Lote | Estado | Commits |

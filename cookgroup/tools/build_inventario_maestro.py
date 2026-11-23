@@ -38,20 +38,14 @@ FASE2 = {  # canal de referencia → (nuestro canal, monitor, prueba)
     "adidas-es": ("#adidas-es", "adidas-es", "test_tiendas_fase2[www.adidas.es]"),
     "footlocker-es": ("#footlocker-es", "footlocker-es", "test_tiendas_fase2[www.footlocker.es]"),
 }
-PENDIENTE_TIENDA = {
-    "sivasdescalzo": "API interna y robots.txt muy restrictivo → acuerdo con la tienda o proveedor",
-    "basketballemotion": "catálogo cargado por JavaScript → adaptador propio pendiente",
-    "luisaviaroma": "catálogo cargado por JavaScript → adaptador propio pendiente",
-    "asics": "JSON-LD con talla «N/A» → adaptador de tallas pendiente",
-    "asos": "ProductGroup sin tallas en JSON-LD → adaptador de tallas pendiente",
-    "asos-es": "ProductGroup sin tallas en JSON-LD → adaptador de tallas pendiente",
-    "footlocker-eu": "como footlocker-es (mismo formato); falta dar de alta los mercados EU",
-    "ugg": "ugg.com/es-es redirige a la web de EE. UU. → pendiente",
-    "footshop": "la extensión de Chrome no permite ejecutar código en ese dominio → falta permiso",
-    "aboutyou-yoox": "sin auditar todavía",
-    "sports-direct": "sin auditar todavía",
-    "adidas-eu": "mismo formato que adidas-es; falta dar de alta los mercados EU",
-    "web-naranja-eu": "mismo formato que zalando-es; falta dar de alta los mercados EU",
+PENDIENTE_TIENDA = {  # solo lo que sigue sin integrar a 23-nov (lo integrado sale de config/lote*_tiendas.toml)
+    "luisaviaroma": "desafío Cloudflare sin cookies (23-nov) → feed de afiliados o permiso de la tienda",
+    "aboutyou-yoox": "About You integrada (#aboutyou-es); YOOX: desafío Akamai sin cookies (23-nov) → feed de afiliados",
+    "sivasdescalzo-raffles": "raffles solo en su app (sin fuente web pública)",
+    "adidas-eu": "adidas DE/FR: JSON-LD con colores sin precio ni stock (21-nov) → no integrable por esta vía; adidas IT sin muestra agotada",
+    "canary-yellow": "canary---yellow.com: /products.json responde pero el 23-nov solo había ropa infantil agotada; falta una muestra útil",
+    "corteiz": "crtz.xyz: /products.json responde 401 (tienda cerrada con contraseña entre drops) → solo en drop abierto",
+    "asos": "ASOS ES integrada en #asos-es; otros mercados de ASOS sin auditar",
 }
 GUIAS = {"💰neobancos": "06-pagos-y-neobancos.md", "📊excel-inventario": "01-inventario-y-margen.md + inventario_margen.csv",
          "🛠zesty-tools": "07-herramientas-del-servidor.md", "👟cuentas-nike": "05-early-access-y-cuentas.md",
@@ -75,8 +69,20 @@ def responsable(r) -> str:
     return "bot"
 
 
+ALIAS = {"#ugg-oficial": "#ugg"}   # la web oficial de UGG es la misma fuente que el monitor ugg-es
+
+
+def lote_probado() -> dict:
+    """v1.6: canal propio → tienda de los lotes con alguna señal «probado» (misma fuente que el bot y las tarjetas)."""
+    sig = ("restock", "rebaja", "lanzamiento", "raffle")
+    return {"#" + t["canal"]: t for t in load_lote(ROOT / "config/lote_tiendas.toml") if any(t.get(k) == "probado" for k in sig)}
+
+
 def main():
     fid = list(csv.DictReader(open(ROOT / "docs/v11/FIDELIDAD.csv", encoding="utf-8")))
+    probadas = lote_probado()
+    muestras = {l.split("|")[0] for l in (ROOT / "tests/fixtures/muestras_shopify_REAL_2026-11-21.txt").read_text(encoding="utf-8").splitlines()
+                if l and not l.startswith("#")}
     rows = []
     for i, r in enumerate(fid, 1):
         ref = r["canal_referencia"]
@@ -86,6 +92,12 @@ def main():
         if plain in FASE2:
             ours, mon, test = FASE2[plain]
             tech, fuente, evid = "probado localmente", f"monitor {mon} (JSON-LD público de la ficha)", test + " · captura 21-nov"
+        elif ALIAS.get(ours, ours) in probadas and tech != "probado localmente":
+            t = probadas[ALIAS.get(ours, ours)]
+            tech, fuente = "probado localmente", f"monitor {', '.join(t['monitores'])}"
+            evid = t.get("prueba_restock") or t.get("prueba_rebaja") or "lote de tiendas"
+        elif tech == "construido" and (doms := [d for d in re.findall(r"shop:([a-z0-9.-]+)", fuente) if d in muestras]):
+            tech, evid = "probado localmente", " + ".join(f"test_tiendas_lote2[{d}]" for d in doms) + " · muestra real /products.json"
         elif plain in PENDIENTE_TIENDA:
             nxt = PENDIENTE_TIENDA[plain]
         if ref in GUIAS:
